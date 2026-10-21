@@ -28,7 +28,7 @@ from openpyxl import load_workbook
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
-from recalc import find_excel, recalc  # noqa: E402
+from recalc import find_excel, recalc  # noqa: E406
 
 pytestmark = pytest.mark.skipif(find_excel() is None, reason="Excel not installed")
 
@@ -39,11 +39,11 @@ def fill(T):
         T[f"{c}19"] = 1000   # Attack (stats screen)
         T[f"{c}22"] = 0.5    # Critical Chance
         T[f"{c}23"] = 2.0    # Critical Damage (total multiplier)
-    T["J79"] = T["K79"] = T["L79"] = 2                        # Morale stacks per build
-    T["L80"] = 1                                              # Build C: 1 Vulnerable stack
-    T["B103"], T["D103"], T["F103"], T["G103"], T["K103"] = "Mult test", "30%", "ALL", "All hits", "Yes"
-    T["B104"], T["D104"], T["F104"], T["G104"], T["L104"] = "First hit", "+50%", "Attack", "First hit only", "Yes"
-    for r, (name, tags, hits, weak, plays) in zip(range(128, 131), [
+    T["J83"] = T["K83"] = T["L83"] = 2                        # Morale stacks per build
+    T["L84"] = 1                                              # Build C: 1 Vulnerable stack
+    T["B107"], T["D107"], T["F107"], T["G107"], T["K107"] = "Mult test", "30%", "ALL", "All hits", "Yes"
+    T["B108"], T["D108"], T["F108"], T["G108"], T["L108"] = "First hit", "+50%", "Attack", "First hit only", "Yes"
+    for r, (name, tags, hits, weak, plays) in zip(range(132, 135), [
             ("Test", "Attack", 3, "No", 1), ("Two", "x", 2, "No", 2), ("Weak", "x", 1, "Yes", 1)]):
         T[f"B{r}"], T[f"C{r}"], T[f"D{r}"], T[f"E{r}"], T[f"F{r}"] = name, tags, "ATK", "Normal", 1.0
         T[f"G{r}"], T[f"H{r}"], T[f"I{r}"], T[f"J{r}"] = hits, weak, "No", plays
@@ -54,8 +54,8 @@ def fill_partner(T, character):
     for c in "EFG":
         T[f"{c}19"] = 1000
     T["E12"] = T["F12"] = "Marianne"
-    T["F41"] = "No"                                           # Build B: Marianne's ATK% off
-    for r, (name, tags, rav) in zip((128, 129), [("Strike", "Basic Attack", "Yes"), ("Other", "x", "No")]):
+    T["F37"] = "No"                                           # Build B: Marianne's ATK% off
+    for r, (name, tags, rav) in zip((132, 133), [("Strike", "Basic Attack", "Yes"), ("Other", "x", "No")]):
         T[f"B{r}"], T[f"C{r}"], T[f"D{r}"], T[f"E{r}"], T[f"F{r}"] = name, tags, "ATK", "Normal", 1.0
         T[f"G{r}"], T[f"H{r}"], T[f"I{r}"], T[f"J{r}"] = 1, "No", rav, 1
 
@@ -83,38 +83,38 @@ def results(wb):
 
 
 def test_final_stats(results):
-    assert [results[f"{c}67"].value for c in "EFG"] == [1000, 1000, 1000]
-    assert [results[f"{c}74"].value for c in "EFG"] == [1.25, 1.25, 1.25]   # Weakness DMG default
-    assert results["E71"].value == 0                                       # no element chosen
+    assert [results[f"{c}71"].value for c in "EFG"] == [1000, 1000, 1000]
+    assert [results[f"{c}78"].value for c in "EFG"] == [1.25, 1.25, 1.25]   # Weakness DMG default
+    assert results["E75"].value == 0                                       # no element chosen
 
 
 def test_build_a_morale_and_crit(results):
-    assert results["K128"].value == pytest.approx(1470)
-    assert results["L128"].value == pytest.approx(2940)
-    assert results["M128"].value == pytest.approx(2205)
+    assert results["K132"].value == pytest.approx(1470)
+    assert results["L132"].value == pytest.approx(2940)
+    assert results["M132"].value == pytest.approx(2205)
 
 
 def test_times_played(results):
-    assert results["K129"].value == pytest.approx(1960)
-    assert (results["C154"].value, results["D154"].value, results["E154"].value) == (2, 2, 1)
+    assert results["K133"].value == pytest.approx(1960)
+    assert (results["C158"].value, results["D158"].value, results["E158"].value) == (2, 2, 1)
 
 
 def test_weakness_dmg_applies(results):
-    assert results["F156"].value == pytest.approx(1.75)
-    assert results["K130"].value == pytest.approx(612.5)
+    assert results["F160"].value == pytest.approx(1.75)
+    assert results["K134"].value == pytest.approx(612.5)
 
 
 def test_build_b_multiplicative(results):
-    assert results["N128"].value == pytest.approx(1785)
-    assert results["N129"].value == pytest.approx(2380)
+    assert results["N132"].value == pytest.approx(1785)
+    assert results["N133"].value == pytest.approx(2380)
 
 
 def test_build_c_first_hit_and_vulnerable_in_order(results):
-    assert results["N149"].value == pytest.approx(2.85)
-    assert results["N150"].value == pytest.approx(1.40)
-    assert results["N152"].value == pytest.approx(1.40)   # card 2: stack already used up
-    assert results["Q128"].value == pytest.approx(1977.5)
-    assert results["Q129"].value == pytest.approx(1960)
+    assert results["N153"].value == pytest.approx(2.85)
+    assert results["N154"].value == pytest.approx(1.40)
+    assert results["N156"].value == pytest.approx(1.40)   # card 2: stack already used up
+    assert results["Q132"].value == pytest.approx(1977.5)
+    assert results["Q133"].value == pytest.approx(1960)
 
 
 def test_summary(results):
@@ -128,21 +128,28 @@ def test_character_preset(wb):
     assert (T["E1"].value, T["G1"].value) == ("Passion", "Striker")
 
 
+def test_presets_packed_without_gaps(wb):
+    T = wb["Partner"]   # Mei Lin has no presets yet, so Marianne's effects start at the top of each block
+    assert [T[f"B{r}"].value for r in (37, 38, 39)] == ["Marianne: Attack", "Marianne: Weakness DMG", None]
+    assert [T[f"B{r}"].value for r in (86, 87, 88)] == ["Marianne: Damage vs Ravaged",
+                                                        "Marianne: Basic cards are Weakness Attacks", None]
+
+
 def test_partner_stats_per_build(wb):
     T = wb["Partner"]
-    assert [T[f"{c}67"].value for c in "EFG"] == pytest.approx([1160, 1000, 1000])
-    assert [T[f"{c}74"].value for c in "EFG"] == pytest.approx([1.30, 1.30, 1.25])
+    assert [T[f"{c}71"].value for c in "EFG"] == pytest.approx([1160, 1000, 1000])
+    assert [T[f"{c}78"].value for c in "EFG"] == pytest.approx([1.30, 1.30, 1.25])
 
 
 def test_partner_ravaged_and_weakness_attack(wb):
     T = wb["Partner"]
-    assert T["F149"].value == pytest.approx(1.495)
-    assert [T[f"{c}128"].value for c in "KNQ"] == pytest.approx([606.97, 523.25, 350])
-    assert T["K129"].value == pytest.approx(406)      # not Basic Attack, not Ravaged
+    assert T["F153"].value == pytest.approx(1.495)
+    assert [T[f"{c}132"].value for c in "KNQ"] == pytest.approx([606.97, 523.25, 350])
+    assert T["K133"].value == pytest.approx(406)      # not Basic Attack, not Ravaged
 
 
 def test_partner_class_mismatch(wb):
     T = wb["Mismatch"]
     assert T["G1"].value == "Vanguard"
-    assert T["E67"].value == pytest.approx(1000)
-    assert T["K128"].value == pytest.approx(350)
+    assert T["E71"].value == pytest.approx(1000)
+    assert T["K132"].value == pytest.approx(350)

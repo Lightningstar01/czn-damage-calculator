@@ -14,9 +14,10 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.worksheet.datavalidation import DataValidation
 from openpyxl.formatting.rule import FormulaRule
 from openpyxl.workbook.defined_name import DefinedName
+from openpyxl.worksheet.filters import CustomFilter, CustomFilters, FilterColumn
 from openpyxl.utils import get_column_letter as L
 
-LAYOUT_VERSION = 2   # stored in A1 of every character tab; bump (and add a migration) when Template cells move
+LAYOUT_VERSION = 3   # stored in A1 of every character tab; bump (and add a migration) when Template cells move
 
 F = "Arial"
 def font(**k): return Font(name=F, **k)
@@ -25,8 +26,9 @@ HDR_FILL = PatternFill("solid", fgColor="2F3E57")
 SUB_FILL = PatternFill("solid", fgColor="DCE3EE")
 OUT_FILL = PatternFill("solid", fgColor="E8F4EA")
 HELP_FILL = PatternFill("solid", fgColor="F2F2F2")
-ON_FILL = PatternFill("solid", fgColor="C6EFCE")
-OFF_FILL = PatternFill("solid", fgColor="E0E0E0")
+def cf_fill(c): return PatternFill("solid", start_color=c, end_color=c)   # conditional formats read the background colour
+ON_FILL = cf_fill("C6EFCE")
+OFF_FILL = cf_fill("E0E0E0")
 thin = Side(style="thin", color="C8CCD2")
 BOX = Border(left=thin, right=thin, top=thin, bottom=thin)
 BLUE = "0000FF"
@@ -201,10 +203,9 @@ SC = {lab: 19 + i for i, (lab, _, _) in enumerate(screen)}   # stats-screen rows
 EL0, EL1 = SC["Passion Damage"], SC["Void Damage"]
 
 # Stat boosts (partner effects, equipment, ...): character presets, 3 partner slots, then the owner's own rows
-NCS, NPS, NUS = 4, 4, 10
+NCS, NPS, NUS = 5, 5, 10
 ST0 = 37
-ST_CHAR = list(range(ST0, ST0 + NCS))
-ST_SLOT = [list(range(ST0 + NCS + s * NPS, ST0 + NCS + (s + 1) * NPS)) for s in range(3)]
+ST_PRESET = list(range(ST0, ST0 + NCS + 3 * NPS))   # packed: the character's effects, then partner slots 1-3
 ST_USER = list(range(ST0 + NCS + 3 * NPS, ST0 + NCS + 3 * NPS + NUS))
 ST1 = ST_USER[-1]
 STE = ["L", "M", "N"]                # grey effective count per build
@@ -217,10 +218,10 @@ FS = {lab: FS0 + i for i, lab in enumerate(fin_labels)}
 NCB, NPB, NUB = 6, 5, 20
 B0 = FS0 + len(fin_labels) + 4
 VROW, WROW = B0 + 1, B0 + 2
-BU_CHAR = list(range(B0 + 3, B0 + 3 + NCB))
-BU_SLOT = [list(range(BU_CHAR[-1] + 1 + s * NPB, BU_CHAR[-1] + 1 + (s + 1) * NPB)) for s in range(3)]
-BU_USER = list(range(BU_SLOT[2][-1] + 1, BU_SLOT[2][-1] + 1 + NUB))
+BU_PRESET = list(range(B0 + 3, B0 + 3 + NCB + 3 * NPB))   # packed, like the stat presets
+BU_USER = list(range(BU_PRESET[-1] + 1, BU_PRESET[-1] + 1 + NUB))
 B1 = BU_USER[-1]
+FILT = "AB"                          # grey "show"/"hide" per preset row, used by the sheet's filter
 BSW = ["J", "K", "L"]                # per-build switch / stacks
 BEF = ["P", "Q", "R"]                # grey effective stacks per build
 
@@ -241,25 +242,48 @@ PARTNER_DV = (f'IF(OR($E${SHOW}="Yes",$G$1=""),PartnerAll,IF(ISNA(MATCH($G$1,Par
 PCT_PARSE = 'IF({c}="",0,IF(ISNUMBER({c}),{c},IFERROR(VALUE(SUBSTITUTE(SUBSTITUTE(TRIM({c}),"+",""),"%",""))/{div},0)))'
 
 
-def preset_cells(own, kind, j, idx):
-    """Lookup-index formula into Presets for the j-th effect of this kind, and a getter for Presets columns."""
-    find = f'=IF({own}="","",IFERROR(MATCH({own}&"|{kind}|{j}",{PRE_KEY},0),""))'
-    def get(c, text=True):
-        v = f"INDEX({pre(c)},${idx})"
-        return f'=IF(${idx}="","",{v}&"")' if text else f'=IF(${idx}="","",IF({v}="","",{v}))'
-    return find, get
-
-
 def class_ok(own, r, idx):
     return (f'=IF(${idx}{r}="",0,IF(OR(INDEX({pre("AA")},${idx}{r})<>"Yes",'
             f'IFERROR(INDEX(Presets!$G${PR0}:$G${PT1},MATCH({own},Presets!$F${PR0}:$F${PT1},0)),"")=$G$1),1,0))')
 
 
-def switch_cf(T, rng, eff_tl, src_tl, preset_rng, idx_tl):
-    """Green when a switch is effectively on, grey when off; empty preset rows fade out."""
-    T.conditional_formatting.add(preset_rng, FormulaRule(formula=[f'{idx_tl}=""'], fill=HELP_FILL, font=font(color="BBBBBB"), stopIfTrue=True))
-    T.conditional_formatting.add(rng, FormulaRule(formula=[f"{eff_tl}>0"], fill=ON_FILL))
-    T.conditional_formatting.add(rng, FormulaRule(formula=[f'AND({eff_tl}=0,{src_tl}<>"")'], fill=OFF_FILL, font=font(color="888888")))
+def packed_rows(T, rows, kind, cum_cells, grp, own, idx):
+    """Preset rows filled top-down with no gaps: the character's effects, then partner slots 1-3.
+    cum_cells: 4 grey cells with running effect counts; grp/own/idx: grey helper columns per row.
+    Returns a warning formula for when the presets don't all fit."""
+    owners = ["$C$1"] + [f"${SLOT[s]}${PROW}" for s in range(3)]
+    for i, (cell, o) in enumerate(zip(cum_cells, owners)):
+        cnt = f'IF({o}="",0,COUNTIFS({pre("P")},{o},{pre("Q")},"{kind}"))'
+        grey(T, cell, f"={cnt}" if i == 0 else f"={cum_cells[i-1]}+{cnt}")
+    c0, c1, c2, c3 = (f"${cell.rstrip('0123456789')}${cell[len(cell.rstrip('0123456789')):]}" for cell in cum_cells)
+    for k, r in enumerate(rows, 1):
+        grey(T, f"{grp}{r}", f'=IF({k}>{c3},"",({k}>{c0})+({k}>{c1})+({k}>{c2}))')
+        grey(T, f"{own}{r}", f'=IF(${grp}{r}="","",CHOOSE(${grp}{r}+1,{",".join(owners)}))')
+        grey(T, f"{idx}{r}", f'=IF(${grp}{r}="","",IFERROR(MATCH(${own}{r}&"|{kind}|"&({k}-CHOOSE(${grp}{r}+1,0,{c0},{c1},{c2})),{PRE_KEY},0),""))')
+    return f'=IF({c3}>{len(rows)},"Only the first {len(rows)} preset {kind.lower()} effects fit; the rest are left out","")'
+
+
+def preset_get(idx):
+    def get(c, text=True):
+        v = f"INDEX({pre(c)},${idx})"
+        return f'=IF(${idx}="","",{v}&"")' if text else f'=IF(${idx}="","",IF({v}="","",{v}))'
+    return get
+
+
+def plain(T, ref):
+    """No static fill or border: the look comes from conditional formatting."""
+    T[ref].fill = PatternFill(fill_type=None); T[ref].border = Border()
+
+
+def switch_cf(T, rng, eff_tl, src_tl, preset_rng, idx_tl, preset_out):
+    """Switches: green when effectively on, grey when off. Unused preset rows look blank (white, no text);
+    used ones get the calculated-cell look."""
+    T.conditional_formatting.add(preset_rng, FormulaRule(formula=[f'{idx_tl}=""'], fill=cf_fill("F2F2F2"),
+                                                         font=font(color="F2F2F2"), stopIfTrue=True))
+    T.conditional_formatting.add(rng, FormulaRule(formula=[f"{eff_tl}>0"], fill=ON_FILL, border=BOX))
+    T.conditional_formatting.add(rng, FormulaRule(formula=[f'AND({eff_tl}=0,{src_tl}<>"")'], fill=OFF_FILL, font=font(color="888888"), border=BOX))
+    for r in preset_out:
+        T.conditional_formatting.add(r, FormulaRule(formula=[f'{idx_tl}<>""'], fill=cf_fill(OUT_FILL.fgColor.rgb[-6:]), border=BOX))
 
 
 def build_template(T):
@@ -316,19 +340,21 @@ def build_template(T):
     colhdr(T, ST0 - 1, ["Source", "Stat", "Value", "Build A", "Build B", "Build C", "Category", "Notes"])
     for c, t in zip("KLMNOPQ", ["value", "eff A", "eff B", "eff C", "default", "preset #", "class ok"]):
         T[f"{c}{ST0-1}"] = t; T[f"{c}{ST0-1}"].font = font(size=8, color="888888")
-    blocks = [(ST_CHAR, "$C$1", False)] + [(ST_SLOT[s], f"${SLOT[s]}${PROW}", True) for s in range(3)]
-    for rows_, own, partner in blocks:
-        for j, r in enumerate(rows_, 1):
-            find, get = preset_cells(own, "Stat", j, f"P{r}")
-            grey(T, f"P{r}", find)
-            out(T, f"B{r}", f'=IF($P{r}="","",{own}&": "&INDEX({pre("R")},$P{r}))')
-            out(T, f"C{r}", get("T")); out(T, f"D{r}", get("U")); out(T, f"H{r}", get("S")); out(T, f"I{r}", get("AB"))
-            grey(T, f"O{r}", f'=IF($P{r}="",1,IF(N(INDEX({pre("Z")},$P{r}))=0,1,INDEX({pre("Z")},$P{r})))')
-            grey(T, f"Q{r}", class_ok(own, r, "P") if partner else f'=IF($P{r}="",0,1)')
-            for b in range(BUILDS):
-                inp(T, f"{BC[b]}{r}", "Yes")
-                gate = f"IF({BC[b]}${PROW}={own},$Q{r},0)" if partner else f"$Q{r}"
-                grey(T, f"{STE[b]}{r}", f'=IF({BC[b]}{r}="Yes",$O{r},N({BC[b]}{r}))*{gate}')
+    for c, t in [("R", "owner"), ("S", "group"), ("U", "running count")]:
+        T[f"{c}{ST0-1}"] = t; T[f"{c}{ST0-1}"].font = font(size=8, color="888888")
+    T[f"K{ST0-3}"] = packed_rows(T, ST_PRESET, "Stat", [f"{c}{ST0}" for c in "UVWX"], "S", "R", "P")
+    T[f"K{ST0-3}"].font = font(bold=True, color="FFC7CE")
+    for r in ST_PRESET:
+        get = preset_get(f"P{r}")
+        out(T, f"B{r}", f'=IF($P{r}="","",$R{r}&": "&INDEX({pre("R")},$P{r}))')
+        out(T, f"C{r}", get("T")); out(T, f"D{r}", get("U")); out(T, f"H{r}", get("S")); out(T, f"I{r}", get("AB"))
+        grey(T, f"O{r}", f'=IF($P{r}="",1,IF(N(INDEX({pre("Z")},$P{r}))=0,1,INDEX({pre("Z")},$P{r})))')
+        grey(T, f"Q{r}", f'=IF($S{r}=0,IF($P{r}="",0,1),' + class_ok(f"$R{r}", r, "P")[1:] + ")")
+        for b in range(BUILDS):
+            inp(T, f"{BC[b]}{r}", "Yes")
+            gate = f"IF($S{r}=0,$Q{r},IF({BC[b]}${PROW}=$R{r},$Q{r},0))"
+            grey(T, f"{STE[b]}{r}", f'=IF({BC[b]}{r}="Yes",$O{r},N({BC[b]}{r}))*{gate}')
+        for c in "BCDEFGHI": plain(T, f"{c}{r}")
     for r in ST_USER:
         for c in "BCD": inp(T, f"{c}{r}")
         for c in BC: inp(T, f"{c}{r}")
@@ -344,7 +370,8 @@ def build_template(T):
     addv(T, "Extra stats", f"C{ST_USER[0]}:C{ST1}")
     addv(T, "Source categories", f"H{ST_USER[0]}:H{ST1}")
     addv(T, "Yes/No", f"E{ST0}:G{ST1}", strict=False)
-    switch_cf(T, f"E{ST0}:G{ST1}", f"L{ST0}", f"$B{ST0}", f"E{ST0}:G{ST_USER[0]-1}", f"$P{ST0}")
+    switch_cf(T, f"E{ST0}:G{ST1}", f"L{ST0}", f"$B{ST0}", f"B{ST0}:I{ST_PRESET[-1]}", f"$P{ST0}",
+              [f"B{ST0}:D{ST_PRESET[-1]}", f"H{ST0}:I{ST_PRESET[-1]}"])
     note(T, f"B{ST1+1}", "ATK% / DEF% multiply the stats-screen value; flat ATK / DEF is added after. Other stats add to the screen value.")
 
     # Final stats
@@ -380,20 +407,21 @@ def build_template(T):
                        "Build A", "Build B", "Build C", "Notes"])
     for c, t in zip("OPQRSTU", ["value", "eff A", "eff B", "eff C", "default", "preset #", "class ok"]):
         T[f"{c}{B0-1}"] = t; T[f"{c}{B0-1}"].font = font(size=8, color="888888")
-    blocks = [(BU_CHAR, "$C$1", False)] + [(BU_SLOT[s], f"${SLOT[s]}${PROW}", True) for s in range(3)]
+    for c, t in [("V", "owner"), ("W", "group"), ("X", "running count")]:
+        T[f"{c}{B0-1}"] = t; T[f"{c}{B0-1}"].font = font(size=8, color="888888")
+    T[f"K{B0-3}"] = packed_rows(T, BU_PRESET, "Buff", [f"{c}{B0}" for c in ("X", "Y", "Z", "AA")], "W", "V", "T")
+    T[f"K{B0-3}"].font = font(bold=True, color="FFC7CE")
     gates = {}
-    for rows_, own, partner in blocks:
-        for j, r in enumerate(rows_, 1):
-            find, get = preset_cells(own, "Buff", j, f"T{r}")
-            grey(T, f"T{r}", find)
-            out(T, f"B{r}", f'=IF($T{r}="","",{own}&": "&INDEX({pre("R")},$T{r}))')
-            out(T, f"C{r}", get("S")); out(T, f"D{r}", get("U")); out(T, f"F{r}", get("V"))
-            out(T, f"G{r}", get("W")); out(T, f"H{r}", get("X")); out(T, f"I{r}", get("Y", text=False)); out(T, f"M{r}", get("AB"))
-            grey(T, f"S{r}", f'=IF($T{r}="",1,IF(N(INDEX({pre("Z")},$T{r}))=0,1,INDEX({pre("Z")},$T{r})))')
-            grey(T, f"U{r}", class_ok(own, r, "T") if partner else f'=IF($T{r}="",0,1)')
-            for b in range(BUILDS):
-                inp(T, f"{BSW[b]}{r}", "Yes")
-                gates[(r, b)] = f"IF({BC[b]}${PROW}={own},$U{r},0)" if partner else f"$U{r}"
+    for r in BU_PRESET:
+        get = preset_get(f"T{r}")
+        out(T, f"B{r}", f'=IF($T{r}="","",$V{r}&": "&INDEX({pre("R")},$T{r}))')
+        out(T, f"C{r}", get("S")); out(T, f"D{r}", get("U")); out(T, f"F{r}", get("V"))
+        out(T, f"G{r}", get("W")); out(T, f"H{r}", get("X")); out(T, f"I{r}", get("Y", text=False)); out(T, f"M{r}", get("AB"))
+        grey(T, f"S{r}", f'=IF($T{r}="",1,IF(N(INDEX({pre("Z")},$T{r}))=0,1,INDEX({pre("Z")},$T{r})))')
+        grey(T, f"U{r}", f'=IF($W{r}=0,IF($T{r}="",0,1),' + class_ok(f"$V{r}", r, "T")[1:] + ")")
+        for b in range(BUILDS):
+            inp(T, f"{BSW[b]}{r}", "Yes")
+            gates[(r, b)] = f"IF($W{r}=0,$U{r},IF({BC[b]}${PROW}=$V{r},$U{r},0))"
     for r in [B0, VROW, WROW] + BU_USER:
         grey(T, f"S{r}", 1)
         for b in range(BUILDS):
@@ -426,7 +454,26 @@ def build_template(T):
     addv(T, "Hit scope", f"G{BU_USER[0]}:G{B1}")
     addv(T, "Condition", f"H{BU_USER[0]}:H{B1}")
     addv(T, "Yes/No", f"J{B0}:L{B1}", strict=False)
-    switch_cf(T, f"J{B0}:L{B1}", f"P{B0}", f"$B{B0}", f"J{BU_CHAR[0]}:L{BU_SLOT[2][-1]}", f"$T{BU_CHAR[0]}")
+    for r in BU_PRESET:
+        for c in "BCDEFGHIJKLM": plain(T, f"{c}{r}")
+    switch_cf(T, f"J{B0}:L{B1}", f"P{B0}", f"$B{B0}", f"B{BU_PRESET[0]}:M{BU_PRESET[-1]}", f"$T{BU_PRESET[0]}",
+              [f"B{BU_PRESET[0]}:I{BU_PRESET[-1]}", f"M{BU_PRESET[0]}:M{BU_PRESET[-1]}"])
+
+    # Filter that hides unused preset rows (Data > Reapply / Ctrl+Alt+L after changing character or partners)
+    T[f"{FILT}{ST0-1}"] = "Filter"; T[f"{FILT}{ST0-1}"].font = font(size=8, color="888888")
+    for rows_, idx in [(ST_PRESET, "P"), (BU_PRESET, "T")]:
+        for r in rows_:
+            grey(T, f"{FILT}{r}", f'=IF(${idx}{r}="","hide","show")')
+        rng = f"{FILT}{rows_[0]}:{FILT}{rows_[-1]}"
+        vis = f"SUBTOTAL(103,OFFSET({FILT}{rows_[0]},ROW({rng})-{rows_[0]},0))"
+        stale = f'SUMPRODUCT(({rng}="hide")*{vis}+({rng}="show")*(1-{vis}))>0'
+        cell = f"K{ST0-3}" if rows_ is ST_PRESET else f"K{B0-3}"
+        T[cell] = (f'=IF({stale},"Press Ctrl+Alt+L to refresh which preset rows are shown",'
+                   + T[cell].value[1:] + ")")
+    T.auto_filter.ref = f"{FILT}{ST0-1}:{FILT}{B1}"
+    T.auto_filter.filterColumn.append(FilterColumn(colId=0, customFilters=CustomFilters(customFilter=[CustomFilter(operator="notEqual", val="hide")])))
+    for r in ST_PRESET + BU_PRESET:
+        T.row_dimensions[r].hidden = True   # nothing picked yet; carry_over unhides the used ones
 
     # Cards
     header(T, C0 - 3, "CARDS (shared by all builds) — enter each card's damage % as shown in-game (already includes potentials and epiphany)", 2, 19)
@@ -543,6 +590,8 @@ lines = [
     ("   into that build's column (percentages as shown, e.g. 45.3%). The screen includes partner base stats and memory fragments.", None),
     ("4. Stat Boosts: character and partner presets fill in at the top. Add your own rows for save-data equipment (slot 1 always gives flat ATK).", None),
     ("   Each row has one Value; the build columns say whether it's used: Yes / No (or a number of stacks).", None),
+    ("   Preset rows (green) fill in from the top; empty reserved rows are hidden by a filter. After changing the character or a partner,", None),
+    ("   press Ctrl+Alt+L (Data > Reapply) to refresh which rows show — a red note in the section header reminds you.", None),
     ("5. Buffs & Debuffs: presets fill in at the top; your own rows go below. Type the buff text as shown in-game ('+30%' or '30%');", None),
     ("   the Type fills in by itself. Morale, Vulnerable and Weakness debuff: enter stacks per build. Condition 'Ravaged only' needs a Ravaged target.", None),
     ("6. Cards: enter each card's damage % exactly as the card shows it (it already includes potentials and epiphany), its hits, tags,", None),
@@ -641,20 +690,44 @@ def migrate_v1(o, n):
         n[f"J{nrow}"] = o[f"I{orow}"].value
 
 
+def migrate_v2(o, n):
+    """Layout 2 -> 3: one more stat preset row per group (4 rows), so rows from the old user stat rows down move by 4."""
+    old_user0 = ST_USER[0] - 4
+    for ref in INPUTS:
+        c, r = ref.rstrip("0123456789"), int(ref[len(ref.rstrip("0123456789")):])
+        if r < old_user0:
+            n[ref] = o[ref].value
+        elif r >= ST_USER[0]:
+            n[ref] = o[f"{c}{r-4}"].value
+
+
+def show_used_presets(n):
+    """Unhide the preset rows the tab's character and partners fill (the filter's state when the file opens)."""
+    owners = [n["C1"].value] + list(dict.fromkeys(n[f"{c}{PROW}"].value for c in BC))
+    effects = [(P[f"P{r}"].value, P[f"Q{r}"].value) for r in range(PR0, EF1 + 1)]
+    for kind, rows_ in [("Stat", ST_PRESET), ("Buff", BU_PRESET)]:
+        used = sum(1 for o, k in effects if k == kind and o and o in owners)
+        for r in rows_[:used]:
+            n.row_dimensions[r].hidden = False
+
+
 def carry_over(old):
     if "Presets" in old.sheetnames: copy_presets(old)
     for o in old.worksheets:
         if o.title in FIXED_TABS: continue
         ver = o["A1"].value if o["A1"].value is not None else (1 if o["B1"].value == "Character:" else None)
-        if ver not in (1, LAYOUT_VERSION):
+        if ver not in (1, 2, LAYOUT_VERSION):
             sys.exit(f"Tab '{o.title}' isn't a calculator tab this build knows how to carry over (layout {ver}); "
                      "nothing was saved. Move it to another file first.")
         n = wb.create_sheet(o.title)
         build_template(n)
         if ver == 1:
             migrate_v1(o, n)
+        elif ver == 2:
+            migrate_v2(o, n)
         else:
             for ref in INPUTS: n[ref] = o[ref].value
+        show_used_presets(n)
         print(f"Carried over tab '{o.title}' (layout {ver})")
 
 

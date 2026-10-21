@@ -42,7 +42,7 @@ update the cell references in tests/test_formula.py and the layout map below.
   PartnerAll / PartnerClass / PartnerStart cross sheets).
 - Rebuilding keeps the owner's data: the Presets inputs and every character tab are carried over
   from the existing output file. Character tabs store LAYOUT_VERSION in A1. If you move any
-  Template input cell, bump LAYOUT_VERSION and add a migration (see migrate_v1).
+  Template input cell, bump LAYOUT_VERSION and add a migration (see migrate_v1 / migrate_v2). Current: 3.
 - Document every new assumption in docs/FORMULA.md with its source or "Unconfirmed".
 
 ## Formula (summary — full notes and sources in docs/FORMULA.md)
@@ -84,11 +84,12 @@ Template (build columns E/F/G = Builds A/B/C in the top sections):
 | 4–9 | Build summary (totals of all cards x times played; H6 warns if the hit breakdown is full) |
 | 12–15 | 12 Partner per build (class-filtered dropdown; grey J–L distinct partner slots), E13 Show all partners, 14 enemy DEF multiplier, 15 enemy damage reduction |
 | 19–31 | Stats screen: 19 Attack, 20 Defense, 21 Health, 22 Crit Chance, 23 Crit DMG, 24 Weakness DMG, 25–29 Passion/Justice/Order/Instinct/Void DMG, 30 Extra DMG, 31 DoT |
-| 37–62 | Stat boosts: 37–40 character presets, 41–44 / 45–48 / 49–52 partner slots 1–3, 53–62 user rows. B source, C stat, D value, E–G switch per build (Yes/No/number), H category, I notes; grey K value, L–N effective, O default, P preset #, Q class ok |
-| 67–74 | Final stats: 67 ATK, 68 DEF, 69 Crit Rate, 70 Crit DMG, 71 Elemental DMG%, 72 Extra DMG%, 73 DoT DMG%, 74 Weakness DMG |
-| 79–122 | Buffs: 79 Morale, 80 Vulnerable, 81 Weakness debuff, 82–87 character presets, 88–92 / 93–97 / 98–102 partner slots, 103–122 user rows. B source, C category, D text, E auto type, F applies-to, G hit scope, H condition, I max stacks, J–L switch/stacks per build, M notes; grey O value, P–R effective, S default, T preset #, U class ok |
-| 128–142 | Cards: B name, C tags, D scaling, E kind, F % as shown, G hits, H Weakness DMG applies?, I Target Ravaged?, J times played; K–S totals (A: K non-crit, L crit, M expected; B: N–P; C: Q–S); grey U start, V hit rows (V143 total), W–AQ helper sums (7 per build) |
-| 149–448 | Hit breakdown: B card, C card #, D play #, E hit #; per build F–I / J–M / N–Q (card mult, non-crit, crit, expected) |
+| 37–66 | Stat boosts: 37–56 preset rows (packed: the character's effects, then partner slots 1–3; up to 5 + 3x5), 57–66 user rows. B source, C stat, D value, E–G switch per build (Yes/No/number), H category, I notes; grey K value, L–N effective, O default, P preset #, Q class ok, R owner, S group (0 = character), U–X running counts (row 37); K34 red note (overflow / press Ctrl+Alt+L) |
+| 71–78 | Final stats: 71 ATK, 72 DEF, 73 Crit Rate, 74 Crit DMG, 75 Elemental DMG%, 76 Extra DMG%, 77 DoT DMG%, 78 Weakness DMG |
+| 83–126 | Buffs: 83 Morale, 84 Vulnerable, 85 Weakness debuff, 86–106 preset rows (packed, up to 6 + 3x5), 107–126 user rows. B source, C category, D text, E auto type, F applies-to, G hit scope, H condition, I max stacks, J–L switch/stacks per build, M notes; grey O value, P–R effective, S default, T preset #, U class ok, V owner, W group, X–AA running counts (row 83); K80 red note |
+| AB36:AB126 | Sheet filter: grey "show"/"hide" per preset row; filter hides "hide" (Ctrl+Alt+L to reapply). The build sets the initial hidden rows |
+| 132–146 | Cards: B name, C tags, D scaling, E kind, F % as shown, G hits, H Weakness DMG applies?, I Target Ravaged?, J times played; K–S totals (A: K non-crit, L crit, M expected; B: N–P; C: Q–S); grey U start, V hit rows (V147 total), W–AQ helper sums (7 per build) |
+| 153–452 | Hit breakdown: B card, C card #, D play #, E hit #; per build F–I / J–M / N–Q (card mult, non-crit, crit, expected) |
 
 "Applies to" matches ALL, an exact card name, or one tag in the card's comma-separated Tags.
 
