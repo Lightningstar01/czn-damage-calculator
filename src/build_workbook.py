@@ -439,16 +439,18 @@ def build_template(T):
             sw = f"{BSW[b]}{r}"
             base = f'IF({sw}="Yes",$S{r},N({sw}))'
             grey(T, f"{BEF[b]}{r}", f'=IF($I{r}="",{base},MIN({base},$I{r}))*{gates.get((r, b), 1)}')
-    T[f"B{B0}"], T[f"C{B0}"], T[f"D{B0}"], T[f"F{B0}"], T[f"G{B0}"], T[f"I{B0}"] = "Morale", "Other", "+20%", "ALL", "All hits", 20
-    for c in "BCDFGI": inp(T, f"{c}{B0}")
-    inp(T, f"M{B0}", "+20% flat per stack, max 20 (Game8; your note). Set stacks per build.")
+    # Fixed rows: calculated look like the preset rows (don't edit); only the build columns J-L are inputs
+    for c, v in zip("BCDFGHIM", ["Morale", "Other", "+20%", "ALL", "All hits", None, 20,
+                                 "+20% flat per stack, max 20 (Game8; your note). Set stacks per build."]):
+        out(T, f"{c}{B0}", v)
     for r, name, key, nt in [(VROW, "Vulnerable (on target)", "VULN", "Damage x (1 + this) on the first N hits in card-table order; N = stacks. Size: Settings."),
                              (WROW, "Weakness debuff (on you)", "WEAK", "Damage x (1 - this) on the first N hits in card-table order; N = stacks. Size: Settings.")]:
-        T[f"B{r}"], T[f"C{r}"] = name, "Enemy Debuff" if key == "VULN" else "Other"
+        out(T, f"B{r}", name); out(T, f"C{r}", "Enemy Debuff" if key == "VULN" else "Other")
         out(T, f"D{r}", f"={SET[key]}", "0%")
         out(T, f"E{r}", name.split(" (")[0])
         out(T, f"F{r}", "Every hit"); out(T, f"G{r}", "In order")
-        T[f"M{r}"] = nt
+        for c in "HI": out(T, f"{c}{r}", None)
+        out(T, f"M{r}", nt)
         grey(T, f"O{r}", 0)
     addv(T, "Source categories", f"C{BU_USER[0]}:C{B1}")
     addv(T, "Hit scope", f"G{BU_USER[0]}:G{B1}")
@@ -677,7 +679,6 @@ def migrate_v1(o, n):
     def sw(v, mx): return "Yes" if v == 1 and mx in (None, 1) else (None if v in (0, None) else v)
     for orow, nrow in [(62, B0), (63, VROW), (64, WROW)]:
         for oc, nc in zip("IJK", BSW): n[f"{nc}{nrow}"] = o[f"{oc}{orow}"].value
-    n[f"M{B0}"] = o["L62"].value
     user = iter(BU_USER)
     for r in range(65, 97):
         if o[f"B{r}"].value in (None, "") and o[f"D{r}"].value in (None, ""): continue
