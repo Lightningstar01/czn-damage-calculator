@@ -1,0 +1,8 @@
+# Python
+.venv/
+__pycache__/
+.pytest_cache/
+
+# Excel lock files and dated backups (git keeps the history instead)
+~$*.xlsx
+output/*_backup_*.xlsx
