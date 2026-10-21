@@ -20,17 +20,25 @@ from openpyxl import load_workbook
 ERRORS = ["#VALUE!", "#DIV/0!", "#REF!", "#NAME?", "#NULL!", "#NUM!", "#N/A"]
 
 # Opens the file in a separate, hidden Excel instance, recalculates, saves, and quits.
-# Close() can be rejected while Excel is busy (RPC_E_CALL_REJECTED); the save has already landed.
+# Excel rejects COM calls while it is busy (RPC_E_CALL_REJECTED), so each step is retried.
 PS = """$ErrorActionPreference = 'Stop'
+function Retry([scriptblock]$f) {{
+  for ($i = 0; ; $i++) {{
+    try {{ return & $f }} catch {{
+      if ($i -ge 60 -or $_.Exception.Message -notmatch 'rejected|busy|0x8001010A') {{ throw }}
+      Start-Sleep -Milliseconds 500
+    }}
+  }}
+}}
 $xl = New-Object -ComObject Excel.Application
 try {{
-  $xl.Visible = $false; $xl.DisplayAlerts = $false
-  $wb = $xl.Workbooks.Open('{path}')
-  $xl.CalculateFull()
-  $wb.Save()
-  try {{ $wb.Close($false) }} catch {{}}
+  Retry {{ $xl.Visible = $false }}; Retry {{ $xl.DisplayAlerts = $false }}
+  $wb = Retry {{ $xl.Workbooks.Open('{path}') }}
+  Retry {{ $xl.CalculateFull() }}
+  Retry {{ $wb.Save() }}
+  try {{ Retry {{ $wb.Close($false) }} }} catch {{}}
 }} finally {{
-  try {{ $xl.Quit() }} catch {{}}
+  try {{ Retry {{ $xl.Quit() }} }} catch {{}}
   [void][Runtime.InteropServices.Marshal]::ReleaseComObject($xl)
 }}"""
 

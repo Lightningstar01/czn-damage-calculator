@@ -51,11 +51,31 @@ with a leading "+" (e.g. "+30% Damage Amount") is additive; one without "+" is m
 No public source found for this. The workbook auto-classifies by "+" and allows an override.
 
 **Multiplicative buffs combine by summing — User belief**, supported by UltimateGacha, which
-cites Reddit testing. Prydwen's formula is ambiguous. Toggle: Settings!B14 (Summed/Chained).
+cites Reddit testing. Prydwen's formula is ambiguous. Toggle: Settings!B15 (Summed/Chained).
 
 **Morale — Sourced (Game8) + User:** +20% flat per stack in the additive bucket (Game8: 2 stacks
 turn a 100% card into 140%). Max 20 stacks (owner). UltimateGacha claims Morale is a late
 multiplier; this conflicts with Game8 and the owner, and was rejected.
+
+## 2a. Partners, presets, Ravaged, Weakness Attack — User (2026-10-20)
+
+- **Class-limited partner effects — User:** any partner can go with any character, but the
+  partner's class-limited effects only work when the partner's class matches the character's.
+  Base stats and the ego skill always apply. Presets mark each effect "Class-limited? Yes/No";
+  the Template switches a class-limited effect off on a mismatch.
+- **Partner base stats** are already in the stats-screen numbers, so the Presets tab records
+  them for reference only (not added again).
+- **Marianne (Striker) — User:** 144 HP, 5 DEF, 155 ATK; class-limited: +16% Attack (as ATK%),
+  +5% Weakness DMG, "15% increased damage to Ravaged enemies", and Basic Attack cards always
+  count as Weakness Attacks.
+  - The Ravaged 15% has no "+", so it's multiplicative under the owner's "+" rule.
+    **Unconfirmed** that the "+" rule covers partner passives.
+- **Ravaged — User:** Ravaged enemies take more damage. The size is **Unconfirmed**:
+  Settings!B12 (default 0%) multiplies the card mult by (1 + B12) when the card's
+  "Target Ravaged?" is Yes. Buffs with Condition "Ravaged only" apply only to those cards.
+- **Weakness Attack — User:** a buff of type "Weakness Attack" makes Weakness DMG apply to
+  matching cards, as if the card's "Weakness DMG applies?" were Yes. It ignores hit scope
+  (all hits). **Unconfirmed:** whether it also applies to non-active damage.
 
 ## 3. Damage — Sourced (Prydwen)
 
@@ -87,6 +107,8 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
 - [ ] Where Weakness DMG and partner "+X% damage" buffs sit relative to Morale.
 - [x] Extra x1.25 on top of Weakness DMG: none (Mei Lin test, 2026-10-20).
 - [x] Partner/equipment ATK% multiplies the stats-screen Attack (Mei Lin 1272 matches).
+- [ ] How much extra damage Ravaged enemies take (Settings!B12, 0% for now).
+- [ ] Is Marianne's Ravaged 15% multiplicative (no "+") or additive?
 - [ ] Gather more hits to pin down the enemy DEF multiplier (later).
 
 ## Sources
