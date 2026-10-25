@@ -165,9 +165,10 @@ export function activeBuffs(presets: Presets, charName: string, cs: CharacterSav
 
 const norm = (s: string) => s.replace(/\s/g, '').toLowerCase()
 
-/** One "Applies to" word: ALL, the card name, a tag, the card kind (DoT / Extra Attack), 'N+ hits', or 'N+ cost' (vs tags like '2-cost'). */
+/** One "Applies to" word: ALL, the card name, a tag, the card type (Attack / Skill / Upgrade), the card kind (DoT / Extra Attack), 'N+ hits', or 'N+ cost' (vs tags like '2-cost'). */
 function termMatches(term: string, card: Card, tags: string[]): boolean {
   if (term === 'all' || term === norm(card.name) || tags.includes(term)) return true
+  if (term === norm(card.cardType ?? '')) return true
   if (card.kind !== 'Normal' && term === norm(card.kind)) return true
   const min = /^(\d+)\+(hits?|cost)$/.exec(term)
   if (!min) return false

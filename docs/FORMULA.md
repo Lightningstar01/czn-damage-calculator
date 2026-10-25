@@ -93,7 +93,8 @@ multiplier; this conflicts with Game8 and the owner, and was rejected.
   cap applies after them.
 - **Matching (website):** "Applies to" accepts `A & B` (all must match) and `A/B` (any one), plus
   `N+ hits` (from the card's hit count), `N+ cost` (vs tags like `2-cost`), and the card kind
-  (`DoT`, `Extra Attack`). Cards need tags for element, Attack, Exhaust, cost, etc.
+  (`DoT`, `Extra Attack`), and the card type dropdown (`Attack`, `Skill`, `Upgrade`; owner). Cards
+  need tags for element, Exhaust, cost, etc.
 - Triggered set buffs default to on at max stacks (owner); switch off or lower them per build.
 - Prelude to a Hero ("+15% ... max 15%, max 2 stacks") and Sanguine Thorn ("+25% ... max 25%,
   max 2 stacks") give 15% / 25% total; the "stacks" are only turns of duration (owner).

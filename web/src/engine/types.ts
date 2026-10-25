@@ -17,6 +17,8 @@ export const CATEGORIES = ['Character', 'Potential', 'Partner', 'Memory Fragment
 
 export type Scaling = 'ATK' | 'DEF' | 'Fixed'
 export type DamageKind = 'Normal' | 'Extra Attack' | 'DoT'
+export const CARD_TYPES = ['Attack', 'Skill', 'Upgrade'] as const
+export type CardType = (typeof CARD_TYPES)[number]
 export type HitScope = 'All hits' | 'First hit only'
 export type Condition = 'Always' | 'Ravaged only'
 /** Crit Chance / Crit DMG buffs add to the crit stats of matching cards only. */
@@ -181,6 +183,8 @@ export interface UserBuff {
 export interface Card {
   id: string
   name: string
+  /** Attack / Skill / Upgrade; matched by "Applies to" like a tag. */
+  cardType: CardType
   /** Comma-separated. */
   tags: string
   scaling: Scaling

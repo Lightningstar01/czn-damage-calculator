@@ -3,7 +3,7 @@ import { DndContext, KeyboardSensor, PointerSensor, TouchSensor, closestCenter, 
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useState } from 'react'
-import type { Card, DamageKind, Scaling } from '../engine/types'
+import { CARD_TYPES, type Card, type CardType, type DamageKind, type Scaling } from '../engine/types'
 import { newCard, newId } from '../store/save'
 import { useCharacter } from '../store/store'
 import { pct } from './format'
@@ -20,7 +20,7 @@ export function CardsTab() {
 
 function cardSummary(c: Card): string {
   const amount = c.scaling === 'Fixed' ? `${c.pct} fixed` : pct(c.pct, 2)
-  return `${amount} × ${c.hits} hit${c.hits === 1 ? '' : 's'}${c.scaling === 'DEF' ? ' · DEF' : ''}${c.kind !== 'Normal' ? ` · ${c.kind}` : ''}`
+  return `${c.cardType} · ${amount} × ${c.hits} hit${c.hits === 1 ? '' : 's'}${c.scaling === 'DEF' ? ' · DEF' : ''}${c.kind !== 'Normal' ? ` · ${c.kind}` : ''}`
 }
 
 function LibrarySection() {
@@ -49,7 +49,9 @@ function LibrarySection() {
               {open === c.id && (
                 <div className="editor grid2">
                   <TextField label="Name" value={c.name} onChange={(v) => upd((x) => { x.name = v })} />
-                  <TextField label="Tags" value={c.tags} placeholder="Basic Attack, Strike" help="Comma-separated. Buffs can target a tag." onChange={(v) => upd((x) => { x.tags = v })} />
+                  <TextField label="Tags" value={c.tags} placeholder="Basic Attack, Strike" help="Comma-separated, e.g. element, Exhaust, 1-cost. Buffs can target a tag." onChange={(v) => upd((x) => { x.tags = v })} />
+                  <SelectField<CardType> label="Card type" value={c.cardType} options={CARD_TYPES}
+                    help="Buffs can target it like a tag (e.g. 'Attack')." onChange={(v) => upd((x) => { x.cardType = v })} />
                   <NumberField label={c.scaling === 'Fixed' ? 'Damage per hit' : 'Damage % per hit'} pct={c.scaling !== 'Fixed'} value={c.pct}
                     onChange={(v) => upd((x) => { x.pct = v })} />
                   <NumberField label="Hits" value={c.hits} min={0} onChange={(v) => upd((x) => { x.hits = Math.floor(v) })} />

@@ -1,9 +1,9 @@
 // Saved data: defaults, versioning/migrations, browser storage, backup files.
 import { DEFAULT_SETTINGS } from '../data/settings'
-import { ELEMENTS, FRAGMENT_SET_PICKS, type Build, type Card, type CharacterSave, type SaveData, type ScreenStats, type UserBoost, type UserBuff } from '../engine/types'
+import { ELEMENTS, CARD_TYPES, FRAGMENT_SET_PICKS, type Build, type Card, type CharacterSave, type SaveData, type ScreenStats, type UserBoost, type UserBuff } from '../engine/types'
 
 /** Bump when the save format changes, and add a step to migrate(). */
-export const SAVE_VERSION = 2
+export const SAVE_VERSION = 3
 const STORAGE_KEY = 'czn-damage-calculator'
 
 export function newId(): string {
@@ -31,7 +31,7 @@ export function newCharacterSave(): CharacterSave {
 }
 
 export function newCard(): Card {
-  return { id: newId(), name: '', tags: '', scaling: 'ATK', kind: 'Normal', pct: 1, hits: 1, weaknessApplies: false, targetRavaged: false }
+  return { id: newId(), name: '', cardType: 'Attack', tags: '', scaling: 'ATK', kind: 'Normal', pct: 1, hits: 1, weaknessApplies: false, targetRavaged: false }
 }
 
 export function newBoost(buildId: string): UserBoost {
@@ -63,13 +63,25 @@ export function migrate(raw: unknown): SaveData {
   if (!raw || typeof raw !== 'object' || !('characters' in raw)) throw new Error("This file isn't a calculator save.")
   const data = raw as SaveData
   if ((data.version ?? 0) > SAVE_VERSION) throw new Error('This save is from a newer version of the calculator.')
-  // Future migrations go here: if (data.version === 2) { ...; data.version = 3 }
+  // Future migrations go here: if (data.version === 3) { ...; data.version = 4 }
   if ((data.version ?? 1) <= 1) {
     // v2: memory fragment set picks per build
     for (const cs of Object.values(data.characters ?? {})) {
       for (const b of cs.builds ?? []) b.fragments ??= Array(FRAGMENT_SET_PICKS).fill('')
     }
     data.version = 2
+  }
+  if (data.version === 2) {
+    // v3: card type dropdown. Take it from a matching tag (and drop that tag), else Attack.
+    for (const cs of Object.values(data.characters ?? {})) {
+      for (const c of cs.cards ?? []) {
+        const tags = (c.tags ?? '').split(',').map((t) => t.trim()).filter(Boolean)
+        const found = tags.find((t) => (CARD_TYPES as readonly string[]).includes(t))
+        c.cardType ??= (found as Card['cardType']) ?? 'Attack'
+        if (found) c.tags = tags.filter((t) => t !== found).join(', ')
+      }
+    }
+    data.version = 3
   }
   return {
     ...defaultSave(),

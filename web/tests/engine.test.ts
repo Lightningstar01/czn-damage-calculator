@@ -54,6 +54,7 @@ function mainScenario() {
   cs.buffs.push({ ...newBuff(b.id), source: 'Mult test', value: '30%', appliesTo: 'ALL' })
   cs.buffs.push({ ...newBuff(c.id), source: 'First hit', value: '+50%', appliesTo: 'Attack', hitScope: 'First hit only' })
   const test = card('Test', 'Attack', 3), two = card('Two', 'x', 2), weak = card('Weak', 'x', 1, true)
+  two.cardType = weak.cardType = 'Skill'   // only "Test" is an Attack, as in the Excel scenario
   cs.cards.push(test, two, weak)
   cs.rotation = [test.id, two.id, two.id, weak.id]
   const run = (i: number) => computeBuild(presets, '', cs, cs.builds[i], settings)
@@ -194,6 +195,22 @@ describe('applies to', () => {
     expect(m('Slash', exhaust)).toBe(true)
     expect(m('DoT', { ...exhaust, kind: 'DoT' })).toBe(true)
     expect(m('Counterattack/Extra Attack', { ...exhaust, kind: 'Extra Attack' })).toBe(true)
+  })
+
+  it('card type matches like a tag', () => {
+    const skill = { ...card('Guard', 'Order', 1), cardType: 'Skill' as const }
+    expect(m('Skill', skill)).toBe(true)
+    expect(m('Attack', skill)).toBe(false)
+    expect(m('Order & Skill', skill)).toBe(true)
+  })
+
+  it('migrate moves a type tag into the card type', () => {
+    const old = { version: 2, characters: { X: { builds: [], cards: [
+      { id: 'a', name: 'A', tags: 'Passion, Upgrade, 1-cost' }, { id: 'b', name: 'B', tags: 'Basic Attack' },
+    ] } } }
+    const [ca, cb] = migrate(old).characters.X.cards
+    expect(ca).toMatchObject({ cardType: 'Upgrade', tags: 'Passion, 1-cost' })
+    expect(cb).toMatchObject({ cardType: 'Attack', tags: 'Basic Attack' })
   })
 })
 
