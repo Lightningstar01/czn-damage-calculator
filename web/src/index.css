@@ -136,6 +136,7 @@ h2 { font-size: 1.05rem; margin: 0; display: flex; align-items: center; gap: 6px
 .type-additive { color: var(--g-add-t); }
 .type-multiplicative { color: var(--g-mult-t); }
 .type-weakness { color: var(--g-weak-t); }
+.type-crit { color: var(--g-crit-t, inherit); }
 .editor { padding: 10px 0 4px; }
 .editor .btn-row { grid-column: 1 / -1; }
 

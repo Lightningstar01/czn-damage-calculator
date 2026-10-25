@@ -71,6 +71,7 @@ export function FormulaStrip({ hit, card, showCrit = true }: { hit: Hit; card: C
   const { inner, outer } = chipsFor(hit, card)
   const all = [...inner, ...outer]
   const critChip: Chip = { key: 'crit', op: '×', group: 'crit', label: 'Crit DMG', value: pct(hit.critDmg),
+    sources: [...hit.critDmgSources, ...hit.critRateSources.map((s) => ({ ...s, label: `Crit Chance: ${s.label}` }))],
     note: `Crit hit = non-crit × Crit DMG. Expected uses ${pct(hit.critRate)} crit rate: × (1 + rate × (Crit DMG − 1)).` }
   const selected = [...all, critChip].find((c) => c.key === sel)
   const chip = (c: Chip) => (

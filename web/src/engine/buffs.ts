@@ -149,7 +149,7 @@ export function activeBuffs(presets: Presets, charName: string, cs: CharacterSav
   for (const s of presetStates(presets, charName, build)) {
     if (s.effect.kind !== 'Buff' || s.stacks <= 0) continue
     const e = s.effect as BuffEffect
-    out.push({ label: `${s.owner}: ${e.name}`, type: buffType(e.value), value: parseBuffValue(e.value),
+    out.push({ label: `${s.owner}: ${e.name}`, type: buffType(e.value, e.type), value: parseBuffValue(e.value),
       stacks: e.maxStacks ? Math.min(s.stacks, e.maxStacks) : s.stacks,
       appliesTo: e.appliesTo, hitScope: e.hitScope, condition: e.condition })
   }
@@ -163,13 +163,26 @@ export function activeBuffs(presets: Presets, charName: string, cs: CharacterSav
   return out
 }
 
-/** "Applies to" matches ALL, the exact card name, or one of the card's comma-separated tags (case-insensitive). */
+const norm = (s: string) => s.replace(/\s/g, '').toLowerCase()
+
+/** One "Applies to" word: ALL, the card name, a tag, the card kind (DoT / Extra Attack), 'N+ hits', or 'N+ cost' (vs tags like '2-cost'). */
+function termMatches(term: string, card: Card, tags: string[]): boolean {
+  if (term === 'all' || term === norm(card.name) || tags.includes(term)) return true
+  if (card.kind !== 'Normal' && term === norm(card.kind)) return true
+  const min = /^(\d+)\+(hits?|cost)$/.exec(term)
+  if (!min) return false
+  if (min[2] === 'cost') return tags.some((t) => { const c = /^(\d+)-cost$/.exec(t); return !!c && Number(c[1]) >= Number(min[1]) })
+  return card.hits >= Number(min[1])
+}
+
+/** "Applies to" (case-insensitive): words joined by '&' must all match; '/' between words means any of them. */
 export function buffMatches(buff: Pick<ActiveBuff, 'appliesTo' | 'condition'>, card: Card): boolean {
-  const target = buff.appliesTo.replace(/\s/g, '').toLowerCase()
+  const target = norm(buff.appliesTo)
   if (!target) return false
   if (buff.condition === 'Ravaged only' && !card.targetRavaged) return false
-  if (target === 'all' || target === card.name.replace(/\s/g, '').toLowerCase()) return true
-  return card.tags.split(',').some((t) => t.replace(/\s/g, '').toLowerCase() === target)
+  if (target === norm(card.name)) return true
+  const tags = card.tags.split(',').map(norm).filter(Boolean)
+  return target.split('&').every((all) => all.split('/').some((any) => termMatches(any, card, tags)))
 }
 
 export interface Bucket {
@@ -181,12 +194,16 @@ export interface CardBuffs {
   additive: { all: Bucket; first: Bucket }
   multiplicative: { all: Bucket; first: Bucket }
   weaknessAttack: Source[]
+  /** Crit Chance / Crit DMG buffs on this card only (fractions added to the final stat). */
+  critRate: { all: Bucket; first: Bucket }
+  critDmg: { all: Bucket; first: Bucket }
 }
 
 /** Sum the buffs that match a card into additive / multiplicative buckets (all hits vs first hit only). */
 export function cardBuffs(buffs: ActiveBuff[], card: Card): CardBuffs {
   const b = (): Bucket => ({ value: 0, sources: [] })
-  const out: CardBuffs = { additive: { all: b(), first: b() }, multiplicative: { all: b(), first: b() }, weaknessAttack: [] }
+  const out: CardBuffs = { additive: { all: b(), first: b() }, multiplicative: { all: b(), first: b() }, weaknessAttack: [],
+    critRate: { all: b(), first: b() }, critDmg: { all: b(), first: b() } }
   for (const buff of buffs) {
     if (!buffMatches(buff, card)) continue
     const label = buff.stacks !== 1 ? `${buff.label} x${buff.stacks}` : buff.label
@@ -195,7 +212,8 @@ export function cardBuffs(buffs: ActiveBuff[], card: Card): CardBuffs {
       continue
     }
     const v = buff.value * buff.stacks
-    const bucket = (buff.type === 'Additive' ? out.additive : out.multiplicative)[buff.hitScope === 'First hit only' ? 'first' : 'all']
+    const group = { Additive: out.additive, Multiplicative: out.multiplicative, 'Crit Chance': out.critRate, 'Crit DMG': out.critDmg }[buff.type]
+    const bucket = group[buff.hitScope === 'First hit only' ? 'first' : 'all']
     bucket.value += v
     bucket.sources.push({ label: buff.hitScope === 'First hit only' ? `${label} (first hit)` : label, value: v, unit: '%' })
   }

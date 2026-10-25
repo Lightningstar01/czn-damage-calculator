@@ -47,7 +47,7 @@ function MyBuffsSection() {
   const [open, setOpen] = useState<string | null>(null)
   const targets = ['ALL', ...new Set(cs.cards.flatMap((c) => [c.name, ...c.tags.split(',').map((t) => t.trim())]).values())].filter(Boolean)
   return (
-    <Section title="My buffs" help="Buffs from memory fragments, equipment, other characters, etc. Type the text as shown in-game: '+30%' is additive, '30%' (no +) is multiplicative, 'Weakness Attack' makes Weakness DMG apply."
+    <Section title="My buffs" help="Buffs from memory fragments, equipment, other characters, etc. Type the text as shown in-game: '+30%' is additive, '30%' (no +) is multiplicative, 'Weakness Attack' makes Weakness DMG apply. For crit bonuses that only some cards get, pick Crit Chance / Crit DMG as the type."
       actions={<button className="btn small" onClick={() => {
         const b = newBuff(build.id)
         updateCs((c) => { c.buffs.push(b) })
@@ -77,9 +77,9 @@ function MyBuffsSection() {
                   <TextField label="Source" value={x.source} placeholder="e.g. Seth's Scarab" onChange={(s) => upd((b) => { b.source = s })} />
                   <TextField label="Buff text" value={x.value} placeholder="+30% or 30%" onChange={(s) => upd((b) => { b.value = s })} />
                   <SelectField<BuffType | ''> label="Type" value={x.typeOverride}
-                    options={[{ value: '', label: `Auto (${buffType(x.value)})` }, 'Additive', 'Multiplicative', 'Weakness Attack']}
+                    options={[{ value: '', label: `Auto (${buffType(x.value)})` }, 'Additive', 'Multiplicative', 'Weakness Attack', 'Crit Chance', 'Crit DMG']}
                     onChange={(s) => upd((b) => { b.typeOverride = s })} />
-                  <TextField label="Applies to" value={x.appliesTo} list={targets} help="ALL, a card name, or one card tag."
+                  <TextField label="Applies to" value={x.appliesTo} list={targets} help="ALL, a card name, or card tags. 'A & B' = all of them, 'A/B' = any of them. Also '2+ hits', '2+ cost' (vs tags like 1-cost), DoT, Extra Attack."
                     onChange={(s) => upd((b) => { b.appliesTo = s })} />
                   <SelectField<HitScope> label="Hit scope" value={x.hitScope} options={['All hits', 'First hit only']} onChange={(s) => upd((b) => { b.hitScope = s })} />
                   <SelectField<Condition> label="Condition" value={x.condition} options={['Always', 'Ravaged only']} onChange={(s) => upd((b) => { b.condition = s })} />

@@ -133,6 +133,7 @@ Template (build columns E/F/G = Builds A/B/C in the top sections):
 | 153–452 | Hit breakdown: B card, C card #, D play #, E hit #; per build F–I / J–M / N–Q (card mult, non-crit, crit, expected) |
 
 "Applies to" matches ALL, an exact card name, or one tag in the card's comma-separated Tags.
+Website only: "Applies to" also takes `A & B` (all), `A/B` (any), `N+ hits`, `N+ cost` (vs tags like `2-cost`) and card kinds `DoT` / `Extra Attack`; buff types Crit Chance / Crit DMG add to the crit stats of matching cards only.
 
 ## Status / backlog
 

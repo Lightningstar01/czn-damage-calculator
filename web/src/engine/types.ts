@@ -19,7 +19,8 @@ export type Scaling = 'ATK' | 'DEF' | 'Fixed'
 export type DamageKind = 'Normal' | 'Extra Attack' | 'DoT'
 export type HitScope = 'All hits' | 'First hit only'
 export type Condition = 'Always' | 'Ravaged only'
-export type BuffType = 'Additive' | 'Multiplicative' | 'Weakness Attack'
+/** Crit Chance / Crit DMG buffs add to the crit stats of matching cards only. */
+export type BuffType = 'Additive' | 'Multiplicative' | 'Weakness Attack' | 'Crit Chance' | 'Crit DMG'
 export type MultMode = 'Summed' | 'Chained'
 
 /** On/off switch, or a number of stacks. true = on with the effect's default stacks. */
@@ -50,7 +51,9 @@ export interface BuffEffect {
   category: string
   /** Buff text as shown in-game: '+30%' = Additive, '30%' = Multiplicative, or 'Weakness Attack'. */
   value: string
-  /** ALL, an exact card name, or one tag. */
+  /** Set for Crit Chance / Crit DMG buffs; otherwise the type comes from the value text. */
+  type?: BuffType
+  /** ALL, a card name, or tags: 'A & B' = all of them, 'A/B' = any of them; also '2+ hits', '2+ cost', DoT, Extra Attack. */
   appliesTo: string
   hitScope: HitScope
   condition: Condition

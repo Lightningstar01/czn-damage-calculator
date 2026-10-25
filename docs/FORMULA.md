@@ -86,6 +86,17 @@ multiplier; this conflicts with Game8 and the owner, and was rejected.
   are added like partner buffs, with a switch per build.
 - The website has three set dropdowns per build; it warns past 6 pieces, and a set picked twice
   counts once. **Unconfirmed:** whether two copies of a 2-piece set stack (treated as no).
+- Set texts are from Prydwen, supplied by the owner. "Damage Amount by X%" follows the "+" rule
+  literally (owner): no "+" = multiplicative, "+X%" = additive.
+- **Per-card crit (website):** buffs of type "Crit Chance" / "Crit DMG" add to the final crit stats
+  of matching cards only (Crit DMG stays a total multiplier: +35% makes 188.6% into 223.6%). The crit
+  cap applies after them.
+- **Matching (website):** "Applies to" accepts `A & B` (all must match) and `A/B` (any one), plus
+  `N+ hits` (from the card's hit count), `N+ cost` (vs tags like `2-cost`), and the card kind
+  (`DoT`, `Extra Attack`). Cards need tags for element, Attack, Exhaust, cost, etc.
+- Triggered set buffs default to on at max stacks (owner); switch off or lower them per build.
+- **Unconfirmed:** Prelude to a Hero ("+15% ... max 15%, max 2 stacks") and Sanguine Thorn
+  ("+25% ... max 25%, max 2 stacks") are counted as the max total (15% / 25%), one stack.
 
 ## 3. Damage — Sourced (Prydwen)
 

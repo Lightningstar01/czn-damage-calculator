@@ -18,7 +18,7 @@ export function PresetList({ kind }: { kind: 'Stat' | 'Buff' }) {
         const sw = build.presetSwitches[key]
         const detail = e.kind === 'Stat'
           ? `${e.stat} ${e.value}`
-          : `${e.value} · ${e.appliesTo}${e.hitScope === 'First hit only' ? ' · first hit' : ''}${e.condition === 'Ravaged only' ? ' · Ravaged only' : ''}`
+          : `${e.value}${e.type ? ` ${e.type}` : ''} · ${e.appliesTo}${e.hitScope === 'First hit only' ? ' · first hit' : ''}${e.condition === 'Ravaged only' ? ' · Ravaged only' : ''}`
         return (
           <li key={key} className={`row ${s.stacks > 0 ? '' : 'off'}`}>
             <div className="row-main">

@@ -8,7 +8,7 @@
 // Partner scenarios: Mei Lin (Striker) with Marianne (Striker partner), ATK 1000, no crit.
 import { describe, expect, it } from 'vitest'
 import { computeBuild, type BuildResult } from '../src/engine/calc'
-import { buffType, fragmentPiecesUsed, parseBuffValue, parseStatValue } from '../src/engine/buffs'
+import { buffMatches, buffType, fragmentPiecesUsed, parseBuffValue, parseStatValue } from '../src/engine/buffs'
 import { PRESETS } from '../src/data/presets'
 import { DEFAULT_SETTINGS } from '../src/data/settings'
 import { newBuff, newBuild, newCard, newCharacterSave, migrate, defaultSave, SAVE_VERSION } from '../src/store/save'
@@ -177,6 +177,56 @@ describe('memory fragment sets', () => {
   it('migrate adds empty set picks to old saves', () => {
     const old = { version: 1, characters: { X: { builds: [{ id: 'b' }] } } }
     expect(migrate(old).characters.X.builds[0].fragments).toEqual(['', '', ''])
+  })
+})
+
+describe('applies to', () => {
+  const m = (appliesTo: string, c: Card) => buffMatches({ appliesTo, condition: 'Always' }, c)
+  const exhaust = { ...card('Slash', 'Order, Exhaust, Attack, 2-cost', 3) }
+  it('AND, OR, hits, cost and card kind', () => {
+    expect(m('Justice/Order & Exhaust & Attack', exhaust)).toBe(true)
+    expect(m('Justice & Exhaust', exhaust)).toBe(false)
+    expect(m('Void/Order & 2+ hits', exhaust)).toBe(true)
+    expect(m('4+ hits', exhaust)).toBe(false)
+    expect(m('2+ cost', exhaust)).toBe(true)
+    expect(m('3+ cost', exhaust)).toBe(false)
+    expect(m('1-cost', exhaust)).toBe(false)
+    expect(m('Slash', exhaust)).toBe(true)
+    expect(m('DoT', { ...exhaust, kind: 'DoT' })).toBe(true)
+    expect(m('Counterattack/Extra Attack', { ...exhaust, kind: 'Extra Attack' })).toBe(true)
+  })
+})
+
+describe('per-card crit buffs', () => {
+  it('add to Crit DMG / Crit Chance of matching cards only, capped', () => {
+    const cs = newCharacterSave()
+    const [a] = cs.builds
+    a.stats.attack = 1000
+    a.stats.critChance = 0.9
+    a.stats.critDmg = 1.5
+    cs.buffs.push({ ...newBuff(a.id), value: '+35%', typeOverride: 'Crit DMG', appliesTo: '1-cost' })
+    cs.buffs.push({ ...newBuff(a.id), value: '+20%', typeOverride: 'Crit Chance', appliesTo: '1-cost' })
+    const one = card('One', '1-cost', 1), two = card('Two', '2-cost', 1)
+    cs.cards.push(one, two)
+    cs.rotation = [one.id, two.id]
+    const r = computeBuild(presets, '', cs, a, settings)
+    expect(r.plays[0].hits[0].critDmg).toBeCloseTo(1.85)
+    expect(r.plays[0].hits[0].critRate).toBeCloseTo(1)
+    expect(r.plays[0].crit).toBeCloseTo(350 * 1.85)
+    expect(r.plays[0].hits[0].cardMult).toBeCloseTo(1)
+    expect(r.plays[1].hits[0].critDmg).toBeCloseTo(1.5)
+    expect(r.plays[1].hits[0].critRate).toBeCloseTo(0.9)
+  })
+})
+
+describe('real fragment set presets', () => {
+  it('names and effect ids are unique, pieces are 2 or 4', () => {
+    const names = PRESETS.fragmentSets.map((f) => f.name)
+    expect(new Set(names).size).toBe(names.length)
+    for (const f of PRESETS.fragmentSets) {
+      expect([2, 4]).toContain(f.pieces)
+      expect(new Set(f.effects.map((e) => e.id)).size).toBe(f.effects.length)
+    }
   })
 })
 

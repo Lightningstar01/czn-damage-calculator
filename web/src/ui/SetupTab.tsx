@@ -107,6 +107,8 @@ function FragmentSection() {
         {used > FRAGMENT_SLOTS && <span className="warn"> · Too many pieces for {FRAGMENT_SLOTS} slots</span>}
         {dupe && <span className="warn"> · {dupe} is picked twice (its effects count once)</span>}
       </p>
+      {picks.map((n) => findFragmentSet(PRESETS, n)).filter((f, i, all) => f?.notes && all.indexOf(f) === i)
+        .map((f) => <p key={f!.name} className="muted">{f!.name}: {f!.notes}</p>)}
     </Section>
   )
 }

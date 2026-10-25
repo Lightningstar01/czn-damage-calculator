@@ -45,6 +45,9 @@ export interface Hit {
   enemyDef: Factor | null
   critDmg: number
   critRate: number
+  /** Final Crit DMG / Crit Chance plus this card's crit buffs. */
+  critDmgSources: Source[]
+  critRateSources: Source[]
   nonCrit: number
   crit: number
   expected: number
@@ -179,8 +182,15 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
   const enemyDef = build.enemyDefMult !== 1
     ? { value: build.enemyDefMult, sources: [{ label: 'Enemy DEF multiplier', value: build.enemyDefMult, unit: 'x' as const }] }
     : null
-  const critDmg = stats.critDmg.value
-  const critRate = stats.critRate.value
+  const critBuffs = (b: typeof cb.critDmg) => [...b.all.sources, ...(first ? b.first.sources : [])]
+  const critDmgSources = [...stats.critDmg.sources, ...critBuffs(cb.critDmg)]
+  const critDmg = stats.critDmg.value + critBuffs(cb.critDmg).reduce((a, s) => a + s.value, 0)
+  const critRateSources = [...stats.critRate.sources, ...critBuffs(cb.critRate)]
+  let critRate = stats.critRate.value + critBuffs(cb.critRate).reduce((a, s) => a + s.value, 0)
+  if (critRate > settings.critCap) {
+    if (!critRateSources.some((s) => s.label === 'Capped (Settings)')) critRateSources.push({ label: 'Capped (Settings)', value: settings.critCap, unit: '%' })
+    critRate = settings.critCap
+  }
 
   let nonCrit: number, crit: number, expected: number
   if (card.scaling === 'Fixed') {
@@ -193,7 +203,7 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
   return {
     globalHit: k, hitNo, cardPct: card.pct, multFactor: { value: multValue, sources: multSources }, additive,
     weakness, vulnerable, enemyDr, weaknessDebuff, ravaged, cardMult, stat, constant: settings.atkConstant,
-    elemDmg, mechDmg, enemyDef, critDmg, critRate, nonCrit, crit, expected,
+    elemDmg, mechDmg, enemyDef, critDmg, critRate, critDmgSources, critRateSources, nonCrit, crit, expected,
   }
 }
 
