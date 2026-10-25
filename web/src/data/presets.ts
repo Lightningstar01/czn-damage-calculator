@@ -152,7 +152,7 @@ export const PRESETS: Presets = {
         {
           kind: 'Buff', id: 'crit', name: 'Crit Chance', category: 'Memory Fragment', type: 'Crit Chance', value: '+15%',
           appliesTo: 'ALL', hitScope: 'All hits', condition: 'Always', maxStacks: 1, defaultStacks: 1,
-          notes: "For 1 turn after this unit's Passion or Void Attack card is Discarded. Text says max 15% and max 2 stacks: counted as 15% total (Unconfirmed)",
+          notes: "For 1 turn after this unit's Passion or Void Attack card is Discarded. Max 15% total; the 2 stacks are only turns of duration (owner)",
         },
       ],
     },
@@ -161,7 +161,7 @@ export const PRESETS: Presets = {
         {
           kind: 'Buff', id: 'fracture', name: 'Crit DMG after Fracture', category: 'Memory Fragment', type: 'Crit DMG', value: '+25%',
           appliesTo: 'ALL', hitScope: 'All hits', condition: 'Always', maxStacks: 1, defaultStacks: 1,
-          notes: 'For 1 turn after a card applies Fracture. Text says max 25% and max 2 stacks: counted as 25% total (Unconfirmed)',
+          notes: 'For 1 turn after a card applies Fracture. Max 25% total; the 2 stacks are only turns of duration (owner)',
         },
         {
           kind: 'Buff', id: 'dot', name: 'DoT Crit DMG', category: 'Memory Fragment', type: 'Crit DMG', value: '+15%',
