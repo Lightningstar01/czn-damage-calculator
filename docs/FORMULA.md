@@ -77,6 +77,16 @@ multiplier; this conflicts with Game8 and the owner, and was rejected.
   matching cards, as if the card's "Weakness DMG applies?" were Yes. It ignores hit scope
   (all hits). **Unconfirmed:** whether it also applies to non-active damage.
 
+## 2b. Memory fragment sets — User (2026-10-25), website only
+
+- 6 fragment slots per character. A set is **either** a 2-piece set **or** a 4-piece set (one
+  bonus, never both), so a build has three 2-piece sets, or one 4-piece and one 2-piece set.
+- Set **stat** bonuses are already on the stats screen, so presets mark them `onStatsScreen`
+  and they are listed for reference only (not added again). Set **buffs** (damage, conditional)
+  are added like partner buffs, with a switch per build.
+- The website has three set dropdowns per build; it warns past 6 pieces, and a set picked twice
+  counts once. **Unconfirmed:** whether two copies of a 2-piece set stack (treated as no).
+
 ## 3. Damage — Sourced (Prydwen)
 
 ```

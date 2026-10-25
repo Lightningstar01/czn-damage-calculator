@@ -1,4 +1,4 @@
-// The character's and partner's preset effects for the active build, as switches.
+// The character's, partner's and memory fragment sets' preset effects for the active build, as switches.
 import { PRESETS } from '../data/presets'
 import { findCharacter, findPartner, presetKey, presetStates } from '../engine/buffs'
 import { useCharacter } from '../store/store'
@@ -7,7 +7,7 @@ import { SwitchControl } from './inputs'
 export function PresetList({ kind }: { kind: 'Stat' | 'Buff' }) {
   const { name, build, updateBuild } = useCharacter()!
   const states = presetStates(PRESETS, name, build).filter((s) => s.effect.kind === kind)
-  if (!states.length) return <p className="muted">No {kind === 'Stat' ? 'stat' : 'buff'} presets for this character{build.partner ? ' or partner' : ''}.</p>
+  if (!states.length) return <p className="muted">No {kind === 'Stat' ? 'stat' : 'buff'} presets for this character, partner or fragment sets.</p>
   const ch = findCharacter(PRESETS, name)
   const partner = findPartner(PRESETS, build.partner)
   return (
@@ -27,11 +27,12 @@ export function PresetList({ kind }: { kind: 'Stat' | 'Buff' }) {
               {s.classBlocked && (
                 <div className="row-warn">Class-limited: {partner?.name} is {partner?.class}, {ch?.name} is {ch?.class}</div>
               )}
+              {s.onStatsScreen && <div className="row-note">Already on the stats screen: not added again</div>}
               {e.notes && <div className="row-note">{e.notes}</div>}
             </div>
-            <SwitchControl label={e.name} value={sw === undefined ? true : sw} disabled={s.classBlocked}
+            {!s.onStatsScreen && <SwitchControl label={e.name} value={sw === undefined ? true : sw} disabled={s.classBlocked}
               defaultStacks={e.defaultStacks} maxStacks={e.kind === 'Buff' ? e.maxStacks : undefined}
-              onChange={(v) => updateBuild((b) => { b.presetSwitches[key] = v })} />
+              onChange={(v) => updateBuild((b) => { b.presetSwitches[key] = v })} />}
           </li>
         )
       })}

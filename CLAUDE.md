@@ -28,7 +28,7 @@ owner asks (there is no git remote yet).
 - `src/engine/` is the math with no UI code: `types.ts` (presets, settings, save format), `buffs.ts`
   (value parsing, preset switches, class limits, buff matching), `calc.ts` (final stats, then each
   hit of each rotation play; every factor carries its sources for the formula strip).
-- `src/data/presets.ts`: characters, partners and their effects. The owner and Claude edit this
+- `src/data/presets.ts`: characters, partners, memory fragment sets and their effects. The owner and Claude edit this
   file; there is no in-app preset editor. Effect ids must be unique per owner, because saved
   switches are keyed `"Owner|effectId"`. Renaming an id resets that switch.
 - `src/data/settings.ts`: formula constants and rules (defaults + notes); edited on the Settings tab.
@@ -38,7 +38,7 @@ owner asks (there is no git remote yet).
 - `src/ui/`: tabs Setup, Buffs, Cards (library + ordered rotation), Results (color-coded formula
   strip per play, tap for hits), Settings (rules, backup). At 1000px or wider, Results sits beside
   the other tabs.
-- Saves are per character: builds, boosts, buffs, cards and rotation. Every build shares the cards
+- Saves are per character: builds (partner, 3 fragment set picks, stats...), boosts, buffs, cards and rotation. Every build shares the cards
   and rotation. Preset switches that are missing count as on; own boost/buff switches that are
   missing count as off.
 - Constants and rules belong in settings, never hard-coded in the engine.

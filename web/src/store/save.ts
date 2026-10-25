@@ -1,9 +1,9 @@
 // Saved data: defaults, versioning/migrations, browser storage, backup files.
 import { DEFAULT_SETTINGS } from '../data/settings'
-import { ELEMENTS, type Build, type Card, type CharacterSave, type SaveData, type ScreenStats, type UserBoost, type UserBuff } from '../engine/types'
+import { ELEMENTS, FRAGMENT_SET_PICKS, type Build, type Card, type CharacterSave, type SaveData, type ScreenStats, type UserBoost, type UserBuff } from '../engine/types'
 
 /** Bump when the save format changes, and add a step to migrate(). */
-export const SAVE_VERSION = 1
+export const SAVE_VERSION = 2
 const STORAGE_KEY = 'czn-damage-calculator'
 
 export function newId(): string {
@@ -20,7 +20,7 @@ export function newStats(): ScreenStats {
 
 export function newBuild(name: string): Build {
   return {
-    id: newId(), name, partner: '', stats: newStats(), enemyDefMult: 1, enemyDr: 0,
+    id: newId(), name, partner: '', fragments: Array(FRAGMENT_SET_PICKS).fill(''), stats: newStats(), enemyDefMult: 1, enemyDr: 0,
     morale: 0, vulnerable: 0, weaknessDebuff: 0, presetSwitches: {},
   }
 }
@@ -63,7 +63,14 @@ export function migrate(raw: unknown): SaveData {
   if (!raw || typeof raw !== 'object' || !('characters' in raw)) throw new Error("This file isn't a calculator save.")
   const data = raw as SaveData
   if ((data.version ?? 0) > SAVE_VERSION) throw new Error('This save is from a newer version of the calculator.')
-  // version 1 is the first format; future migrations go here: if (data.version === 1) { ...; data.version = 2 }
+  // Future migrations go here: if (data.version === 2) { ...; data.version = 3 }
+  if ((data.version ?? 1) <= 1) {
+    // v2: memory fragment set picks per build
+    for (const cs of Object.values(data.characters ?? {})) {
+      for (const b of cs.builds ?? []) b.fragments ??= Array(FRAGMENT_SET_PICKS).fill('')
+    }
+    data.version = 2
+  }
   return {
     ...defaultSave(),
     ...data,

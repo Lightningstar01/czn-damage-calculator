@@ -1,6 +1,6 @@
 // Which stat boosts and buffs are active for a build, and which buffs match a card.
 import type {
-  BuffEffect, BuffType, Build, Card, CharacterPreset, CharacterSave, Condition, Effect, HitScope, PartnerPreset,
+  BuffEffect, BuffType, Build, Card, CharacterPreset, CharacterSave, Condition, Effect, FragmentSetPreset, HitScope, PartnerPreset,
   Presets, Settings, StatEffect, StatName, Switch,
 } from './types'
 
@@ -63,10 +63,12 @@ export interface ActiveBuff {
 /** Why a preset effect is (in)active for a build — shown greyed out in the UI. */
 export interface PresetState {
   owner: string
-  ownerKind: 'Character' | 'Partner'
+  ownerKind: 'Character' | 'Partner' | 'Memory Fragment'
   effect: Effect
   /** Class-limited partner effect with a class mismatch. */
   classBlocked: boolean
+  /** Stat already on the stats screen: shown for reference, not added. */
+  onStatsScreen: boolean
   stacks: number
 }
 
@@ -78,12 +80,27 @@ export function findPartner(presets: Presets, name: string): PartnerPreset | und
   return presets.partners.find((p) => p.name === name)
 }
 
+export function findFragmentSet(presets: Presets, name: string): FragmentSetPreset | undefined {
+  return presets.fragmentSets.find((f) => f.name === name)
+}
+
+/** The build's distinct memory fragment sets (a set picked twice counts once). */
+export function buildFragmentSets(presets: Presets, build: Build): FragmentSetPreset[] {
+  const names = [...new Set((build.fragments ?? []).filter(Boolean))]
+  return names.map((n) => findFragmentSet(presets, n)).filter((f): f is FragmentSetPreset => !!f)
+}
+
+/** Fragment pieces the build's picked sets use (every pick counts, so a set picked twice is over-counted on purpose). */
+export function fragmentPiecesUsed(presets: Presets, build: Build): number {
+  return (build.fragments ?? []).reduce((n, name) => n + (findFragmentSet(presets, name)?.pieces ?? 0), 0)
+}
+
 /** Key of a preset effect in Build.presetSwitches. */
 export function presetKey(owner: string, effect: Effect): string {
   return `${owner}|${effect.id}`
 }
 
-/** The preset effects of the build's character and partner, with their switch state. */
+/** The preset effects of the build's character, partner and memory fragment sets, with their switch state. */
 export function presetStates(presets: Presets, charName: string, build: Build): PresetState[] {
   const out: PresetState[] = []
   const ch = findCharacter(presets, charName)
@@ -91,13 +108,15 @@ export function presetStates(presets: Presets, charName: string, build: Build): 
     for (const e of effects) {
       const sw = build.presetSwitches[presetKey(owner, e)]
       const classBlocked = blocked(e)
-      const stacks = classBlocked ? 0 : switchStacks(sw === undefined ? true : sw, e.defaultStacks)
-      out.push({ owner, ownerKind, effect: e, classBlocked, stacks })
+      const onStatsScreen = e.kind === 'Stat' && !!e.onStatsScreen
+      const stacks = classBlocked || onStatsScreen ? 0 : switchStacks(sw === undefined ? true : sw, e.defaultStacks)
+      out.push({ owner, ownerKind, effect: e, classBlocked, onStatsScreen, stacks })
     }
   }
   if (ch) add(ch.name, 'Character', ch.effects, () => false)
   const p = build.partner ? findPartner(presets, build.partner) : undefined
   if (p) add(p.name, 'Partner', p.effects, (e) => !!e.classLimited && p.class !== ch?.class)
+  for (const f of buildFragmentSets(presets, build)) add(f.name, 'Memory Fragment', f.effects, () => false)
   return out
 }
 

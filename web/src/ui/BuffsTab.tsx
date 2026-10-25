@@ -12,7 +12,7 @@ export function BuffsTab() {
   return (
     <>
       <StacksSection />
-      <Section title="Buffs from presets" help="The character's and partner's buffs. Class-limited partner buffs only work when the partner's class matches the character's.">
+      <Section title="Buffs from presets" help="The character's, partner's and memory fragment sets' buffs. Class-limited partner buffs only work when the partner's class matches the character's.">
         <PresetList kind="Buff" />
       </Section>
       <MyBuffsSection />

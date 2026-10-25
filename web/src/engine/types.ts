@@ -38,6 +38,8 @@ export interface StatEffect {
   defaultStacks?: number
   /** Partner effect that only works when the partner's class matches the character's. */
   classLimited?: boolean
+  /** Already counted on the stats screen (e.g. memory fragment set stats): listed for reference, never added. */
+  onStatsScreen?: boolean
   notes?: string
 }
 
@@ -79,10 +81,23 @@ export interface PartnerPreset {
   effects: Effect[]
 }
 
+/** A memory fragment set: a 2-piece or a 4-piece set (one size only). 6 fragment slots per character. */
+export interface FragmentSetPreset {
+  name: string
+  pieces: 2 | 4
+  notes?: string
+  effects: Effect[]
+}
+
 export interface Presets {
   characters: CharacterPreset[]
   partners: PartnerPreset[]
+  fragmentSets: FragmentSetPreset[]
 }
+
+/** Memory fragment slots on a character; the set dropdowns per build. */
+export const FRAGMENT_SLOTS = 6
+export const FRAGMENT_SET_PICKS = 3
 
 // ---------------------------------------------------------------- settings
 
@@ -122,6 +137,8 @@ export interface Build {
   id: string
   name: string
   partner: string
+  /** Memory fragment set names, one per dropdown ('' = none). */
+  fragments: string[]
   stats: ScreenStats
   enemyDefMult: number
   enemyDr: number

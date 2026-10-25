@@ -31,4 +31,7 @@ export const PRESETS: Presets = {
       ],
     },
   ],
+  // Memory fragment sets: pieces 2 or 4 (a set is one size only). Stat bonuses are already on the stats
+  // screen, so mark them onStatsScreen: true (listed for reference, not added again). Category 'Memory Fragment'.
+  fragmentSets: [],
 }

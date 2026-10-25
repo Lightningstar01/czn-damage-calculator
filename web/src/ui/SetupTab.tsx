@@ -1,8 +1,8 @@
-// Setup: build management, partner, stats-screen values, stat boosts, enemy.
+// Setup: build management, partner, memory fragment sets, stats-screen values, stat boosts, enemy.
 import { useState } from 'react'
 import { PRESETS } from '../data/presets'
-import { findCharacter, findPartner, parseStatValue } from '../engine/buffs'
-import { CATEGORIES, STATS, type ScreenStats, type StatName } from '../engine/types'
+import { findCharacter, findFragmentSet, findPartner, fragmentPiecesUsed, parseStatValue } from '../engine/buffs'
+import { CATEGORIES, FRAGMENT_SET_PICKS, FRAGMENT_SLOTS, STATS, type ScreenStats, type StatName } from '../engine/types'
 import { duplicateBuild, newBoost } from '../store/save'
 import { useCharacter } from '../store/store'
 import { pct } from './format'
@@ -14,8 +14,9 @@ export function SetupTab() {
     <>
       <BuildSection />
       <PartnerSection />
+      <FragmentSection />
       <StatsSection />
-      <Section title="Stat boosts from presets" help="The character's and partner's stat effects. Switch them off per build to test without them.">
+      <Section title="Stat boosts from presets" help="The character's, partner's and memory fragment sets' stat effects. Switch them off per build to test without them. Fragment set stats are already on the stats screen, so they are listed for reference only.">
         <PresetList kind="Stat" />
       </Section>
       <BoostsSection />
@@ -77,6 +78,35 @@ function PartnerSection() {
           {ch && p.class !== ch.class && <span className="warn"> · Class mismatch: class-limited effects are off</span>}
         </p>
       )}
+    </Section>
+  )
+}
+
+function FragmentSection() {
+  const { build, updateBuild } = useCharacter()!
+  const picks = Array.from({ length: FRAGMENT_SET_PICKS }, (_, i) => build.fragments?.[i] ?? '')
+  const used = fragmentPiecesUsed(PRESETS, build)
+  const dupe = picks.find((n, i) => n && picks.indexOf(n) !== i)
+  const sets = [...PRESETS.fragmentSets].sort((a, b) => a.pieces - b.pieces || a.name.localeCompare(b.name))
+  const options = [{ value: '', label: 'None' }, ...sets.map((f) => ({ value: f.name, label: `${f.name} (${f.pieces}-piece)` }))]
+  return (
+    <Section title="Memory fragment sets" help={`${FRAGMENT_SLOTS} fragment slots: three 2-piece sets, or one 4-piece and one 2-piece set. Set effects appear in the stat and buff lists with a switch per build.`}>
+      {!sets.length && <p className="muted">No fragment sets in the presets yet.</p>}
+      <div className="grid2">
+        {picks.map((v, i) => (
+          <SelectField key={i} label={`Set ${i + 1}`} value={v}
+            options={[...options, ...(v && !findFragmentSet(PRESETS, v) ? [{ value: v, label: `${v} (not in presets)` }] : [])]}
+            onChange={(name) => updateBuild((b) => {
+              b.fragments = [...picks]
+              b.fragments[i] = name
+            })} />
+        ))}
+      </div>
+      <p className="muted">
+        Pieces used: {used} / {FRAGMENT_SLOTS}
+        {used > FRAGMENT_SLOTS && <span className="warn"> · Too many pieces for {FRAGMENT_SLOTS} slots</span>}
+        {dupe && <span className="warn"> · {dupe} is picked twice (its effects count once)</span>}
+      </p>
     </Section>
   )
 }

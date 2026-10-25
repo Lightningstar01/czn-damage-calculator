@@ -8,15 +8,25 @@
 // Partner scenarios: Mei Lin (Striker) with Marianne (Striker partner), ATK 1000, no crit.
 import { describe, expect, it } from 'vitest'
 import { computeBuild, type BuildResult } from '../src/engine/calc'
-import { buffType, parseBuffValue, parseStatValue } from '../src/engine/buffs'
+import { buffType, fragmentPiecesUsed, parseBuffValue, parseStatValue } from '../src/engine/buffs'
 import { PRESETS } from '../src/data/presets'
 import { DEFAULT_SETTINGS } from '../src/data/settings'
-import { newBuff, newBuild, newCard, newCharacterSave, migrate, defaultSave } from '../src/store/save'
+import { newBuff, newBuild, newCard, newCharacterSave, migrate, defaultSave, SAVE_VERSION } from '../src/store/save'
 import type { Card, CharacterSave, Presets } from '../src/engine/types'
 
 const presets: Presets = {
   characters: [...PRESETS.characters, { name: 'Testy', element: 'Order', class: 'Vanguard', effects: [] }],
   partners: PRESETS.partners,
+  // Made-up sets for the tests (the real ones live in src/data/presets.ts)
+  fragmentSets: [
+    { name: 'Test Four', pieces: 4, effects: [
+      { kind: 'Stat', id: 'atk', name: 'Attack', category: 'Memory Fragment', stat: 'ATK%', value: '20%', onStatsScreen: true },
+      { kind: 'Buff', id: 'dmg', name: 'Damage', category: 'Memory Fragment', value: '+30%', appliesTo: 'ALL', hitScope: 'All hits', condition: 'Always' },
+    ] },
+    { name: 'Test Two', pieces: 2, effects: [
+      { kind: 'Stat', id: 'crit', name: 'Crit DMG', category: 'Memory Fragment', stat: 'Crit DMG', value: '10%', onStatsScreen: true },
+    ] },
+  ],
 }
 const settings = DEFAULT_SETTINGS
 
@@ -137,6 +147,39 @@ describe('partner presets', () => {
   })
 })
 
+describe('memory fragment sets', () => {
+  const cs = newCharacterSave()
+  const [a] = cs.builds
+  const b = newBuild('Build B'), c = newBuild('Build C')
+  cs.builds.push(b, c)
+  for (const x of cs.builds) x.stats.attack = 1000
+  a.fragments = ['Test Four', 'Test Two', '']
+  b.fragments = ['Test Four', '', '']
+  b.presetSwitches['Test Four|dmg'] = false
+  c.fragments = ['Test Four', 'Test Four', 'Test Two']
+  const x = card('X', '', 1)
+  cs.cards.push(x)
+  cs.rotation = [x.id]
+  const [A, B, C] = cs.builds.map((bd) => computeBuild(presets, 'Mei Lin', cs, bd, settings))
+
+  it('set buffs apply; set stats are already on the stats screen', () => {
+    expect(A.stats.atk.value).toBe(1000)
+    expect(A.plays[0].hits[0].cardMult).toBeCloseTo(1.3)
+    expect(B.plays[0].hits[0].cardMult).toBeCloseTo(1)
+  })
+
+  it('a set picked twice counts once; pieces are counted per pick', () => {
+    expect(C.plays[0].hits[0].cardMult).toBeCloseTo(1.3)
+    expect(fragmentPiecesUsed(presets, a)).toBe(6)
+    expect(fragmentPiecesUsed(presets, c)).toBe(10)
+  })
+
+  it('migrate adds empty set picks to old saves', () => {
+    const old = { version: 1, characters: { X: { builds: [{ id: 'b' }] } } }
+    expect(migrate(old).characters.X.builds[0].fragments).toEqual(['', '', ''])
+  })
+})
+
 describe('parsing', () => {
   it('values and buff types', () => {
     expect(parseStatValue('16%')).toBeCloseTo(0.16)
@@ -166,6 +209,6 @@ describe('parsing', () => {
   it('migrate fills missing settings and rejects other files', () => {
     expect(migrate({ characters: {}, settings: {} }).settings.atkConstant).toBe(0.35)
     expect(() => migrate({ foo: 1 })).toThrow()
-    expect(migrate(defaultSave()).version).toBe(1)
+    expect(migrate(defaultSave()).version).toBe(SAVE_VERSION)
   })
 })
