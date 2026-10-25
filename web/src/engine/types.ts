@@ -1,0 +1,191 @@
+// Data types shared by the engine, the presets and the saved data.
+// Percentages are stored as fractions (0.2 = 20%).
+
+export const ELEMENTS = ['Passion', 'Justice', 'Order', 'Instinct', 'Void'] as const
+export type Element = (typeof ELEMENTS)[number]
+
+export const CLASSES = ['Striker', 'Psionic', 'Hunter', 'Controller', 'Ranger', 'Vanguard'] as const
+export type CharClass = (typeof CLASSES)[number]
+
+export const STATS = ['ATK%', 'Flat ATK', 'DEF%', 'Flat DEF', 'Crit Rate', 'Crit DMG', 'Weakness DMG',
+  'Elemental DMG%', 'Extra DMG%', 'DoT DMG%'] as const
+export type StatName = (typeof STATS)[number]
+
+export const CATEGORIES = ['Character', 'Potential', 'Partner', 'Memory Fragment', 'Equipment', 'Engraving',
+  'Affection', 'Ego Manifestation', 'Character Ego Skill', 'Partner Ego Skill', 'Card Epiphany', 'Neutral Card',
+  'Save Data Mutation', 'Support Character', 'Enemy Debuff', 'Other'] as const
+
+export type Scaling = 'ATK' | 'DEF' | 'Fixed'
+export type DamageKind = 'Normal' | 'Extra Attack' | 'DoT'
+export type HitScope = 'All hits' | 'First hit only'
+export type Condition = 'Always' | 'Ravaged only'
+export type BuffType = 'Additive' | 'Multiplicative' | 'Weakness Attack'
+export type MultMode = 'Summed' | 'Chained'
+
+/** On/off switch, or a number of stacks. true = on with the effect's default stacks. */
+export type Switch = boolean | number
+
+// ---------------------------------------------------------------- presets (coded in src/data/presets.ts)
+
+export interface StatEffect {
+  kind: 'Stat'
+  id: string
+  name: string
+  category: string
+  stat: StatName
+  /** As shown in-game: '16%' for percents, '74' for flat values. */
+  value: string
+  defaultStacks?: number
+  /** Partner effect that only works when the partner's class matches the character's. */
+  classLimited?: boolean
+  notes?: string
+}
+
+export interface BuffEffect {
+  kind: 'Buff'
+  id: string
+  name: string
+  category: string
+  /** Buff text as shown in-game: '+30%' = Additive, '30%' = Multiplicative, or 'Weakness Attack'. */
+  value: string
+  /** ALL, an exact card name, or one tag. */
+  appliesTo: string
+  hitScope: HitScope
+  condition: Condition
+  maxStacks?: number
+  defaultStacks?: number
+  classLimited?: boolean
+  notes?: string
+}
+
+export type Effect = StatEffect | BuffEffect
+
+export interface CharacterPreset {
+  name: string
+  element: Element
+  class: CharClass
+  notes?: string
+  effects: Effect[]
+}
+
+export interface PartnerPreset {
+  name: string
+  class: CharClass
+  /** Reference only: already included in the stats-screen numbers. */
+  baseHp: number
+  baseDef: number
+  baseAtk: number
+  notes?: string
+  effects: Effect[]
+}
+
+export interface Presets {
+  characters: CharacterPreset[]
+  partners: PartnerPreset[]
+}
+
+// ---------------------------------------------------------------- settings
+
+export interface Settings {
+  atkConstant: number
+  defCardAtkCoef: number
+  defCardDefCoef: number
+  /** Extra factor on Weakness DMG (Unconfirmed, default 0). */
+  extraWeakness: number
+  vulnerable: number
+  weaknessDebuff: number
+  critCap: number
+  /** Extra damage Ravaged enemies take (Unconfirmed, default 0). */
+  ravaged: number
+  multMode: MultMode
+  moralePerStack: number
+  moraleMax: number
+}
+
+// ---------------------------------------------------------------- saved data (per character)
+
+export interface ScreenStats {
+  attack: number
+  defense: number
+  health: number
+  critChance: number
+  /** Total multiplier: 1.886 = crit hits x1.886. */
+  critDmg: number
+  /** Total multiplier, base 1.25. */
+  weaknessDmg: number
+  elemDmg: Record<Element, number>
+  extraDmg: number
+  dotDmg: number
+}
+
+export interface Build {
+  id: string
+  name: string
+  partner: string
+  stats: ScreenStats
+  enemyDefMult: number
+  enemyDr: number
+  morale: number
+  vulnerable: number
+  weaknessDebuff: number
+  /** Preset effect id -> switch. Missing = on (default stacks). */
+  presetSwitches: Record<string, Switch>
+}
+
+/** The owner's own stat boost (equipment etc.), shared by the character's builds with a switch per build. */
+export interface UserBoost {
+  id: string
+  source: string
+  stat: StatName
+  value: string
+  category: string
+  notes: string
+  switches: Record<string, Switch>
+}
+
+export interface UserBuff {
+  id: string
+  source: string
+  category: string
+  value: string
+  /** Empty = auto from the text ('+' = Additive). */
+  typeOverride: BuffType | ''
+  appliesTo: string
+  hitScope: HitScope
+  condition: Condition
+  maxStacks: number | null
+  notes: string
+  switches: Record<string, Switch>
+}
+
+export interface Card {
+  id: string
+  name: string
+  /** Comma-separated. */
+  tags: string
+  scaling: Scaling
+  kind: DamageKind
+  /** Damage % per hit as shown in-game (1.32 = 132%); for Fixed, damage per hit. */
+  pct: number
+  hits: number
+  weaknessApplies: boolean
+  targetRavaged: boolean
+}
+
+export interface CharacterSave {
+  builds: Build[]
+  activeBuild: string
+  showAllPartners: boolean
+  boosts: UserBoost[]
+  buffs: UserBuff[]
+  cards: Card[]
+  /** Card ids in play order; each entry is one play. */
+  rotation: string[]
+}
+
+export interface SaveData {
+  version: number
+  settings: Settings
+  activeCharacter: string
+  characters: Record<string, CharacterSave>
+}
