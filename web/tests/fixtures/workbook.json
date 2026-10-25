@@ -1,0 +1,235 @@
+{
+  "save": {
+    "version": 1,
+    "settings": {
+      "atkConstant": 0.35,
+      "defCardAtkCoef": 0.3,
+      "defCardDefCoef": 2.1,
+      "extraWeakness": 0.0,
+      "vulnerable": 0.5,
+      "weaknessDebuff": 0.25,
+      "critCap": 1.0,
+      "ravaged": 0.0,
+      "multMode": "Summed",
+      "moralePerStack": 0.2,
+      "moraleMax": 20
+    },
+    "activeCharacter": "Mei Lin",
+    "characters": {
+      "Mei Lin": {
+        "builds": [
+          {
+            "id": "a",
+            "name": "Build A",
+            "partner": "Marianne",
+            "stats": {
+              "attack": 1033.0,
+              "defense": 211.0,
+              "health": 661.0,
+              "critChance": 0.333,
+              "critDmg": 1.67,
+              "weaknessDmg": 1.37,
+              "elemDmg": {
+                "Passion": 0.0,
+                "Justice": 0.0,
+                "Order": 0.0,
+                "Instinct": 0.0,
+                "Void": 0.0
+              },
+              "extraDmg": 0.086,
+              "dotDmg": 0.065
+            },
+            "enemyDefMult": 0.387,
+            "enemyDr": 0.0,
+            "morale": 0,
+            "vulnerable": 0,
+            "weaknessDebuff": 0,
+            "presetSwitches": {}
+          },
+          {
+            "id": "b",
+            "name": "Build B",
+            "partner": "",
+            "stats": {
+              "attack": 0.0,
+              "defense": 0.0,
+              "health": 0.0,
+              "critChance": 0.0,
+              "critDmg": 0.0,
+              "weaknessDmg": 1.25,
+              "elemDmg": {
+                "Passion": 0.0,
+                "Justice": 0.0,
+                "Order": 0.0,
+                "Instinct": 0.0,
+                "Void": 0.0
+              },
+              "extraDmg": 0.0,
+              "dotDmg": 0.0
+            },
+            "enemyDefMult": 1.0,
+            "enemyDr": 0.0,
+            "morale": 0,
+            "vulnerable": 0,
+            "weaknessDebuff": 0,
+            "presetSwitches": {}
+          },
+          {
+            "id": "c",
+            "name": "Build C",
+            "partner": "",
+            "stats": {
+              "attack": 0.0,
+              "defense": 0.0,
+              "health": 0.0,
+              "critChance": 0.0,
+              "critDmg": 0.0,
+              "weaknessDmg": 1.25,
+              "elemDmg": {
+                "Passion": 0.0,
+                "Justice": 0.0,
+                "Order": 0.0,
+                "Instinct": 0.0,
+                "Void": 0.0
+              },
+              "extraDmg": 0.0,
+              "dotDmg": 0.0
+            },
+            "enemyDefMult": 1.0,
+            "enemyDr": 0.0,
+            "morale": 0,
+            "vulnerable": 0,
+            "weaknessDebuff": 0,
+            "presetSwitches": {}
+          }
+        ],
+        "activeBuild": "a",
+        "showAllPartners": false,
+        "boosts": [
+          {
+            "id": "s57",
+            "source": "Obsidian Sword",
+            "stat": "Flat ATK",
+            "value": "74",
+            "category": "Equipment",
+            "notes": "",
+            "switches": {
+              "a": true,
+              "b": false,
+              "c": false
+            }
+          }
+        ],
+        "buffs": [
+          {
+            "id": "u107",
+            "source": "Seth's Scarab",
+            "category": "Memory Fragment",
+            "value": "20%",
+            "typeOverride": "",
+            "appliesTo": "Basic Attack",
+            "hitScope": "All hits",
+            "condition": "Always",
+            "maxStacks": null,
+            "notes": "",
+            "switches": {
+              "a": true,
+              "b": false,
+              "c": false
+            }
+          },
+          {
+            "id": "u108",
+            "source": "Obsidian Sword",
+            "category": "Equipment",
+            "value": "12%",
+            "typeOverride": "",
+            "appliesTo": "ALL",
+            "hitScope": "All hits",
+            "condition": "Always",
+            "maxStacks": null,
+            "notes": "",
+            "switches": {
+              "a": true,
+              "b": false,
+              "c": false
+            }
+          },
+          {
+            "id": "u109",
+            "source": "Emblem of an Exceptional Entity",
+            "category": "Equipment",
+            "value": "+30%",
+            "typeOverride": "",
+            "appliesTo": "ALL",
+            "hitScope": "All hits",
+            "condition": "Always",
+            "maxStacks": null,
+            "notes": "",
+            "switches": {
+              "a": true,
+              "b": false,
+              "c": false
+            }
+          }
+        ],
+        "cards": [
+          {
+            "id": "c132",
+            "name": "Strike",
+            "tags": "Basic Attack",
+            "scaling": "ATK",
+            "kind": "Normal",
+            "pct": 1.32,
+            "hits": 1.0,
+            "weaknessApplies": true,
+            "targetRavaged": false
+          }
+        ],
+        "rotation": [
+          "c132"
+        ]
+      }
+    }
+  },
+  "expected": {
+    "Mei Lin": {
+      "totals": {
+        "a": [
+          499.7937901078081,
+          834.6556294800395,
+          611.3027826187612
+        ],
+        "b": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "c": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "cards": {
+        "c132": {
+          "a": [
+            499.7937901078081,
+            834.6556294800395,
+            611.3027826187612
+          ],
+          "b": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "c": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      }
+    }
+  }
+}

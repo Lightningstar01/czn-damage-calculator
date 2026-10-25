@@ -1,8 +1,49 @@
 # CZN Damage Calculator
 
-A Python generator that builds an Excel workbook for calculating Chaos Zero Nightmare card
-damage. The owner copies the Template tab for each character and compares up to three builds
-(supports, equipment, memory fragments, save-data setups) side by side to maximize damage.
+Calculates Chaos Zero Nightmare card damage so the owner can compare builds (partners, equipment,
+memory fragments, save-data setups) per character and maximize damage.
+
+Two versions exist:
+- **Website (`web/`)**, the new main version: React + TypeScript, mobile-first (the owner plays on
+  phone), data saved in the browser. See "Website" below.
+- **Excel workbook generator (`src/build_workbook.py`)**, the original. Keep it, its tests and the
+  workbook untouched until the owner confirms the website matches it; then the owner decides whether
+  to retire it.
+
+## Website (web/)
+
+```bash
+cd web
+npm install
+npm run dev        # local dev server
+npm test           # Vitest: engine tests (ported Excel scenarios) + parity with the owner's workbook
+npm run build      # type-check + production build to web/dist
+npm run lint       # oxlint
+# Owner's workbook -> output/czn-save.json (import on the Settings tab) + web/tests/fixtures/workbook.json:
+.venv\Scripts\python.exe scripts/export_workbook_json.py
+```
+After any change: `npm test`, `npm run build`, then commit. Deploy to GitHub Pages only when the
+owner asks (there is no git remote yet).
+
+- `src/engine/` is the math with no UI code: `types.ts` (presets, settings, save format), `buffs.ts`
+  (value parsing, preset switches, class limits, buff matching), `calc.ts` (final stats, then each
+  hit of each rotation play; every factor carries its sources for the formula strip).
+- `src/data/presets.ts`: characters, partners and their effects. The owner and Claude edit this
+  file; there is no in-app preset editor. Effect ids must be unique per owner, because saved
+  switches are keyed `"Owner|effectId"`. Renaming an id resets that switch.
+- `src/data/settings.ts`: formula constants and rules (defaults + notes); edited on the Settings tab.
+- `src/store/`: localStorage autosave (`save.ts`: `SAVE_VERSION`, `migrate()`, backup export) and the
+  React context (`store.tsx`). If you change the save format, bump `SAVE_VERSION` and add a step to
+  `migrate()` so the owner's saved data keeps working.
+- `src/ui/`: tabs Setup, Buffs, Cards (library + ordered rotation), Results (color-coded formula
+  strip per play, tap for hits), Settings (rules, backup). At 1000px or wider, Results sits beside
+  the other tabs.
+- Saves are per character: builds, boosts, buffs, cards and rotation. Every build shares the cards
+  and rotation. Preset switches that are missing count as on; own boost/buff switches that are
+  missing count as off.
+- Constants and rules belong in settings, never hard-coded in the engine.
+- Keep the engine and the workbook in step while both exist. A formula change goes in both places
+  (or ask the owner), and the parity test must keep passing.
 
 ## Working with the owner
 
@@ -14,7 +55,7 @@ damage. The owner copies the Template tab for each character and compares up to 
   in the Settings tab rather than silently picking one.
 - Keep the workbook simple to use: yellow inputs, green outputs, dropdowns where possible.
 
-## Commands
+## Workbook commands
 
 ```bash
 # Python is not on PATH on the owner's PC; use the project venv: .venv\Scripts\python.exe
@@ -28,7 +69,7 @@ After any change: rebuild, recalc (zero errors), run tests, then commit to git (
 filled-in output workbook is tracked too, so its data has history). If you change layout rows/columns,
 update the cell references in tests/test_formula.py and the layout map below.
 
-## Rules for the generator
+## Rules for the workbook generator
 
 - Every result is an Excel formula, never a Python-computed value — the sheet must recalc
   when the owner edits inputs.

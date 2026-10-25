@@ -34,7 +34,7 @@ Final Card Mult = ((Base + Potential additive base) x (1 + Potential mult) x Gen
 - **No extra x1.25 on top of Weakness DMG — User test (2026-10-20):** Mei Lin Strike showed
   204% and 290% when targeting a Passion-weak enemy; 204.24% x 1.42 (137% screen + 5% Marianne)
   = 290.0%. The Reddit post's 270% (which seemed to need an extra x1.25) is unexplained, but
-  its inputs may have been incomplete. Settings!B8 stays at 0% as a test hook.
+  its inputs may have been incomplete. The "Extra weakness factor" setting (workbook Settings!B8) stays at 0% as a test hook.
 - Cards: enter the damage % the card shows in-game; it already includes potentials and
   epiphany (User), so the workbook has no potential columns.
 - Vulnerable / Weakness debuff: one stack is used up per hit, in card-table order across
@@ -51,7 +51,7 @@ with a leading "+" (e.g. "+30% Damage Amount") is additive; one without "+" is m
 No public source found for this. The workbook auto-classifies by "+" and allows an override.
 
 **Multiplicative buffs combine by summing — User belief**, supported by UltimateGacha, which
-cites Reddit testing. Prydwen's formula is ambiguous. Toggle: Settings!B15 (Summed/Chained).
+cites Reddit testing. Prydwen's formula is ambiguous. Toggle: the "Multiplicative buffs combine" rule on the website Settings tab (workbook Settings!B15), Summed/Chained.
 
 **Morale — Sourced (Game8) + User:** +20% flat per stack in the additive bucket (Game8: 2 stacks
 turn a 100% card into 140%). Max 20 stacks (owner). UltimateGacha claims Morale is a late
@@ -71,7 +71,7 @@ multiplier; this conflicts with Game8 and the owner, and was rejected.
   - The Ravaged 15% has no "+", so it's multiplicative under the owner's "+" rule.
     **Unconfirmed** that the "+" rule covers partner passives.
 - **Ravaged — User:** Ravaged enemies take more damage. The size is **Unconfirmed**:
-  Settings!B12 (default 0%) multiplies the card mult by (1 + B12) when the card's
+  the "Ravaged: extra damage taken" setting (workbook Settings!B12, default 0%) multiplies the card mult by (1 + it) when the card's
   "Target Ravaged?" is Yes. Buffs with Condition "Ravaged only" apply only to those cards.
 - **Weakness Attack — User:** a buff of type "Weakness Attack" makes Weakness DMG apply to
   matching cards, as if the card's "Weakness DMG applies?" were Yes. It ignores hit scope
@@ -107,7 +107,7 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
 - [ ] Where Weakness DMG and partner "+X% damage" buffs sit relative to Morale.
 - [x] Extra x1.25 on top of Weakness DMG: none (Mei Lin test, 2026-10-20).
 - [x] Partner/equipment ATK% multiplies the stats-screen Attack (Mei Lin 1272 matches).
-- [ ] How much extra damage Ravaged enemies take (Settings!B12, 0% for now).
+- [ ] How much extra damage Ravaged enemies take ("Ravaged: extra damage taken" setting, workbook Settings!B12; 0% for now).
 - [ ] Is Marianne's Ravaged 15% multiplicative (no "+") or additive?
 - [ ] Gather more hits to pin down the enemy DEF multiplier (later).
 
