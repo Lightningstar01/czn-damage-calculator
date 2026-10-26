@@ -28,7 +28,7 @@ export type MultMode = 'Summed' | 'Chained'
 /** On/off switch, or a number of stacks. true = on with the effect's default stacks. */
 export type Switch = boolean | number
 
-// ---------------------------------------------------------------- presets (coded in src/data/presets.ts)
+// ---------------------------------------------------------------- presets (src/data: imported from Prydwen + our additions)
 
 export interface StatEffect {
   kind: 'Stat'
@@ -69,13 +69,18 @@ export type Effect = StatEffect | BuffEffect
 
 export interface CharacterPreset {
   name: string
+  /** Prydwen's slug, also the file name in src/data/prydwen and src/data/characters. */
+  slug?: string
   element: Element
   class: CharClass
+  rarity?: string
   notes?: string
   effects: Effect[]
   /** The character's cards (each epiphany is its own entry), copied into the card library when picked. */
   cards?: CardPreset[]
 }
+
+export const CARD_CATEGORIES = ['Starting Card', 'Unique Card', 'Epiphany Card', 'Ego Skill', 'Generated Card'] as const
 
 /** A card the owner can copy into the library. Base values (no potentials); the copy can be edited. */
 export interface CardPreset {
@@ -85,10 +90,13 @@ export interface CardPreset {
   base: string
   name: string
   cardType: CardType
-  /** AP cost. Omit for Ego skills (no AP cost). */
-  cost?: number
-  /** Only if it differs from the character's element. */
+  /** AP cost. null/omitted: no AP cost (Ego skills, X-cost and unplayable cards: see tags). */
+  cost?: number | null
+  /** Defaults to the character's element. */
   element?: Element
+  /** Prydwen's card category (Starting Card, Unique Card, Epiphany Card, Ego Skill, Generated Card). */
+  category?: string
+  rarity?: string
   /** Comma-separated (element and cost are their own fields). */
   tags?: string
   scaling?: Scaling
@@ -128,6 +136,25 @@ export interface Presets {
   characters: CharacterPreset[]
   partners: PartnerPreset[]
   fragmentSets: FragmentSetPreset[]
+}
+
+/** A character as imported from Prydwen (src/data/prydwen/<slug>.json, generated: never edit by hand). */
+export interface ImportedCharacter {
+  name: string
+  slug: string
+  element: Element
+  class: CharClass
+  rarity: string
+  cards: CardPreset[]
+}
+
+/** What a re-import must not overwrite, mainly the buffs. Stored in src/data/characters/<slug>.ts. */
+export interface CharacterAdditions {
+  notes?: string
+  /** The character's own stat boosts and buffs. */
+  effects?: Effect[]
+  /** Per card id: fields to override (tags, %, hits...), notes (added after the imported ones) and effects. */
+  cards?: Record<string, Partial<Omit<CardPreset, 'id' | 'base' | 'name' | 'text'>>>
 }
 
 /** Memory fragment slots on a character; the set dropdowns per build. */

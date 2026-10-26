@@ -31,7 +31,8 @@ TOTAL_COLS = ["KLM", "NOP", "QRS"]  # per build: non-crit, crit, expected
 
 
 def preset_ids():
-    """(owner, effect name) -> effect id, read from the website's presets file."""
+    """(owner, effect name) -> effect id, read from the website's presets file and character additions
+    (characters/<slug>.ts: owner = the character, or the card for effects under a 'card-N' key)."""
     ids, owner = {}, None
     text = PRESETS_TS.read_text(encoding="utf-8")
     pattern = r"name: '((?:[^'\\]|\\.)*)', (?:element|class):|id: '([^']*)', name: '((?:[^'\\]|\\.)*)'"
@@ -40,6 +41,18 @@ def preset_ids():
             owner = m.group(1)
         else:
             ids[(owner, m.group(3))] = m.group(2)
+    for path in sorted((PRESETS_TS.parent / "characters").glob("*.ts")):
+        imported = json.loads((PRESETS_TS.parent / "prydwen" / f"{path.stem}.json").read_text(encoding="utf-8"))
+        card_names = {c["id"]: c["name"] for c in imported["cards"]}
+        owner = imported["name"]
+        for m in re.finditer(r"'(card-\d+)': \{|id: '([^']*)', name: '((?:[^'\\]|\\.)*)'|cardBuff\('([^']*)', '((?:[^'\\]|\\.)*)'",
+                             path.read_text(encoding="utf-8")):
+            if m.group(1):
+                owner = card_names.get(m.group(1), m.group(1))
+            elif m.group(2) is not None:
+                ids[(owner, m.group(3))] = m.group(2)
+            else:
+                ids[(owner, m.group(5))] = m.group(4)
     return ids
 
 

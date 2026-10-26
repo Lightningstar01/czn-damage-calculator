@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { PRESETS } from '../data/presets'
 import { playCard } from '../engine/calc'
 import { findCharacter } from '../engine/buffs'
-import { CARD_TYPES, ELEMENTS, type Card, type CardPreset, type CardType, type DamageKind, type Element, type Scaling } from '../engine/types'
+import { CARD_CATEGORIES, CARD_TYPES, ELEMENTS, type Card, type CardPreset, type CardType, type DamageKind, type Element, type Scaling } from '../engine/types'
 import { cardFromPreset, newCard, newId } from '../store/save'
 import { useCharacter } from '../store/store'
 import { pct } from './format'
@@ -30,10 +30,10 @@ function cardSummary(c: Card): string {
 }
 
 function presetText(p: CardPreset): string {
-  return `${p.cost === undefined ? '' : `${p.cost} AP · `}${p.cardType} · ${p.text}`
+  return `${p.cost == null ? '' : `${p.cost} AP · `}${p.cardType} · ${p.text.replace(/\n/g, ' ')}`
 }
 
-/** The character's preset cards, grouped by base card; tapping + Add copies one into the library. */
+/** The character's preset cards, by category (Starting, Unique...) and base card; tapping + Add copies one into the library. */
 function PresetPicker() {
   const { name, cs, updateCs } = useCharacter()!
   const ch = findCharacter(PRESETS, name)
@@ -41,40 +41,49 @@ function PresetPicker() {
   if (!ch?.cards?.length) return null
   const all = ch.cards
   const groups = [...new Set(all.map((p) => p.base))]
+  // A base card's category (its epiphanies are 'Epiphany Card'); unknown categories go last
+  const categoryOf = (g: string) => (all.find((p) => p.name === g) ?? all.find((p) => p.base === g))?.category ?? 'Other'
+  const order = (cat: string) => { const i = (CARD_CATEGORIES as readonly string[]).indexOf(cat); return i < 0 ? CARD_CATEGORIES.length : i }
+  const categories = [...new Set(groups.map(categoryOf))].sort((a, b) => order(a) - order(b))
   const counts = new Map<string, number>()
   for (const c of cs.cards) if (c.preset) counts.set(c.preset, (counts.get(c.preset) ?? 0) + 1)
   return (
     <Section title={`${ch.name}'s cards`} help="Base values, without potentials: after adding, edit the damage % to match the card in-game. Buffs a card gives show on the Buffs tab while it's in the library.">
-      <ul className="rows">
-        {groups.map((g) => {
-          const variants = all.filter((p) => p.base === g)
-          return (
-            <li key={g} className="row col">
-              <button className="row-main link" onClick={() => setOpen(open === g ? null : g)} aria-expanded={open === g}>
-                <div className="row-title">{g}</div>
-                <div className="row-sub">{variants.length > 1 ? `Base + ${variants.length - 1} epiphanies` : presetText(variants[0])}</div>
-              </button>
-              {open === g && (
-                <ul className="rows">
-                  {variants.map((p) => {
-                    const n = counts.get(p.id) ?? 0
-                    return (
-                      <li key={p.id} className="row">
-                        <div className="row-main">
-                          <div className="row-title">{p.name}{n > 0 && <span className="tag">in library{n > 1 ? ` ×${n}` : ''}</span>}</div>
-                          <div className="row-sub">{presetText(p)}</div>
-                          {p.notes && <div className="row-note">{p.notes}</div>}
-                        </div>
-                        <button className="btn small" onClick={() => updateCs((s) => { s.cards.push(cardFromPreset(p, ch.element)) })}>+ Add</button>
-                      </li>
-                    )
-                  })}
-                </ul>
-              )}
-            </li>
-          )
-        })}
-      </ul>
+      {categories.map((cat) => (
+        <div key={cat}>
+          {categories.length > 1 && <div className="muted">{cat}s</div>}
+          <ul className="rows">
+          {groups.filter((g) => categoryOf(g) === cat).map((g) => {
+            const variants = all.filter((p) => p.base === g)
+            return (
+              <li key={g} className="row col">
+                <button className="row-main link" onClick={() => setOpen(open === g ? null : g)} aria-expanded={open === g}>
+                  <div className="row-title">{g}</div>
+                  <div className="row-sub">{variants.length > 1 ? `Base + ${variants.length - 1} epiphanies` : presetText(variants[0])}</div>
+                </button>
+                {open === g && (
+                  <ul className="rows">
+                    {variants.map((p) => {
+                      const n = counts.get(p.id) ?? 0
+                      return (
+                        <li key={p.id} className="row">
+                          <div className="row-main">
+                            <div className="row-title">{p.name}{n > 0 && <span className="tag">in library{n > 1 ? ` ×${n}` : ''}</span>}</div>
+                            <div className="row-sub">{presetText(p)}</div>
+                            {p.notes && <div className="row-note">{p.notes}</div>}
+                          </div>
+                          <button className="btn small" onClick={() => updateCs((s) => { s.cards.push(cardFromPreset(p, ch.element)) })}>+ Add</button>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                )}
+              </li>
+            )
+          })}
+          </ul>
+        </div>
+      ))}
     </Section>
   )
 }
@@ -120,7 +129,7 @@ function LibrarySection() {
                   <SelectField<Element> label="Element" value={c.element} options={ELEMENTS}
                     help="Buffs can target it like a tag (e.g. 'Passion')." onChange={(v) => upd((x) => { x.element = v })} />
                   <SelectField label="Cost (AP)" value={c.cost === null ? '' : String(c.cost)}
-                    options={[{ value: '', label: 'None (Ego skill)' }, ...new Set([...COSTS, ...(c.cost === null ? [] : [String(c.cost)])])]}
+                    options={[{ value: '', label: 'None' }, ...new Set([...COSTS, ...(c.cost === null ? [] : [String(c.cost)])])]}
                     help="Buffs can target '1-cost' or '2+ cost'." onChange={(v) => upd((x) => { x.cost = v === '' ? null : Number(v) })} />
                   <NumberField label={c.scaling === 'Fixed' ? 'Damage per hit' : 'Damage % per hit'} pct={c.scaling !== 'Fixed'} value={c.pct}
                     onChange={(v) => upd((x) => { x.pct = v })} />

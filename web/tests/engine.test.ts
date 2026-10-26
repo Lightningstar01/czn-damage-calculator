@@ -9,7 +9,8 @@
 import { describe, expect, it } from 'vitest'
 import { computeBuild, type BuildResult } from '../src/engine/calc'
 import { buffMatches, buffType, fragmentPiecesUsed, parseBuffValue, parseStatValue } from '../src/engine/buffs'
-import { PRESETS } from '../src/data/presets'
+import { ADDITIONS, IMPORTED, PRESETS } from '../src/data/presets'
+import { checkAdditions } from '../src/data/merge'
 import { DEFAULT_SETTINGS } from '../src/data/settings'
 import { cardFromPreset, newBuff, newBuild, newCard, newCharacterSave, migrate, defaultSave, SAVE_VERSION } from '../src/store/save'
 import type { Card, CharacterSave, Presets } from '../src/engine/types'
@@ -266,6 +267,30 @@ describe('card presets', () => {
   const mei = PRESETS.characters.find((c) => c.name === 'Mei Lin')!
   const preset = (id: string) => mei.cards!.find((p) => p.id === id)!
 
+  it('every character is imported; the additions files match the import', () => {
+    expect(PRESETS.characters.length).toBe(Object.keys(IMPORTED).length)
+    expect(new Set(PRESETS.characters.map((c) => c.name)).size).toBe(PRESETS.characters.length)
+    expect(checkAdditions(IMPORTED, ADDITIONS)).toEqual([])
+    expect(checkAdditions(IMPORTED, { nobody: {}, 'mei-lin': { cards: { 'card-0': {} } } })).toHaveLength(2)
+  })
+
+  it('additions merge into the imported cards', () => {
+    expect(mei).toMatchObject({ element: 'Passion', class: 'Striker' })
+    expect(preset('card-345')).toMatchObject({ name: "Flame Dragon's Jewel V", targetRavaged: true, cardType: 'Upgrade' })
+    expect(preset('card-344').effects?.[0]).toMatchObject({ kind: 'Stat', stat: 'Crit Rate', value: '30%' })
+    expect(preset('card-364').notes).toContain('Mythic')
+  })
+
+  it('migrate maps the old hand-entered Mei Lin card ids to the imported ones', () => {
+    const cards = ['strike', 'ego', 'jewel', 'jewel-1', 'spire-5', 'unity-1', 'aromata-5', 'sovereignty', 'custom'].map((preset) => ({ preset }))
+    const old = { version: 5, characters: { 'Mei Lin': { builds: [], cards, rotation: [] } } }
+    expect(migrate(old).characters['Mei Lin'].cards.map((c) => c.preset)).toEqual(
+      ['card-338', 'card-337', 'card-340', 'card-341', 'card-351', 'card-353', 'card-363', 'card-364', 'custom'])
+    for (const id of ['card-338', 'card-351', 'card-353', 'card-363']) expect(preset(id)).toBeDefined()
+    expect([preset('card-351').name, preset('card-353').name, preset('card-363').name]).toEqual(
+      ['Rising Dragon Spire V', 'Unity of Attack and Defense I', 'Spirit of the Aromata V'])
+  })
+
   it('ids are unique per character, effect ids per card', () => {
     for (const ch of PRESETS.characters) {
       const ids = (ch.cards ?? []).map((p) => p.id)
@@ -278,9 +303,9 @@ describe('card presets', () => {
     const cs = newCharacterSave()
     const [a] = cs.builds
     a.stats.attack = 1000
-    const strike = cardFromPreset(preset('strike'), 'Passion'), jewel = cardFromPreset(preset('jewel-1'), 'Passion')
-    expect(strike).toMatchObject({ name: 'Strike', element: 'Passion', cost: 1, tags: 'Basic, Basic Attack', pct: 1, hits: 1, preset: 'strike' })
-    expect(cardFromPreset(preset('ego'), 'Passion').cost).toBeNull()
+    const strike = cardFromPreset(preset('card-338'), 'Passion'), jewel = cardFromPreset(preset('card-341'), 'Passion')
+    expect(strike).toMatchObject({ name: 'Strike', element: 'Passion', cost: 1, tags: 'Basic, Basic Attack', pct: 1, hits: 1, preset: 'card-338' })
+    expect(cardFromPreset(preset('card-337'), 'Passion').cost).toBeNull()
     cs.cards.push(strike)
     cs.rotation = plays(strike.id)
     const before = computeBuild(PRESETS, 'Mei Lin', cs, a, settings)

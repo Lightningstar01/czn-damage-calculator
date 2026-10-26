@@ -119,10 +119,21 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
 
 ## 2c. Card presets — User (2026-10-25), website only
 
-- Each character's cards (base + every epiphany; mythic cards like Flame Dragon's Sovereignty
-  have none) are in `web/src/data/presets.ts`, from Prydwen
-  (supplied by the owner). Picking one copies it into the card library with the **base** values;
-  the owner edits the % to the in-game number (which includes potentials).
+- Every character's cards (base + every epiphany; mythic cards like Flame Dragon's Sovereignty
+  have none) are imported from Prydwen, which the owner confirmed has the right "+" wording
+  (2026-10-25); other sites (OffBanner outdated, Game8 adds "+" everywhere) are not used.
+  `scripts/import_prydwen.py` writes `web/src/data/prydwen/<slug>.json`; our buffs and notes go in
+  `web/src/data/characters/<slug>.ts`. Picking a card copies it into the card library with the
+  **base** values; the owner edits the % to the in-game number (which includes potentials).
+- Importer reading of the card text (check against the game; corrections go in the additions file):
+  damage % and hits from the first "N% Damage" / "N% x H Damage" / "N% Damage x H" phrase;
+  "Defense-based" = DEF scaling, "Fixed" = Fixed; **Piercing counted as normal damage
+  (Unconfirmed)**; for "100% (200%) Damage" the first % is used. Basic = a starting card with no
+  epiphanies (tags Basic, + Basic Attack on Attack cards). The Weakness Attack tag sets "Weakness
+  DMG applies". Ego skills are type Skill with tag "Ego Skill" and no AP cost; **Unconfirmed**
+  whether Attack-card buffs should hit damaging ego skills. X-cost/unplayable cards have no cost
+  and a tag. Status cards are type Skill with tag "Status".
+- Buffs are added character by character with the owner (only Mei Lin's so far).
 - A card's buffs (e.g. Flame Dragon's Jewel's Attack damage, Spirit of the Aromata's per-card
   stacks) show as preset buffs while the card is in the library, on by default, switch per build.
   The "+" rule applies: "by 20%" = multiplicative, "+20%" = additive.

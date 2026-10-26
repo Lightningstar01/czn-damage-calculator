@@ -4,8 +4,15 @@ import { DEFAULT_SETTINGS } from '../data/settings'
 import { ELEMENTS, CARD_TYPES, FRAGMENT_SET_PICKS, type Build, type Card, type CardPreset, type CharacterSave, type Element, type SaveData, type ScreenStats, type UserBoost, type UserBuff } from '../engine/types'
 
 /** Bump when the save format changes, and add a step to migrate(). */
-export const SAVE_VERSION = 5
+export const SAVE_VERSION = 6
 const STORAGE_KEY = 'czn-damage-calculator'
+
+/** Mei Lin's card preset ids before v6 -> Prydwen card ids. */
+const MEI_LIN_V5_IDS: Record<string, string> = {
+  strike: 'card-338', guardian: 'card-339', ego: 'card-337', sovereignty: 'card-364',
+  ...Object.fromEntries((['jewel', 'spire', 'unity', 'aromata'] as const).flatMap((base, i) =>
+    [0, 1, 2, 3, 4, 5].map((n) => [n ? `${base}-${n}` : base, `card-${340 + i * 6 + n}`]))),
+}
 
 export function newId(): string {
   return Math.random().toString(36).slice(2, 10)
@@ -74,7 +81,7 @@ export function migrate(raw: unknown): SaveData {
   if (!raw || typeof raw !== 'object' || !('characters' in raw)) throw new Error("This file isn't a calculator save.")
   const data = raw as SaveData
   if ((data.version ?? 0) > SAVE_VERSION) throw new Error('This save is from a newer version of the calculator.')
-  // Future migrations go here: if (data.version === 5) { ...; data.version = 6 }
+  // Future migrations go here: if (data.version === 6) { ...; data.version = 7 }
   if ((data.version ?? 1) <= 1) {
     // v2: memory fragment set picks per build
     for (const cs of Object.values(data.characters ?? {})) {
@@ -116,6 +123,13 @@ export function migrate(raw: unknown): SaveData {
       }
     }
     data.version = 5
+  }
+  if (data.version === 5) {
+    // v6: card presets are imported from Prydwen, so Mei Lin's hand-entered preset ids became Prydwen card ids
+    for (const c of data.characters?.['Mei Lin']?.cards ?? []) {
+      if (c.preset && c.preset in MEI_LIN_V5_IDS) c.preset = MEI_LIN_V5_IDS[c.preset]
+    }
+    data.version = 6
   }
   return {
     ...defaultSave(),
