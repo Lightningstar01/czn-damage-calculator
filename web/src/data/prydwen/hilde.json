@@ -228,7 +228,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "180% Piercing Damage and 3 Ionization to all enemies.",
-   "notes": "Piercing Damage: counted as normal damage"
+   "notes": "Piercing Damage: ignores enemy shields (not modeled), otherwise normal damage"
   },
   {
    "id": "card-1244",

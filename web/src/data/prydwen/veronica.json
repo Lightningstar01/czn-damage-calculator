@@ -20,7 +20,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "250% Piercing Damage to all enemies.\nGain Maximum Reload.",
-   "notes": "Piercing Damage: counted as normal damage"
+   "notes": "Piercing Damage: ignores enemy shields (not modeled), otherwise normal damage"
   },
   {
    "id": "card-423",
@@ -486,7 +486,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "At the end of the turn, 200% Piercing Damage to a random enemy.\nIf the target has Shield, +50% Damage.",
-   "notes": "Piercing Damage: counted as normal damage"
+   "notes": "Piercing Damage: ignores enemy shields (not modeled), otherwise normal damage"
   },
   {
    "id": "card-452",

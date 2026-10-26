@@ -127,12 +127,12 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
   **base** values; the owner edits the % to the in-game number (which includes potentials).
 - Importer reading of the card text (check against the game; corrections go in the additions file):
   damage % and hits from the first "N% Damage" / "N% x H Damage" / "N% Damage x H" phrase;
-  "Defense-based" = DEF scaling, "Fixed" = Fixed; **Piercing counted as normal damage
-  (Unconfirmed)**; for "100% (200%) Damage" the first % is used. Basic = a starting card with no
-  epiphanies (tags Basic, + Basic Attack on Attack cards). The Weakness Attack tag sets "Weakness
-  DMG applies". Ego skills are type Skill with tag "Ego Skill" and no AP cost; **Unconfirmed**
-  whether Attack-card buffs should hit damaging ego skills. X-cost/unplayable cards have no cost
-  and a tag. Status cards are type Skill with tag "Status".
+  "Defense-based" = DEF scaling, "Fixed" = Fixed; Piercing only ignores enemy shields (User,
+  2026-10-25; shields aren't modeled, so it counts as normal damage); for "100% (200%) Damage" the
+  first % is used. Basic = a starting card with no epiphanies (User; tags Basic, + Basic Attack on
+  Attack cards). The Weakness Attack tag means Weakness DMG applies (User). Ego skills are type
+  Skill with tag "Ego Skill" and no AP cost: damaging ego skills are not Attack cards (User,
+  2026-10-25). X-cost/unplayable cards have no cost and a tag. Status cards are type Skill with tag "Status".
 - Buffs are added character by character with the owner (only Mei Lin's so far).
 - A card's buffs (e.g. Flame Dragon's Jewel's Attack damage, Spirit of the Aromata's per-card
   stacks) show as preset buffs while the card is in the library, on by default, switch per build.

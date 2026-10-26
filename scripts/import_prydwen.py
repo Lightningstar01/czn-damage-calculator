@@ -107,7 +107,7 @@ def card_entry(c, base, is_basic, has_epiphanies):
     tags = [t.strip() for t in c["tags"] if t.strip()]
     notes = []
     if kind == "piercing":
-        notes.append("Piercing Damage: counted as normal damage")
+        notes.append("Piercing Damage: ignores enemy shields (not modeled), otherwise normal damage")
     if re.search(r"\d+% \(\d+%\) Damage", text):
         notes.append("Uses the first % (the one in brackets is the boosted value)")
     cost = c["cost"]
