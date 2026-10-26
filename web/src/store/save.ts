@@ -1,9 +1,9 @@
 // Saved data: defaults, versioning/migrations, browser storage, backup files.
 import { DEFAULT_SETTINGS } from '../data/settings'
-import { ELEMENTS, CARD_TYPES, FRAGMENT_SET_PICKS, type Build, type Card, type CharacterSave, type SaveData, type ScreenStats, type UserBoost, type UserBuff } from '../engine/types'
+import { ELEMENTS, CARD_TYPES, FRAGMENT_SET_PICKS, type Build, type Card, type CardPreset, type CharacterSave, type Element, type SaveData, type ScreenStats, type UserBoost, type UserBuff } from '../engine/types'
 
 /** Bump when the save format changes, and add a step to migrate(). */
-export const SAVE_VERSION = 3
+export const SAVE_VERSION = 4
 const STORAGE_KEY = 'czn-damage-calculator'
 
 export function newId(): string {
@@ -32,6 +32,16 @@ export function newCharacterSave(): CharacterSave {
 
 export function newCard(): Card {
   return { id: newId(), name: '', cardType: 'Attack', tags: '', scaling: 'ATK', kind: 'Normal', pct: 1, hits: 1, weaknessApplies: false, targetRavaged: false }
+}
+
+/** Library copy of a card preset; the character's element and the cost (e.g. '1-cost') become tags. */
+export function cardFromPreset(p: CardPreset, element?: Element): Card {
+  const tags = [element, p.cost === undefined ? '' : `${p.cost}-cost`, ...(p.tags ?? '').split(',')].map((t) => t?.trim()).filter(Boolean)
+  return {
+    ...newCard(), name: p.name, cardType: p.cardType, tags: [...new Set(tags)].join(', '), scaling: p.scaling ?? 'ATK',
+    kind: p.kind ?? 'Normal', pct: p.pct, hits: p.hits, weaknessApplies: !!p.weaknessApplies, targetRavaged: !!p.targetRavaged,
+    preset: p.id,
+  }
 }
 
 export function newBoost(buildId: string): UserBoost {
@@ -63,7 +73,7 @@ export function migrate(raw: unknown): SaveData {
   if (!raw || typeof raw !== 'object' || !('characters' in raw)) throw new Error("This file isn't a calculator save.")
   const data = raw as SaveData
   if ((data.version ?? 0) > SAVE_VERSION) throw new Error('This save is from a newer version of the calculator.')
-  // Future migrations go here: if (data.version === 3) { ...; data.version = 4 }
+  // Future migrations go here: if (data.version === 4) { ...; data.version = 5 }
   if ((data.version ?? 1) <= 1) {
     // v2: memory fragment set picks per build
     for (const cs of Object.values(data.characters ?? {})) {
@@ -82,6 +92,13 @@ export function migrate(raw: unknown): SaveData {
       }
     }
     data.version = 3
+  }
+  if (data.version === 3) {
+    // v4: rotation plays are objects, so a play can override the card's hits
+    for (const cs of Object.values(data.characters ?? {})) {
+      cs.rotation = ((cs.rotation ?? []) as unknown[]).map((p) => typeof p === 'string' ? { cardId: p } : p as CharacterSave['rotation'][number])
+    }
+    data.version = 4
   }
   return {
     ...defaultSave(),

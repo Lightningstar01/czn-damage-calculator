@@ -1,7 +1,100 @@
 // Characters, partners and their effects. Add new ones here (keep effect ids unique per owner).
 // Effect value: as shown in-game. Stats: '16%' or '74'. Buffs: '+30%' = additive, '30%' = multiplicative,
 // 'Weakness Attack' = Weakness DMG applies to matching cards. See docs/FORMULA.md for the rules.
-import type { Presets } from '../engine/types'
+import type { BuffEffect, CardPreset, Presets } from '../engine/types'
+
+/** A card's buff on all hits, always on; category Card Epiphany. */
+const cardBuff = (id: string, name: string, value: string, appliesTo: string, extra: Partial<BuffEffect> = {}): BuffEffect => ({
+  kind: 'Buff', id, name, category: 'Card Epiphany', value, appliesTo, hitScope: 'All hits', condition: 'Always', ...extra,
+})
+const passionWeakness = cardBuff('weak', 'Passion Weakness on the target', 'Weakness Attack', 'ALL', {
+  notes: 'Applied when an Attack card is used. Unconfirmed whether the first Attack card already gets it',
+})
+const aromataNote = 'One stack per card used after it this turn: set the stacks (one number for the whole rotation)'
+
+// Card presets: base values from Prydwen (owner, 2026-10-25); the in-game % with potentials is edited on the copy.
+// Damage % follows the "+" rule: 'by 20%' (no "+") = multiplicative, '+20%' = additive. Extra hits (Combo, Spire V,
+// the Ego skill) are set per play in the rotation. Tags: element and cost are added on copy; Basic = Strike/Guardian.
+const MEI_LIN_CARDS: CardPreset[] = [
+  { id: 'strike', base: 'Strike', name: 'Strike', cardType: 'Attack', cost: 1, tags: 'Basic, Basic Attack', pct: 1, hits: 1,
+    text: '100% Damage.' },
+  { id: 'guardian', base: 'Flame Dragon Guardian', name: 'Flame Dragon Guardian', cardType: 'Skill', cost: 1, tags: 'Basic',
+    pct: 0, hits: 0, text: '100% Shield.', notes: 'Shield only, no damage' },
+  { id: 'ego', base: 'Heavenly Flame Dragon', name: 'Heavenly Flame Dragon', cardType: 'Skill', tags: 'Ego Skill', pct: 0, hits: 0,
+    text: 'Next 4 own Basic Attack Card(s), 1 extra Hit(s).', notes: 'Ego skill (6 EP). Add the extra hit on each of the next 4 Strike plays' },
+
+  { id: 'jewel', base: "Flame Dragon's Jewel", name: "Flame Dragon's Jewel", cardType: 'Upgrade', cost: 1, tags: 'Unique, Initiation',
+    pct: 0, hits: 0, text: 'Increases Damage Amount of Attack Cards of this unit by 20%. When an Attack Card is used, 1 Passion Weakness to the target.',
+    effects: [cardBuff('atk', 'Attack card damage', '20%', 'Attack'), passionWeakness] },
+  { id: 'jewel-1', base: "Flame Dragon's Jewel", name: "Flame Dragon's Jewel I", cardType: 'Upgrade', cost: 1, tags: 'Unique, Initiation',
+    pct: 0, hits: 0, text: 'Increases Damage Amount of Attack Cards of this unit by 30%. When an Attack Card is used, 1 Passion Weakness to the target.',
+    effects: [cardBuff('atk', 'Attack card damage', '30%', 'Attack'), passionWeakness] },
+  { id: 'jewel-2', base: "Flame Dragon's Jewel", name: "Flame Dragon's Jewel II", cardType: 'Upgrade', cost: 1, tags: 'Unique, Initiation',
+    pct: 0, hits: 0, text: 'Increase Damage Amount of Attack Cards of this unit by 20%. When using an Attack Card, 1 Tenacity Damage to the target.',
+    notes: 'Tenacity Damage is not counted', effects: [cardBuff('atk', 'Attack card damage', '20%', 'Attack')] },
+  { id: 'jewel-3', base: "Flame Dragon's Jewel", name: "Flame Dragon's Jewel III", cardType: 'Upgrade', cost: 1, tags: 'Unique, Initiation',
+    pct: 0, hits: 0, text: 'Increase Damage Amount of Attack Cards of this unit by 20%. When using an Attack Card, 1 Ember and 1 Passion Weakness to the target.',
+    notes: 'Embers are not counted', effects: [cardBuff('atk', 'Attack card damage', '20%', 'Attack'), passionWeakness] },
+  { id: 'jewel-4', base: "Flame Dragon's Jewel", name: "Flame Dragon's Jewel IV", cardType: 'Upgrade', cost: 1, tags: 'Unique, Initiation',
+    pct: 0, hits: 0, text: 'Increase Critical Chance of this unit by 30%. On Critical Hit, 1 Tenacity Damage, 1 Ember.',
+    notes: 'Tenacity Damage and Embers are not counted',
+    effects: [{ kind: 'Stat', id: 'crit', name: 'Crit Chance', category: 'Card Epiphany', stat: 'Crit Rate', value: '30%' }] },
+  { id: 'jewel-5', base: "Flame Dragon's Jewel", name: "Flame Dragon's Jewel V", cardType: 'Upgrade', cost: 2, tags: 'Initiation',
+    pct: 3, hits: 1, targetRavaged: true, text: 'Upon Ravage, 300% Damage to the target.',
+    notes: 'The upgrade itself deals no damage: each play in the rotation stands for one Ravage (300%)' },
+
+  { id: 'spire', base: 'Rising Dragon Spire', name: 'Rising Dragon Spire', cardType: 'Attack', cost: 1, pct: 1, hits: 1,
+    text: '100% Damage. 2 Ember. Combo: Add 1 hit(s).', notes: 'Combo: set 2 hits on the play' },
+  { id: 'spire-1', base: 'Rising Dragon Spire', name: 'Rising Dragon Spire I', cardType: 'Attack', cost: 1, pct: 1, hits: 1,
+    text: '100% Damage. 2 Ember. Combo: Add 2 hit(s).', notes: 'Combo: set 3 hits on the play' },
+  { id: 'spire-2', base: 'Rising Dragon Spire', name: 'Rising Dragon Spire II', cardType: 'Attack', cost: 1, pct: 1.5, hits: 1,
+    text: '150% Damage. 3 Ember. Combo: Add 1 hit(s).', notes: 'Combo: set 2 hits on the play' },
+  { id: 'spire-3', base: 'Rising Dragon Spire', name: 'Rising Dragon Spire III', cardType: 'Attack', cost: 2, pct: 2, hits: 1,
+    text: '200% Damage. Next Passion Card used, 1 extra Hit.', notes: 'Add the extra hit on the next Passion card play' },
+  { id: 'spire-4', base: 'Rising Dragon Spire', name: 'Rising Dragon Spire IV', cardType: 'Attack', cost: 1, pct: 1, hits: 1,
+    text: '100% Damage. Next own Basic Attack Card used, 2 extra Hits.', notes: 'Add the 2 extra hits on the next Strike play' },
+  { id: 'spire-5', base: 'Rising Dragon Spire', name: 'Rising Dragon Spire V', cardType: 'Attack', cost: 2, pct: 1.5, hits: 1,
+    text: '150% Damage. For 1 turn, each Passion Card used, 1 extra Hit.', notes: 'Add the extra hits on the play' },
+
+  { id: 'unity', base: 'Unity of Attack and Defense', name: 'Unity of Attack and Defense', cardType: 'Skill', cost: 0, pct: 0, hits: 0,
+    text: 'Draw 2 Basic Card(s) of this unit. Decrease Cost of those cards by 1 for 1 turn.' },
+  { id: 'unity-1', base: 'Unity of Attack and Defense', name: 'Unity of Attack and Defense I', cardType: 'Skill', cost: 0, pct: 0, hits: 0,
+    text: 'Draw 2 Basic Card(s) of this unit, decrease Cost by 1, increase Damage and Shield Gain Amounts of those cards by 50% for 1 turn.',
+    effects: [cardBuff('basic', 'Drawn Basic card damage', '50%', 'Basic', { notes: 'Only the 2 cards it draws, for 1 turn: switch off if not' })] },
+  { id: 'unity-2', base: 'Unity of Attack and Defense', name: 'Unity of Attack and Defense II', cardType: 'Skill', cost: 0, pct: 0, hits: 0,
+    text: 'Move 2 Basic Card(s) of this unit to hand. Decrease Cost of those cards by 1 for 1 turn.' },
+  { id: 'unity-3', base: 'Unity of Attack and Defense', name: 'Unity of Attack and Defense III', cardType: 'Skill', cost: 2, pct: 0, hits: 0,
+    text: 'Draw 2 own Basic Card(s). Choose up to 2 card(s) in hand to Exhaust. For each card, 2 Morale, 2 Resolve for 1 turn.',
+    notes: 'Add the Morale on the Buffs tab (2 per card exhausted)' },
+  { id: 'unity-4', base: 'Unity of Attack and Defense', name: 'Unity of Attack and Defense IV', cardType: 'Upgrade', cost: 0, pct: 0, hits: 0,
+    text: 'Create 2 Strike card(s). Decrease Cost of those cards by 1.', notes: 'Add the 2 Strikes as plays' },
+  { id: 'unity-5', base: 'Unity of Attack and Defense', name: 'Unity of Attack and Defense V', cardType: 'Upgrade', cost: 2, tags: 'Unique',
+    pct: 0, hits: 0, text: 'Increase Damage Amount of Basic Cards of this unit by 100%.',
+    effects: [cardBuff('basic', 'Basic card damage', '100%', 'Basic')] },
+
+  { id: 'aromata', base: 'Spirit of the Aromata', name: 'Spirit of the Aromata', cardType: 'Skill', cost: 1, tags: 'Retain', pct: 0, hits: 0,
+    text: 'For 1 turn, when using an own card +20% own Damage Amount.',
+    effects: [cardBuff('dmg', 'Damage per own card used', '+20%', 'ALL', { maxStacks: 20, notes: aromataNote })] },
+  { id: 'aromata-1', base: 'Spirit of the Aromata', name: 'Spirit of the Aromata I', cardType: 'Skill', cost: 1, tags: 'Retain', pct: 0, hits: 0,
+    text: 'For 1 turn, when using a Passion Card +20% own Damage Amount.',
+    effects: [cardBuff('dmg', 'Damage per Passion card used', '+20%', 'ALL', { maxStacks: 20,
+      notes: 'One stack per Passion card used after it this turn, allies included: set the stacks (one number for the whole rotation)' })] },
+  { id: 'aromata-2', base: 'Spirit of the Aromata', name: 'Spirit of the Aromata II', cardType: 'Skill', cost: 1, tags: 'Retain', pct: 0, hits: 0,
+    text: 'For 1 turn, when using an own card +30% own Damage Amount.',
+    effects: [cardBuff('dmg', 'Damage per own card used', '+30%', 'ALL', { maxStacks: 20, notes: aromataNote })] },
+  { id: 'aromata-3', base: 'Spirit of the Aromata', name: 'Spirit of the Aromata III', cardType: 'Skill', cost: 0, tags: 'Initiation', pct: 0, hits: 0,
+    text: 'For 1 turn, when using an own card +20% own Damage Amount.',
+    effects: [cardBuff('dmg', 'Damage per own card used', '+20%', 'ALL', { maxStacks: 20, notes: aromataNote })] },
+  { id: 'aromata-4', base: 'Spirit of the Aromata', name: 'Spirit of the Aromata IV', cardType: 'Skill', cost: 1, tags: 'Retain', pct: 0, hits: 0,
+    text: 'For 1 turn, when using an own card, 1 Ember on a random enemy.', notes: 'Embers are not counted' },
+  { id: 'aromata-5', base: 'Spirit of the Aromata', name: 'Spirit of the Aromata V', cardType: 'Skill', cost: 1, tags: 'Retain', pct: 0, hits: 0,
+    text: 'For 1 turn, when using an own card, +50% own Basic Card Damage Amount.',
+    effects: [cardBuff('dmg', 'Basic card damage per own card used', '+50%', 'Basic', { maxStacks: 20, notes: aromataNote })] },
+
+  { id: 'sovereignty', base: "Flame Dragon's Sovereignty", name: "Flame Dragon's Sovereignty", cardType: 'Attack', cost: 2,
+    tags: 'Weakness Attack', pct: 3, hits: 1, weaknessApplies: true, text: '[Weakness Attack] 300% Damage. Destroy: Retain Embers.',
+    notes: 'Epiphanies not entered yet' },
+]
 
 export const PRESETS: Presets = {
   characters: [
@@ -9,6 +102,7 @@ export const PRESETS: Presets = {
       name: 'Mei Lin', element: 'Passion', class: 'Striker',
       notes: 'Character buffs still to be entered (many are conditional)',
       effects: [],
+      cards: MEI_LIN_CARDS,
     },
   ],
   partners: [

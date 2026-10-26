@@ -73,6 +73,34 @@ export interface CharacterPreset {
   class: CharClass
   notes?: string
   effects: Effect[]
+  /** The character's cards (each epiphany is its own entry), copied into the card library when picked. */
+  cards?: CardPreset[]
+}
+
+/** A card the owner can copy into the library. Base values (no potentials); the copy can be edited. */
+export interface CardPreset {
+  /** Unique per character; library copies keep it in Card.preset. */
+  id: string
+  /** The card it's an epiphany of (groups the picker), e.g. 'Rising Dragon Spire'. */
+  base: string
+  name: string
+  cardType: CardType
+  /** AP cost, added as a tag like '1-cost'. Omit for Ego skills. */
+  cost?: number
+  /** Extra comma-separated tags; the character's element and the cost tag are added on copy. */
+  tags?: string
+  scaling?: Scaling
+  kind?: DamageKind
+  /** Base damage % per hit (1 = 100%); 0 for cards that deal no damage. */
+  pct: number
+  hits: number
+  weaknessApplies?: boolean
+  targetRavaged?: boolean
+  /** Card text as shown in-game. */
+  text: string
+  notes?: string
+  /** Stat boosts / buffs the card gives while it's in the library (switch per build, default on). */
+  effects?: Effect[]
 }
 
 export interface PartnerPreset {
@@ -194,6 +222,14 @@ export interface Card {
   hits: number
   weaknessApplies: boolean
   targetRavaged: boolean
+  /** CardPreset id this card was copied from: its effects then show with the preset effects. */
+  preset?: string
+}
+
+/** One play in the rotation. hits overrides the card's hits for this play (Combo, extra-hit effects). */
+export interface RotationPlay {
+  cardId: string
+  hits?: number
 }
 
 export interface CharacterSave {
@@ -203,8 +239,8 @@ export interface CharacterSave {
   boosts: UserBoost[]
   buffs: UserBuff[]
   cards: Card[]
-  /** Card ids in play order; each entry is one play. */
-  rotation: string[]
+  /** Plays in order. */
+  rotation: RotationPlay[]
 }
 
 export interface SaveData {

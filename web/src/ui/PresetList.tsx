@@ -5,8 +5,8 @@ import { useCharacter } from '../store/store'
 import { SwitchControl } from './inputs'
 
 export function PresetList({ kind }: { kind: 'Stat' | 'Buff' }) {
-  const { name, build, updateBuild } = useCharacter()!
-  const states = presetStates(PRESETS, name, build).filter((s) => s.effect.kind === kind)
+  const { name, cs, build, updateBuild } = useCharacter()!
+  const states = presetStates(PRESETS, name, build, cs.cards).filter((s) => s.effect.kind === kind)
   if (!states.length) return <p className="muted">No {kind === 'Stat' ? 'stat' : 'buff'} presets for this character, partner or fragment sets.</p>
   const ch = findCharacter(PRESETS, name)
   const partner = findPartner(PRESETS, build.partner)

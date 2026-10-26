@@ -138,7 +138,7 @@ h2 { font-size: 1.05rem; margin: 0; display: flex; align-items: center; gap: 6px
 .type-weakness { color: var(--g-weak-t); }
 .type-crit { color: var(--g-crit-t, inherit); }
 .editor { padding: 10px 0 4px; }
-.editor .btn-row { grid-column: 1 / -1; }
+.editor .btn-row, .editor .full-row { grid-column: 1 / -1; }
 
 .play-no {
   display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding: 0 5px;

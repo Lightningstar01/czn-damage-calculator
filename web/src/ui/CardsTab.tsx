@@ -3,17 +3,21 @@ import { DndContext, KeyboardSensor, PointerSensor, TouchSensor, closestCenter, 
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useState } from 'react'
-import { CARD_TYPES, type Card, type CardType, type DamageKind, type Scaling } from '../engine/types'
-import { newCard, newId } from '../store/save'
+import { PRESETS } from '../data/presets'
+import { playCard } from '../engine/calc'
+import { findCharacter } from '../engine/buffs'
+import { CARD_TYPES, type Card, type CardPreset, type CardType, type DamageKind, type Scaling } from '../engine/types'
+import { cardFromPreset, newCard, newId } from '../store/save'
 import { useCharacter } from '../store/store'
 import { pct } from './format'
-import { NumberField, Section, SelectField, TextField, Toggle } from './inputs'
+import { NumberField, Section, SelectField, Stepper, TextField, Toggle } from './inputs'
 
 export function CardsTab() {
   return (
     <>
       <RotationSection />
       <LibrarySection />
+      <PresetPicker />
     </>
   )
 }
@@ -23,20 +27,72 @@ function cardSummary(c: Card): string {
   return `${c.cardType} · ${amount} × ${c.hits} hit${c.hits === 1 ? '' : 's'}${c.scaling === 'DEF' ? ' · DEF' : ''}${c.kind !== 'Normal' ? ` · ${c.kind}` : ''}`
 }
 
-function LibrarySection() {
-  const { cs, updateCs } = useCharacter()!
+function presetText(p: CardPreset): string {
+  return `${p.cardType}${p.cost === undefined ? '' : ` · ${p.cost} AP`} · ${p.text}`
+}
+
+/** The character's preset cards, grouped by base card; tapping + Add copies one into the library. */
+function PresetPicker() {
+  const { name, cs, updateCs } = useCharacter()!
+  const ch = findCharacter(PRESETS, name)
   const [open, setOpen] = useState<string | null>(null)
+  if (!ch?.cards?.length) return null
+  const all = ch.cards
+  const groups = [...new Set(all.map((p) => p.base))]
+  const counts = new Map<string, number>()
+  for (const c of cs.cards) if (c.preset) counts.set(c.preset, (counts.get(c.preset) ?? 0) + 1)
   return (
-    <Section title="Card library" help="Enter each card's damage % exactly as the card shows it in-game (it already includes potentials and epiphany). Cards are shared by all builds."
+    <Section title={`${ch.name}'s cards`} help="Base values, without potentials: after adding, edit the damage % to match the card in-game. Buffs a card gives show on the Buffs tab while it's in the library.">
+      <ul className="rows">
+        {groups.map((g) => {
+          const variants = all.filter((p) => p.base === g)
+          return (
+            <li key={g} className="row col">
+              <button className="row-main link" onClick={() => setOpen(open === g ? null : g)} aria-expanded={open === g}>
+                <div className="row-title">{g}</div>
+                <div className="row-sub">{variants.length > 1 ? `Base + ${variants.length - 1} epiphanies` : 'No epiphanies entered'}</div>
+              </button>
+              {open === g && (
+                <ul className="rows">
+                  {variants.map((p) => {
+                    const n = counts.get(p.id) ?? 0
+                    return (
+                      <li key={p.id} className="row">
+                        <div className="row-main">
+                          <div className="row-title">{p.name}{n > 0 && <span className="tag">in library{n > 1 ? ` ×${n}` : ''}</span>}</div>
+                          <div className="row-sub">{presetText(p)}</div>
+                          {p.notes && <div className="row-note">{p.notes}</div>}
+                        </div>
+                        <button className="btn small" onClick={() => updateCs((s) => { s.cards.push(cardFromPreset(p, ch.element)) })}>+ Add</button>
+                      </li>
+                    )
+                  })}
+                </ul>
+              )}
+            </li>
+          )
+        })}
+      </ul>
+    </Section>
+  )
+}
+
+function LibrarySection() {
+  const { name, cs, updateCs } = useCharacter()!
+  const [open, setOpen] = useState<string | null>(null)
+  const presetCards = findCharacter(PRESETS, name)?.cards ?? []
+  return (
+    <Section title="Card library" help="Enter each card's damage % exactly as the card shows it in-game (it already includes potentials and epiphany), or add one from the character's cards below. Cards are shared by all builds."
       actions={<button className="btn small" onClick={() => {
         const c = newCard()
         updateCs((x) => { x.cards.push(c) })
         setOpen(c.id)
       }}>+ Add</button>}>
-      {!cs.cards.length && <p className="muted">No cards yet. Add one, then tap “+ Play” to put it in the rotation.</p>}
+      {!cs.cards.length && <p className="muted">No cards yet. Add one (or pick from the character's cards below), then tap “+ Play” to put it in the rotation.</p>}
       <ul className="rows">
         {cs.cards.map((c, i) => {
           const upd = (fn: (x: Card) => void) => updateCs((s) => fn(s.cards[i]))
+          const preset = c.preset ? presetCards.find((p) => p.id === c.preset) : undefined
           return (
             <li key={c.id} className="row col">
               <div className="row-line">
@@ -44,10 +100,16 @@ function LibrarySection() {
                   <div className="row-title">{c.name || 'Unnamed card'}</div>
                   <div className="row-sub">{cardSummary(c)}{c.tags && ` · ${c.tags}`}</div>
                 </button>
-                <button className="btn small" onClick={() => updateCs((s) => { s.rotation.push(c.id) })}>+ Play</button>
+                <button className="btn small" onClick={() => updateCs((s) => { s.rotation.push({ cardId: c.id }) })}>+ Play</button>
               </div>
               {open === c.id && (
                 <div className="editor grid2">
+                  {preset && (
+                    <div className="full-row">
+                      <div className="row-sub">From {preset.name}: {presetText(preset)}</div>
+                      {preset.notes && <div className="row-note">{preset.notes}</div>}
+                    </div>
+                  )}
                   <TextField label="Name" value={c.name} onChange={(v) => upd((x) => { x.name = v })} />
                   <TextField label="Tags" value={c.tags} placeholder="Basic Attack, Strike" help="Comma-separated, e.g. element, Exhaust, 1-cost. Buffs can target a tag." onChange={(v) => upd((x) => { x.tags = v })} />
                   <SelectField<CardType> label="Card type" value={c.cardType} options={CARD_TYPES}
@@ -78,7 +140,7 @@ function LibrarySection() {
                       if (!confirm(`Delete ${c.name || 'this card'}? It's also removed from the rotation.`)) return
                       updateCs((s) => {
                         s.cards.splice(i, 1)
-                        s.rotation = s.rotation.filter((id) => id !== c.id)
+                        s.rotation = s.rotation.filter((p) => p.cardId !== c.id)
                       })
                     }}>Delete</button>
                   </div>
@@ -107,23 +169,25 @@ function RotationSection() {
     const from = ids.indexOf(String(e.active.id)), to = ids.indexOf(String(e.over.id))
     updateCs((s) => { s.rotation = arrayMove(s.rotation, from, to) })
   }
-  const ends = cs.rotation.reduce<number[]>((acc, id) => {
-    const c = cards.get(id)
+  const played = cs.rotation.map((p) => { const c = cards.get(p.cardId); return c && playCard(c, p) })
+  const ends = played.reduce<number[]>((acc, c) => {
     acc.push((acc.at(-1) ?? 0) + (c ? Math.max(0, Math.floor(c.hits)) : 0))
     return acc
   }, [])
   return (
-    <Section title="Rotation" help="The cards you play, in order. Vulnerable and Weakness-debuff stacks are used up hit by hit in this order. Drag ⠿ to reorder."
+    <Section title="Rotation" help="The cards you play, in order. Vulnerable and Weakness-debuff stacks are used up hit by hit in this order. Drag ⠿ to reorder. − / + sets the hits of that play only (Combo, extra-hit effects)."
       actions={cs.rotation.length > 0 && <button className="btn small" onClick={() => { if (confirm('Clear the rotation?')) updateCs((s) => { s.rotation = [] }) }}>Clear</button>}>
       {!cs.rotation.length && <p className="muted">Empty. Tap “+ Play” on a card below to add it.</p>}
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
         <SortableContext items={ids} strategy={verticalListSortingStrategy}>
           <ol className="rows rotation">
-            {cs.rotation.map((cardId, i) => {
-              const c = cards.get(cardId)
+            {cs.rotation.map((play, i) => {
+              const c = played[i], base = cards.get(play.cardId)
               const first = (ends[i - 1] ?? 0) + 1, hit = ends[i]
               return (
-                <RotationItem key={ids[i]} id={ids[i]} index={i} card={c} hits={c && c.hits > 0 ? (first === hit ? `hit ${hit}` : `hits ${first}–${hit}`) : ''}
+                <RotationItem key={ids[i]} id={ids[i]} index={i} card={c} baseHits={play.hits === undefined ? undefined : base?.hits}
+                  hits={c && c.hits > 0 ? (first === hit ? `hit ${hit}` : `hits ${first}–${hit}`) : ''}
+                  onHits={(n) => updateCs((s) => { s.rotation[i].hits = n === base?.hits ? undefined : n })}
                   onRemove={() => updateCs((s) => { s.rotation.splice(i, 1) })} />
               )
             })}
@@ -134,7 +198,10 @@ function RotationSection() {
   )
 }
 
-function RotationItem({ id, index, card, hits, onRemove }: { id: string; index: number; card?: Card; hits: string; onRemove: () => void }) {
+/** baseHits: the card's own hits, set when this play overrides them. */
+function RotationItem({ id, index, card, baseHits, hits, onHits, onRemove }: {
+  id: string; index: number; card?: Card; baseHits?: number; hits: string; onHits: (n: number) => void; onRemove: () => void
+}) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
   return (
     <li ref={setNodeRef} className={`row ${isDragging ? 'dragging' : ''}`}
@@ -143,7 +210,11 @@ function RotationItem({ id, index, card, hits, onRemove }: { id: string; index: 
       <div className="row-main">
         <div className="row-title"><span className="play-no">{index + 1}</span> {card?.name || 'Unnamed card'}</div>
         <div className="row-sub">{card ? `${cardSummary(card)} · ${hits}` : 'Card was deleted'}</div>
+        {baseHits !== undefined && <div className="row-note">Hits set for this play (card: {baseHits})</div>}
       </div>
+      {card && (card.pct !== 0 || baseHits !== undefined) && (
+        <Stepper label={`Play ${index + 1} hits`} value={card.hits} onChange={onHits} />
+      )}
       <button className="icon-btn" aria-label={`Remove play ${index + 1}`} onClick={onRemove}>×</button>
     </li>
   )

@@ -28,7 +28,9 @@ owner asks (there is no git remote yet).
 - `src/engine/` is the math with no UI code: `types.ts` (presets, settings, save format), `buffs.ts`
   (value parsing, preset switches, class limits, buff matching), `calc.ts` (final stats, then each
   hit of each rotation play; every factor carries its sources for the formula strip).
-- `src/data/presets.ts`: characters, partners, memory fragment sets and their effects. The owner and Claude edit this
+- `src/data/presets.ts`: characters (with their cards: base + epiphanies, picked into the library
+  on the Cards tab; a library card's preset effects count while it's in the library), partners,
+  memory fragment sets and their effects. The owner and Claude edit this
   file; there is no in-app preset editor. Effect ids must be unique per owner, because saved
   switches are keyed `"Owner|effectId"`. Renaming an id resets that switch.
 - `src/data/settings.ts`: formula constants and rules (defaults + notes); edited on the Settings tab.
@@ -39,7 +41,7 @@ owner asks (there is no git remote yet).
   strip per play, tap for hits), Settings (rules, backup). At 1000px or wider, Results sits beside
   the other tabs.
 - Saves are per character: builds (partner, 3 fragment set picks, stats...), boosts, buffs, cards and rotation. Every build shares the cards
-  and rotation. Preset switches that are missing count as on; own boost/buff switches that are
+  and rotation (a list of plays; a play can override the card's hits). Preset switches that are missing count as on; own boost/buff switches that are
   missing count as off.
 - Constants and rules belong in settings, never hard-coded in the engine.
 - Keep the engine and the workbook in step while both exist. A formula change goes in both places
@@ -142,4 +144,5 @@ Website only: "Applies to" also takes `A & B` (all), `A/B` (any), `N+ hits`, `N+
   sheet as .xlsx, to compare against ours line by line.
 - Open mechanics questions are listed in docs/FORMULA.md section 4.
 - Presets: Mei Lin's own character buffs (many conditional) still to be designed with the owner;
+  Flame Dragon's Sovereignty epiphanies still to come;
   more characters/partners to be entered by the owner.

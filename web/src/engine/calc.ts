@@ -1,6 +1,6 @@
 // The damage formula (docs/FORMULA.md). Pure functions: inputs in, numbers and their sources out.
 import { activeBuffs, activeStats, cardBuffs, findCharacter, type ActiveStat, type Source } from './buffs'
-import type { Build, Card, CharacterSave, Presets, Settings, StatName } from './types'
+import type { Build, Card, CharacterSave, Presets, RotationPlay, Settings, StatName } from './types'
 
 export interface Stat {
   value: number
@@ -54,6 +54,7 @@ export interface Hit {
 }
 
 export interface Play {
+  /** The card as played (with this play's hit count). */
   card: Card
   /** Position in the rotation (0-based). */
   index: number
@@ -108,6 +109,11 @@ export function finalStats(presets: Presets, charName: string, cs: CharacterSave
   }
 }
 
+/** The card as played: the play's own hit count, if set, replaces the card's. */
+export function playCard(card: Card, play: RotationPlay): Card {
+  return play.hits === undefined ? card : { ...card, hits: play.hits }
+}
+
 /** Damage of every hit of every play in the rotation, for one build. */
 export function computeBuild(presets: Presets, charName: string, cs: CharacterSave, build: Build, settings: Settings): BuildResult {
   const stats = finalStats(presets, charName, cs, build, settings)
@@ -116,11 +122,14 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
   const perCard = new Map<string, ReturnType<typeof cardBuffs>>()
   const plays: Play[] = []
   let k = 0
-  cs.rotation.forEach((cardId, index) => {
-    const card = cards.get(cardId)
-    if (!card) return
-    let cb = perCard.get(cardId)
-    if (!cb) perCard.set(cardId, (cb = cardBuffs(buffs, card)))
+  cs.rotation.forEach((play, index) => {
+    const base = cards.get(play.cardId)
+    if (!base) return
+    // A per-play hit count also counts for '2+ hits' buffs, so it's buffed as its own card
+    const card = playCard(base, play)
+    const key = `${card.id}|${card.hits}`
+    let cb = perCard.get(key)
+    if (!cb) perCard.set(key, (cb = cardBuffs(buffs, card)))
     const hits: Hit[] = []
     for (let h = 1; h <= Math.max(0, Math.floor(card.hits)); h++) {
       k++

@@ -1,6 +1,6 @@
 // Which stat boosts and buffs are active for a build, and which buffs match a card.
 import type {
-  BuffEffect, BuffType, Build, Card, CharacterPreset, CharacterSave, Condition, Effect, FragmentSetPreset, HitScope, PartnerPreset,
+  BuffEffect, BuffType, Build, Card, CardPreset, CharacterPreset, CharacterSave, Condition, Effect, FragmentSetPreset, HitScope, PartnerPreset,
   Presets, Settings, StatEffect, StatName, Switch,
 } from './types'
 
@@ -63,7 +63,7 @@ export interface ActiveBuff {
 /** Why a preset effect is (in)active for a build — shown greyed out in the UI. */
 export interface PresetState {
   owner: string
-  ownerKind: 'Character' | 'Partner' | 'Memory Fragment'
+  ownerKind: 'Character' | 'Partner' | 'Memory Fragment' | 'Card'
   effect: Effect
   /** Class-limited partner effect with a class mismatch. */
   classBlocked: boolean
@@ -78,6 +78,13 @@ export function findCharacter(presets: Presets, name: string): CharacterPreset |
 
 export function findPartner(presets: Presets, name: string): PartnerPreset | undefined {
   return presets.partners.find((p) => p.name === name)
+}
+
+/** The character's card presets the library uses (a card copied twice counts once), in library order. */
+export function libraryCardPresets(presets: Presets, charName: string, cards: Card[]): CardPreset[] {
+  const all = findCharacter(presets, charName)?.cards ?? []
+  const ids = [...new Set(cards.map((c) => c.preset).filter(Boolean))]
+  return ids.map((id) => all.find((p) => p.id === id)).filter((p): p is CardPreset => !!p)
 }
 
 export function findFragmentSet(presets: Presets, name: string): FragmentSetPreset | undefined {
@@ -100,8 +107,8 @@ export function presetKey(owner: string, effect: Effect): string {
   return `${owner}|${effect.id}`
 }
 
-/** The preset effects of the build's character, partner and memory fragment sets, with their switch state. */
-export function presetStates(presets: Presets, charName: string, build: Build): PresetState[] {
+/** The preset effects of the build's character, partner, memory fragment sets and library cards, with their switch state. */
+export function presetStates(presets: Presets, charName: string, build: Build, cards: Card[] = []): PresetState[] {
   const out: PresetState[] = []
   const ch = findCharacter(presets, charName)
   const add = (owner: string, ownerKind: PresetState['ownerKind'], effects: Effect[], blocked: (e: Effect) => boolean) => {
@@ -117,13 +124,14 @@ export function presetStates(presets: Presets, charName: string, build: Build): 
   const p = build.partner ? findPartner(presets, build.partner) : undefined
   if (p) add(p.name, 'Partner', p.effects, (e) => !!e.classLimited && p.class !== ch?.class)
   for (const f of buildFragmentSets(presets, build)) add(f.name, 'Memory Fragment', f.effects, () => false)
+  for (const c of libraryCardPresets(presets, charName, cards)) add(c.name, 'Card', c.effects ?? [], () => false)
   return out
 }
 
 /** Stat boosts active for the build: preset stat effects, then the owner's own boosts. */
 export function activeStats(presets: Presets, charName: string, cs: CharacterSave, build: Build): ActiveStat[] {
   const out: ActiveStat[] = []
-  for (const s of presetStates(presets, charName, build)) {
+  for (const s of presetStates(presets, charName, build, cs.cards)) {
     if (s.effect.kind !== 'Stat' || s.stacks <= 0) continue
     const e = s.effect as StatEffect
     out.push({ label: `${s.owner}: ${e.name}`, stat: e.stat, value: parseStatValue(e.value), stacks: s.stacks,
@@ -146,7 +154,7 @@ export function activeBuffs(presets: Presets, charName: string, cs: CharacterSav
     out.push({ label: 'Morale', type: 'Additive', value: settings.moralePerStack, stacks: morale,
       appliesTo: 'ALL', hitScope: 'All hits', condition: 'Always' })
   }
-  for (const s of presetStates(presets, charName, build)) {
+  for (const s of presetStates(presets, charName, build, cs.cards)) {
     if (s.effect.kind !== 'Buff' || s.stacks <= 0) continue
     const e = s.effect as BuffEffect
     out.push({ label: `${s.owner}: ${e.name}`, type: buffType(e.value, e.type), value: parseBuffValue(e.value),

@@ -116,6 +116,22 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
   572 x 1.886 = 1079. The community calculator sheet uses the same rule. No toggle.
 - Expected per hit = Non-crit x (1 + CritRate x (CritMult - 1)); each hit crits separately.
 
+## 2c. Card presets — User (2026-10-25), website only
+
+- Each character's cards (base + every epiphany) are in `web/src/data/presets.ts`, from Prydwen
+  (supplied by the owner). Picking one copies it into the card library with the **base** values;
+  the owner edits the % to the in-game number (which includes potentials).
+- A card's buffs (e.g. Flame Dragon's Jewel's Attack damage, Spirit of the Aromata's per-card
+  stacks) show as preset buffs while the card is in the library, on by default, switch per build.
+  The "+" rule applies: "by 20%" = multiplicative, "+20%" = additive.
+- Extra hits (Combo, Rising Dragon Spire V, Ego skill) are set per play in the rotation; a play's
+  hit count also drives `N+ hits` matching.
+- Jewel's "1 Passion Weakness to the target" is a Weakness Attack buff on all cards.
+  **Unconfirmed** whether the first Attack card already gets it.
+- Aromata stacks are one number for the whole rotation, so early plays are over-counted.
+- Not modeled: Embers, Tenacity Damage, shields, draw/cost effects. Jewel V's Ravage hit is a
+  300% card with Target Ravaged on; each play is one Ravage.
+
 ## 4. Open questions / to verify
 
 - [x] Compared with the community calculator sheet (CZNRedditSheet.xlsx) and its Reddit

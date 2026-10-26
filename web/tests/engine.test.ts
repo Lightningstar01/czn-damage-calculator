@@ -11,7 +11,7 @@ import { computeBuild, type BuildResult } from '../src/engine/calc'
 import { buffMatches, buffType, fragmentPiecesUsed, parseBuffValue, parseStatValue } from '../src/engine/buffs'
 import { PRESETS } from '../src/data/presets'
 import { DEFAULT_SETTINGS } from '../src/data/settings'
-import { newBuff, newBuild, newCard, newCharacterSave, migrate, defaultSave, SAVE_VERSION } from '../src/store/save'
+import { cardFromPreset, newBuff, newBuild, newCard, newCharacterSave, migrate, defaultSave, SAVE_VERSION } from '../src/store/save'
 import type { Card, CharacterSave, Presets } from '../src/engine/types'
 
 const presets: Presets = {
@@ -33,6 +33,8 @@ const settings = DEFAULT_SETTINGS
 function card(name: string, tags: string, hits: number, weak = false, ravaged = false): Card {
   return { ...newCard(), name, tags, hits, pct: 1, weaknessApplies: weak, targetRavaged: ravaged }
 }
+
+const plays = (...ids: string[]) => ids.map((cardId) => ({ cardId }))
 
 /** Sum of a card's plays in a build result. */
 function cardTotal(r: BuildResult, name: string, key: 'nonCrit' | 'crit' | 'expected' = 'nonCrit') {
@@ -56,7 +58,7 @@ function mainScenario() {
   const test = card('Test', 'Attack', 3), two = card('Two', 'x', 2), weak = card('Weak', 'x', 1, true)
   two.cardType = weak.cardType = 'Skill'   // only "Test" is an Attack, as in the Excel scenario
   cs.cards.push(test, two, weak)
-  cs.rotation = [test.id, two.id, two.id, weak.id]
+  cs.rotation = plays(test.id, two.id, two.id, weak.id)
   const run = (i: number) => computeBuild(presets, '', cs, cs.builds[i], settings)
   return { A: run(0), B: run(1), C: run(2) }
 }
@@ -119,7 +121,7 @@ function partnerScenario(character: string) {
   b.presetSwitches['Marianne|atk'] = false
   const strike = card('Strike', 'Basic Attack', 1, false, true), other = card('Other', 'x', 1)
   cs.cards.push(strike, other)
-  cs.rotation = [strike.id, other.id]
+  cs.rotation = plays(strike.id, other.id)
   return cs.builds.map((x) => computeBuild(presets, character, cs, x, settings))
 }
 
@@ -160,7 +162,7 @@ describe('memory fragment sets', () => {
   c.fragments = ['Test Four', 'Test Four', 'Test Two']
   const x = card('X', '', 1)
   cs.cards.push(x)
-  cs.rotation = [x.id]
+  cs.rotation = plays(x.id)
   const [A, B, C] = cs.builds.map((bd) => computeBuild(presets, 'Mei Lin', cs, bd, settings))
 
   it('set buffs apply; set stats are already on the stats screen', () => {
@@ -225,7 +227,7 @@ describe('per-card crit buffs', () => {
     cs.buffs.push({ ...newBuff(a.id), value: '+20%', typeOverride: 'Crit Chance', appliesTo: '1-cost' })
     const one = card('One', '1-cost', 1), two = card('Two', '2-cost', 1)
     cs.cards.push(one, two)
-    cs.rotation = [one.id, two.id]
+    cs.rotation = plays(one.id, two.id)
     const r = computeBuild(presets, '', cs, a, settings)
     expect(r.plays[0].hits[0].critDmg).toBeCloseTo(1.85)
     expect(r.plays[0].hits[0].critRate).toBeCloseTo(1)
@@ -244,6 +246,59 @@ describe('real fragment set presets', () => {
       expect([2, 4]).toContain(f.pieces)
       expect(new Set(f.effects.map((e) => e.id)).size).toBe(f.effects.length)
     }
+  })
+})
+
+describe('card presets', () => {
+  const mei = PRESETS.characters.find((c) => c.name === 'Mei Lin')!
+  const preset = (id: string) => mei.cards!.find((p) => p.id === id)!
+
+  it('ids are unique per character, effect ids per card', () => {
+    for (const ch of PRESETS.characters) {
+      const ids = (ch.cards ?? []).map((p) => p.id)
+      expect(new Set(ids).size).toBe(ids.length)
+      for (const p of ch.cards ?? []) expect(new Set((p.effects ?? []).map((e) => e.id)).size).toBe((p.effects ?? []).length)
+    }
+  })
+
+  it('copy adds element and cost tags; library card effects become preset buffs', () => {
+    const cs = newCharacterSave()
+    const [a] = cs.builds
+    a.stats.attack = 1000
+    const strike = cardFromPreset(preset('strike'), 'Passion'), jewel = cardFromPreset(preset('jewel-1'), 'Passion')
+    expect(strike).toMatchObject({ name: 'Strike', tags: 'Passion, 1-cost, Basic, Basic Attack', pct: 1, hits: 1, preset: 'strike' })
+    cs.cards.push(strike)
+    cs.rotation = plays(strike.id)
+    const before = computeBuild(PRESETS, 'Mei Lin', cs, a, settings)
+    expect(before.plays[0].hits[0].cardMult).toBeCloseTo(1)
+    cs.cards.push(jewel, { ...jewel, id: 'copy' })   // a second copy doesn't double the buff
+    const after = computeBuild(PRESETS, 'Mei Lin', cs, a, settings)
+    // Jewel I: 30% multiplicative on Attack cards, plus Passion Weakness (Weakness DMG 125%)
+    expect(after.plays[0].hits[0].cardMult).toBeCloseTo(1.3 * 1.25)
+    a.presetSwitches["Flame Dragon's Jewel I|weak"] = false
+    expect(computeBuild(PRESETS, 'Mei Lin', cs, a, settings).plays[0].hits[0].cardMult).toBeCloseTo(1.3)
+  })
+})
+
+describe('rotation plays', () => {
+  it('a play can override the hits; 2+ hits buffs follow the play', () => {
+    const cs = newCharacterSave()
+    const [a] = cs.builds
+    a.stats.attack = 1000
+    cs.buffs.push({ ...newBuff(a.id), value: '+50%', appliesTo: '2+ hits' })
+    const x = card('X', '', 1)
+    cs.cards.push(x)
+    cs.rotation = [{ cardId: x.id }, { cardId: x.id, hits: 3 }, { cardId: x.id }]
+    const r = computeBuild(presets, '', cs, a, settings)
+    expect(r.plays.map((p) => p.hits.length)).toEqual([1, 3, 1])
+    expect(r.plays[0].hits[0].cardMult).toBeCloseTo(1)
+    expect(r.plays[1].hits[0].cardMult).toBeCloseTo(1.5)
+    expect(r.plays[2].hits[0].globalHit).toBe(5)
+  })
+
+  it('migrate turns card ids into plays', () => {
+    const old = { version: 3, characters: { X: { builds: [], cards: [], rotation: ['a', 'b'] } } }
+    expect(migrate(old).characters.X.rotation).toEqual([{ cardId: 'a' }, { cardId: 'b' }])
   })
 })
 
@@ -266,7 +321,7 @@ describe('parsing', () => {
     cs.buffs.push({ ...newBuff(a.id), value: '30%' }, { ...newBuff(a.id), value: '20%' })
     const x = card('X', '', 1)
     cs.cards.push(x)
-    cs.rotation = [x.id]
+    cs.rotation = plays(x.id)
     const summed = computeBuild(presets, '', cs, a, settings)
     const chained = computeBuild(presets, '', cs, a, { ...settings, multMode: 'Chained' })
     expect(summed.plays[0].hits[0].cardMult).toBeCloseTo(1.5)
