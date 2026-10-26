@@ -1,6 +1,6 @@
 // The damage formula (docs/FORMULA.md). Pure functions: inputs in, numbers and their sources out.
 import { activeBuffs, activeStats, cardBuffs, findCharacter, type ActiveStat, type Source } from './buffs'
-import type { Build, Card, CharacterSave, Presets, RotationPlay, Settings, StatName } from './types'
+import type { Build, Card, CardPreset, CharacterPreset, CharacterSave, PotentialUpgrade, Presets, RotationPlay, Settings, StatName } from './types'
 
 export interface Stat {
   value: number
@@ -28,7 +28,10 @@ export interface Hit {
   /** 1-based hit number across the whole rotation (Vulnerable / Weakness debuff stacks use this order). */
   globalHit: number
   hitNo: number
+  /** The card's %: the base when a potential upgrade applies, otherwise as shown in-game. */
   cardPct: number
+  /** Basic / Signature Card Upgrade potential (card % x this); null for cards without one. */
+  potential: Factor | null
   multFactor: Factor
   additive: Factor
   weakness: Factor | null
@@ -109,6 +112,25 @@ export function finalStats(presets: Presets, charName: string, cs: CharacterSave
   }
 }
 
+/** Which card upgrade potential raises a preset card: Basic cards Basic, Ego skills none, the rest Signature. */
+export function cardUpgrade(p: CardPreset): PotentialUpgrade | undefined {
+  if ((p.tags ?? '').split(',').some((t) => t.trim() === 'Basic')) return 'Basic'
+  if (p.category === 'Ego Skill') return undefined
+  return 'Signature'
+}
+
+/** Potential factor for a card upgrade: 1 + per level x (build level + the Manifest Ego bonus, if unlocked). */
+export function potentialFactor(upgrade: PotentialUpgrade | undefined, build: Build, ch: CharacterPreset | undefined,
+  settings: Settings): Factor | null {
+  if (!upgrade) return null
+  const set = (upgrade === 'Basic' ? build.basicLevel : build.signatureLevel) || 0
+  const ego = ch?.potentialEgo && (build.egoLevel ?? 0) >= ch.potentialEgo.level ? ch.potentialEgo : undefined
+  const level = set + (ego?.levels ?? 0)
+  const sources: Source[] = [{ label: `${upgrade} Card Upgrade level ${set}`, value: set * settings.potentialPerLevel, unit: '%' }]
+  if (ego) sources.push({ label: `E${ego.level}: +${ego.levels} levels`, value: ego.levels * settings.potentialPerLevel, unit: '%' })
+  return { value: 1 + level * settings.potentialPerLevel, sources }
+}
+
 /** The card as played: the play's own hit count, if set, replaces the card's. */
 export function playCard(card: Card, play: RotationPlay): Card {
   return play.hits === undefined ? card : { ...card, hits: play.hits }
@@ -118,6 +140,7 @@ export function playCard(card: Card, play: RotationPlay): Card {
 export function computeBuild(presets: Presets, charName: string, cs: CharacterSave, build: Build, settings: Settings): BuildResult {
   const stats = finalStats(presets, charName, cs, build, settings)
   const buffs = activeBuffs(presets, charName, cs, build, settings)
+  const ch = findCharacter(presets, charName)
   const cards = new Map(cs.cards.map((c) => [c.id, c]))
   const perCard = new Map<string, ReturnType<typeof cardBuffs>>()
   const plays: Play[] = []
@@ -130,10 +153,11 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
     const key = `${card.id}|${card.hits}`
     let cb = perCard.get(key)
     if (!cb) perCard.set(key, (cb = cardBuffs(buffs, card)))
+    const potential = card.scaling === 'Fixed' && !settings.potentialFixed ? null : potentialFactor(card.upgrade, build, ch, settings)
     const hits: Hit[] = []
     for (let h = 1; h <= Math.max(0, Math.floor(card.hits)); h++) {
       k++
-      hits.push(computeHit(card, h, k, cb, stats, build, settings))
+      hits.push(computeHit(card, h, k, cb, potential, stats, build, settings))
     }
     const sum = (f: (x: Hit) => number) => hits.reduce((a, x) => a + f(x), 0)
     plays.push({ card, index, hits, nonCrit: sum((x) => x.nonCrit), crit: sum((x) => x.crit), expected: sum((x) => x.expected) })
@@ -142,9 +166,10 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
   return { stats, plays, nonCrit: sum((x) => x.nonCrit), crit: sum((x) => x.crit), expected: sum((x) => x.expected) }
 }
 
-function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof cardBuffs>, stats: FinalStats,
-  build: Build, settings: Settings): Hit {
+function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof cardBuffs>, potential: Factor | null,
+  stats: FinalStats, build: Build, settings: Settings): Hit {
   const first = hitNo === 1
+  const pct = card.pct * (potential?.value ?? 1)
   const multSources = [...cb.multiplicative.all.sources, ...(first ? cb.multiplicative.first.sources : [])]
   const multValue = settings.multMode === 'Chained'
     ? multSources.reduce((a, s) => a * (1 + s.value), 1)
@@ -173,7 +198,7 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
   const ravaged = card.targetRavaged && settings.ravaged
     ? { value: 1 + settings.ravaged, sources: [{ label: 'Ravaged target (Settings)', value: settings.ravaged, unit: '%' as const }] }
     : null
-  const cardMult = (card.pct * multValue + additive.value) * (weakness?.value ?? 1) * (vulnerable?.value ?? 1)
+  const cardMult = (pct * multValue + additive.value) * (weakness?.value ?? 1) * (vulnerable?.value ?? 1)
     * (enemyDr?.value ?? 1) * (weaknessDebuff?.value ?? 1) * (ravaged?.value ?? 1)
 
   const stat: Factor = card.scaling === 'DEF'
@@ -203,14 +228,14 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
 
   let nonCrit: number, crit: number, expected: number
   if (card.scaling === 'Fixed') {
-    nonCrit = crit = expected = card.pct   // Fixed damage ignores every multiplier and can't crit (Unconfirmed)
+    nonCrit = crit = expected = pct   // Fixed damage ignores every multiplier and can't crit (Unconfirmed)
   } else {
     nonCrit = cardMult * stat.value * settings.atkConstant * (elemDmg?.value ?? 1) * (mechDmg?.value ?? 1) * (enemyDef?.value ?? 1)
     crit = nonCrit * critDmg
     expected = nonCrit * (1 + critRate * (critDmg - 1))
   }
   return {
-    globalHit: k, hitNo, cardPct: card.pct, multFactor: { value: multValue, sources: multSources }, additive,
+    globalHit: k, hitNo, cardPct: card.pct, potential, multFactor: { value: multValue, sources: multSources }, additive,
     weakness, vulnerable, enemyDr, weaknessDebuff, ravaged, cardMult, stat, constant: settings.atkConstant,
     elemDmg, mechDmg, enemyDef, critDmg, critRate, critDmgSources, critRateSources, nonCrit, crit, expected,
   }

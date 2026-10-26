@@ -23,6 +23,11 @@ export function SettingsTab() {
               onChange={(v) => update((d) => { (d.settings[s.key] as number) = v })} />
           ))}
         </div>
+        <label className="check">
+          <input type="checkbox" checked={data.settings.potentialFixed}
+            onChange={(e) => update((d) => { d.settings.potentialFixed = e.target.checked })} />
+          Card upgrade potentials also raise Fixed damage (Unconfirmed: test in-game)
+        </label>
         <button className="btn" onClick={() => update((d) => { d.settings = { ...DEFAULT_SETTINGS } })}>Reset rules to defaults</button>
       </Section>
       <Section title="Backup">

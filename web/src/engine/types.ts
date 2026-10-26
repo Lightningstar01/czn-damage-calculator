@@ -86,6 +86,8 @@ export interface CharacterPreset {
   potentials?: PotentialNode[]
   /** Manifest Ego levels (dupes); their buffs are effects with egoLevel set. */
   manifestEgo?: EgoLevel[]
+  /** The Manifest Ego level that raises the Basic / Signature Card Upgrade potentials, and by how many levels (from its text). */
+  potentialEgo?: { level: number; levels: number }
 }
 
 /** A Potential node ('3-1') or a Manifest Ego level (dupes, 1-6), as Prydwen lists them. Reference text. */
@@ -96,6 +98,12 @@ export interface KitEntry {
 export interface PotentialNode extends KitEntry { node: string }
 export interface EgoLevel extends KitEntry { level: number }
 export const MAX_EGO_LEVEL = 6
+/** Highest Basic / Signature Card Upgrade level you can set on the Potential screen (Manifest Ego adds more). */
+export const MAX_POTENTIAL_LEVEL = 10
+
+/** Potential that raises a card's damage: Basic Card Upgrade (Basic cards) or Signature Card Upgrade
+ * (Prydwen: 'Unique Card Upgrade'; the character's other cards, generated ones included; not Ego skills). */
+export type PotentialUpgrade = 'Basic' | 'Signature'
 
 export const CARD_CATEGORIES = ['Starting Card', 'Unique Card', 'Epiphany Card', 'Ego Skill', 'Generated Card'] as const
 
@@ -196,6 +204,10 @@ export interface Settings {
   multMode: MultMode
   moralePerStack: number
   moraleMax: number
+  /** Card damage per Basic / Signature Card Upgrade level (0.02 = +2% of the base). */
+  potentialPerLevel: number
+  /** Whether those upgrades also raise Fixed damage (Unconfirmed). */
+  potentialFixed: boolean
 }
 
 // ---------------------------------------------------------------- saved data (per character)
@@ -228,6 +240,9 @@ export interface Build {
   weaknessDebuff: number
   /** Manifest Ego level (dupes), 0-6: unlocks the character's effects with an egoLevel. */
   egoLevel: number
+  /** Basic / Signature Card Upgrade potential levels, 0-10 (Manifest Ego levels are added on top). */
+  basicLevel: number
+  signatureLevel: number
   /** Preset effect id -> switch. Missing = on (default stacks). */
   presetSwitches: Record<string, Switch>
 }
@@ -271,8 +286,11 @@ export interface Card {
   tags: string
   scaling: Scaling
   kind: DamageKind
-  /** Damage % per hit as shown in-game (1.32 = 132%); for Fixed, damage per hit. */
+  /** Damage % per hit (1.32 = 132%); for Fixed, damage per hit. Base value (without potentials) when upgrade is set,
+   * otherwise as shown in-game. */
   pct: number
+  /** Potential that raises this card's damage; missing = none (pct is then the in-game value). */
+  upgrade?: PotentialUpgrade
   hits: number
   weaknessApplies: boolean
   targetRavaged: boolean

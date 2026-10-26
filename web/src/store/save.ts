@@ -1,10 +1,11 @@
 // Saved data: defaults, versioning/migrations, browser storage, backup files.
 import { PRESETS } from '../data/presets'
+import { cardUpgrade } from '../engine/calc'
 import { DEFAULT_SETTINGS } from '../data/settings'
 import { ELEMENTS, CARD_TYPES, FRAGMENT_SET_PICKS, type Build, type Card, type CardPreset, type CharacterSave, type Element, type SaveData, type ScreenStats, type UserBoost, type UserBuff } from '../engine/types'
 
 /** Bump when the save format changes, and add a step to migrate(). */
-export const SAVE_VERSION = 7
+export const SAVE_VERSION = 8
 const STORAGE_KEY = 'czn-damage-calculator'
 
 /** Mei Lin's card preset ids before v6 -> Prydwen card ids. */
@@ -29,7 +30,7 @@ export function newStats(): ScreenStats {
 export function newBuild(name: string): Build {
   return {
     id: newId(), name, partner: '', fragments: Array(FRAGMENT_SET_PICKS).fill(''), stats: newStats(), enemyDefMult: 1, enemyDr: 0,
-    morale: 0, vulnerable: 0, weaknessDebuff: 0, egoLevel: 0, presetSwitches: {},
+    morale: 0, vulnerable: 0, weaknessDebuff: 0, egoLevel: 0, basicLevel: 0, signatureLevel: 0, presetSwitches: {},
   }
 }
 
@@ -48,7 +49,7 @@ export function cardFromPreset(p: CardPreset, element: Element): Card {
   return {
     ...newCard(p.element ?? element), name: p.name, cardType: p.cardType, cost: p.cost ?? null, tags: p.tags ?? '', scaling: p.scaling ?? 'ATK',
     kind: p.kind ?? 'Normal', pct: p.pct, hits: p.hits, weaknessApplies: !!p.weaknessApplies, targetRavaged: !!p.targetRavaged,
-    preset: p.id,
+    upgrade: cardUpgrade(p), preset: p.id,
   }
 }
 
@@ -81,7 +82,7 @@ export function migrate(raw: unknown): SaveData {
   if (!raw || typeof raw !== 'object' || !('characters' in raw)) throw new Error("This file isn't a calculator save.")
   const data = raw as SaveData
   if ((data.version ?? 0) > SAVE_VERSION) throw new Error('This save is from a newer version of the calculator.')
-  // Future migrations go here: if (data.version === 7) { ...; data.version = 8 }
+  // Future migrations go here: if (data.version === 8) { ...; data.version = 9 }
   if ((data.version ?? 1) <= 1) {
     // v2: memory fragment set picks per build
     for (const cs of Object.values(data.characters ?? {})) {
@@ -137,6 +138,25 @@ export function migrate(raw: unknown): SaveData {
       for (const b of cs.builds ?? []) b.egoLevel ??= 0
     }
     data.version = 7
+  }
+  if (data.version === 7) {
+    // v8: potentials are modeled. Card upgrade levels per build start at 0. A card still at its preset's base %
+    // gets the preset's upgrade; cards typed by hand keep their in-game % (no upgrade), so no result changes.
+    for (const [name, cs] of Object.entries(data.characters ?? {})) {
+      for (const b of cs.builds ?? []) {
+        b.basicLevel ??= 0
+        b.signatureLevel ??= 0
+      }
+      const presetCards = PRESETS.characters.find((c) => c.name === name)?.cards ?? []
+      for (const c of cs.cards ?? []) {
+        const p = c.preset ? presetCards.find((x) => x.id === c.preset) : undefined
+        if (p && c.upgrade === undefined && c.pct === p.pct) {
+          const up = cardUpgrade(p)
+          if (up) c.upgrade = up
+        }
+      }
+    }
+    data.version = 8
   }
   return {
     ...defaultSave(),

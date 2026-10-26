@@ -2,9 +2,9 @@
 import { useState } from 'react'
 import { PRESETS } from '../data/presets'
 import { findCharacter, findFragmentSet, findPartner, fragmentPiecesUsed, parseStatValue } from '../engine/buffs'
-import { CATEGORIES, FRAGMENT_SET_PICKS, MAX_EGO_LEVEL, FRAGMENT_SLOTS, STATS, type ScreenStats, type StatName } from '../engine/types'
+import { CATEGORIES, FRAGMENT_SET_PICKS, MAX_EGO_LEVEL, MAX_POTENTIAL_LEVEL, FRAGMENT_SLOTS, STATS, type ScreenStats, type StatName } from '../engine/types'
 import { duplicateBuild, newBoost } from '../store/save'
-import { useCharacter } from '../store/store'
+import { useCharacter, useStore } from '../store/store'
 import { pct } from './format'
 import { NumberField, Section, SelectField, SwitchControl, TextField } from './inputs'
 import { PresetList } from './PresetList'
@@ -15,6 +15,7 @@ export function SetupTab() {
       <BuildSection />
       <PartnerSection />
       <EgoSection />
+      <PotentialSection />
       <FragmentSection />
       <StatsSection />
       <Section title="Stat boosts from presets" help="The character's, partner's and memory fragment sets' stat effects. Switch them off per build to test without them. Fragment set stats are already on the stats screen, so they are listed for reference only.">
@@ -80,6 +81,35 @@ function EgoSection() {
           </li>
         ))}
       </ul>
+    </Section>
+  )
+}
+
+/** Basic / Signature Card Upgrade potential levels per build (Manifest Ego can add levels). */
+function PotentialSection() {
+  const { name, build, updateBuild } = useCharacter()!
+  const { data } = useStore()
+  const ch = findCharacter(PRESETS, name)
+  const ego = ch?.potentialEgo && (build.egoLevel ?? 0) >= ch.potentialEgo.level ? ch.potentialEgo : undefined
+  const per = data.settings.potentialPerLevel
+  const levels = Array.from({ length: MAX_POTENTIAL_LEVEL + 1 }, (_, i) => ({ value: String(i), label: `${i} (+${pct(i * per, 0)})` }))
+  const field = (label: string, key: 'basicLevel' | 'signatureLevel') => {
+    const set = build[key] ?? 0
+    return (
+      <SelectField label={label} value={String(set)} options={levels}
+        help={ego ? `E${ego.level} adds ${ego.levels} levels: total ${set + ego.levels} (+${pct((set + ego.levels) * per, 0)}).` : undefined}
+        onChange={(v) => updateBuild((b) => { b[key] = Number(v) })} />
+    )
+  }
+  return (
+    <Section title="Potentials" help="Card upgrade levels from the Potential screen: each level raises the card's base damage by 2%. Basic Card Upgrade: Basic cards. Signature Card Upgrade (Prydwen: Unique Card Upgrade): the character's other cards, generated ones too; not Ego skills. Other potentials are in the stats screen.">
+      <div className="grid2">
+        {field('Basic Card Upgrade', 'basicLevel')}
+        {field('Signature Card Upgrade', 'signatureLevel')}
+      </div>
+      {ch?.potentialEgo && (
+        <p className="muted">E{ch.potentialEgo.level} adds {ch.potentialEgo.levels} levels to both{ego ? ' (on for this build)' : ''}.</p>
+      )}
     </Section>
   )
 }

@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { PRESETS } from '../data/presets'
 import { playCard } from '../engine/calc'
 import { findCharacter } from '../engine/buffs'
-import { CARD_CATEGORIES, CARD_TYPES, ELEMENTS, type Card, type CardPreset, type CardType, type DamageKind, type Element, type Scaling } from '../engine/types'
+import { CARD_CATEGORIES, CARD_TYPES, ELEMENTS, type Card, type CardPreset, type CardType, type DamageKind, type Element, type PotentialUpgrade, type Scaling } from '../engine/types'
 import { cardFromPreset, newCard, newId } from '../store/save'
 import { useCharacter } from '../store/store'
 import { pct } from './format'
@@ -25,7 +25,7 @@ export function CardsTab() {
 const COSTS = Array.from({ length: 10 }, (_, i) => String(i))
 
 function cardSummary(c: Card): string {
-  const amount = c.scaling === 'Fixed' ? `${c.pct} fixed` : pct(c.pct, 2)
+  const amount = `${c.scaling === 'Fixed' ? `${c.pct} fixed` : pct(c.pct, 2)}${c.upgrade ? ` base (${c.upgrade})` : ''}`
   return `${c.cost === null ? '' : `${c.cost} AP · `}${c.cardType} · ${amount} × ${c.hits} hit${c.hits === 1 ? '' : 's'}${c.scaling === 'DEF' ? ' · DEF' : ''}${c.kind !== 'Normal' ? ` · ${c.kind}` : ''}`
 }
 
@@ -48,7 +48,7 @@ function PresetPicker() {
   const counts = new Map<string, number>()
   for (const c of cs.cards) if (c.preset) counts.set(c.preset, (counts.get(c.preset) ?? 0) + 1)
   return (
-    <Section title={`${ch.name}'s cards`} help="Base values, without potentials: after adding, edit the damage % to match the card in-game. Buffs a card gives show on the Buffs tab while it's in the library.">
+    <Section title={`${ch.name}'s cards`} help="Base values, without potentials: the build's Basic / Signature Card Upgrade levels (Setup tab) are applied. Buffs a card gives show on the Buffs tab while it's in the library.">
       {categories.map((cat) => (
         <div key={cat}>
           {categories.length > 1 && <div className="muted">{cat}s</div>}
@@ -94,7 +94,7 @@ function LibrarySection() {
   const ch = findCharacter(PRESETS, name)
   const presetCards = ch?.cards ?? []
   return (
-    <Section title="Card library" help="Enter each card's damage % exactly as the card shows it in-game (it already includes potentials and epiphany), or add one from the character's cards below. Cards are shared by all builds."
+    <Section title="Card library" help="Add cards from the character's cards below (base %, the build's potentials applied), or add your own. For a card with no potential upgrade, enter the damage % exactly as the card shows it in-game. Cards are shared by all builds."
       actions={<button className="btn small" onClick={() => {
         const c = newCard(ch?.element ?? ELEMENTS[0])
         updateCs((x) => { x.cards.push(c) })
@@ -131,7 +131,13 @@ function LibrarySection() {
                   <SelectField label="Cost (AP)" value={c.cost === null ? '' : String(c.cost)}
                     options={[{ value: '', label: 'None' }, ...new Set([...COSTS, ...(c.cost === null ? [] : [String(c.cost)])])]}
                     help="Buffs can target '1-cost' or '2+ cost'." onChange={(v) => upd((x) => { x.cost = v === '' ? null : Number(v) })} />
-                  <NumberField label={c.scaling === 'Fixed' ? 'Damage per hit' : 'Damage % per hit'} pct={c.scaling !== 'Fixed'} value={c.pct}
+                  <SelectField label="Potential upgrade" value={c.upgrade ?? ''}
+                    options={[{ value: '', label: 'None' }, { value: 'Basic', label: 'Basic Card Upgrade' }, { value: 'Signature', label: 'Signature Card Upgrade' }]}
+                    help="Basic cards: Basic. The character's other cards (generated ones too): Signature. Ego skills and cards from other characters: None."
+                    onChange={(v) => upd((x) => { if (v) x.upgrade = v as PotentialUpgrade; else delete x.upgrade })} />
+                  <NumberField label={`${c.scaling === 'Fixed' ? 'Damage per hit' : 'Damage % per hit'}${c.upgrade ? ' (base)' : ' (in-game)'}`}
+                    pct={c.scaling !== 'Fixed'} value={c.pct}
+                    help={c.upgrade ? "Without potentials: the build's card upgrade level is applied." : 'As the card shows it in-game.'}
                     onChange={(v) => upd((x) => { x.pct = v })} />
                   <NumberField label="Hits" value={c.hits} min={0} onChange={(v) => upd((x) => { x.hits = Math.floor(v) })} />
                   <SelectField<Scaling> label="Scaling" value={c.scaling} options={['ATK', 'DEF', 'Fixed']}

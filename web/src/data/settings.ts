@@ -12,6 +12,7 @@ export const SETTING_INFO: { key: keyof Settings; label: string; pct: boolean; n
   { key: 'ravaged', label: 'Ravaged: extra damage taken (Unconfirmed)', pct: true, note: "Ravaged enemies take more damage; size unknown. Applies to cards with 'Target Ravaged' on" },
   { key: 'moralePerStack', label: 'Morale per stack', pct: true, note: 'Game8: +20% additive per stack' },
   { key: 'moraleMax', label: 'Morale max stacks', pct: false, note: 'Owner' },
+  { key: 'potentialPerLevel', label: 'Card upgrade potential per level', pct: true, note: "Owner and the in-game text: Basic / Signature Card Upgrade raise the card's base damage by 2% per level (max 10 = 20%)" },
 ]
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -26,4 +27,6 @@ export const DEFAULT_SETTINGS: Settings = {
   multMode: 'Summed',
   moralePerStack: 0.2,
   moraleMax: 20,
+  potentialPerLevel: 0.02,
+  potentialFixed: false,
 }

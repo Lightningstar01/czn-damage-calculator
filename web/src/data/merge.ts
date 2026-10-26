@@ -1,6 +1,15 @@
 // Combines a character imported from Prydwen with our additions (buffs, notes, corrections).
 import type { CardPreset, CharacterAdditions, CharacterPreset, ImportedCharacter } from '../engine/types'
 
+/** The Manifest Ego level whose text raises the card upgrade potentials ('...Card Upgrade]... by 3'), if any. */
+export function potentialEgo(ch: ImportedCharacter): CharacterPreset['potentialEgo'] {
+  for (const m of ch.manifestEgo) {
+    const hit = /Basic Card Upgrade\].*?by (\d+)/s.exec(m.text)
+    if (hit) return { level: m.level, levels: Number(hit[1]) }
+  }
+  return undefined
+}
+
 const joinNotes = (...notes: (string | undefined)[]) => notes.filter(Boolean).join('. ') || undefined
 
 export function mergeCharacter(imported: ImportedCharacter, additions: CharacterAdditions = {}): CharacterPreset {
@@ -20,6 +29,7 @@ export function mergeCharacter(imported: ImportedCharacter, additions: Character
     cards,
     potentials: imported.potentials,
     manifestEgo: imported.manifestEgo,
+    potentialEgo: potentialEgo(imported),
   }
 }
 

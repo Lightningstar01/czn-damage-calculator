@@ -38,11 +38,20 @@ function factorChip(key: string, group: ChipGroup, label: string, f: Factor | nu
   return f ? { key, op: '×', group, label, value: times(f.value), sources: f.sources, note } : null
 }
 
+function potentialChip(f: Factor, note: string): Chip {
+  return { key: 'pot', op: '×', group: 'card', label: 'Potential', value: times(f.value), sources: f.sources, note }
+}
+
 function chipsFor(hit: Hit, card: Card): { inner: Chip[]; outer: Chip[] } {
   if (card.scaling === 'Fixed') {
-    return { inner: [], outer: [{ key: 'fixed', op: '', group: 'card', label: 'Fixed', value: num(card.pct), note: 'Fixed damage ignores every multiplier and crit.' }] }
+    return { inner: [], outer: [
+      { key: 'fixed', op: '', group: 'card', label: 'Fixed', value: num(card.pct), note: 'Fixed damage ignores every multiplier and crit.' },
+      ...(hit.potential ? [potentialChip(hit.potential, 'Potential upgrades apply to Fixed damage (Settings).')] : []),
+    ] }
   }
-  const inner: Chip[] = [{ key: 'card', op: '', group: 'card', label: card.name || 'Card', value: pct(hit.cardPct, 2), note: 'Damage % as shown on the card in-game.' }]
+  const inner: Chip[] = [{ key: 'card', op: '', group: 'card', label: card.name || 'Card', value: pct(hit.cardPct, 2),
+    note: hit.potential ? 'Base damage % of the card (without potentials).' : 'Damage % as shown on the card in-game.' }]
+  if (hit.potential) inner.push(potentialChip(hit.potential, `In-game card %: ${pct(hit.cardPct * hit.potential.value, 2)}.`))
   if (hit.multFactor.sources.length) {
     inner.push({ key: 'mult', op: '×', group: 'mult', label: 'Mult', value: times(hit.multFactor.value), sources: hit.multFactor.sources,
       note: 'Buffs without "+" combine here (Settings: Summed or Chained).' })

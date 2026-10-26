@@ -351,6 +351,68 @@ describe('card presets', () => {
   })
 })
 
+describe('potentials', () => {
+  const mei = PRESETS.characters.find((c) => c.name === 'Mei Lin')!
+  const preset = (id: string) => mei.cards!.find((p) => p.id === id)!
+
+  it('every character has a Manifest Ego level that adds 3 card upgrade levels (E3 or E5)', () => {
+    for (const ch of PRESETS.characters) {
+      expect(ch.potentialEgo?.levels).toBe(3)
+      expect([3, 5]).toContain(ch.potentialEgo?.level)
+    }
+  })
+
+  it('preset cards: Basic cards Basic, Ego skills none, the rest (generated too) Signature', () => {
+    expect(cardFromPreset(preset('card-338'), 'Passion').upgrade).toBe('Basic')
+    expect(cardFromPreset(preset('card-339'), 'Passion').upgrade).toBe('Basic')
+    expect(cardFromPreset(preset('card-337'), 'Passion').upgrade).toBeUndefined()
+    for (const id of ['card-340', 'card-346', 'card-364']) expect(cardFromPreset(preset(id), 'Passion').upgrade).toBe('Signature')
+    expect(newCard('Passion').upgrade).toBeUndefined()
+  })
+
+  it('card % = base x (1 + 2% per level), plus the Manifest Ego levels once unlocked', () => {
+    const cs = newCharacterSave()
+    const [a] = cs.builds
+    a.stats.attack = 1000
+    const strike = cardFromPreset(preset('card-338'), 'Passion'), spire = cardFromPreset(preset('card-346'), 'Passion')
+    const own = { ...newCard('Passion'), pct: 1.5 }
+    cs.cards.push(strike, spire, own)
+    cs.rotation = plays(strike.id, spire.id, own.id)
+    const mults = () => computeBuild(PRESETS, 'Mei Lin', cs, a, settings).plays.map((p) => p.hits[0].cardMult)
+    expect(mults()).toEqual([strike.pct, spire.pct, 1.5].map((x) => expect.closeTo(x)))
+    a.basicLevel = 10
+    a.signatureLevel = 6
+    expect(mults()).toEqual([strike.pct * 1.2, spire.pct * 1.12, 1.5].map((x) => expect.closeTo(x)))
+    a.egoLevel = mei.potentialEgo!.level
+    a.presetSwitches['Mei Lin|e4-atk'] = false
+    expect(mults()).toEqual([strike.pct * 1.26, spire.pct * 1.18, 1.5].map((x) => expect.closeTo(x)))
+  })
+
+  it('Fixed damage gets the upgrade only with the setting on', () => {
+    const cs = newCharacterSave()
+    const [a] = cs.builds
+    a.signatureLevel = 10
+    const fixed: Card = { ...newCard('Passion'), scaling: 'Fixed', pct: 100, upgrade: 'Signature' }
+    cs.cards.push(fixed)
+    cs.rotation = plays(fixed.id)
+    expect(computeBuild(PRESETS, 'Mei Lin', cs, a, settings).nonCrit).toBeCloseTo(100)
+    expect(computeBuild(PRESETS, 'Mei Lin', cs, a, { ...settings, potentialFixed: true }).nonCrit).toBeCloseTo(120)
+  })
+
+  it('migrate: levels 0; preset cards still at the base % get their upgrade, edited ones keep their in-game %', () => {
+    const cards = [
+      { preset: 'card-338', pct: preset('card-338').pct },
+      { preset: 'card-346', pct: 9.99 },
+      { preset: 'card-337', pct: preset('card-337').pct },
+      { pct: 1 },
+    ]
+    const old = { version: 7, characters: { 'Mei Lin': { builds: [{ id: 'a' }], cards, rotation: [] } } }
+    const cs = migrate(old).characters['Mei Lin']
+    expect(cs.builds[0]).toMatchObject({ basicLevel: 0, signatureLevel: 0 })
+    expect(cs.cards.map((c) => c.upgrade)).toEqual(['Basic', undefined, undefined, undefined])
+  })
+})
+
 describe('rotation plays', () => {
   it('a play can override the hits; 2+ hits buffs follow the play', () => {
     const cs = newCharacterSave()

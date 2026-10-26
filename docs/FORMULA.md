@@ -124,7 +124,7 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
   (2026-10-25); other sites (OffBanner outdated, Game8 adds "+" everywhere) are not used.
   `scripts/import_prydwen.py` writes `web/src/data/prydwen/<slug>.json`; our buffs and notes go in
   `web/src/data/characters/<slug>.ts`. Picking a card copies it into the card library with the
-  **base** values; the owner edits the % to the in-game number (which includes potentials).
+  **base** values; the build's card upgrade potentials are applied (below).
 - Importer reading of the card text (check against the game; corrections go in the additions file):
   damage % and hits from the first "N% Damage" / "N% x H Damage" / "N% Damage x H" phrase;
   "Defense-based" = DEF scaling, "Fixed" = Fixed; Piercing only ignores enemy shields (User,
@@ -134,13 +134,27 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
   Skill with tag "Ego Skill" and no AP cost: damaging ego skills are not Attack cards (User,
   2026-10-25). X-cost/unplayable cards have no cost and a tag. Status cards are type Skill with tag "Status".
 - Buffs are added character by character with the owner (only Mei Lin's so far).
-- **Potentials** are imported as reference text only: their stats are on the stats screen and
-  their card upgrades in the in-game card % (User, 2026-10-25), including the Attack-threshold
-  nodes. Not added again.
+- **Potentials**: stat nodes are on the stats screen (User, 2026-10-25), so they're reference text.
+  The card upgrade nodes are modeled (website only, User 2026-10-25):
+  - **Basic Card Upgrade** raises Basic cards; **Signature Card Upgrade** (in-game name; Prydwen
+    says "Unique Card Upgrade") raises all the character's other cards: the non-basic starting
+    card, the 4 other cards, their epiphanies and the cards they generate, whatever the Unique tag
+    says. Not Ego skills (their upgrades come from Manifest Ego). Common/Neutral Card Upgrade
+    (cards from other characters) is not modeled yet.
+  - In-game card % = base % x (1 + 2% x level) (Settings: per level). Levels 0-10 per build
+    (default 0; in-game "by 12%" = level 6). The Manifest Ego level whose text says "+3 levels" (E5 for most,
+    E3 for some, read from the import) adds 3 (max 13 = 26%).
+  - Raises ATK- and DEF-scaling damage (User). Fixed damage: **Unconfirmed**, a Settings toggle
+    (default off).
+  - Library cards store the base % with their upgrade (Basic / Signature / none). Own cards with no
+    upgrade use the % as shown in-game. Save v8: preset cards still at the base % got their upgrade;
+    edited ones kept their in-game % with no upgrade.
+  - Not yet modeled: conditional potential buffs that aren't on the stats screen (e.g. Mei Lin 5-1
+    "+5% Strike Damage"); add them as buffs if the in-game card % doesn't already show them.
 - **Manifest Ego (dupes)** can't be switched off in-game, so each build has a level E0-E6 (User,
   2026-10-25). Ego buffs carry `egoLevel` and only count (and only show on the Buffs tab) from that level; set another build to a
-  different level to see what a dupe adds. Known gap: an E level that raises potential levels
-  (Mei Lin's E5) changes the in-game card %, which the calculator doesn't recompute.
+  different level to see what a dupe adds. The E level that raises potential levels counts in the
+  card upgrade factor (above).
 - A card's buffs (e.g. Flame Dragon's Jewel's Attack damage, Spirit of the Aromata's per-card
   stacks) show as preset buffs while the card is in the library, on by default, switch per build.
   The "+" rule applies: "by 20%" = multiplicative, "+20%" = additive.

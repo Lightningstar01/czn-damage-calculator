@@ -12,7 +12,7 @@ const aromataNote = 'One stack per card used after it this turn: set the stacks 
 const awakensNote = 'Flame Dragon Awakens: for 1 turn after one of her attacks Ravages an enemy. Switch off if it isn\'t up'
 
 export default {
-  notes: 'Potentials are in the stats screen and the in-game card %. Not modeled: E2 Ember, E3 (set the hits per play), E5, E6',
+  notes: 'Stat potentials are in the stats screen; card upgrades are set on the Setup tab. Not modeled: E2 Ember, E3 (set the hits per play), E6, potential 5-1 (+5% Strike damage)',
   // Manifest Ego (dupes): on from the build's level
   effects: [
     { kind: 'Buff', id: 'e1-crit', name: "E1: Sovereignty crits Ravaged targets", category: 'Ego Manifestation', type: 'Crit Chance',
