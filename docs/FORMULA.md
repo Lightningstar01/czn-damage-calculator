@@ -173,6 +173,13 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
     it, 1; assumes one enemy). **Unconfirmed**: the target holds at most 5 Embers (a counter is
     capped at the smallest max stacks of the buffs reading it).
   - Not modeled: Jewel IV's Ember on crit, Sovereignty's "Destroy: Retain Embers", E6.
+- **Card % in hand / on target** (User, 2026-10-25), website only. The Results tab shows both for
+  each hit. In hand = card % x Mult + Add, without the buffs that need a Ravaged target (Ember,
+  Marianne's and E4's vs Ravaged). On target = the full card multiplier: those buffs, then x Weakness
+  DMG, Vulnerable, enemy damage reduction, Weakness debuff and Ravaged. Owner's check: Mei Lin's
+  Strike (Basic Card Upgrade 10, 5-1, Jewel, 1 Morale, Scarab, Obsidian Sword, Emblem) shows 251% in
+  hand and 357% on target in-game; the calculator gives 250.6% and 355.9% (x 142% Weakness DMG). The
+  ~0.3% gap on target is unexplained (game rounding or hidden decimals?).
 - **Manifest Ego (dupes)** can't be switched off in-game, so each build has a level E0-E6 (User,
   2026-10-25). Ego buffs carry `egoLevel` and only count (and only show on the Buffs tab) from that level; set another build to a
   different level to see what a dupe adds. The E level that raises potential levels counts in the

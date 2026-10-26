@@ -10,6 +10,8 @@ export interface Source {
   value: number
   /** How the value is shown: '%' (fraction) or 'flat'. */
   unit: '%' | 'flat' | 'x'
+  /** Only counts once the card targets the enemy (a 'Ravaged only' buff such as Ember), so not in the in-hand card %. */
+  onTarget?: boolean
 }
 
 /** Stat value as typed: '16%' -> 0.16, '74' -> 74, '+5%' -> 0.05. */
@@ -263,7 +265,8 @@ export function cardBuffs(buffs: ActiveBuff[], card: Card): CardBuffs {
       'Card %': out.cardPct }[buff.type]
     const bucket = group[buff.hitScope === 'First hit only' ? 'first' : 'all']
     bucket.value += v
-    bucket.sources.push({ label: buff.hitScope === 'First hit only' ? `${label} (first hit)` : label, value: v, unit: '%' })
+    bucket.sources.push({ label: buff.hitScope === 'First hit only' ? `${label} (first hit)` : label, value: v, unit: '%',
+      ...(buff.condition === 'Ravaged only' ? { onTarget: true } : {}) })
   }
   return out
 }

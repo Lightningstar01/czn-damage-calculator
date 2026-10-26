@@ -14,6 +14,7 @@ import { checkAdditions } from '../src/data/merge'
 import { DEFAULT_SETTINGS } from '../src/data/settings'
 import { cardFromPreset, newBuff, newBuild, newCard, newCharacterSave, migrate, defaultSave, SAVE_VERSION } from '../src/store/save'
 import type { Build, Card, CharacterSave, Presets } from '../src/engine/types'
+import fixture from './fixtures/workbook.json'
 
 const presets: Presets = {
   characters: [...PRESETS.characters, { name: 'Testy', element: 'Order', class: 'Vanguard', effects: [] }],
@@ -543,5 +544,27 @@ describe('parsing', () => {
     expect(migrate({ characters: {}, settings: {} }).settings.atkConstant).toBe(0.35)
     expect(() => migrate({ foo: 1 })).toThrow()
     expect(migrate(defaultSave()).version).toBe(SAVE_VERSION)
+  })
+})
+
+describe('card % in hand and on target', () => {
+  it("matches the owner's Strike: 251% in hand, ~357% on target (owner, 2026-10-25)", () => {
+    // The owner's saved Mei Lin (workbook) + Flame Dragon's Jewel, 1 Morale, Strike at base 100% with Basic Card Upgrade 10
+    const save = migrate(fixture.save)
+    const cs = save.characters['Mei Lin']
+    const a = cs.builds[0]
+    a.morale = 1
+    a.basicLevel = 10
+    const mei = PRESETS.characters.find((c) => c.name === 'Mei Lin')!
+    Object.assign(cs.cards[0], { pct: 1, upgrade: 'Basic' })
+    cs.cards.push(cardFromPreset(mei.cards!.find((p) => p.id === 'card-340')!, 'Passion'))
+    const hit = () => computeBuild(PRESETS, 'Mei Lin', cs, a, settings).plays[0].hits[0]
+    // 132% x (1 + 20% Scarab + 12% Sword + 20% Jewel) + 30% Emblem + 20% Morale; x 142% Weakness DMG on target
+    expect(hit().inHand).toBeCloseTo(2.5064, 4)
+    expect(hit().cardMult).toBeCloseTo(2.5064 * 1.42, 4)
+    // Buffs that need a Ravaged target (Ember, Marianne) only show on target
+    cs.cards[0].targetRavaged = true
+    expect(hit().inHand).toBeCloseTo(2.5064, 4)
+    expect(hit().cardMult).toBeCloseTo((1.32 * 1.67 + 0.5 + 0.3) * 1.42, 4)
   })
 })

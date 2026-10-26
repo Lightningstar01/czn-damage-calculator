@@ -39,6 +39,9 @@ export interface Hit {
   enemyDr: Factor | null
   weaknessDebuff: Factor | null
   ravaged: Factor | null
+  /** Card % as shown in hand: (card % x Mult + Add), without the buffs that need a target (owner, 2026-10-25). */
+  inHand: number
+  /** Card % when targeting the enemy: everything up to here (Weakness DMG, Vulnerable, Ravaged...). */
   cardMult: number
   /** ATK, or ATK x 0.3 + DEF x 2.1 for DEF cards. */
   stat: Factor
@@ -209,11 +212,14 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
   }
   const pct = card.pct * (potential?.value ?? 1)
   const multSources = [...cb.multiplicative.all.sources, ...(first ? cb.multiplicative.first.sources : [])]
-  const multValue = settings.multMode === 'Chained'
-    ? multSources.reduce((a, s) => a * (1 + s.value), 1)
-    : 1 + multSources.reduce((a, s) => a + s.value, 0)
+  const combine = (sources: Source[]) => settings.multMode === 'Chained'
+    ? sources.reduce((a, s) => a * (1 + s.value), 1)
+    : 1 + sources.reduce((a, s) => a + s.value, 0)
+  const multValue = combine(multSources)
   const addSources = [...cb.additive.all.sources, ...(first ? cb.additive.first.sources : [])]
   const additive = { value: addSources.reduce((a, s) => a + s.value, 0), sources: addSources }
+  const inHand = pct * combine(multSources.filter((s) => !s.onTarget))
+    + addSources.filter((s) => !s.onTarget).reduce((a, s) => a + s.value, 0)
 
   const weakApplies = card.weaknessApplies || cb.weaknessAttack.length > 0
   const weakness: Factor | null = weakApplies ? {
@@ -274,7 +280,7 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
   }
   return {
     globalHit: k, hitNo, cardPct: card.pct, potential, multFactor: { value: multValue, sources: multSources }, additive,
-    weakness, vulnerable, enemyDr, weaknessDebuff, ravaged, cardMult, stat, constant: settings.atkConstant,
+    weakness, vulnerable, enemyDr, weaknessDebuff, ravaged, inHand, cardMult, stat, constant: settings.atkConstant,
     elemDmg, mechDmg, enemyDef, critDmg, critRate, critDmgSources, critRateSources, nonCrit, crit, expected,
   }
 }

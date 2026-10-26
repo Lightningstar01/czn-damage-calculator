@@ -28,6 +28,9 @@ interface Chip {
   note?: string
 }
 
+const HAND_NOTE = 'Card % as shown on the card in your hand: (card % × Mult + Add), without the buffs that need a target (Ember, vs Ravaged).'
+const TARGET_NOTE = 'Card % when you target the enemy: in hand plus Ember / vs Ravaged buffs, × Weakness DMG, Vulnerable, enemy damage reduction, Weakness debuff and Ravaged.'
+
 function sourceText(s: Source): string {
   if (s.unit === '%') return `${s.value >= 0 ? '+' : ''}${pct(s.value)}`
   if (s.unit === 'x') return s.value ? times(s.value) : ''
@@ -82,7 +85,12 @@ export function FormulaStrip({ hit, card, showCrit = true }: { hit: Hit; card: C
   const critChip: Chip = { key: 'crit', op: '×', group: 'crit', label: 'Crit DMG', value: pct(hit.critDmg),
     sources: [...hit.critDmgSources, ...hit.critRateSources.map((s) => ({ ...s, label: `Crit Chance: ${s.label}` }))],
     note: `Crit hit = non-crit × Crit DMG. Expected uses ${pct(hit.critRate)} crit rate: × (1 + rate × (Crit DMG − 1)).` }
-  const selected = [...all, critChip].find((c) => c.key === sel)
+  const cardPcts: Chip[] = card.scaling === 'Fixed' ? [] : [
+    { key: 'hand', op: '', group: 'card', label: 'In hand', value: pct(hit.inHand, 1), note: HAND_NOTE },
+    { key: 'target', op: '', group: 'weak', label: 'On target', value: pct(hit.cardMult, 1), note: TARGET_NOTE },
+  ]
+  const selected = [...all, ...cardPcts, critChip].find((c) => c.key === sel)
+
   const chip = (c: Chip) => (
     <Fragment key={c.key}>
       {c.op && <span className="op">{c.op}</span>}
@@ -102,6 +110,7 @@ export function FormulaStrip({ hit, card, showCrit = true }: { hit: Hit; card: C
         <span className="op">=</span>
         <span className="chip g-result"><span className="chip-label">Hit</span><span className="chip-value">{num(hit.nonCrit)}</span></span>
       </div>
+      {cardPcts.length > 0 && <div className="strip">{cardPcts.map(chip)}</div>}
       {showCrit && card.scaling !== 'Fixed' && (
         <div className="strip crit-line">
           {chip({ ...critChip, op: '' })}
