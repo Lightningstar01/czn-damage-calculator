@@ -19,6 +19,9 @@ in battle (slot 1 always gives flat ATK; any piece may give ATK%). Those go in t
 Effects & Equipment table: Final ATK = screen ATK x (1 + ATK%) + flat ATK. **Confirmed (User):**
 Mei Lin 1033 x 1.16 + 74 = 1272, matching her in-battle Attack. Elemental DMG% uses the stat
 row for the character's element (dropdown).
+Stats-screen check (User, 2026-10-25): Mei Lin's 637 base = 622 (character + partner) + 15
+affinity; the fragments' Attack % multiply only the 622 (622 x 56.7% + 43 flat = +396; removing the
+25% piece drops 156). Her in-battle Attack is 1198 + 74 equipment = 1272, as calculated.
 
 ## 2. Card multiplier — Sourced (Prydwen), with User rules
 
@@ -42,6 +45,8 @@ Final Card Mult = ((Base + Potential additive base) x (1 + Potential mult) x Gen
   (**Unconfirmed**).
 - Same in-game test: non-crit hit 500 with Final ATK 1272.28 back-solves to an enemy DEF
   multiplier of about 0.387 (1st enemy targeted; more data needed).
+- Second test enemy (User, 2026-10-25, DEF guessed): Strike 592 and Rising Dragon Spire V 641
+  (crit 1070) non-crit both fit an enemy DEF multiplier of 0.3733 (0.3735 if the game rounds down).
 - Vulnerable x1.5, used up per hit (Prydwen; per-hit use from the owner).
 - Weakness x0.75 (Prydwen). Per-hit use is **Unconfirmed** (assumed same as Vulnerable).
 - Fixed damage ignores all multipliers (Prydwen). Whether it can crit: **Unconfirmed**, assumed not.
