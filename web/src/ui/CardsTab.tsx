@@ -22,7 +22,7 @@ export function CardsTab() {
   )
 }
 
-const COSTS = ['0', '1', '2', '3', '4', '5']
+const COSTS = Array.from({ length: 10 }, (_, i) => String(i))
 
 function cardSummary(c: Card): string {
   const amount = c.scaling === 'Fixed' ? `${c.pct} fixed` : pct(c.pct, 2)
