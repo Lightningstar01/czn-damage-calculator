@@ -272,6 +272,38 @@ describe('card presets', () => {
     expect(new Set(PRESETS.characters.map((c) => c.name)).size).toBe(PRESETS.characters.length)
     expect(checkAdditions(IMPORTED, ADDITIONS)).toEqual([])
     expect(checkAdditions(IMPORTED, { nobody: {}, 'mei-lin': { cards: { 'card-0': {} } } })).toHaveLength(2)
+    const badEgo = { ...PRESETS.characters[0].effects[0], kind: 'Buff', id: 'x', egoLevel: 7 } as never
+    expect(checkAdditions(IMPORTED, { 'mei-lin': { effects: [badEgo] } })).toHaveLength(1)
+  })
+
+  it('every character has potentials, 6 Manifest Ego levels and one Basic Skill', () => {
+    for (const ch of PRESETS.characters) {
+      expect(ch.potentials?.length).toBeGreaterThan(0)
+      expect(ch.manifestEgo?.map((m) => m.level)).toEqual([1, 2, 3, 4, 5, 6])
+      if (ch.name !== 'Maribell') expect(ch.cards!.filter((c) => c.tags?.includes('Basic Skill')).map((c) => c.name)).toHaveLength(1)
+    }
+  })
+
+  it('Manifest Ego effects only count from the build level', () => {
+    const cs = newCharacterSave()
+    const [a] = cs.builds
+    a.stats.attack = 1000
+    const strike = cardFromPreset(preset('card-338'), 'Passion')
+    cs.cards.push(strike)
+    cs.rotation = plays(strike.id)
+    const mult = () => computeBuild(PRESETS, 'Mei Lin', cs, a, settings).plays[0].hits[0].cardMult
+    expect(mult()).toBeCloseTo(1)
+    a.egoLevel = 3
+    expect(mult()).toBeCloseTo(1)
+    a.egoLevel = 4   // E4: +20% additive on Attack cards (the Ravaged part needs a Ravaged target)
+    expect(mult()).toBeCloseTo(1.2)
+    a.presetSwitches['Mei Lin|e4-atk'] = false
+    expect(mult()).toBeCloseTo(1)
+  })
+
+  it('migrate gives old builds Manifest Ego E0', () => {
+    const old = { version: 6, characters: { X: { builds: [{ id: 'a' }], cards: [], rotation: [] } } }
+    expect(migrate(old).characters.X.builds[0].egoLevel).toBe(0)
   })
 
   it('additions merge into the imported cards', () => {

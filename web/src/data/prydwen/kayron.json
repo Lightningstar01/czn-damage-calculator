@@ -46,7 +46,7 @@
    "cardType": "Skill",
    "cost": 1,
    "element": "Void",
-   "tags": "Basic",
+   "tags": "Basic, Basic Skill",
    "scaling": "ATK",
    "pct": 0,
    "hits": 0,
@@ -486,6 +486,90 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "80% damage. Heal 80%."
+  }
+ ],
+ "potentials": [
+  {
+   "node": "1",
+   "name": "Epiphany Bonus",
+   "text": "When entering Chaos, obtain 1 random Rare Card with an activated Epiphany."
+  },
+  {
+   "node": "2",
+   "name": "Basic Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Basic Cards by 2/20%."
+  },
+  {
+   "node": "3",
+   "name": "Common Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Common Cards by 2/20%."
+  },
+  {
+   "node": "3-1",
+   "name": "Basic Card Proficiency",
+   "text": "Elimination and Salvation cards have their damage and healing increased by +50%, and gain the effect to create 1 Futility card."
+  },
+  {
+   "node": "4",
+   "name": "Unique Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Unique Cards by 2/20%."
+  },
+  {
+   "node": "5",
+   "name": "Critical Chance Proficiency",
+   "text": "+2/10% Critical Chance."
+  },
+  {
+   "node": "5-1",
+   "name": "Basic Card Proficiency",
+   "text": "+5% Damage for Kayron’s Destruction Damage.\nIf Kayron’s Attack is greater than 500, an additional +5% to that value."
+  },
+  {
+   "node": "5-2",
+   "name": "Divine Epiphany Adaptation",
+   "text": "Increases the chance for a Divine Epiphany to appear by 25%."
+  },
+  {
+   "node": "6",
+   "name": "Critical Damage Proficiency",
+   "text": "2.4/12% Critical Damage."
+  },
+  {
+   "node": "7",
+   "name": "Unique Stat Upgrade",
+   "text": "If Kayron’s Attack is greater than 600, +5% Critical Damage For every 40 Attack exceeding that value, +1% (up to an additional +10%)."
+  }
+ ],
+ "manifestEgo": [
+  {
+   "level": 1,
+   "name": "Sleeping Memory",
+   "text": "When using the Echoes of True Abyss card, additionally create 2 Futility cards."
+  },
+  {
+   "level": 2,
+   "name": "Awakening Memory",
+   "text": "For every 2 Futility cards used, deal 100% damage to all enemies."
+  },
+  {
+   "level": 3,
+   "name": "Vivid Memory",
+   "text": "Add Graveyard to the target range of Futility Cards Exhausted by the Rift of Nothingness Card."
+  },
+  {
+   "level": 4,
+   "name": "Inner Memory",
+   "text": "Whenever a Futility card is used, gain 1 Paradox of Nothingness.\nParadox of Nothingness: For 1 turn(s), Kayron's attack card damage +10% (Max 3 stacks)."
+  },
+  {
+   "level": 5,
+   "name": "Complete Memory",
+   "text": "Increase the level of [Basic Card Upgrade], [Unique Card Upgrade], and [Common Card Upgrade] in Potentials by 3."
+  },
+  {
+   "level": 6,
+   "name": "Liberated Memory",
+   "text": "Whenever a Futility card is generated, there is a 50% chance of applying one of the following to a random enemy: Vulnerable, Weaken, or Injured. Apply 1 stack."
   }
  ]
 }

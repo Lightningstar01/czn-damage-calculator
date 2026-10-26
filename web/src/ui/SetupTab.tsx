@@ -1,8 +1,8 @@
-// Setup: build management, partner, memory fragment sets, stats-screen values, stat boosts, enemy.
+// Setup: build management, partner, Manifest Ego level, memory fragment sets, stats-screen values, stat boosts, enemy.
 import { useState } from 'react'
 import { PRESETS } from '../data/presets'
 import { findCharacter, findFragmentSet, findPartner, fragmentPiecesUsed, parseStatValue } from '../engine/buffs'
-import { CATEGORIES, FRAGMENT_SET_PICKS, FRAGMENT_SLOTS, STATS, type ScreenStats, type StatName } from '../engine/types'
+import { CATEGORIES, FRAGMENT_SET_PICKS, MAX_EGO_LEVEL, FRAGMENT_SLOTS, STATS, type ScreenStats, type StatName } from '../engine/types'
 import { duplicateBuild, newBoost } from '../store/save'
 import { useCharacter } from '../store/store'
 import { pct } from './format'
@@ -14,6 +14,7 @@ export function SetupTab() {
     <>
       <BuildSection />
       <PartnerSection />
+      <EgoSection />
       <FragmentSection />
       <StatsSection />
       <Section title="Stat boosts from presets" help="The character's, partner's and memory fragment sets' stat effects. Switch them off per build to test without them. Fragment set stats are already on the stats screen, so they are listed for reference only.">
@@ -52,6 +53,33 @@ function BuildSection() {
         )}
       </div>
       <p className="muted">Builds share the card list and rotation. Duplicate a build, then change one thing to compare.</p>
+    </Section>
+  )
+}
+
+/** Manifest Ego (dupes) level per build: unlocks the character's ego effects; the levels' text for reference. */
+function EgoSection() {
+  const { name, build, updateBuild } = useCharacter()!
+  const ch = findCharacter(PRESETS, name)
+  if (!ch?.manifestEgo?.length) return null
+  const level = build.egoLevel ?? 0
+  return (
+    <Section title="Manifest Ego" help="The character's dupe level for this build. Effects of higher levels are off. Set another build to a different level to see what a dupe adds.">
+      <SelectField label="Level" value={String(level)}
+        options={Array.from({ length: MAX_EGO_LEVEL + 1 }, (_, i) => ({
+          value: String(i), label: i === 0 ? 'E0 (none)' : `E${i} ${ch.manifestEgo!.find((m) => m.level === i)?.name ?? ''}`,
+        }))}
+        onChange={(v) => updateBuild((b) => { b.egoLevel = Number(v) })} />
+      <ul className="rows">
+        {ch.manifestEgo.map((m) => (
+          <li key={m.level} className={`row ${m.level <= level ? '' : 'off'}`}>
+            <div className="row-main">
+              <div className="row-title">E{m.level} {m.name}</div>
+              <div className="row-sub pre-line">{m.text}</div>
+            </div>
+          </li>
+        ))}
+      </ul>
     </Section>
   )
 }

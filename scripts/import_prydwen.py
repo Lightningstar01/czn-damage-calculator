@@ -1,6 +1,6 @@
 """Import every character and their cards from Prydwen into the website's presets.
 
-    .venv\\Scripts\\python.exe scripts/import_prydwen.py [--html saved_page.html]
+    .venv\\Scripts\\python.exe scripts/import_prydwen.py [--cache folder]
 
 Writes web/src/data/prydwen/<character-slug>.json (one file per character) and _meta.json.
 These files are generated: never edit them by hand. Our own additions (buffs, notes, corrections)
@@ -8,7 +8,8 @@ go in web/src/data/characters/<slug>.ts, keyed by the card ids here, so re-impor
 overwrites them. Run it again after a game update and review the git diff.
 
 Prydwen has no card list page, but every character page embeds the full card list (Next.js
-server data), so one page is fetched. Card text keeps Prydwen's wording, including the "+"
+server data). Each character's own page adds their Potential and Manifest Ego (dupes) text, so
+one page per character is fetched (--cache keeps the pages, to re-run without downloading). Card text keeps Prydwen's wording, including the "+"
 that marks additive buffs (owner's rule, docs/FORMULA.md).
 """
 import argparse
@@ -21,14 +22,35 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "web" / "src" / "data" / "prydwen"
-URL = "https://www.prydwen.gg/chaos-zero-nightmare/characters/mei-lin"
+URL = "https://www.prydwen.gg/chaos-zero-nightmare/characters/{slug}"
 ROMAN = r"(?:I|II|III|IV|V)"
 
 
-def fetch(url):
-    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
+def fetch(slug, cache=None):
+    path = Path(cache) / f"{slug}.html" if cache else None
+    if path and path.exists():
+        return path.read_text(encoding="utf-8")
+    req = urllib.request.Request(URL.format(slug=slug), headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
     with urllib.request.urlopen(req, timeout=60) as r:
-        return r.read().decode("utf-8")
+        page = r.read().decode("utf-8")
+    if path:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(page, encoding="utf-8")
+    return page
+
+
+def kit_section(page, label, key):
+    """[{key: '3-1', name, text}] from a character page's <section aria-label="Potential"> / "Manifest Ego"."""
+    m = re.search(rf'<section class="kit-section" aria-label="{label}">(.*?)</section>', page, re.S)
+    if not m:
+        raise SystemExit(f"No '{label}' section: Prydwen's page layout changed; update kit_section")
+    out = []
+    for art in re.findall(r'<article class="constellation-database-card">(.*?)</article>', m.group(1), re.S):
+        node = re.search(r'<span class="mini-label">(.*?)</span>', art, re.S)
+        name = re.search(r"<h3>(.*?)</h3>", art, re.S)
+        text = re.search(r'<div class="kit-description[^"]*">(.*)</div>', art, re.S)
+        out.append({key: plain(node.group(1)), "name": plain(name.group(1)), "text": plain(text.group(1) if text else "")})
+    return out
 
 
 def rsc_rows(page):
@@ -126,7 +148,7 @@ def card_entry(c, base, is_basic, has_epiphanies):
         tags.append(card_type)
         card_type = "Skill"
     if is_basic:
-        tags = ["Basic"] + (["Basic Attack"] if card_type == "Attack" else []) + tags
+        tags = ["Basic", "Basic Attack" if card_type == "Attack" else "Basic Skill"] + tags
     if c["cardCategory"] == "Unique Card" and base == c["name"] and not has_epiphanies and c["rarity"] == "Purple":
         notes.append("Mythic card: no epiphanies")
     if re.search(r"\bX\b", text) and pct:
@@ -152,8 +174,8 @@ def card_entry(c, base, is_basic, has_epiphanies):
     return entry
 
 
-def build(page):
-    characters, cards = find_lists(rsc_rows(page))
+def build(cache=None):
+    characters, cards = find_lists(rsc_rows(fetch("mei-lin", cache)))
     OUT.mkdir(parents=True, exist_ok=True)
     written = set()
     for ch in sorted(characters, key=lambda c: c["slug"]):
@@ -172,6 +194,10 @@ def build(page):
                        bases[c["slug"]] in with_epiphanies)
             for c in own
         ]
+        page = fetch(ch["slug"], cache)
+        ego = kit_section(page, "Manifest Ego", "level")
+        for e in ego:
+            e["level"] = int(e["level"].lstrip("E"))
         doc = {
             "name": ch["name"],
             "slug": ch["slug"],
@@ -179,21 +205,23 @@ def build(page):
             "class": ch["class"],
             "rarity": ch["rarity"],
             "cards": entries,
+            "potentials": kit_section(page, "Potential", "node"),
+            "manifestEgo": ego,
         }
         path = OUT / f"{ch['slug']}.json"
         path.write_text(json.dumps(doc, indent=1, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
         written.add(path.name)
-        print(f"{ch['name']:12} {len(entries):3} cards")
+        print(f"{ch['name']:12} {len(entries):3} cards, {len(doc['potentials'])} potentials, {len(ego)} ego levels")
     for old in OUT.glob("*.json"):
         if old.name not in written and old.name != "_meta.json":
             old.unlink()
             print("removed", old.name)
-    meta = {"source": URL, "imported": datetime.date.today().isoformat(), "characters": len(written)}
+    meta = {"source": URL.format(slug="<slug>"), "imported": datetime.date.today().isoformat(), "characters": len(written)}
     (OUT / "_meta.json").write_text(json.dumps(meta, indent=1) + "\n", encoding="utf-8", newline="\n")
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("--html", help="use a saved copy of the page instead of downloading it")
+    ap.add_argument("--cache", help="folder for the downloaded pages: reused if there, saved if not")
     args = ap.parse_args()
-    build(Path(args.html).read_text(encoding="utf-8") if args.html else fetch(URL))
+    build(args.cache)

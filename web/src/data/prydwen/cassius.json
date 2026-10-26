@@ -62,7 +62,7 @@
    "cardType": "Skill",
    "cost": 1,
    "element": "Instinct",
-   "tags": "Basic",
+   "tags": "Basic, Basic Skill",
    "scaling": "ATK",
    "pct": 0,
    "hits": 0,
@@ -661,6 +661,90 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Draw 1.\nDecrease Stress of a random ally by 3."
+  }
+ ],
+ "potentials": [
+  {
+   "node": "1",
+   "name": "Epiphany Bonus",
+   "text": "When entering Chaos, obtain 1 random Rare Card with an activated Epiphany."
+  },
+  {
+   "node": "2",
+   "name": "Basic Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Basic Cards by 2/20%."
+  },
+  {
+   "node": "3",
+   "name": "Common Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Common Cards by 2/20%."
+  },
+  {
+   "node": "3-1",
+   "name": "Basic Card Proficiency",
+   "text": "Add a 30% chance to draw 1 card to Card and Wild Card."
+  },
+  {
+   "node": "4",
+   "name": "Unique Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Unique Cards by 2/20%."
+  },
+  {
+   "node": "5",
+   "name": "Health Proficiency",
+   "text": "Increase Health by +1.6/8%."
+  },
+  {
+   "node": "5-1",
+   "name": "Basic Card Proficiency",
+   "text": "+5% Damage for Cassius's Card and Wild Card.\nIf Cassius's Health is greater than 600, an additional +5% to that value."
+  },
+  {
+   "node": "5-2",
+   "name": "Divine Epiphany Adaptation",
+   "text": "Increases the chance for a Divine Epiphany to appear by 25%."
+  },
+  {
+   "node": "6",
+   "name": "Attack Proficiency",
+   "text": "Attack increases by +1.6/8%."
+  },
+  {
+   "node": "7",
+   "name": "Unique Stat Upgrade",
+   "text": "On Quest Completion, gain 1 Morale for 1 turn.\nIf Cassius's Health is greater than 700, gain an additional 1 Fortitude for 1 turn on Quest Completion."
+  }
+ ],
+ "manifestEgo": [
+  {
+   "level": 1,
+   "name": "Sleeping Memory",
+   "text": "Add Discarded Card to the target range of the Joker card effect."
+  },
+  {
+   "level": 2,
+   "name": "Awakening Memory",
+   "text": "Heal Cassius by 40% each time he draws by an ability."
+  },
+  {
+   "level": 3,
+   "name": "Vivid Memory",
+   "text": "Increase the level of [Basic Card Upgrade], [Unique Card Upgrade], and [Common Card Upgrade] in Potentials by 3."
+  },
+  {
+   "level": 4,
+   "name": "Inner Memory",
+   "text": "Increase Morale Reduction by +2 of Death Trick to all enemies."
+  },
+  {
+   "level": 5,
+   "name": "Complete Memory",
+   "text": "Increase the level of [Basic Card Upgrade], [Unique Card Upgrade], and [Common Card Upgrade] in Potentials by 3."
+  },
+  {
+   "level": 6,
+   "name": "Liberated Memory",
+   "text": "Whenever Cassius completes a quest, apply 1 Morale Reduction to all enemies for 1 turn."
   }
  ]
 }

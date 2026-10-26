@@ -46,7 +46,7 @@
    "cardType": "Skill",
    "cost": 1,
    "element": "Order",
-   "tags": "Basic",
+   "tags": "Basic, Basic Skill",
    "scaling": "ATK",
    "pct": 0,
    "hits": 0,
@@ -789,6 +789,90 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "1 Vulnerable, 1 Tenacity Damage"
+  }
+ ],
+ "potentials": [
+  {
+   "node": "1",
+   "name": "Epiphany Bonus",
+   "text": "When entering Chaos, obtain 1 random Rare Card with an activated Epiphany."
+  },
+  {
+   "node": "2",
+   "name": "Basic Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Basic Cards by 2/20%."
+  },
+  {
+   "node": "3",
+   "name": "Common Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Common Cards by 2/20%."
+  },
+  {
+   "node": "3-1",
+   "name": "Basic Card Proficiency",
+   "text": "+30% Damage Amount to Slash cards, and adds the following effect: increase Damage Amount of Exhaust cards by 15% for 1 turn (max 2 stacks)."
+  },
+  {
+   "node": "4",
+   "name": "Unique Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Unique Cards by 2/20%."
+  },
+  {
+   "node": "5",
+   "name": "Critical Chance Proficiency",
+   "text": "+2/10% Critical Chance."
+  },
+  {
+   "node": "5-1",
+   "name": "Basic Card Proficiency",
+   "text": "+5% Damage Amount to Nine's Slash, and if Nine's Defense is greater than 250, add an additional +5% to the modifier."
+  },
+  {
+   "node": "5-2",
+   "name": "Divine Epiphany Adaptation",
+   "text": "Increases the chance for a Divine Epiphany to appear by 25%."
+  },
+  {
+   "node": "6",
+   "name": "Critical Damage Proficiency",
+   "text": "+2.4/12% Critical Damage."
+  },
+  {
+   "node": "7",
+   "name": "Unique Stat Upgrade",
+   "text": "If Nine's Defense is greater than 300, +5% Order Attribute Damage Amount, and for every 10 Defense exceeding 300, add an additional +2% to the modifier (up to an additional +10%)."
+  }
+ ],
+ "manifestEgo": [
+  {
+   "level": 1,
+   "name": "Sleeping Memory",
+   "text": "Targets may be selected for attack with the Fighting Spirit card."
+  },
+  {
+   "level": 2,
+   "name": "Awakening Memory",
+   "text": "At the start of battle create 1 Exploit Opening card. Exploit Opening: 1 Vulnerable, 1 Tenacity Damage."
+  },
+  {
+   "level": 3,
+   "name": "Vivid Memory",
+   "text": "+150 Damage Amount to Reflection: Zero, and +50% Damage Amount to the modifier for the combined Cost of the 2 highest-Cost cards effect."
+  },
+  {
+   "level": 4,
+   "name": "Inner Memory",
+   "text": "When Nine's cards are Exhausted, gain 1 Improvisation equal to the Cost of that card.\nImprovisation: +50% Defense-Based Damage Amount to Nine's Attack Card for 1 turn (max 3 stacks)."
+  },
+  {
+   "level": 5,
+   "name": "Complete Memory",
+   "text": "Increase the level of [Basic Card Upgrade], [Unique Card Upgrade], and [Common Card Upgrade] in Potentials by 3."
+  },
+  {
+   "level": 6,
+   "name": "Liberated Memory",
+   "text": "When Hew cards are activated, inflict 15% of the Damage dealt to the target as Fixed Damage."
   }
  ]
 }

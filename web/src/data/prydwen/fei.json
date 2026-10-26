@@ -46,7 +46,7 @@
    "cardType": "Skill",
    "cost": 1,
    "element": "Void",
-   "tags": "Basic",
+   "tags": "Basic, Basic Skill",
    "scaling": "ATK",
    "pct": 0,
    "hits": 0,
@@ -505,6 +505,90 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "110% Damage.\n1 Flame Arts.\nWhen Flame Arts is activated on this card, 3 Descent."
+  }
+ ],
+ "potentials": [
+  {
+   "node": "1",
+   "name": "Epiphany Bonus",
+   "text": "When entering Chaos, obtain 1 random Rare Card with an activated Epiphany."
+  },
+  {
+   "node": "2",
+   "name": "Basic Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Basic Cards by 2/20%."
+  },
+  {
+   "node": "3",
+   "name": "Common Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Common Cards by 2/20%."
+  },
+  {
+   "node": "3-1",
+   "name": "Basic Card Proficiency",
+   "text": "Adds the following effect to the Azure Flame card: 1 Flame Arts"
+  },
+  {
+   "node": "4",
+   "name": "Unique Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Unique Cards by 2/20%."
+  },
+  {
+   "node": "5",
+   "name": "Critical Chance Proficiency",
+   "text": "+2/10% Critical Chance."
+  },
+  {
+   "node": "5-1",
+   "name": "Basic Card Proficiency",
+   "text": "+5% Damage Amount to Fei's Azure Flame and if Fei's Attack is 500 or higher, add an additional +5% to the modifier."
+  },
+  {
+   "node": "5-2",
+   "name": "Divine Epiphany Adaptation",
+   "text": "Increases the chance for a Divine Epiphany to appear by 25%."
+  },
+  {
+   "node": "6",
+   "name": "Critical Chance Proficiency",
+   "text": "+2.4/12% Critical Damage."
+  },
+  {
+   "node": "7",
+   "name": "Unique Stat Upgrade",
+   "text": "If Fei's Attack is 600 or higher, +5% Void Attribute Damage Amount, and for every 20 Attack exceeding 600, add an additional +2% to the modifier (additional +10% max)."
+  }
+ ],
+ "manifestEgo": [
+  {
+   "level": 1,
+   "name": "Sleeping Memory",
+   "text": "Adds the following effect to the Blazing War Dance card: Increase Damage Amount of Inferno Rhapsody moved to hand by 100% until used."
+  },
+  {
+   "level": 2,
+   "name": "Awakening Memory",
+   "text": "At the start of battle, gain 6 Descent, and for each turn, when the first Heavensfall is created, gain 2 Descent.\nWhen the Inferno Rhapsody card is activated, inflict 30% of the Damage inflicted as Fixed Damage."
+  },
+  {
+   "level": 3,
+   "name": "Vivid Memory",
+   "text": "Increase Heavenscleaver‘s Descent by 2 and add the following effect: Add 2 Hits to the next Heavensfall."
+  },
+  {
+   "level": 4,
+   "name": "Inner Memory",
+   "text": "At the start of battle, +80% Damage Amount to Heavensfall."
+  },
+  {
+   "level": 5,
+   "name": "Complete Memory",
+   "text": "Increase the Potential levels of [Basic Card Upgrade], [Unique Card Upgrade], and [Common Card Upgrade] by 3."
+  },
+  {
+   "level": 6,
+   "name": "Liberated Memory",
+   "text": "At the start of battle, +120% Damage Amount to Flame Arts.\nAt the start of battle or each time 3 Heavensfall cards are used, gain 1 Judgment Upon the Wicked.\nJudgment Upon the Wicked: Add 3 Hits to Heavensfall, and when the effect is activated, remove Judgment Upon the Wicked."
   }
  ]
 }

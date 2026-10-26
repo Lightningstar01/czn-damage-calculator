@@ -46,7 +46,7 @@
    "cardType": "Skill",
    "cost": 1,
    "element": "Passion",
-   "tags": "Basic",
+   "tags": "Basic, Basic Skill",
    "scaling": "ATK",
    "pct": 0,
    "hits": 0,
@@ -645,6 +645,90 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "2 Ego Points."
+  }
+ ],
+ "potentials": [
+  {
+   "node": "1",
+   "name": "Epiphany Bonus",
+   "text": "When entering Chaos, obtain 1 random Rare Card with an activated Epiphany."
+  },
+  {
+   "node": "2",
+   "name": "Basic Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Basic Cards by 2/20%."
+  },
+  {
+   "node": "3",
+   "name": "Common Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Common Cards by 2/20%."
+  },
+  {
+   "node": "3-1",
+   "name": "Basic Card Proficiency",
+   "text": "Add the following effect to Sound Check: Incinerate: Heal 50%."
+  },
+  {
+   "node": "4",
+   "name": "Unique Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Unique Cards by 2/20%."
+  },
+  {
+   "node": "5",
+   "name": "Critical Chance Proficiency",
+   "text": "+2/10% Critical Chance."
+  },
+  {
+   "node": "5-1",
+   "name": "Basic Card Proficiency",
+   "text": "At the start of battle, increase Damage Amount of Tenebria's Rhythm cards by 10%, and if Tenebria's Attack is 500 or higher, increase Damage Amount of other Combatants' Rhythm cards by 10% as well."
+  },
+  {
+   "node": "5-2",
+   "name": "Divine Epiphany Adaptation",
+   "text": "Increases the chance for a Divine Epiphany to appear by 25%."
+  },
+  {
+   "node": "6",
+   "name": "Critical Damage Proficiency",
+   "text": "+2.4/12% Critical Damage."
+  },
+  {
+   "node": "7",
+   "name": "Unique Stat Upgrade",
+   "text": "If Tenebria's Attack is 600 or higher, +5% Passion Attribute Damage Amount, and for every 20 Attack exceeding 600, add an additional +2% (additional +10% max)."
+  }
+ ],
+ "manifestEgo": [
+  {
+   "level": 1,
+   "name": "Sleeping Memory",
+   "text": "Increase Damage Amount of Performance Buzz for the Photo Time card from 100% to 150%."
+  },
+  {
+   "level": 2,
+   "name": "Awakening Memory",
+   "text": "At the start of battle, create 1 Photo Card card.\nWhen an Ego Skill is used, inflict 200% Damage to random enemies for each of its original Cost.\nPhoto Card: 2 Ego Points."
+  },
+  {
+   "level": 3,
+   "name": "Vivid Memory",
+   "text": "Increase the Damage Amount increase effect that Everyone's Idol gives to Rhythm cards from 7% to 11%."
+  },
+  {
+   "level": 4,
+   "name": "Inner Memory",
+   "text": "Each time a Rhythm card is moved to hand or activated, gain Everyone’s Cheer.\nEveryone’s Cheer: Increase Tenebria’s Damage Amount by 1% (max 20 stacks).\nWhen stacked to max, increase Damage Amount of Rhythm cards by 10%."
+  },
+  {
+   "level": 5,
+   "name": "Complete Memory",
+   "text": "Increase the level of [Basic Card Upgrade], [Unique Card Upgrade], and [Common Card Upgrade] in Potentials by 3."
+  },
+  {
+   "level": 6,
+   "name": "Liberated Memory",
+   "text": "When a Photo Card is activated, decrease Cost of Tenebria's next Ego Skill used by 3.\nWhen a Rhythm Card is activated, inflict 1 All Eyes On You on the target.\nAll Eyes On You: Increase Damage Amount received from Rhythm Cards by 40%. If a Rhythm card was not used manually, this monster becomes the target of those Rhythm cards.\nWhen applied to a different target, remove All Eyes On You."
   }
  ]
 }

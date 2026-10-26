@@ -69,6 +69,8 @@ export interface PresetState {
   classBlocked: boolean
   /** Stat already on the stats screen: shown for reference, not added. */
   onStatsScreen: boolean
+  /** Needs a higher Manifest Ego level than the build has. */
+  egoLocked: boolean
   stacks: number
 }
 
@@ -116,8 +118,9 @@ export function presetStates(presets: Presets, charName: string, build: Build, c
       const sw = build.presetSwitches[presetKey(owner, e)]
       const classBlocked = blocked(e)
       const onStatsScreen = e.kind === 'Stat' && !!e.onStatsScreen
-      const stacks = classBlocked || onStatsScreen ? 0 : switchStacks(sw === undefined ? true : sw, e.defaultStacks)
-      out.push({ owner, ownerKind, effect: e, classBlocked, onStatsScreen, stacks })
+      const egoLocked = (e.egoLevel ?? 0) > (build.egoLevel ?? 0)
+      const stacks = classBlocked || onStatsScreen || egoLocked ? 0 : switchStacks(sw === undefined ? true : sw, e.defaultStacks)
+      out.push({ owner, ownerKind, effect: e, classBlocked, onStatsScreen, egoLocked, stacks })
     }
   }
   if (ch) add(ch.name, 'Character', ch.effects, () => false)

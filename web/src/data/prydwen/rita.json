@@ -46,7 +46,7 @@
    "cardType": "Skill",
    "cost": 1,
    "element": "Justice",
-   "tags": "Basic",
+   "tags": "Basic, Basic Skill",
    "scaling": "ATK",
    "pct": 0,
    "hits": 0,
@@ -485,6 +485,90 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Increase Damage Amount of the next Attack Card of this unit used by 30%.\nIncrease Damage Amount by an additional 10% for each Cost of that card."
+  }
+ ],
+ "potentials": [
+  {
+   "node": "1",
+   "name": "Epiphany Bonus",
+   "text": "When entering Chaos, obtain 1 random Rare Card with an activated Epiphany."
+  },
+  {
+   "node": "2",
+   "name": "Basic Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Basic Cards by 2/20%."
+  },
+  {
+   "node": "3",
+   "name": "Common Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Common Cards by 2/20%."
+  },
+  {
+   "node": "3-1",
+   "name": "Basic Card Proficiency",
+   "text": "+50% Damage Amount to the Time Acceleration card."
+  },
+  {
+   "node": "4",
+   "name": "Unique Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Unique Cards by 2/20%."
+  },
+  {
+   "node": "5",
+   "name": "Critical Chance Proficiency",
+   "text": "+2/10% Critical Chance."
+  },
+  {
+   "node": "5-1",
+   "name": "Basic Card Proficiency",
+   "text": "+5% Damage Amount to Rita's Time Acceleration.\nIf Rita's Attack is greater than 500, add an additional +5% to the modifier."
+  },
+  {
+   "node": "5-2",
+   "name": "Divine Epiphany Adaptation",
+   "text": "Increases the chance for a Divine Epiphany to appear by 25%."
+  },
+  {
+   "node": "6",
+   "name": "Critical Damage Proficiency",
+   "text": "+2.4/12% Critical Damage."
+  },
+  {
+   "node": "7",
+   "name": "Unique Stat Upgrade",
+   "text": "If Rita's Attack is greater than 800, at the start of battle +10% Attack to herself."
+  }
+ ],
+ "manifestEgo": [
+  {
+   "level": 1,
+   "name": "Sleeping Memory",
+   "text": "The Time Paradox card receives the following effect: If Chronicle is decreased by 6, gain 8 Chronal Ascension instead."
+  },
+  {
+   "level": 2,
+   "name": "Awakening Memory",
+   "text": "When Chronal Ascension is gained, create 1 Fate Distortion.\nFate Distortion: Increase Damage Amount of the next Attack Card of this unit used by 30%.\nIncrease Damage Amount by an additional 10% for each Cost of that card."
+  },
+  {
+   "level": 3,
+   "name": "Vivid Memory",
+   "text": "Changes Hour of Glory's values to the following effect: increase Damage Amount of the next Attack Card of this unit used by 20% (max 300%)."
+  },
+  {
+   "level": 4,
+   "name": "Inner Memory",
+   "text": "When a 2-Cost or higher card is activated, gain 1 Trace of Memory.\nTrace of Memory: increase Rita's Damage Amount by 5% for 1 turn (max 6 stacks)"
+  },
+  {
+   "level": 5,
+   "name": "Complete Memory",
+   "text": "Increase the level of [Basic Card Upgrade], [Unique Card Upgrade], and [Common Card Upgrade] in Potentials by 3."
+  },
+  {
+   "level": 6,
+   "name": "Liberated Memory",
+   "text": "When Chronal Ascension is gained, increase the value of Chronal Ascension gained by 6 (1 time per battle).\nWhen Chronal Ascension is removed, inflict 80% Fixed Damage for each Chronal Ascension used over 1 turn."
   }
  ]
 }

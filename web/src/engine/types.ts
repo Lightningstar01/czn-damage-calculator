@@ -43,6 +43,8 @@ export interface StatEffect {
   classLimited?: boolean
   /** Already counted on the stats screen (e.g. memory fragment set stats): listed for reference, never added. */
   onStatsScreen?: boolean
+  /** Manifest Ego level (1-6) that unlocks it: off for builds below that level. */
+  egoLevel?: number
   notes?: string
 }
 
@@ -62,6 +64,8 @@ export interface BuffEffect {
   maxStacks?: number
   defaultStacks?: number
   classLimited?: boolean
+  /** Manifest Ego level (1-6) that unlocks it: off for builds below that level. */
+  egoLevel?: number
   notes?: string
 }
 
@@ -78,7 +82,20 @@ export interface CharacterPreset {
   effects: Effect[]
   /** The character's cards (each epiphany is its own entry), copied into the card library when picked. */
   cards?: CardPreset[]
+  /** Reference: Potential nodes are already in the stats screen and the in-game card %. */
+  potentials?: PotentialNode[]
+  /** Manifest Ego levels (dupes); their buffs are effects with egoLevel set. */
+  manifestEgo?: EgoLevel[]
 }
+
+/** A Potential node ('3-1') or a Manifest Ego level (dupes, 1-6), as Prydwen lists them. Reference text. */
+export interface KitEntry {
+  name: string
+  text: string
+}
+export interface PotentialNode extends KitEntry { node: string }
+export interface EgoLevel extends KitEntry { level: number }
+export const MAX_EGO_LEVEL = 6
 
 export const CARD_CATEGORIES = ['Starting Card', 'Unique Card', 'Epiphany Card', 'Ego Skill', 'Generated Card'] as const
 
@@ -146,6 +163,8 @@ export interface ImportedCharacter {
   class: CharClass
   rarity: string
   cards: CardPreset[]
+  potentials: PotentialNode[]
+  manifestEgo: EgoLevel[]
 }
 
 /** What a re-import must not overwrite, mainly the buffs. Stored in src/data/characters/<slug>.ts. */
@@ -207,6 +226,8 @@ export interface Build {
   morale: number
   vulnerable: number
   weaknessDebuff: number
+  /** Manifest Ego level (dupes), 0-6: unlocks the character's effects with an egoLevel. */
+  egoLevel: number
   /** Preset effect id -> switch. Missing = on (default stacks). */
   presetSwitches: Record<string, Switch>
 }

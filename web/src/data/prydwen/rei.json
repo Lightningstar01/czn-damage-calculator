@@ -46,7 +46,7 @@
    "cardType": "Skill",
    "cost": 1,
    "element": "Void",
-   "tags": "Basic",
+   "tags": "Basic, Basic Skill",
    "scaling": "ATK",
    "pct": 0,
    "hits": 0,
@@ -453,6 +453,90 @@
    "weaknessApplies": false,
    "text": "250% Damage.\nFor 1 turn 2 Morale.",
    "notes": "Mythic card: no epiphanies"
+  }
+ ],
+ "potentials": [
+  {
+   "node": "1",
+   "name": "Epiphany Bonus",
+   "text": "When entering Chaos, obtain 1 random Rare Card with an activated Epiphany."
+  },
+  {
+   "node": "2",
+   "name": "Basic Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Basic Cards by 2/20%."
+  },
+  {
+   "node": "3",
+   "name": "Common Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Common Cards by 2/20%."
+  },
+  {
+   "node": "3-1",
+   "name": "Basic Card Proficiency",
+   "text": "Add a 20% DMG-Based Recovery effect to Dark Blade Card."
+  },
+  {
+   "node": "4",
+   "name": "Unique Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Unique Cards by 2/20%."
+  },
+  {
+   "node": "5",
+   "name": "Health Proficiency",
+   "text": "Increase Health by +1.6/8%"
+  },
+  {
+   "node": "5-1",
+   "name": "Basic Card Proficiency",
+   "text": "+5% Damage for Rei's Dark Blade.\nIf Rei's Attack is greater than 500, an additional +5% to that value."
+  },
+  {
+   "node": "5-2",
+   "name": "Divine Epiphany Adaptation",
+   "text": "Increases the chance for a Divine Epiphany to appear by 25%."
+  },
+  {
+   "node": "6",
+   "name": "Attack Proficiency",
+   "text": "Attack increases by 1.6/8%."
+  },
+  {
+   "node": "7",
+   "name": "Unique Stat Upgrade",
+   "text": "If Rei's Attack is greater than 550, +10% Predator's Blade Damage.\nFor every 10 Attack exceeding that value, an additional +1% (up to an additional +20%)."
+  }
+ ],
+ "manifestEgo": [
+  {
+   "level": 1,
+   "name": "Sleeping Memory",
+   "text": "The Predator's Blade card increases Morale by 2 for 1 turn."
+  },
+  {
+   "level": 2,
+   "name": "Awakening Memory",
+   "text": "When Rei uses an Attack Card, heal for 120%. This effect triggers only once per turn."
+  },
+  {
+   "level": 3,
+   "name": "Vivid Memory",
+   "text": "Increase the level of [Basic Card Upgrade], [Unique Card Upgrade], and [Common Card Upgrade] in Potentials by 3."
+  },
+  {
+   "level": 4,
+   "name": "Inner Memory",
+   "text": "+100% Damage for Final Shadow"
+  },
+  {
+   "level": 5,
+   "name": "Complete Memory",
+   "text": "Increase the level of [Basic Card Upgrade], [Unique Card Upgrade], and [Common Card Upgrade] in Potentials by 3."
+  },
+  {
+   "level": 6,
+   "name": "Liberated Memory",
+   "text": "Allies' attack card damage is increased by 20%."
   }
  ]
 }

@@ -9,8 +9,19 @@ const passionWeakness = cardBuff('weak', 'Passion Weakness on the target', 'Weak
 })
 const aromataNote = 'One stack per card used after it this turn: set the stacks (one number for the whole rotation)'
 
+const awakensNote = 'Flame Dragon Awakens: for 1 turn after one of her attacks Ravages an enemy. Switch off if it isn\'t up'
+
 export default {
-  notes: 'Character buffs still to be entered (many are conditional)',
+  notes: 'Potentials are in the stats screen and the in-game card %. Not modeled: E2 Ember, E3 (set the hits per play), E5, E6',
+  // Manifest Ego (dupes): on from the build's level
+  effects: [
+    { kind: 'Buff', id: 'e1-crit', name: "E1: Sovereignty crits Ravaged targets", category: 'Ego Manifestation', type: 'Crit Chance',
+      value: '100%', appliesTo: "Flame Dragon's Sovereignty", hitScope: 'All hits', condition: 'Ravaged only', egoLevel: 1 },
+    { kind: 'Buff', id: 'e4-atk', name: 'E4: Flame Dragon Awakens, Attack card damage', category: 'Ego Manifestation',
+      value: '+20%', appliesTo: 'Attack', hitScope: 'All hits', condition: 'Always', egoLevel: 4, notes: awakensNote },
+    { kind: 'Buff', id: 'e4-ravaged', name: 'E4: Flame Dragon Awakens, damage vs Ravaged', category: 'Ego Manifestation',
+      value: '+20%', appliesTo: 'ALL', hitScope: 'All hits', condition: 'Ravaged only', egoLevel: 4, notes: awakensNote },
+  ],
   cards: {
     // Flame Dragon Guardian, Heavenly Flame Dragon (Ego skill)
     'card-339': { notes: 'Shield only, no damage' },

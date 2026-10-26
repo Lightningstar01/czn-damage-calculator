@@ -46,7 +46,7 @@
    "cardType": "Skill",
    "cost": 1,
    "element": "Passion",
-   "tags": "Basic",
+   "tags": "Basic, Basic Skill",
    "scaling": "ATK",
    "pct": 0,
    "hits": 0,
@@ -62,7 +62,7 @@
    "cardType": "Skill",
    "cost": 2,
    "element": "Passion",
-   "tags": "Basic",
+   "tags": "Basic, Basic Skill",
    "scaling": "ATK",
    "pct": 0,
    "hits": 0,
@@ -469,6 +469,90 @@
    "weaknessApplies": false,
    "text": "Fixed Damage equal to Shield owned.",
    "notes": "Mythic card: no epiphanies"
+  }
+ ],
+ "potentials": [
+  {
+   "node": "1",
+   "name": "Epiphany Bonus",
+   "text": "When entering Chaos, obtain 1 random Rare Card with an activated Epiphany."
+  },
+  {
+   "node": "2",
+   "name": "Basic Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Basic Cards by 2/20%."
+  },
+  {
+   "node": "3",
+   "name": "Common Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Common Cards by 2/20%."
+  },
+  {
+   "node": "3-1",
+   "name": "Basic Card Proficiency",
+   "text": "When using Shelter Defense or Shelter Hold cards, gain 1 Counterattack."
+  },
+  {
+   "node": "4",
+   "name": "Unique Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Unique Cards by 2/20%."
+  },
+  {
+   "node": "5",
+   "name": "Critical Chance Proficiency",
+   "text": "+2/10% Critical Chance."
+  },
+  {
+   "node": "5-1",
+   "name": "Basic Card Proficiency",
+   "text": "+5% Shield for Maribell’s Shelter Defense and Shelter Hold.\nIf Maribell’s Health is greater than 600, an additional +5% to that value."
+  },
+  {
+   "node": "5-2",
+   "name": "Divine Epiphany Adaptation",
+   "text": "Increases the chance for a Divine Epiphany to appear by 25%."
+  },
+  {
+   "node": "6",
+   "name": "Health Proficiency",
+   "text": "Increase Health by 1.6/8%."
+  },
+  {
+   "node": "7",
+   "name": "Unique Stat Upgrade",
+   "text": "+5% Defense-based Attack Damage.\nIf Maribel's HP is greater than 800, +5% to that value."
+  }
+ ],
+ "manifestEgo": [
+  {
+   "level": 1,
+   "name": "Sleeping Memory",
+   "text": "The fixed damage of the Shelter Strike card is increased by +50%."
+  },
+  {
+   "level": 2,
+   "name": "Awakening Memory",
+   "text": "Maribel's Shield gain is increased by 10%."
+  },
+  {
+   "level": 3,
+   "name": "Vivid Memory",
+   "text": "Increase the level of [Basic Card Upgrade], [Unique Card Upgrade], and [Common Card Upgrade] in Potentials by 3."
+  },
+  {
+   "level": 4,
+   "name": "Inner Memory",
+   "text": "The Shield gain of the Unbreakable card is increased by +100%."
+  },
+  {
+   "level": 5,
+   "name": "Complete Memory",
+   "text": "Increase the level of [Basic Card Upgrade], [Unique Card Upgrade], and [Common Card Upgrade] in Potentials by 3."
+  },
+  {
+   "level": 6,
+   "name": "Liberated Memory",
+   "text": "The first Counterattack from Maribell each turn gains damage equal to 20% of her current Shield."
   }
  ]
 }

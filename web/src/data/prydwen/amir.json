@@ -46,7 +46,7 @@
    "cardType": "Skill",
    "cost": 1,
    "element": "Order",
-   "tags": "Basic",
+   "tags": "Basic, Basic Skill",
    "scaling": "ATK",
    "pct": 0,
    "hits": 0,
@@ -453,6 +453,90 @@
    "weaknessApplies": false,
    "text": "Decreases Damage Taken by 20% for 1 turn.\nDecrease up to 4 Metallization.\nAdditionally decrease Damage Taken by 20% for each.",
    "notes": "Mythic card: no epiphanies"
+  }
+ ],
+ "potentials": [
+  {
+   "node": "1",
+   "name": "Epiphany Bonus",
+   "text": "When entering Chaos, obtain 1 random Rare Card with an activated Epiphany."
+  },
+  {
+   "node": "2",
+   "name": "Basic Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Basic Cards by 2/20%."
+  },
+  {
+   "node": "3",
+   "name": "Common Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Common Cards by 2/20%."
+  },
+  {
+   "node": "3-1",
+   "name": "Basic Card Proficiency",
+   "text": "When using the Steel Barrier card, gain 1 Metalize."
+  },
+  {
+   "node": "4",
+   "name": "Unique Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Unique Cards by 2/20%."
+  },
+  {
+   "node": "5",
+   "name": "Critical Chance Proficiency",
+   "text": "+2/10% Critical Chance."
+  },
+  {
+   "node": "5-1",
+   "name": "Basic Card Proficiency",
+   "text": "+5% Damage for Amir's Rapier.\nIf Amir's Defense is greater than 250, an additional +5% to that value."
+  },
+  {
+   "node": "5-2",
+   "name": "Divine Epiphany Adaptation",
+   "text": "Increases the chance for a Divine Epiphany to appear by 25%."
+  },
+  {
+   "node": "6",
+   "name": "Health Proficiency",
+   "text": "Increase Health by 1.6/8%"
+  },
+  {
+   "node": "7",
+   "name": "Unique Stat Upgrade",
+   "text": "+10% Metalization Damage.\nWhen Amir's Defense is greater than 300, +10% to that value."
+  }
+ ],
+ "manifestEgo": [
+  {
+   "level": 1,
+   "name": "Sleeping Memory",
+   "text": "The Iron Skin card has Finale removed, its damage reduction increased by 20%, and it now consumes up to a maximum of 3 Metalize."
+  },
+  {
+   "level": 2,
+   "name": "Awakening Memory",
+   "text": "At the start of battle, gain 2 Metalize."
+  },
+  {
+   "level": 3,
+   "name": "Vivid Memory",
+   "text": "Increase the level of [Basic Card Upgrade], [Unique Card Upgrade], and [Common Card Upgrade] in Potentials by 3."
+  },
+  {
+   "level": 4,
+   "name": "Inner Memory",
+   "text": "The shield generation effect of Steel Resolve changes to 150% per 1 Metalize consumed, and the Metalize gained at the start of the next turn is increased by 2."
+  },
+  {
+   "level": 5,
+   "name": "Complete Memory",
+   "text": "Increase the level of [Basic Card Upgrade], [Unique Card Upgrade], and [Common Card Upgrade] in Potentials by 3."
+  },
+  {
+   "level": 6,
+   "name": "Liberated Memory",
+   "text": "At the start of the turn, gain 1 Metalize."
   }
  ]
 }

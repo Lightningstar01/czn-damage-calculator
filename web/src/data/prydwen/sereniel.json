@@ -46,7 +46,7 @@
    "cardType": "Skill",
    "cost": 1,
    "element": "Instinct",
-   "tags": "Basic",
+   "tags": "Basic, Basic Skill",
    "scaling": "ATK",
    "pct": 0,
    "hits": 0,
@@ -469,6 +469,90 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "60% damage.\n1 Afterglow.\nOn Ravage, move from Graveyard to hand."
+  }
+ ],
+ "potentials": [
+  {
+   "node": "1",
+   "name": "Epiphany Bonus",
+   "text": "When entering Chaos, obtain 1 random Rare Card with an activated Epiphany."
+  },
+  {
+   "node": "2",
+   "name": "Basic Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Basic Cards by 2/20%."
+  },
+  {
+   "node": "3",
+   "name": "Common Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Common Cards by 2/20%."
+  },
+  {
+   "node": "3-1",
+   "name": "Basic Card Proficiency",
+   "text": "Add a 50% chance to create 1 Homing Laser L to Pulse Fire."
+  },
+  {
+   "node": "4",
+   "name": "Unique Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Unique Cards by 2/20%."
+  },
+  {
+   "node": "5",
+   "name": "Critical Chance Proficiency",
+   "text": "+2/10% Critical Chance."
+  },
+  {
+   "node": "5-1",
+   "name": "Basic Card Proficiency",
+   "text": "+5% Damage Amount to Sereniel's Pulse Fire.\nIf Sereniel's Critical Chance is greater than 20%, add an additional +5% to the modifier."
+  },
+  {
+   "node": "5-2",
+   "name": "Divine Epiphany Adaptation",
+   "text": "Increases the chance for a Divine Epiphany to appear by 25%."
+  },
+  {
+   "node": "6",
+   "name": "Critical Damage Proficiency",
+   "text": "+2.4/12% Critical Damage."
+  },
+  {
+   "node": "7",
+   "name": "Unique Stat Upgrade",
+   "text": "If Sereniel’s Critical Chance is 20% or higher, +10% Instinct Attribute Damage Amount\nIf Critical Chance is 40% or higher, add an additional +5% to the modifier"
+  }
+ ],
+ "manifestEgo": [
+  {
+   "level": 1,
+   "name": "Sleeping Memory",
+   "text": "+100% Damage to Pale Shooting Star, and change the number of procable Homing Laser cards to 5."
+  },
+  {
+   "level": 2,
+   "name": "Awakening Memory",
+   "text": "At the start of battle, create 2 Homing Laser L, each with 1 increased Hit Count and applied with Haste.\nAt the start of the turn, if Homing Laser is one of the cards drawn, Draw 1 card."
+  },
+  {
+   "level": 3,
+   "name": "Vivid Memory",
+   "text": "+150% Damage Amount to Death Halo, and apply Haste to each Homing Laser L that is moved by Death Halo."
+  },
+  {
+   "level": 4,
+   "name": "Inner Memory",
+   "text": "For each Homing Laser that is moved to hand on Ravage, Sereniel gains a Firepower Amp effect.\nFirepower Amp: +25% Damage Amount to Sereniel’s Attack Cards for 1 turn (max 2 stacks)"
+  },
+  {
+   "level": 5,
+   "name": "Complete Memory",
+   "text": "Increase the level of [Basic Card Upgrade], [Unique Card Upgrade], and [Common Card Upgrade] in Potentials by 3."
+  },
+  {
+   "level": 6,
+   "name": "Liberated Memory",
+   "text": "At the start of battle, +20% to Sereniel’s Weakness Damage Amount.\nAt the start of the turn, inflict 1 Instinct Weakness to the enemy with the highest HP.\nOn Ravage by an ally, Sereniel inflicts 80% Damage × max Tenacity count of the target to that target."
   }
  ]
 }

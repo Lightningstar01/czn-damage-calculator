@@ -46,7 +46,7 @@
    "cardType": "Skill",
    "cost": 1,
    "element": "Instinct",
-   "tags": "Basic",
+   "tags": "Basic, Basic Skill",
    "scaling": "ATK",
    "pct": 0,
    "hits": 0,
@@ -453,6 +453,90 @@
    "weaknessApplies": false,
    "text": "200% Damage to all enemies.\nIncrease Damage Amount by 15% for each type of harmful effect the target has (max 120%).\nFracture Amplification: 2x base Damage Amount.",
    "notes": "Mythic card: no epiphanies"
+  }
+ ],
+ "potentials": [
+  {
+   "node": "1",
+   "name": "Epiphany Bonus",
+   "text": "When entering Chaos, obtain 1 random Rare Card with an activated Epiphany."
+  },
+  {
+   "node": "2",
+   "name": "Basic Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Basic Cards by 2/20%."
+  },
+  {
+   "node": "3",
+   "name": "Common Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Common Cards by 2/20%."
+  },
+  {
+   "node": "3-1",
+   "name": "Basic Card Proficiency",
+   "text": "Adds the following effect to the Diagonal Slash card: 1 Fracture."
+  },
+  {
+   "node": "4",
+   "name": "Unique Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Unique Cards by 2/20%."
+  },
+  {
+   "node": "5",
+   "name": "Critical Chance Proficiency",
+   "text": "+2/10% Critical Chance"
+  },
+  {
+   "node": "5-1",
+   "name": "Basic Card Proficiency",
+   "text": "+5% Damage Amount to Arabella's Diagonal Slash card.\nIf Arabella's Attack is 500 or higher, add an additional +5% to the modifier."
+  },
+  {
+   "node": "5-2",
+   "name": "Divine Epiphany Adaptation",
+   "text": "Increases the chance for a Divine Epiphany to appear by 25%."
+  },
+  {
+   "node": "6",
+   "name": "Critical Damage Proficiency",
+   "text": "+2.4/12% Critical Damage"
+  },
+  {
+   "node": "7",
+   "name": "Unique Stat Upgrade",
+   "text": "If Arabella's Attack is 600 or higher, +5% Instinct Attribute Damage Amount, and for every 20 Attack exceeding 600, add an additional +2% to the modifier (additional +10% max)."
+  }
+ ],
+ "manifestEgo": [
+  {
+   "level": 1,
+   "name": "Sleeping Memory",
+   "text": "+50% Damage Amount to The Art of Unmaking and change the increase Damage Amount by 15% for each type of harmful effect the target has (max 120%) effect to increase Damage Amount by 20% (max 180%)."
+  },
+  {
+   "level": 2,
+   "name": "Awakening Memory",
+   "text": "At the start of battle, inflict 1 Fracture Amplification on the enemy with the highest HP.\nWhen Arabella activates the Fractures that she inflicted, she inflicts 3 Fracture on all enemies (4 times per turn)."
+  },
+  {
+   "level": 3,
+   "name": "Vivid Memory",
+   "text": "Change the following effects for Pathetic End: +200% Damage Amount, change the Fixed Damage equal to 30% of the Damage Amount taken by all enemies to 50%, and change the condition of not exceeding 1,000% of Arabella’s Attack per turn to 1,500%."
+  },
+  {
+   "level": 4,
+   "name": "Inner Memory",
+   "text": "Each time Arabella inflicts or activates her Fracture, gain 1 Deconstruction Analysis.\nDeconstruction Analysis: Increase Damage Amount of Arabella’s Fracture by 5% (max 6 stacks)."
+  },
+  {
+   "level": 5,
+   "name": "Complete Memory",
+   "text": "Increase the level of [Basic Card Upgrade], [Signature Card Upgrade], and [Common Card Upgrade] in Potentials by 3."
+  },
+  {
+   "level": 6,
+   "name": "Liberated Memory",
+   "text": "When Arabella activates Fractures that she inflicted, additionally inflict 1 Fracture on the target inflicted with Fracture Amplification.\nIncrease the max stack limit of Deconstruction Analysis by 4, and +50% Critical Damage to the Fractures that Arabella inflicts on the Fracture Amplification target."
   }
  ]
 }

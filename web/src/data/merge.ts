@@ -18,10 +18,12 @@ export function mergeCharacter(imported: ImportedCharacter, additions: Character
     notes: additions.notes,
     effects: additions.effects ?? [],
     cards,
+    potentials: imported.potentials,
+    manifestEgo: imported.manifestEgo,
   }
 }
 
-/** Problems with the additions files: unknown characters or card ids, duplicate effect ids. Checked by the tests. */
+/** Problems with the additions files: unknown characters or card ids, duplicate effect ids, bad ego levels. Checked by the tests. */
 export function checkAdditions(imported: Record<string, ImportedCharacter>, additions: Record<string, CharacterAdditions>): string[] {
   const problems: string[] = []
   for (const [slug, add] of Object.entries(additions)) {
@@ -41,6 +43,11 @@ export function checkAdditions(imported: Record<string, ImportedCharacter>, addi
       }
     }
     dupes(ch.name, add.effects)
+    for (const e of [...(add.effects ?? []), ...Object.values(add.cards ?? {}).flatMap((c) => c.effects ?? [])]) {
+      if (e.egoLevel !== undefined && !ch.manifestEgo.some((m) => m.level === e.egoLevel)) {
+        problems.push(`characters/${slug}.ts: effect '${e.id}' has egoLevel ${e.egoLevel}, which ${ch.name} doesn't have`)
+      }
+    }
     for (const [id, c] of Object.entries(add.cards ?? {})) dupes(id, c.effects)
   }
   return problems

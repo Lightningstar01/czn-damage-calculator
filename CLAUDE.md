@@ -21,7 +21,8 @@ npm run build      # type-check + production build to web/dist
 npm run lint       # oxlint
 # Owner's workbook -> output/czn-save.json (import on the Settings tab) + web/tests/fixtures/workbook.json:
 .venv\Scripts\python.exe scripts/export_workbook_json.py
-# Re-import every character and card from Prydwen (after a game update; review the git diff):
+# Re-import every character (cards, potentials, Manifest Ego) from Prydwen (after a game update;
+# review the git diff). One page per character; --cache <folder> keeps them for re-runs:
 .venv\Scripts\python.exe scripts/import_prydwen.py
 ```
 After any change: `npm test`, `npm run build`, then commit. Deploy to GitHub Pages only when the
@@ -35,6 +36,7 @@ owner asks (there is no git remote yet).
     a re-import overwrites them.
   - `src/data/characters/<slug>.ts`: our additions per character (character buffs, card buffs,
     notes, corrections such as `targetRavaged`), keyed by the import's card ids (`card-341`).
+    Manifest Ego buffs are character effects with `egoLevel` (on from the build's level).
     Card fields set here override the import; notes are joined. `src/data/helpers.ts` has `cardBuff()`.
     Put character `effects` before `cards` (the workbook export script assumes that order).
   - `src/data/merge.ts` combines the two; `checkAdditions()` (run by the tests) catches unknown
@@ -52,7 +54,7 @@ owner asks (there is no git remote yet).
 - `src/ui/`: tabs Setup, Buffs, Cards (library + ordered rotation), Results (color-coded formula
   strip per play, tap for hits), Settings (rules, backup). At 1000px or wider, Results sits beside
   the other tabs.
-- Saves are per character: builds (partner, 3 fragment set picks, stats...), boosts, buffs, cards and rotation. Every build shares the cards
+- Saves are per character: builds (partner, Manifest Ego level, 3 fragment set picks, stats...), boosts, buffs, cards and rotation. Every build shares the cards
   and rotation (a list of plays; a play can override the card's hits). Preset switches that are missing count as on; own boost/buff switches that are
   missing count as off.
 - Constants and rules belong in settings, never hard-coded in the engine.

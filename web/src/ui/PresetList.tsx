@@ -28,9 +28,10 @@ export function PresetList({ kind }: { kind: 'Stat' | 'Buff' }) {
                 <div className="row-warn">Class-limited: {partner?.name} is {partner?.class}, {ch?.name} is {ch?.class}</div>
               )}
               {s.onStatsScreen && <div className="row-note">Already on the stats screen: not added again</div>}
+              {s.egoLocked && <div className="row-warn">Needs Manifest Ego E{e.egoLevel} (this build: E{build.egoLevel ?? 0})</div>}
               {e.notes && <div className="row-note">{e.notes}</div>}
             </div>
-            {!s.onStatsScreen && <SwitchControl label={e.name} value={sw === undefined ? true : sw} disabled={s.classBlocked}
+            {!s.onStatsScreen && <SwitchControl label={e.name} value={sw === undefined ? true : sw} disabled={s.classBlocked || s.egoLocked}
               defaultStacks={e.defaultStacks} maxStacks={e.kind === 'Buff' ? e.maxStacks : undefined}
               onChange={(v) => updateBuild((b) => { b.presetSwitches[key] = v })} />}
           </li>

@@ -46,7 +46,7 @@
    "cardType": "Skill",
    "cost": 1,
    "element": "Void",
-   "tags": "Basic",
+   "tags": "Basic, Basic Skill",
    "scaling": "ATK",
    "pct": 0,
    "hits": 0,
@@ -533,6 +533,90 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "300% Shield.\n3 Damage Reduction.\nWhen a Skill Card is activated, change this card to Doggie (Morphed)."
+  }
+ ],
+ "potentials": [
+  {
+   "node": "1",
+   "name": "Epiphany Bonus",
+   "text": "When entering Chaos, obtain 1 random Rare Card with an activated Epiphany."
+  },
+  {
+   "node": "2",
+   "name": "Basic Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Basic Cards by 2/20%."
+  },
+  {
+   "node": "3",
+   "name": "Common Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Common Cards by 2/20%."
+  },
+  {
+   "node": "3-1",
+   "name": "Basic Card Proficiency",
+   "text": "Add Blessing to Gather Around and Fairy's Protection cards."
+  },
+  {
+   "node": "4",
+   "name": "Unique Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Unique Cards by 2/20%."
+  },
+  {
+   "node": "5",
+   "name": "Health Proficiency",
+   "text": "+1.6/8% Health."
+  },
+  {
+   "node": "5-1",
+   "name": "Basic Card Proficiency",
+   "text": "+5% Shield Gain Amount to Adelheid's Fairy's Protection. If Adelheid's Defense is greater than 250, add an additional +5% to the modifier"
+  },
+  {
+   "node": "5-2",
+   "name": "Divine Epiphany Adaptation",
+   "text": "Increases the chance for a Divine Epiphany to appear by 25%."
+  },
+  {
+   "node": "6",
+   "name": "Defense Proficiency",
+   "text": "+1.6/8% Defense."
+  },
+  {
+   "node": "7",
+   "name": "Unique Stat Upgrade",
+   "text": "If Adelheid's Defense is greater than 300, +5% Void-Attribute Damage Amount. For every 10 Defense exceeding 300, add an additional 2% to the modifier (additional +10% max)."
+  }
+ ],
+ "manifestEgo": [
+  {
+   "level": 1,
+   "name": "Sleeping Memory",
+   "text": "For the Garden of Secrets card, decrease Cost by 1 and add +100% Shield Gain Amount."
+  },
+  {
+   "level": 2,
+   "name": "Awakening Memory",
+   "text": "Gain the Bliss of Dreams effect for each Blessing Adelheid applies or creates. At the start of the turn, gain the Bliss of Dreams effect for each Blessing card in possession\nBliss of Dreams: Increase Damage Amount of allies by 3% (max 10 stacks)"
+  },
+  {
+   "level": 3,
+   "name": "Vivid Memory",
+   "text": "+200% Shield Gain Amount to Happy Ending. Changes the restrictions of the Fixed Heal equal to Shield in possession effect to (does not exceed 50% of max HP)."
+  },
+  {
+   "level": 4,
+   "name": "Inner Memory",
+   "text": "At the start of battle, apply Blessing to any number of cards in hand.\nWhen a Blessing Upgrade Card is used, apply Blessing to 1 random card in Draw Pile."
+  },
+  {
+   "level": 5,
+   "name": "Complete Memory",
+   "text": "Increase the level of [Basic Card Upgrade], [Unique Card Upgrade], and [Common Card Upgrade] in Potentials by 3."
+  },
+  {
+   "level": 6,
+   "name": "Liberated Memory",
+   "text": "For Bliss of Dreams, decrease max stacks by 5 and change the increased Damage Amount effect to 8%. At the start of the turn, if Bliss of Dreams is 5, Draw 1 Blessing card."
   }
  ]
 }

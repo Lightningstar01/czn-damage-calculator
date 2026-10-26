@@ -46,7 +46,7 @@
    "cardType": "Skill",
    "cost": 1,
    "element": "Justice",
-   "tags": "Basic",
+   "tags": "Basic, Basic Skill",
    "scaling": "ATK",
    "pct": 0,
    "hits": 0,
@@ -630,6 +630,90 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "120% Damage to a random enemy.\nCreate 1 Sword Tassel.\nWhen a 1-Cost or higher card is activated, activate effect (2 times per turn)."
+  }
+ ],
+ "potentials": [
+  {
+   "node": "1",
+   "name": "Epiphany Bonus",
+   "text": "When entering Chaos, obtain 1 random Rare Card with an activated Epiphany."
+  },
+  {
+   "node": "2",
+   "name": "Basic Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Basic Cards by 2/20%."
+  },
+  {
+   "node": "3",
+   "name": "Common Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Common Cards by 2/20%."
+  },
+  {
+   "node": "3-1",
+   "name": "Basic Card Proficiency",
+   "text": "Decrease Cost of the Sword Slash card by 1."
+  },
+  {
+   "node": "4",
+   "name": "Unique Card Upgrade",
+   "text": "Increase Damage, Shield, and Healing Amounts of Unique Cards by 2/20%."
+  },
+  {
+   "node": "5",
+   "name": "Critical Chance Proficiency",
+   "text": "+2/10% Critical Chance."
+  },
+  {
+   "node": "5-1",
+   "name": "Basic Card Proficiency",
+   "text": "+5% Damage Amount to Rossweissei's Sword Slash and if Rossweisse's Attack is 500 or higher, add an additional +5% to the modifier"
+  },
+  {
+   "node": "5-2",
+   "name": "Divine Epiphany Adaptation",
+   "text": "Increases the chance for a Divine Epiphany to appear by 25%."
+  },
+  {
+   "node": "6",
+   "name": "Critical Damage Proficiency",
+   "text": "+2.4/12% Critical Damage."
+  },
+  {
+   "node": "7",
+   "name": "Unique Stat Upgrade",
+   "text": "If Rossweisseis Attack is 600 or higher, +5% Justice Attribute Damage Amount, and for every 20 Attack exceeding 600, add an additional +2% to the modifier (additional + 10% max)"
+  }
+ ],
+ "manifestEgo": [
+  {
+   "level": 1,
+   "name": "Sleeping Memory",
+   "text": "Adds the following effect to the Kyrken's Apostle card: Gain 1 AP.\nChanges the following effects for the Kyrken's Aegis effect : Increase Damage Amount of Attack Cards by 30%,\nand increase final Damage Amount of Flicker Blade by 20%."
+  },
+  {
+   "level": 2,
+   "name": "Awakening Memory",
+   "text": "At the start of battle, increase Rossweisse's final Damage Amount by 20%.At the start of the turn, gain 4 Blade Afterimage.\nBlade Afterimage: When Rossweisse's Light or Dark cards are activated, 120% Damage to a random enemy, create 1 Sword Tassel, then decrease Blade Afterimage by 1 (max 8 stacks)"
+  },
+  {
+   "level": 3,
+   "name": "Vivid Memory",
+   "text": "+400% Damage Amount to Flickering White Night, and changes the Fixed Damage inflicted to the target when the next Equilux card is activated from being equal to 30% Damage taken into being equal to 60% Damage taken."
+  },
+  {
+   "level": 4,
+   "name": "Inner Memory",
+   "text": "At the start of battle, gain 1 Precious Name.\nEach time the effect of Rossweisse's Light or Dark cards activate, gain 1 Precious Name.\nPrecious Name: Increase Rossweisse's Damage Amount by 8% (max 5 stacks) \"Sig, Siegrune, Gerhilde, Fricka... and you.\""
+  },
+  {
+   "level": 5,
+   "name": "Complete Memory",
+   "text": "Increase the level of [Basic Card Upgrade], [Signature Card Upgrade], and [Common Card Upgrade] in Potentials by 3."
+  },
+  {
+   "level": 6,
+   "name": "Liberated Memory",
+   "text": "When Rossweisse's Flicker Blade moves to hand, gain 1 Blade Poised Against the Cycle, and the Equilux, Light, and Dark cards are no longer included in the hand’s maximum capacity count.\nBlade Poised Against the Cycle: Increase final Damage Amount of Rossweisse’s Attack Cards by 15%, and if that card is Flicker Blade, increase by 25% (max 2 stacks)"
   }
  ]
 }

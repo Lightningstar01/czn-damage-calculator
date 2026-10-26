@@ -4,7 +4,7 @@ import { DEFAULT_SETTINGS } from '../data/settings'
 import { ELEMENTS, CARD_TYPES, FRAGMENT_SET_PICKS, type Build, type Card, type CardPreset, type CharacterSave, type Element, type SaveData, type ScreenStats, type UserBoost, type UserBuff } from '../engine/types'
 
 /** Bump when the save format changes, and add a step to migrate(). */
-export const SAVE_VERSION = 6
+export const SAVE_VERSION = 7
 const STORAGE_KEY = 'czn-damage-calculator'
 
 /** Mei Lin's card preset ids before v6 -> Prydwen card ids. */
@@ -29,7 +29,7 @@ export function newStats(): ScreenStats {
 export function newBuild(name: string): Build {
   return {
     id: newId(), name, partner: '', fragments: Array(FRAGMENT_SET_PICKS).fill(''), stats: newStats(), enemyDefMult: 1, enemyDr: 0,
-    morale: 0, vulnerable: 0, weaknessDebuff: 0, presetSwitches: {},
+    morale: 0, vulnerable: 0, weaknessDebuff: 0, egoLevel: 0, presetSwitches: {},
   }
 }
 
@@ -81,7 +81,7 @@ export function migrate(raw: unknown): SaveData {
   if (!raw || typeof raw !== 'object' || !('characters' in raw)) throw new Error("This file isn't a calculator save.")
   const data = raw as SaveData
   if ((data.version ?? 0) > SAVE_VERSION) throw new Error('This save is from a newer version of the calculator.')
-  // Future migrations go here: if (data.version === 6) { ...; data.version = 7 }
+  // Future migrations go here: if (data.version === 7) { ...; data.version = 8 }
   if ((data.version ?? 1) <= 1) {
     // v2: memory fragment set picks per build
     for (const cs of Object.values(data.characters ?? {})) {
@@ -130,6 +130,13 @@ export function migrate(raw: unknown): SaveData {
       if (c.preset && c.preset in MEI_LIN_V5_IDS) c.preset = MEI_LIN_V5_IDS[c.preset]
     }
     data.version = 6
+  }
+  if (data.version === 6) {
+    // v7: Manifest Ego level per build
+    for (const cs of Object.values(data.characters ?? {})) {
+      for (const b of cs.builds ?? []) b.egoLevel ??= 0
+    }
+    data.version = 7
   }
   return {
     ...defaultSave(),
