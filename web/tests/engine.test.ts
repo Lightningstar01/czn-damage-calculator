@@ -13,7 +13,7 @@ import { ADDITIONS, IMPORTED, PRESETS } from '../src/data/presets'
 import { checkAdditions } from '../src/data/merge'
 import { DEFAULT_SETTINGS } from '../src/data/settings'
 import { cardFromPreset, newBuff, newBuild, newCard, newCharacterSave, migrate, defaultSave, SAVE_VERSION } from '../src/store/save'
-import type { Card, CharacterSave, Presets } from '../src/engine/types'
+import type { Build, Card, CharacterSave, Presets } from '../src/engine/types'
 
 const presets: Presets = {
   characters: [...PRESETS.characters, { name: 'Testy', element: 'Order', class: 'Vanguard', effects: [] }],
@@ -30,6 +30,8 @@ const presets: Presets = {
   ],
 }
 const settings = DEFAULT_SETTINGS
+/** Switch off Mei Lin's potential 5-1 (Strike card %), for tests about something else. */
+const noStrikeNode = (b: Build) => { b.presetSwitches['Mei Lin|p5-1-strike'] = b.presetSwitches['Mei Lin|p5-1-atk'] = false }
 
 function card(name: string, tags: string, hits: number, weak = false, ravaged = false): Card {
   return { ...newCard('Passion'), name, tags, hits, pct: 1, weaknessApplies: weak, targetRavaged: ravaged }
@@ -120,6 +122,7 @@ function partnerScenario(character: string) {
   for (const x of cs.builds) x.stats.attack = 1000
   a.partner = b.partner = 'Marianne'
   b.presetSwitches['Marianne|atk'] = false
+  for (const x of cs.builds) x.presetSwitches['Mei Lin|p3-1-ember'] = false   // no Ember in this scenario
   const strike = card('Strike', 'Basic Attack', 1, false, true), other = card('Other', 'x', 1)
   cs.cards.push(strike, other)
   cs.rotation = plays(strike.id, other.id)
@@ -288,6 +291,7 @@ describe('card presets', () => {
     const cs = newCharacterSave()
     const [a] = cs.builds
     a.stats.attack = 1000
+    noStrikeNode(a)
     const strike = cardFromPreset(preset('card-338'), 'Passion')
     cs.cards.push(strike)
     cs.rotation = plays(strike.id)
@@ -335,6 +339,7 @@ describe('card presets', () => {
     const cs = newCharacterSave()
     const [a] = cs.builds
     a.stats.attack = 1000
+    noStrikeNode(a)
     const strike = cardFromPreset(preset('card-338'), 'Passion'), jewel = cardFromPreset(preset('card-341'), 'Passion')
     expect(strike).toMatchObject({ name: 'Strike', element: 'Passion', cost: 1, tags: 'Basic, Basic Attack', pct: 1, hits: 1, preset: 'card-338' })
     expect(cardFromPreset(preset('card-337'), 'Passion').cost).toBeNull()
@@ -379,12 +384,15 @@ describe('potentials', () => {
     cs.cards.push(strike, spire, own)
     cs.rotation = plays(strike.id, spire.id, own.id)
     const mults = () => computeBuild(PRESETS, 'Mei Lin', cs, a, settings).plays.map((p) => p.hits[0].cardMult)
-    expect(mults()).toEqual([strike.pct, spire.pct, 1.5].map((x) => expect.closeTo(x)))
+    // Strike also has potential 5-1: +5%, +5% more above 500 Attack (x1.1 on the card %)
+    expect(mults()).toEqual([1.1, spire.pct, 1.5].map((x) => expect.closeTo(x)))
     a.basicLevel = 10
     a.signatureLevel = 6
-    expect(mults()).toEqual([strike.pct * 1.2, spire.pct * 1.12, 1.5].map((x) => expect.closeTo(x)))
+    // the owner's in-game Strike: 132% at Basic Card Upgrade 10
+    expect(mults()).toEqual([1.32, spire.pct * 1.12, 1.5].map((x) => expect.closeTo(x)))
     a.egoLevel = mei.potentialEgo!.level
     a.presetSwitches['Mei Lin|e4-atk'] = false
+    noStrikeNode(a)
     expect(mults()).toEqual([strike.pct * 1.26, spire.pct * 1.18, 1.5].map((x) => expect.closeTo(x)))
   })
 
@@ -410,6 +418,76 @@ describe('potentials', () => {
     const cs = migrate(old).characters['Mei Lin']
     expect(cs.builds[0]).toMatchObject({ basicLevel: 0, signatureLevel: 0 })
     expect(cs.cards.map((c) => c.upgrade)).toEqual(['Basic', undefined, undefined, undefined])
+  })
+})
+
+describe('rotation buffs', () => {
+  const mei = PRESETS.characters.find((c) => c.name === 'Mei Lin')!
+  const preset = (id: string) => mei.cards!.find((p) => p.id === id)!
+  const setup = (...ids: string[]) => {
+    const cs = newCharacterSave()
+    const [a] = cs.builds
+    a.stats.attack = 1000
+    noStrikeNode(a)
+    const lib = ids.map((id) => cardFromPreset(preset(id), 'Passion'))
+    cs.cards.push(...lib)
+    return { cs, a, lib }
+  }
+  const adds = (r: BuildResult) => r.plays.map((p) => p.hits.map((h) => Math.round(h.additive.value * 100) / 100))
+
+  it('Spirit of the Aromata stacks from its own play on, that play included', () => {
+    const { cs, a, lib: [strike, aromata, spire] } = setup('card-338', 'card-358', 'card-346')
+    cs.rotation = plays(strike.id, aromata.id, strike.id, spire.id)
+    const r = computeBuild(PRESETS, 'Mei Lin', cs, a, settings)
+    expect(adds(r)).toEqual([[0], [], [0.4], [0.6]])
+    expect(r.plays[3].counters).toContainEqual({ name: 'Spirit of the Aromata', before: 3, after: 3 })
+    a.presetSwitches['Spirit of the Aromata|dmg'] = false
+    expect(adds(computeBuild(PRESETS, 'Mei Lin', cs, a, settings))).toEqual([[0], [], [0], [0]])
+  })
+
+  it('Aromata I only counts Passion cards; Aromata V only boosts Basic cards', () => {
+    const { cs, a, lib: [strike, aromata, spire] } = setup('card-338', 'card-363', 'card-346')
+    cs.rotation = plays(aromata.id, spire.id, strike.id)
+    expect(adds(computeBuild(PRESETS, 'Mei Lin', cs, a, settings))).toEqual([[], [0], [1.5]])
+    const own = { ...newCard('Justice'), name: 'Off-element' }
+    const s2 = setup('card-359', 'card-338')
+    s2.cs.cards.push(own)
+    s2.cs.rotation = plays(s2.lib[0].id, own.id, s2.lib[1].id)
+    // Aromata I itself is Passion (stack 1), the Justice card adds none, Strike adds one: 2 stacks
+    expect(adds(computeBuild(PRESETS, 'Mei Lin', s2.cs, s2.a, settings))).toEqual([[], [0.2], [0.4]])
+  })
+
+  it('Ember: gained before the damage, +30% per stack on Ravaged targets, one used per hit', () => {
+    const { cs, a, lib: [strike, spire] } = setup('card-338', 'card-346')
+    a.egoLevel = 2   // E2: damaging cards apply 1 Ember
+    for (const c of cs.cards) c.targetRavaged = true
+    cs.rotation = [{ cardId: spire.id, hits: 2 }, { cardId: strike.id }]
+    const r = computeBuild(PRESETS, 'Mei Lin', cs, a, settings)
+    // Spire: 2 + 1 (E2) = 3 Ember -> hits at 3 and 2 stacks. Strike: 1 left + 1 (E2) + 1 (potential 3-1) = 3
+    expect(adds(r)).toEqual([[0.9, 0.6], [0.9]])
+    expect(r.plays.map((p) => p.counters.find((c) => c.name === 'Ember'))).toEqual([
+      { name: 'Ember', before: 3, after: 1 }, { name: 'Ember', before: 3, after: 2 }])
+  })
+
+  it('Ember piles up unused on a target that is not Ravaged, up to 5', () => {
+    const { cs, a, lib: [strike, spire2] } = setup('card-338', 'card-348')
+    a.egoLevel = 2
+    const ravagedStrike = { ...strike, id: 'rs', targetRavaged: true }
+    cs.cards.push(ravagedStrike)
+    cs.rotation = plays(strike.id, spire2.id, ravagedStrike.id)
+    // Strike 2, Spire II +3 +1 = 6 -> capped at 5; the Ravaged Strike adds 2 more (still 5): +150%
+    expect(adds(computeBuild(PRESETS, 'Mei Lin', cs, a, settings))).toEqual([[0], [0], [1.5]])
+    a.presetSwitches['Mei Lin|ember'] = false
+    expect(adds(computeBuild(PRESETS, 'Mei Lin', cs, a, settings))).toEqual([[0], [0], [0]])
+  })
+
+  it('Ember needs E2 or an Ember card: E0 Strikes only get the potential 3-1 Ember', () => {
+    const { cs, a, lib: [strike] } = setup('card-338')
+    strike.targetRavaged = true
+    cs.rotation = plays(strike.id, strike.id)
+    expect(adds(computeBuild(PRESETS, 'Mei Lin', cs, a, settings))).toEqual([[0.3], [0.3]])
+    a.presetSwitches['Mei Lin|p3-1-ember'] = false
+    expect(adds(computeBuild(PRESETS, 'Mei Lin', cs, a, settings))).toEqual([[0], [0]])
   })
 })
 

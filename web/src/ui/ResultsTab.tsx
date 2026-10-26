@@ -29,7 +29,7 @@ export function ResultsTab() {
           {s.dotDmg.value !== 0 && <span>DoT <b>+{pct(s.dotDmg.value)}</b></span>}
         </div>
       </Section>
-      <Section title="Rotation" help="One row per play. The formula shows hit 1; tap “hits” to see every hit (first-hit buffs and Vulnerable stacks can change them). Tap any chip to see where it comes from.">
+      <Section title="Rotation" help="One row per play. Rotation stacks (Ember, Spirit of the Aromata...) show under the card: before its hits → after. The formula shows hit 1; tap “hits” to see every hit (first-hit buffs and Vulnerable stacks can change them). Tap any chip to see where it comes from.">
         {!r.plays.length && <p className="muted">Add cards to the rotation on the Cards tab.</p>}
         <ul className="legend">
           {LEGEND.map((l) => <li key={l.group}><span className={`swatch g-${l.group}`} />{l.label}</li>)}
@@ -57,6 +57,12 @@ function PlayRow({ play }: { play: Play }) {
           <strong title="Expected">{num(play.expected)}</strong>
         </span>
       </div>
+      {play.counters.some((c) => c.before || c.after) && (
+        <div className="muted small">
+          {play.counters.filter((c) => c.before || c.after)
+            .map((c) => `${c.name} ${c.before}${c.after !== c.before ? ` → ${c.after}` : ''}`).join(' · ')}
+        </div>
+      )}
       {hits.length > 0 && <FormulaStrip hit={hits[0]} card={card} />}
       {hits.length > 1 && (
         <button className="link small" onClick={() => setOpen(!open)} aria-expanded={open}>

@@ -57,6 +57,10 @@ owner asks (there is no git remote yet).
 - Card upgrade potentials (website only): build `basicLevel` / `signatureLevel`, card `upgrade`
   (Basic / Signature; `pct` is then the base %), `potentialFactor()` in calc.ts; the Manifest Ego
   level that adds +3 is parsed from the import (`potentialEgo` in merge.ts). See docs/FORMULA.md 2c.
+- Rotation buffs (website only): `Stacks` effects fill named counters as the rotation is played
+  (triggers `self` / `afterSelf` / `always`, before the card's damage); buffs with `counter` read
+  them per hit (`consumePerHit` for Ember). Each play's `counters` show on the Results tab.
+  Buff type `Card %` raises a card's base % like a potential (only on cards with an upgrade).
 - Saves are per character: builds (partner, Manifest Ego level, card upgrade levels, 3 fragment set picks, stats...), boosts, buffs, cards and rotation. Every build shares the cards
   and rotation (a list of plays; a play can override the card's hits). Preset switches that are missing count as on; own boost/buff switches that are
   missing count as off.

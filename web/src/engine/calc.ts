@@ -1,5 +1,5 @@
 // The damage formula (docs/FORMULA.md). Pure functions: inputs in, numbers and their sources out.
-import { activeBuffs, activeStats, cardBuffs, findCharacter, type ActiveStat, type Source } from './buffs'
+import { activeBuffs, activeStacks, activeStats, buffMatches, cardBuffs, findCharacter, type ActiveBuff, type ActiveStacks, type ActiveStat, type Source } from './buffs'
 import type { Build, Card, CardPreset, CharacterPreset, CharacterSave, PotentialUpgrade, Presets, RotationPlay, Settings, StatName } from './types'
 
 export interface Stat {
@@ -62,6 +62,8 @@ export interface Play {
   /** Position in the rotation (0-based). */
   index: number
   hits: Hit[]
+  /** Rotation counters (Ember, Spirit of the Aromata...) after this play's gains, before its hits; then after its hits. */
+  counters: { name: string; before: number; after: number }[]
   nonCrit: number
   crit: number
   expected: number
@@ -140,6 +142,14 @@ export function playCard(card: Card, play: RotationPlay): Card {
 export function computeBuild(presets: Presets, charName: string, cs: CharacterSave, build: Build, settings: Settings): BuildResult {
   const stats = finalStats(presets, charName, cs, build, settings)
   const buffs = activeBuffs(presets, charName, cs, build, settings)
+  const fixedBuffs = buffs.filter((b) => !b.counter)
+  const counterBuffs = buffs.filter((b) => b.counter)
+  const gains = activeStacks(presets, charName, cs, build)
+  // A counter holds at most the smallest max stacks of the buffs that read it
+  const caps = new Map<string, number>()
+  for (const b of counterBuffs) if (b.maxStacks) caps.set(b.counter!, Math.min(caps.get(b.counter!) ?? Infinity, b.maxStacks))
+  const counters = new Map<string, number>()
+  const started = new Set<ActiveStacks>()
   const ch = findCharacter(presets, charName)
   const cards = new Map(cs.cards.map((c) => [c.id, c]))
   const perCard = new Map<string, ReturnType<typeof cardBuffs>>()
@@ -150,17 +160,37 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
     if (!base) return
     // A per-play hit count also counts for '2+ hits' buffs, so it's buffed as its own card
     const card = playCard(base, play)
+    const hitCount = Math.max(0, Math.floor(card.hits))
+    // Stacks land before the card's damage (owner, 2026-10-25)
+    const damaging = card.pct > 0 && hitCount > 0
+    for (const g of gains) {
+      const own = !!g.cardId && card.preset === g.cardId
+      if (g.trigger === 'afterSelf' && own) started.add(g)
+      if ((g.trigger === 'self' && !own) || (g.trigger === 'afterSelf' && !started.has(g))) continue
+      if (g.damagingOnly && !damaging) continue
+      if (!buffMatches({ appliesTo: g.on, condition: 'Always' }, card)) continue
+      counters.set(g.counter, Math.min(caps.get(g.counter) ?? Infinity, (counters.get(g.counter) ?? 0) + g.amount))
+    }
+    const before = new Map(counters)
     const key = `${card.id}|${card.hits}`
-    let cb = perCard.get(key)
-    if (!cb) perCard.set(key, (cb = cardBuffs(buffs, card)))
-    const potential = card.scaling === 'Fixed' && !settings.potentialFixed ? null : potentialFactor(card.upgrade, build, ch, settings)
+    let fixedCb = perCard.get(key)
+    if (!fixedCb) perCard.set(key, (fixedCb = cardBuffs(fixedBuffs, card)))
+    const upgradable = !(card.scaling === 'Fixed' && !settings.potentialFixed)
+    const potential = upgradable ? potentialFactor(card.upgrade, build, ch, settings) : null
     const hits: Hit[] = []
-    for (let h = 1; h <= Math.max(0, Math.floor(card.hits)); h++) {
+    for (let h = 1; h <= hitCount; h++) {
       k++
+      const live: ActiveBuff[] = counterBuffs.map((b) => ({ ...b, stacks: Math.min(counters.get(b.counter!) ?? 0, b.maxStacks ?? Infinity) }))
+      const cb = live.some((b) => b.stacks > 0) ? cardBuffs([...fixedBuffs, ...live], card) : fixedCb
       hits.push(computeHit(card, h, k, cb, potential, stats, build, settings))
+      // A consumed counter (Ember) loses one stack per hit it boosted
+      for (const name of new Set(live.filter((b) => b.consumePerHit && b.stacks > 0 && buffMatches(b, card)).map((b) => b.counter!))) {
+        counters.set(name, (counters.get(name) ?? 0) - 1)
+      }
     }
     const sum = (f: (x: Hit) => number) => hits.reduce((a, x) => a + f(x), 0)
-    plays.push({ card, index, hits, nonCrit: sum((x) => x.nonCrit), crit: sum((x) => x.crit), expected: sum((x) => x.expected) })
+    plays.push({ card, index, hits, counters: [...before].map(([name, n]) => ({ name, before: n, after: counters.get(name) ?? 0 })),
+      nonCrit: sum((x) => x.nonCrit), crit: sum((x) => x.crit), expected: sum((x) => x.expected) })
   })
   const sum = (f: (x: Play) => number) => plays.reduce((a, x) => a + f(x), 0)
   return { stats, plays, nonCrit: sum((x) => x.nonCrit), crit: sum((x) => x.crit), expected: sum((x) => x.expected) }
@@ -169,6 +199,14 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
 function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof cardBuffs>, potential: Factor | null,
   stats: FinalStats, build: Build, settings: Settings): Hit {
   const first = hitNo === 1
+  // Card % buffs raise the base % like the card upgrade potentials, so only on cards entered at base %
+  const cardPctSources = potential ? [...cb.cardPct.all.sources, ...(first ? cb.cardPct.first.sources : [])] : []
+  if (potential && cardPctSources.length) {
+    potential = {
+      value: potential.value * (1 + cardPctSources.reduce((a, s) => a + s.value, 0)),
+      sources: [...potential.sources, ...cardPctSources],
+    }
+  }
   const pct = card.pct * (potential?.value ?? 1)
   const multSources = [...cb.multiplicative.all.sources, ...(first ? cb.multiplicative.first.sources : [])]
   const multValue = settings.multMode === 'Chained'

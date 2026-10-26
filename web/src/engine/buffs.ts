@@ -1,7 +1,7 @@
 // Which stat boosts and buffs are active for a build, and which buffs match a card.
 import type {
   BuffEffect, BuffType, Build, Card, CardPreset, CharacterPreset, CharacterSave, Condition, Effect, FragmentSetPreset, HitScope, PartnerPreset,
-  Presets, Settings, StatEffect, StatName, Switch,
+  Presets, Settings, StackEffect, StackTrigger, StatEffect, StatName, Switch,
 } from './types'
 
 /** Where a number came from, for the "tap a chip" breakdown. */
@@ -58,6 +58,22 @@ export interface ActiveBuff {
   appliesTo: string
   hitScope: HitScope
   condition: Condition
+  /** Rotation counter that sets the stacks (stacks is then filled in per hit by the engine). */
+  counter?: string
+  maxStacks?: number
+  consumePerHit?: boolean
+}
+
+/** A switched-on Stacks effect: adds to a rotation counter when cards are played. */
+export interface ActiveStacks {
+  label: string
+  counter: string
+  amount: number
+  trigger: StackTrigger
+  on: string
+  damagingOnly: boolean
+  /** The card preset that owns it ('self' / 'afterSelf' triggers). */
+  cardId?: string
 }
 
 /** Why a preset effect is (in)active for a build — shown greyed out in the UI. */
@@ -72,6 +88,8 @@ export interface PresetState {
   /** Needs a higher Manifest Ego level than the build has. */
   egoLocked: boolean
   stacks: number
+  /** Card preset id, for effects of a library card. */
+  cardId?: string
 }
 
 export function findCharacter(presets: Presets, name: string): CharacterPreset | undefined {
@@ -113,21 +131,22 @@ export function presetKey(owner: string, effect: Effect): string {
 export function presetStates(presets: Presets, charName: string, build: Build, cards: Card[] = []): PresetState[] {
   const out: PresetState[] = []
   const ch = findCharacter(presets, charName)
-  const add = (owner: string, ownerKind: PresetState['ownerKind'], effects: Effect[], blocked: (e: Effect) => boolean) => {
+  const add = (owner: string, ownerKind: PresetState['ownerKind'], effects: Effect[], blocked: (e: Effect) => boolean, cardId?: string) => {
     for (const e of effects) {
       const sw = build.presetSwitches[presetKey(owner, e)]
       const classBlocked = blocked(e)
       const onStatsScreen = e.kind === 'Stat' && !!e.onStatsScreen
       const egoLocked = (e.egoLevel ?? 0) > (build.egoLevel ?? 0)
-      const stacks = classBlocked || onStatsScreen || egoLocked ? 0 : switchStacks(sw === undefined ? true : sw, e.defaultStacks)
-      out.push({ owner, ownerKind, effect: e, classBlocked, onStatsScreen, egoLocked, stacks })
+      const defaultStacks = e.kind === 'Stacks' ? 1 : e.defaultStacks
+      const stacks = classBlocked || onStatsScreen || egoLocked ? 0 : switchStacks(sw === undefined ? true : sw, defaultStacks)
+      out.push({ owner, ownerKind, effect: e, classBlocked, onStatsScreen, egoLocked, stacks, cardId })
     }
   }
   if (ch) add(ch.name, 'Character', ch.effects, () => false)
   const p = build.partner ? findPartner(presets, build.partner) : undefined
   if (p) add(p.name, 'Partner', p.effects, (e) => !!e.classLimited && p.class !== ch?.class)
   for (const f of buildFragmentSets(presets, build)) add(f.name, 'Memory Fragment', f.effects, () => false)
-  for (const c of libraryCardPresets(presets, charName, cards)) add(c.name, 'Card', c.effects ?? [], () => false)
+  for (const c of libraryCardPresets(presets, charName, cards)) add(c.name, 'Card', c.effects ?? [], () => false, c.id)
   return out
 }
 
@@ -161,8 +180,9 @@ export function activeBuffs(presets: Presets, charName: string, cs: CharacterSav
     if (s.effect.kind !== 'Buff' || s.stacks <= 0) continue
     const e = s.effect as BuffEffect
     out.push({ label: `${s.owner}: ${e.name}`, type: buffType(e.value, e.type), value: parseBuffValue(e.value),
-      stacks: e.maxStacks ? Math.min(s.stacks, e.maxStacks) : s.stacks,
-      appliesTo: e.appliesTo, hitScope: e.hitScope, condition: e.condition })
+      stacks: e.counter ? 0 : e.maxStacks ? Math.min(s.stacks, e.maxStacks) : s.stacks,
+      appliesTo: e.appliesTo, hitScope: e.hitScope, condition: e.condition,
+      ...(e.counter ? { counter: e.counter, maxStacks: e.maxStacks, consumePerHit: !!e.consumePerHit } : {}) })
   }
   for (const b of cs.buffs) {
     const st = switchStacks(b.switches[build.id])
@@ -172,6 +192,17 @@ export function activeBuffs(presets: Presets, charName: string, cs: CharacterSav
       appliesTo: b.appliesTo, hitScope: b.hitScope, condition: b.condition })
   }
   return out
+}
+
+/** Stacks effects switched on for the build (they fill rotation counters). */
+export function activeStacks(presets: Presets, charName: string, cs: CharacterSave, build: Build): ActiveStacks[] {
+  return presetStates(presets, charName, build, cs.cards)
+    .filter((s) => s.effect.kind === 'Stacks' && s.stacks > 0)
+    .map((s) => {
+      const e = s.effect as StackEffect
+      return { label: `${s.owner}: ${e.name}`, counter: e.counter, amount: e.amount, trigger: e.trigger, on: e.on || 'ALL',
+        damagingOnly: !!e.damagingOnly, cardId: s.cardId }
+    })
 }
 
 const norm = (s: string) => s.replace(/\s/g, '').toLowerCase()
@@ -211,22 +242,25 @@ export interface CardBuffs {
   /** Crit Chance / Crit DMG buffs on this card only (fractions added to the final stat). */
   critRate: { all: Bucket; first: Bucket }
   critDmg: { all: Bucket; first: Bucket }
+  /** Card % buffs (raise the card's base %, like potentials). */
+  cardPct: { all: Bucket; first: Bucket }
 }
 
 /** Sum the buffs that match a card into additive / multiplicative buckets (all hits vs first hit only). */
 export function cardBuffs(buffs: ActiveBuff[], card: Card): CardBuffs {
   const b = (): Bucket => ({ value: 0, sources: [] })
   const out: CardBuffs = { additive: { all: b(), first: b() }, multiplicative: { all: b(), first: b() }, weaknessAttack: [],
-    critRate: { all: b(), first: b() }, critDmg: { all: b(), first: b() } }
+    critRate: { all: b(), first: b() }, critDmg: { all: b(), first: b() }, cardPct: { all: b(), first: b() } }
   for (const buff of buffs) {
-    if (!buffMatches(buff, card)) continue
+    if (buff.stacks <= 0 || !buffMatches(buff, card)) continue
     const label = buff.stacks !== 1 ? `${buff.label} x${buff.stacks}` : buff.label
     if (buff.type === 'Weakness Attack') {
       out.weaknessAttack.push({ label, value: 0, unit: 'x' })
       continue
     }
     const v = buff.value * buff.stacks
-    const group = { Additive: out.additive, Multiplicative: out.multiplicative, 'Crit Chance': out.critRate, 'Crit DMG': out.critDmg }[buff.type]
+    const group = { Additive: out.additive, Multiplicative: out.multiplicative, 'Crit Chance': out.critRate, 'Crit DMG': out.critDmg,
+      'Card %': out.cardPct }[buff.type]
     const bucket = group[buff.hitScope === 'First hit only' ? 'first' : 'all']
     bucket.value += v
     bucket.sources.push({ label: buff.hitScope === 'First hit only' ? `${label} (first hit)` : label, value: v, unit: '%' })

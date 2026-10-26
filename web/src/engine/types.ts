@@ -21,8 +21,9 @@ export const CARD_TYPES = ['Attack', 'Skill', 'Upgrade'] as const
 export type CardType = (typeof CARD_TYPES)[number]
 export type HitScope = 'All hits' | 'First hit only'
 export type Condition = 'Always' | 'Ravaged only'
-/** Crit Chance / Crit DMG buffs add to the crit stats of matching cards only. */
-export type BuffType = 'Additive' | 'Multiplicative' | 'Weakness Attack' | 'Crit Chance' | 'Crit DMG'
+/** Crit Chance / Crit DMG buffs add to the crit stats of matching cards only. Card % raises the card's own %
+ * like a potential (shown in the in-game card %), so it only counts on cards entered at base % (with an upgrade). */
+export type BuffType = 'Additive' | 'Multiplicative' | 'Weakness Attack' | 'Crit Chance' | 'Crit DMG' | 'Card %'
 export type MultMode = 'Summed' | 'Chained'
 
 /** On/off switch, or a number of stacks. true = on with the effect's default stacks. */
@@ -66,10 +67,37 @@ export interface BuffEffect {
   classLimited?: boolean
   /** Manifest Ego level (1-6) that unlocks it: off for builds below that level. */
   egoLevel?: number
+  /** Rotation counter (e.g. 'Ember') that sets the stacks as the rotation plays out, instead of the switch;
+   * maxStacks caps the counter. Filled by Stacks effects with the same counter. */
+  counter?: string
+  /** One counter stack is used up by each hit the buff applies to (Ember). */
+  consumePerHit?: boolean
   notes?: string
 }
 
-export type Effect = StatEffect | BuffEffect
+/** When a Stacks effect adds stacks: 'self' = when its card is played; 'afterSelf' = each matching card played
+ * from its card's first play on (that play included); 'always' = each matching card played. */
+export type StackTrigger = 'self' | 'afterSelf' | 'always'
+
+/** Adds stacks to a rotation counter when cards are played, before the card's damage (owner, 2026-10-25). */
+export interface StackEffect {
+  kind: 'Stacks'
+  id: string
+  name: string
+  category: string
+  counter: string
+  amount: number
+  trigger: StackTrigger
+  /** Which played cards add stacks ("Applies to" syntax); default ALL. */
+  on?: string
+  /** Only cards that deal damage. */
+  damagingOnly?: boolean
+  classLimited?: boolean
+  egoLevel?: number
+  notes?: string
+}
+
+export type Effect = StatEffect | BuffEffect | StackEffect
 
 export interface CharacterPreset {
   name: string

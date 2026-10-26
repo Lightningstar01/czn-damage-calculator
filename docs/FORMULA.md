@@ -149,8 +149,30 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
   - Library cards store the base % with their upgrade (Basic / Signature / none). Own cards with no
     upgrade use the % as shown in-game. Save v8: preset cards still at the base % got their upgrade;
     edited ones kept their in-game % with no upgrade.
-  - Not yet modeled: conditional potential buffs that aren't on the stats screen (e.g. Mei Lin 5-1
-    "+5% Strike Damage"); add them as buffs if the in-game card % doesn't already show them.
+  - Potential nodes that raise one card's damage (Mei Lin 5-1: "+5% Strike Damage", +5% more above
+    500 Attack) are part of the in-game card % (User: Strike shows 132% at Basic Card Upgrade 10 =
+    100% x 1.2 x 1.1). They are buffs of type **Card %**: card % = base x (1 + upgrade levels x 2%)
+    x (1 + sum of Card % buffs), only on cards with an upgrade (entered at base %).
+- **Rotation buffs** (User, 2026-10-25), website only. One turn, every card played in it; no turn
+  breaks, and 1-turn buffs never expire. Played in rotation order:
+  - A **Stacks** effect adds stacks to a named counter when a card is played, **before** that
+    card's damage. Triggers: `self` (when its own card is played, e.g. Rising Dragon Spire's
+    "2 Ember"), `afterSelf` (each matching card from its card's first play on, that play included,
+    e.g. Spirit of the Aromata), `always` (each matching card, e.g. E2, Jewel III).
+  - A buff with a `counter` takes its stacks from the counter at each hit (capped at its max
+    stacks). Its switch is on/off only.
+  - **Spirit of the Aromata** stacks with every own card played after it, Skills and Upgrades too,
+    and boosts the card that adds the stack. Aromata I counts Passion cards only (allies' cards
+    are not counted).
+  - **Ember** (text from the owner: "When hitting or putting a target in a Ravage state, deal +30%
+    Damage for each stack of Ember the target has (up to 5 stacks). Upon activation, an Ember is
+    removed."): +30% **additive** per stack, only on hits on a Ravaged target (cards marked Target
+    Ravaged); one stack is used up per such hit. On other targets the Embers pile up unused.
+    Sources: E2 (each damaging card, 1), potential 3-1 (each Strike, 1 more), Rising Dragon
+    Spire / I / II (2 / 2 / 3), Jewel III (each Attack card, 1), Aromata IV (each own card after
+    it, 1; assumes one enemy). **Unconfirmed**: the target holds at most 5 Embers (a counter is
+    capped at the smallest max stacks of the buffs reading it).
+  - Not modeled: Jewel IV's Ember on crit, Sovereignty's "Destroy: Retain Embers", E6.
 - **Manifest Ego (dupes)** can't be switched off in-game, so each build has a level E0-E6 (User,
   2026-10-25). Ego buffs carry `egoLevel` and only count (and only show on the Buffs tab) from that level; set another build to a
   different level to see what a dupe adds. The E level that raises potential levels counts in the
