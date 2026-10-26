@@ -130,7 +130,7 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
   "Defense-based" = DEF scaling, "Fixed" = Fixed; Piercing only ignores enemy shields (User,
   2026-10-25; shields aren't modeled, so it counts as normal damage); for "100% (200%) Damage" the
   first % is used. Basic = a starting card with no epiphanies (User; tags Basic, plus Basic Attack
-  or Basic Skill). Each character has one Basic Skill (User; Prydwen lists two for Maribell). The Weakness Attack tag means Weakness DMG applies (User). Ego skills are type
+  or Basic Skill). Each character has one Basic Skill, Maribell two (User, 2026-10-25). The Weakness Attack tag means Weakness DMG applies (User). Ego skills are type
   Skill with tag "Ego Skill" and no AP cost: damaging ego skills are not Attack cards (User,
   2026-10-25). X-cost/unplayable cards have no cost and a tag. Status cards are type Skill with tag "Status".
 - Buffs are added character by character with the owner (only Mei Lin's so far).
@@ -138,7 +138,7 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
   their card upgrades in the in-game card % (User, 2026-10-25), including the Attack-threshold
   nodes. Not added again.
 - **Manifest Ego (dupes)** can't be switched off in-game, so each build has a level E0-E6 (User,
-  2026-10-25). Ego buffs carry `egoLevel` and only count from that level; set another build to a
+  2026-10-25). Ego buffs carry `egoLevel` and only count (and only show on the Buffs tab) from that level; set another build to a
   different level to see what a dupe adds. Known gap: an E level that raises potential levels
   (Mei Lin's E5) changes the in-game card %, which the calculator doesn't recompute.
 - A card's buffs (e.g. Flame Dragon's Jewel's Attack damage, Spirit of the Aromata's per-card

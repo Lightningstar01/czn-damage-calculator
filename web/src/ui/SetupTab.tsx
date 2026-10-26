@@ -64,7 +64,7 @@ function EgoSection() {
   if (!ch?.manifestEgo?.length) return null
   const level = build.egoLevel ?? 0
   return (
-    <Section title="Manifest Ego" help="The character's dupe level for this build. Effects of higher levels are off. Set another build to a different level to see what a dupe adds.">
+    <Section title="Manifest Ego" help="The character's dupe level for this build. Effects of higher levels are hidden and off. Set another build to a different level to see what a dupe adds.">
       <SelectField label="Level" value={String(level)}
         options={Array.from({ length: MAX_EGO_LEVEL + 1 }, (_, i) => ({
           value: String(i), label: i === 0 ? 'E0 (none)' : `E${i} ${ch.manifestEgo!.find((m) => m.level === i)?.name ?? ''}`,

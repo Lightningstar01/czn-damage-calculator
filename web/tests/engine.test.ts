@@ -276,11 +276,11 @@ describe('card presets', () => {
     expect(checkAdditions(IMPORTED, { 'mei-lin': { effects: [badEgo] } })).toHaveLength(1)
   })
 
-  it('every character has potentials, 6 Manifest Ego levels and one Basic Skill', () => {
+  it('every character has potentials, 6 Manifest Ego levels and one Basic Skill (Maribell two)', () => {
     for (const ch of PRESETS.characters) {
       expect(ch.potentials?.length).toBeGreaterThan(0)
       expect(ch.manifestEgo?.map((m) => m.level)).toEqual([1, 2, 3, 4, 5, 6])
-      if (ch.name !== 'Maribell') expect(ch.cards!.filter((c) => c.tags?.includes('Basic Skill')).map((c) => c.name)).toHaveLength(1)
+      expect(ch.cards!.filter((c) => c.tags?.includes('Basic Skill'))).toHaveLength(ch.name === 'Maribell' ? 2 : 1)
     }
   })
 
