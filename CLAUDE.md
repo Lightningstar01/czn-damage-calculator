@@ -135,7 +135,7 @@ Template (build columns E/F/G = Builds A/B/C in the top sections):
 | 153–452 | Hit breakdown: B card, C card #, D play #, E hit #; per build F–I / J–M / N–Q (card mult, non-crit, crit, expected) |
 
 "Applies to" matches ALL, an exact card name, or one tag in the card's comma-separated Tags.
-Website only: "Applies to" also takes `A & B` (all), `A/B` (any), `N+ hits`, `N+ cost` (vs tags like `2-cost`), card kinds `DoT` / `Extra Attack` and the card type (Attack / Skill / Upgrade dropdown); buff types Crit Chance / Crit DMG add to the crit stats of matching cards only.
+Website only: "Applies to" also takes `A & B` (all), `A/B` (any), `N+ hits`, card kinds `DoT` / `Extra Attack`, and the card's own type (Attack / Skill / Upgrade), element and cost (`1-cost`, `2+ cost`) fields; buff types Crit Chance / Crit DMG add to the crit stats of matching cards only.
 
 ## Status / backlog
 
@@ -143,6 +143,4 @@ Website only: "Applies to" also takes `A & B` (all), `A/B` (any), `N+ hits`, `N+
   cloud session; in Claude Code you may be able to fetch them) and another player's calculator
   sheet as .xlsx, to compare against ours line by line.
 - Open mechanics questions are listed in docs/FORMULA.md section 4.
-- Presets: Mei Lin's own character buffs (many conditional) still to be designed with the owner;
-  Flame Dragon's Sovereignty epiphanies still to come;
-  more characters/partners to be entered by the owner.
+- Presets: Mei Lin's own character buffs (many conditional) still to be designed with the owner;  more characters/partners to be entered by the owner.

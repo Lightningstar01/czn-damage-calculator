@@ -1,9 +1,10 @@
 // Saved data: defaults, versioning/migrations, browser storage, backup files.
+import { PRESETS } from '../data/presets'
 import { DEFAULT_SETTINGS } from '../data/settings'
 import { ELEMENTS, CARD_TYPES, FRAGMENT_SET_PICKS, type Build, type Card, type CardPreset, type CharacterSave, type Element, type SaveData, type ScreenStats, type UserBoost, type UserBuff } from '../engine/types'
 
 /** Bump when the save format changes, and add a step to migrate(). */
-export const SAVE_VERSION = 4
+export const SAVE_VERSION = 5
 const STORAGE_KEY = 'czn-damage-calculator'
 
 export function newId(): string {
@@ -30,15 +31,15 @@ export function newCharacterSave(): CharacterSave {
   return { builds: [a], activeBuild: a.id, showAllPartners: false, boosts: [], buffs: [], cards: [], rotation: [] }
 }
 
-export function newCard(): Card {
-  return { id: newId(), name: '', cardType: 'Attack', tags: '', scaling: 'ATK', kind: 'Normal', pct: 1, hits: 1, weaknessApplies: false, targetRavaged: false }
+/** element: the character's. */
+export function newCard(element: Element): Card {
+  return { id: newId(), name: '', cardType: 'Attack', element, cost: 1, tags: '', scaling: 'ATK', kind: 'Normal', pct: 1, hits: 1, weaknessApplies: false, targetRavaged: false }
 }
 
-/** Library copy of a card preset; the character's element and the cost (e.g. '1-cost') become tags. */
-export function cardFromPreset(p: CardPreset, element?: Element): Card {
-  const tags = [element, p.cost === undefined ? '' : `${p.cost}-cost`, ...(p.tags ?? '').split(',')].map((t) => t?.trim()).filter(Boolean)
+/** Library copy of a card preset; element: the character's (unless the preset sets its own). */
+export function cardFromPreset(p: CardPreset, element: Element): Card {
   return {
-    ...newCard(), name: p.name, cardType: p.cardType, tags: [...new Set(tags)].join(', '), scaling: p.scaling ?? 'ATK',
+    ...newCard(p.element ?? element), name: p.name, cardType: p.cardType, cost: p.cost ?? null, tags: p.tags ?? '', scaling: p.scaling ?? 'ATK',
     kind: p.kind ?? 'Normal', pct: p.pct, hits: p.hits, weaknessApplies: !!p.weaknessApplies, targetRavaged: !!p.targetRavaged,
     preset: p.id,
   }
@@ -73,7 +74,7 @@ export function migrate(raw: unknown): SaveData {
   if (!raw || typeof raw !== 'object' || !('characters' in raw)) throw new Error("This file isn't a calculator save.")
   const data = raw as SaveData
   if ((data.version ?? 0) > SAVE_VERSION) throw new Error('This save is from a newer version of the calculator.')
-  // Future migrations go here: if (data.version === 4) { ...; data.version = 5 }
+  // Future migrations go here: if (data.version === 5) { ...; data.version = 6 }
   if ((data.version ?? 1) <= 1) {
     // v2: memory fragment set picks per build
     for (const cs of Object.values(data.characters ?? {})) {
@@ -99,6 +100,22 @@ export function migrate(raw: unknown): SaveData {
       cs.rotation = ((cs.rotation ?? []) as unknown[]).map((p) => typeof p === 'string' ? { cardId: p } : p as CharacterSave['rotation'][number])
     }
     data.version = 4
+  }
+  if (data.version === 4) {
+    // v5: element and cost are card fields. Take them from tags like 'Passion' / '1-cost' (and drop those tags);
+    // else the character's element and no cost.
+    for (const [name, cs] of Object.entries(data.characters ?? {})) {
+      const charElement = PRESETS.characters.find((c) => c.name === name)?.element ?? ELEMENTS[0]
+      for (const c of cs.cards ?? []) {
+        const tags = (c.tags ?? '').split(',').map((t) => t.trim()).filter(Boolean)
+        const el = tags.find((t) => (ELEMENTS as readonly string[]).includes(t))
+        const cost = tags.find((t) => /^\d+-cost$/i.test(t))
+        c.element ??= (el as Element) ?? charElement
+        c.cost ??= cost ? parseInt(cost, 10) : null
+        c.tags = tags.filter((t) => t !== el && t !== cost).join(', ')
+      }
+    }
+    data.version = 5
   }
   return {
     ...defaultSave(),

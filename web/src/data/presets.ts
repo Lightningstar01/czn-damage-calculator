@@ -14,7 +14,7 @@ const aromataNote = 'One stack per card used after it this turn: set the stacks 
 
 // Card presets: base values from Prydwen (owner, 2026-10-25); the in-game % with potentials is edited on the copy.
 // Damage % follows the "+" rule: 'by 20%' (no "+") = multiplicative, '+20%' = additive. Extra hits (Combo, Spire V,
-// the Ego skill) are set per play in the rotation. Tags: element and cost are added on copy; Basic = Strike/Guardian.
+// the Ego skill) are set per play in the rotation. Cards get the character's element; Basic = Strike/Guardian.
 const MEI_LIN_CARDS: CardPreset[] = [
   { id: 'strike', base: 'Strike', name: 'Strike', cardType: 'Attack', cost: 1, tags: 'Basic, Basic Attack', pct: 1, hits: 1,
     text: '100% Damage.' },
@@ -93,7 +93,7 @@ const MEI_LIN_CARDS: CardPreset[] = [
 
   { id: 'sovereignty', base: "Flame Dragon's Sovereignty", name: "Flame Dragon's Sovereignty", cardType: 'Attack', cost: 2,
     tags: 'Weakness Attack', pct: 3, hits: 1, weaknessApplies: true, text: '[Weakness Attack] 300% Damage. Destroy: Retain Embers.',
-    notes: 'Epiphanies not entered yet' },
+    notes: 'Mythic card: no epiphanies' },
 ]
 
 export const PRESETS: Presets = {
@@ -128,8 +128,8 @@ export const PRESETS: Presets = {
   // Memory fragment sets: pieces 2 or 4 (a set is one size only). Stat bonuses are already on the stats
   // screen, so mark them onStatsScreen: true (listed for reference, not added again). Triggered buffs default
   // to on at max stacks (owner, 2026-10-25). Crit bonuses for some cards only use type 'Crit Chance' / 'Crit DMG'.
-  // Card tags they rely on: element (Passion, Justice, Order, Instinct, Void), Attack, Exhaust, Basic Attack,
-  // Counterattack, and cost tags like 1-cost; '2+ hits' / '2+ cost' / DoT / Extra Attack match automatically.
+  // Card tags they rely on: Exhaust, Basic Attack, Counterattack. Element, card type, '1-cost', '2+ cost', '2+ hits',
+  // DoT and Extra Attack match the card's own fields.
   fragmentSets: [
     {
       name: 'Battlefield Evolution', pieces: 4, effects: [
@@ -172,7 +172,7 @@ export const PRESETS: Presets = {
       name: "Conquerer's Aspect", pieces: 4, effects: [
         {
           kind: 'Buff', id: 'crit', name: '1-cost Crit DMG', category: 'Memory Fragment', type: 'Crit DMG', value: '+35%',
-          appliesTo: '1-cost', hitScope: 'All hits', condition: 'Always', notes: 'Tag 1-cost cards "1-cost"',
+          appliesTo: '1-cost', hitScope: 'All hits', condition: 'Always', notes: 'Cards with cost 1',
         },
       ],
     },
@@ -221,7 +221,7 @@ export const PRESETS: Presets = {
       name: 'Line of Justice', pieces: 4, effects: [
         {
           kind: 'Buff', id: 'crit', name: 'Crit Chance of 2+ cost cards', category: 'Memory Fragment', type: 'Crit Chance', value: '+20%',
-          appliesTo: '2+ cost', hitScope: 'All hits', condition: 'Always', notes: 'Tag cards with their cost, e.g. "2-cost"',
+          appliesTo: '2+ cost', hitScope: 'All hits', condition: 'Always', notes: 'Cards with cost 2 or more',
         },
       ],
     },

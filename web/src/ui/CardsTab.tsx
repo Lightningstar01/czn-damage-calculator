@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { PRESETS } from '../data/presets'
 import { playCard } from '../engine/calc'
 import { findCharacter } from '../engine/buffs'
-import { CARD_TYPES, type Card, type CardPreset, type CardType, type DamageKind, type Scaling } from '../engine/types'
+import { CARD_TYPES, ELEMENTS, type Card, type CardPreset, type CardType, type DamageKind, type Element, type Scaling } from '../engine/types'
 import { cardFromPreset, newCard, newId } from '../store/save'
 import { useCharacter } from '../store/store'
 import { pct } from './format'
@@ -22,13 +22,15 @@ export function CardsTab() {
   )
 }
 
+const COSTS = ['0', '1', '2', '3', '4', '5']
+
 function cardSummary(c: Card): string {
   const amount = c.scaling === 'Fixed' ? `${c.pct} fixed` : pct(c.pct, 2)
-  return `${c.cardType} · ${amount} × ${c.hits} hit${c.hits === 1 ? '' : 's'}${c.scaling === 'DEF' ? ' · DEF' : ''}${c.kind !== 'Normal' ? ` · ${c.kind}` : ''}`
+  return `${c.cost === null ? '' : `${c.cost} AP · `}${c.cardType} · ${amount} × ${c.hits} hit${c.hits === 1 ? '' : 's'}${c.scaling === 'DEF' ? ' · DEF' : ''}${c.kind !== 'Normal' ? ` · ${c.kind}` : ''}`
 }
 
 function presetText(p: CardPreset): string {
-  return `${p.cardType}${p.cost === undefined ? '' : ` · ${p.cost} AP`} · ${p.text}`
+  return `${p.cost === undefined ? '' : `${p.cost} AP · `}${p.cardType} · ${p.text}`
 }
 
 /** The character's preset cards, grouped by base card; tapping + Add copies one into the library. */
@@ -50,7 +52,7 @@ function PresetPicker() {
             <li key={g} className="row col">
               <button className="row-main link" onClick={() => setOpen(open === g ? null : g)} aria-expanded={open === g}>
                 <div className="row-title">{g}</div>
-                <div className="row-sub">{variants.length > 1 ? `Base + ${variants.length - 1} epiphanies` : 'No epiphanies entered'}</div>
+                <div className="row-sub">{variants.length > 1 ? `Base + ${variants.length - 1} epiphanies` : presetText(variants[0])}</div>
               </button>
               {open === g && (
                 <ul className="rows">
@@ -80,11 +82,12 @@ function PresetPicker() {
 function LibrarySection() {
   const { name, cs, updateCs } = useCharacter()!
   const [open, setOpen] = useState<string | null>(null)
-  const presetCards = findCharacter(PRESETS, name)?.cards ?? []
+  const ch = findCharacter(PRESETS, name)
+  const presetCards = ch?.cards ?? []
   return (
     <Section title="Card library" help="Enter each card's damage % exactly as the card shows it in-game (it already includes potentials and epiphany), or add one from the character's cards below. Cards are shared by all builds."
       actions={<button className="btn small" onClick={() => {
-        const c = newCard()
+        const c = newCard(ch?.element ?? ELEMENTS[0])
         updateCs((x) => { x.cards.push(c) })
         setOpen(c.id)
       }}>+ Add</button>}>
@@ -111,9 +114,14 @@ function LibrarySection() {
                     </div>
                   )}
                   <TextField label="Name" value={c.name} onChange={(v) => upd((x) => { x.name = v })} />
-                  <TextField label="Tags" value={c.tags} placeholder="Basic Attack, Strike" help="Comma-separated, e.g. element, Exhaust, 1-cost. Buffs can target a tag." onChange={(v) => upd((x) => { x.tags = v })} />
+                  <TextField label="Tags" value={c.tags} placeholder="Basic Attack, Strike" help="Comma-separated, e.g. Exhaust, Basic Attack. Buffs can target a tag." onChange={(v) => upd((x) => { x.tags = v })} />
                   <SelectField<CardType> label="Card type" value={c.cardType} options={CARD_TYPES}
                     help="Buffs can target it like a tag (e.g. 'Attack')." onChange={(v) => upd((x) => { x.cardType = v })} />
+                  <SelectField<Element> label="Element" value={c.element} options={ELEMENTS}
+                    help="Buffs can target it like a tag (e.g. 'Passion')." onChange={(v) => upd((x) => { x.element = v })} />
+                  <SelectField label="Cost (AP)" value={c.cost === null ? '' : String(c.cost)}
+                    options={[{ value: '', label: 'None (Ego skill)' }, ...new Set([...COSTS, ...(c.cost === null ? [] : [String(c.cost)])])]}
+                    help="Buffs can target '1-cost' or '2+ cost'." onChange={(v) => upd((x) => { x.cost = v === '' ? null : Number(v) })} />
                   <NumberField label={c.scaling === 'Fixed' ? 'Damage per hit' : 'Damage % per hit'} pct={c.scaling !== 'Fixed'} value={c.pct}
                     onChange={(v) => upd((x) => { x.pct = v })} />
                   <NumberField label="Hits" value={c.hits} min={0} onChange={(v) => upd((x) => { x.hits = Math.floor(v) })} />

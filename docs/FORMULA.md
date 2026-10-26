@@ -92,9 +92,10 @@ multiplier; this conflicts with Game8 and the owner, and was rejected.
   of matching cards only (Crit DMG stays a total multiplier: +35% makes 188.6% into 223.6%). The crit
   cap applies after them.
 - **Matching (website):** "Applies to" accepts `A & B` (all must match) and `A/B` (any one), plus
-  `N+ hits` (from the card's hit count), `N+ cost` (vs tags like `2-cost`), and the card kind
-  (`DoT`, `Extra Attack`), and the card type dropdown (`Attack`, `Skill`, `Upgrade`; owner). Cards
-  need tags for element, Exhaust, cost, etc.
+  `N+ hits` (from the card's hit count), and the card kind (`DoT`, `Extra Attack`). The card's
+  own fields match too (owner): card type (`Attack`, `Skill`, `Upgrade`), element (`Passion`...),
+  and cost (`1-cost`, `2+ cost`; Ego skills have no AP cost). Other keywords (Exhaust, Basic
+  Attack...) are tags.
 - Triggered set buffs default to on at max stacks (owner); switch off or lower them per build.
 - Prelude to a Hero ("+15% ... max 15%, max 2 stacks") and Sanguine Thorn ("+25% ... max 25%,
   max 2 stacks") give 15% / 25% total; the "stacks" are only turns of duration (owner).
@@ -118,7 +119,8 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
 
 ## 2c. Card presets — User (2026-10-25), website only
 
-- Each character's cards (base + every epiphany) are in `web/src/data/presets.ts`, from Prydwen
+- Each character's cards (base + every epiphany; mythic cards like Flame Dragon's Sovereignty
+  have none) are in `web/src/data/presets.ts`, from Prydwen
   (supplied by the owner). Picking one copies it into the card library with the **base** values;
   the owner edits the % to the in-game number (which includes potentials).
 - A card's buffs (e.g. Flame Dragon's Jewel's Attack damage, Spirit of the Aromata's per-card

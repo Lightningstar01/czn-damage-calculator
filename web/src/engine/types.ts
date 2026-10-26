@@ -85,9 +85,11 @@ export interface CardPreset {
   base: string
   name: string
   cardType: CardType
-  /** AP cost, added as a tag like '1-cost'. Omit for Ego skills. */
+  /** AP cost. Omit for Ego skills (no AP cost). */
   cost?: number
-  /** Extra comma-separated tags; the character's element and the cost tag are added on copy. */
+  /** Only if it differs from the character's element. */
+  element?: Element
+  /** Comma-separated (element and cost are their own fields). */
   tags?: string
   scaling?: Scaling
   kind?: DamageKind
@@ -213,6 +215,10 @@ export interface Card {
   name: string
   /** Attack / Skill / Upgrade; matched by "Applies to" like a tag. */
   cardType: CardType
+  /** Matched by "Applies to" like a tag (e.g. 'Passion'). */
+  element: Element
+  /** AP cost, matched by '1-cost' / '2+ cost'. null = no AP cost (Ego skill). */
+  cost: number | null
   /** Comma-separated. */
   tags: string
   scaling: Scaling

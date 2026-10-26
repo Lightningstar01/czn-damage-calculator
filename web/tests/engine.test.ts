@@ -31,7 +31,7 @@ const presets: Presets = {
 const settings = DEFAULT_SETTINGS
 
 function card(name: string, tags: string, hits: number, weak = false, ravaged = false): Card {
-  return { ...newCard(), name, tags, hits, pct: 1, weaknessApplies: weak, targetRavaged: ravaged }
+  return { ...newCard('Passion'), name, tags, hits, pct: 1, weaknessApplies: weak, targetRavaged: ravaged }
 }
 
 const plays = (...ids: string[]) => ids.map((cardId) => ({ cardId }))
@@ -185,7 +185,7 @@ describe('memory fragment sets', () => {
 
 describe('applies to', () => {
   const m = (appliesTo: string, c: Card) => buffMatches({ appliesTo, condition: 'Always' }, c)
-  const exhaust = { ...card('Slash', 'Order, Exhaust, Attack, 2-cost', 3) }
+  const exhaust: Card = { ...card('Slash', 'Exhaust', 3), element: 'Order', cost: 2 }
   it('AND, OR, hits, cost and card kind', () => {
     expect(m('Justice/Order & Exhaust & Attack', exhaust)).toBe(true)
     expect(m('Justice & Exhaust', exhaust)).toBe(false)
@@ -194,16 +194,29 @@ describe('applies to', () => {
     expect(m('2+ cost', exhaust)).toBe(true)
     expect(m('3+ cost', exhaust)).toBe(false)
     expect(m('1-cost', exhaust)).toBe(false)
+    expect(m('2-cost', exhaust)).toBe(true)
+    expect(m('Order', exhaust)).toBe(true)
+    expect(m('Passion', exhaust)).toBe(false)
+    expect(m('0+ cost', { ...exhaust, cost: null })).toBe(false)
     expect(m('Slash', exhaust)).toBe(true)
     expect(m('DoT', { ...exhaust, kind: 'DoT' })).toBe(true)
     expect(m('Counterattack/Extra Attack', { ...exhaust, kind: 'Extra Attack' })).toBe(true)
   })
 
   it('card type matches like a tag', () => {
-    const skill = { ...card('Guard', 'Order', 1), cardType: 'Skill' as const }
+    const skill: Card = { ...card('Guard', '', 1), cardType: 'Skill', element: 'Order' }
     expect(m('Skill', skill)).toBe(true)
     expect(m('Attack', skill)).toBe(false)
     expect(m('Order & Skill', skill)).toBe(true)
+  })
+
+  it('migrate moves element and cost tags into their fields (else the character element)', () => {
+    const old = { version: 4, characters: { 'Mei Lin': { builds: [], rotation: [], cards: [
+      { id: 'a', name: 'A', tags: 'Order, Exhaust, 2-cost' }, { id: 'b', name: 'B', tags: 'Basic Attack' },
+    ] } } }
+    const [ca, cb] = migrate(old).characters['Mei Lin'].cards
+    expect(ca).toMatchObject({ element: 'Order', cost: 2, tags: 'Exhaust' })
+    expect(cb).toMatchObject({ element: 'Passion', cost: null, tags: 'Basic Attack' })
   })
 
   it('migrate moves a type tag into the card type', () => {
@@ -211,8 +224,8 @@ describe('applies to', () => {
       { id: 'a', name: 'A', tags: 'Passion, Upgrade, 1-cost' }, { id: 'b', name: 'B', tags: 'Basic Attack' },
     ] } } }
     const [ca, cb] = migrate(old).characters.X.cards
-    expect(ca).toMatchObject({ cardType: 'Upgrade', tags: 'Passion, 1-cost' })
-    expect(cb).toMatchObject({ cardType: 'Attack', tags: 'Basic Attack' })
+    expect(ca).toMatchObject({ cardType: 'Upgrade', tags: '', element: 'Passion', cost: 1 })
+    expect(cb).toMatchObject({ cardType: 'Attack', tags: 'Basic Attack', cost: null })
   })
 })
 
@@ -225,7 +238,7 @@ describe('per-card crit buffs', () => {
     a.stats.critDmg = 1.5
     cs.buffs.push({ ...newBuff(a.id), value: '+35%', typeOverride: 'Crit DMG', appliesTo: '1-cost' })
     cs.buffs.push({ ...newBuff(a.id), value: '+20%', typeOverride: 'Crit Chance', appliesTo: '1-cost' })
-    const one = card('One', '1-cost', 1), two = card('Two', '2-cost', 1)
+    const one = { ...card('One', '', 1), cost: 1 }, two = { ...card('Two', '', 1), cost: 2 }
     cs.cards.push(one, two)
     cs.rotation = plays(one.id, two.id)
     const r = computeBuild(presets, '', cs, a, settings)
@@ -261,12 +274,13 @@ describe('card presets', () => {
     }
   })
 
-  it('copy adds element and cost tags; library card effects become preset buffs', () => {
+  it('copy takes the character element; library card effects become preset buffs', () => {
     const cs = newCharacterSave()
     const [a] = cs.builds
     a.stats.attack = 1000
     const strike = cardFromPreset(preset('strike'), 'Passion'), jewel = cardFromPreset(preset('jewel-1'), 'Passion')
-    expect(strike).toMatchObject({ name: 'Strike', tags: 'Passion, 1-cost, Basic, Basic Attack', pct: 1, hits: 1, preset: 'strike' })
+    expect(strike).toMatchObject({ name: 'Strike', element: 'Passion', cost: 1, tags: 'Basic, Basic Attack', pct: 1, hits: 1, preset: 'strike' })
+    expect(cardFromPreset(preset('ego'), 'Passion').cost).toBeNull()
     cs.cards.push(strike)
     cs.rotation = plays(strike.id)
     const before = computeBuild(PRESETS, 'Mei Lin', cs, a, settings)
