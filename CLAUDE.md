@@ -113,6 +113,13 @@ Crit       = Damage x Crit DMG (stat is the total multiplier); Expected = Damage
   cloud session; in Claude Code you may be able to fetch them). Another player's calculator sheet
   is in `CZNRedditSheet.xlsx`, to compare against ours line by line.
 - Open mechanics questions are listed in docs/FORMULA.md section 4.
+- Card text check: the owner is saving in-game card screenshots to `card-screenshots/<slug>/` (git-ignored);
+  compare them with the cards and confirm corrections with the owner (Mei Lin first: known differences).
+- Idea for later (owner, 2026-10-27, not now): build the library/deck like the game, with card art. Plan: the Prydwen
+  import also records each card's picture (art only, 200x300 webp, e.g. cdn.prydwen.gg/images/chaos/cards/mei_4.webp);
+  the site draws its own frame (cost, name, type, element, our text with formula colors and potentials applied);
+  library as a card grid, tap to add / pick the Epiphany. Before publishing: decide on hosting the art (it's the
+  game's; keep a copy with the site and credit the game and Prydwen rather than loading from Prydwen). Start with one character.
 - Presets: all 38 characters and their cards are imported. Reviewing every character alphabetically
   with the owner (cards, buffs with self/allies/enemy targets, Manifest Ego, potentials; Prydwen +
   the owner's in-game check); next: Adelheid, then on (re-check Mei Lin at M).
