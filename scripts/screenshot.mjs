@@ -7,7 +7,7 @@
 //   node scripts/screenshot.mjs --save my-backup.json   # another save (a backup from the Settings tab)
 //
 // Default save: output/czn-save.json. Each tab gives <viewport>-<tab>.png (the first screen, as seen) and
-// <viewport>-<tab>-full.png (the whole scrolled page, tab bar hidden).
+// <viewport>-<tab>-full-N.png (the whole scrolled page in parts of 2 screens, tab bar hidden).
 import { mkdir, readFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -77,11 +77,17 @@ try {
         else problems.push(`${vp} ${tab}: nothing to tap with text "${text}"`)
       }
       await page.waitForTimeout(150)
-      // <vp>-<tab>.png: the first screen as it looks; -full.png: the whole page, without the fixed tab bar on top of it
+      // <vp>-<tab>.png: the first screen as it looks; -full-N.png: the whole page in parts of 2 screens (small enough to
+      // read), without the fixed tab bar on top of it
       const file = resolve(outDir, `${vp}-${tab.toLowerCase()}.png`)
       await page.screenshot({ path: file })
       const hide = await page.addStyleTag({ content: '.tabbar { display: none !important; }' })
-      await page.screenshot({ path: file.replace(/\.png$/, '-full.png'), fullPage: true })
+      const { width, height } = VIEWPORTS[vp].viewport
+      const total = await page.evaluate(() => document.documentElement.scrollHeight)
+      for (let y = 0, n = 1; y < total; y += height * 2, n++) {
+        await page.screenshot({ path: file.replace(/\.png$/, `-full-${n}.png`), fullPage: true,
+          clip: { x: 0, y, width, height: Math.min(height * 2, total - y) } })
+      }
       await hide.evaluate((el) => el.remove())
       // Horizontal scrolling on the phone is a layout bug
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
