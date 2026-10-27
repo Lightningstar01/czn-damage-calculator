@@ -37,10 +37,10 @@ Final Card Mult = ((Base + Potential additive base) x (1 + Potential mult) x Gen
 - **No extra x1.25 on top of Weakness DMG — User test (2026-10-20):** Mei Lin Strike showed
   204% and 290% when targeting a Passion-weak enemy; 204.24% x 1.42 (137% screen + 5% Marianne)
   = 290.0%. The Reddit post's 270% (which seemed to need an extra x1.25) is unexplained, but
-  its inputs may have been incomplete. The "Extra weakness factor" setting (workbook Settings!B8) stays at 0% as a test hook.
+  its inputs may have been incomplete. The "Extra weakness factor" setting stays at 0% as a test hook.
 - Cards: enter the damage % the card shows in-game; it already includes potentials and
-  epiphany (User), so the workbook has no potential columns.
-- Vulnerable / Weakness debuff: workbook: one stack is used up per hit, in card-table order across
+  epiphany (User). The website can instead take the base % plus upgrade levels (see 2c).
+- Vulnerable / Weakness debuff: old workbook: one stack is used up per hit, in card-table order across
   every play of every card (User: "one sequence"). Every hit counts, including Fixed damage
   (**Unconfirmed**). Website (2026-10-26): switched on per play and counts on every hit of it
   (see Team snapshot).
@@ -54,10 +54,10 @@ Final Card Mult = ((Base + Potential additive base) x (1 + Potential mult) x Gen
 
 **Additive vs multiplicative wording — User:** after a localization update, a buff written
 with a leading "+" (e.g. "+30% Damage Amount") is additive; one without "+" is multiplicative.
-No public source found for this. The workbook auto-classifies by "+" and allows an override.
+No public source found for this. Buff types are picked by this rule.
 
 **Multiplicative buffs combine by summing — User belief**, supported by UltimateGacha, which
-cites Reddit testing. Prydwen's formula is ambiguous. Toggle: the "Multiplicative buffs combine" rule on the website Settings tab (workbook Settings!B15), Summed/Chained.
+cites Reddit testing. Prydwen's formula is ambiguous. Toggle: the "Multiplicative buffs combine" rule on the Settings tab, Summed/Chained.
 
 **Morale — Sourced (Game8) + User:** +20% flat per stack in the additive bucket (Game8: 2 stacks
 turn a 100% card into 140%). Max 20 stacks (owner). UltimateGacha claims Morale is a late
@@ -68,7 +68,7 @@ multiplier; this conflicts with Game8 and the owner, and was rejected.
 - **Class-limited partner effects — User:** any partner can go with any character, but the
   partner's class-limited effects only work when the partner's class matches the character's.
   Base stats and the ego skill always apply. Presets mark each effect "Class-limited? Yes/No";
-  the Template switches a class-limited effect off on a mismatch.
+  the calculator switches a class-limited effect off on a mismatch.
 - **Partner base stats** are already in the stats-screen numbers, so the Presets tab records
   them for reference only (not added again).
 - **Marianne (Striker) — User:** 144 HP, 5 DEF, 155 ATK; class-limited: +16% Attack (as ATK%),
@@ -77,7 +77,7 @@ multiplier; this conflicts with Game8 and the owner, and was rejected.
   - The Ravaged 15% has no "+", so it's multiplicative under the owner's "+" rule.
     **Unconfirmed** that the "+" rule covers partner passives.
 - **Ravaged — User:** Ravaged enemies take more damage. The size is **Unconfirmed**:
-  the "Ravaged: extra damage taken" setting (workbook Settings!B12, default 0%) multiplies the card mult by (1 + it) when the card's
+  the "Ravaged: extra damage taken" setting (default 0%) multiplies the card mult by (1 + it) when the card's
   "Target Ravaged?" is Yes. Buffs with Condition "Ravaged only" apply only to those cards.
 - **Weakness Attack — User:** a buff of type "Weakness Attack" makes Weakness DMG apply to
   matching cards, as if the card's "Weakness DMG applies?" were Yes. It ignores hit scope
@@ -128,8 +128,8 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
 - Every character's cards (base + every epiphany; mythic cards like Flame Dragon's Sovereignty
   have none) are imported from Prydwen, which the owner confirmed has the right "+" wording
   (2026-10-25); other sites (OffBanner outdated, Game8 adds "+" everywhere) are not used.
-  `scripts/import_prydwen.py` writes `web/src/data/prydwen/<slug>.json`; our buffs and notes go in
-  `web/src/data/characters/<slug>.ts`. Picking a card copies it into the card library with the
+  `scripts/import_prydwen.py` writes `src/data/prydwen/<slug>.json`; our buffs and notes go in
+  `src/data/characters/<slug>.ts`. Picking a card copies it into the card library with the
   **base** values; the build's card upgrade potentials are applied (below).
 - Importer reading of the card text (check against the game; corrections go in the additions file):
   damage % and hits from the first "N% Damage" / "N% x H Damage" / "N% Damage x H" phrase;
@@ -183,8 +183,7 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
     Jewel III, Aromata IV.
   - Save v9: each build got a copy of the old shared rotation; a play has Vulnerable / Weakness
     debuff on if its first hit was within the build's old stack count; counter stacks start at 0.
-  - The workbook is frozen (no team, per-play debuffs or counters); the website/workbook parity test
-    was dropped.
+  - The Excel workbook was removed (owner, 2026-10-27); the website is the only version.
 - **Card % in hand / on target** (User, 2026-10-25), website only. The Results tab shows both for
   each hit. In hand = card % x Mult + Add, without the buffs that need a Ravaged target (Ember,
   Marianne's and E4's vs Ravaged). On target = the full card multiplier: those buffs, then x Weakness
@@ -221,7 +220,7 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
 - [ ] Where Weakness DMG and partner "+X% damage" buffs sit relative to Morale.
 - [x] Extra x1.25 on top of Weakness DMG: none (Mei Lin test, 2026-10-20).
 - [x] Partner/equipment ATK% multiplies the stats-screen Attack (Mei Lin 1272 matches).
-- [ ] How much extra damage Ravaged enemies take ("Ravaged: extra damage taken" setting, workbook Settings!B12; 0% for now).
+- [ ] How much extra damage Ravaged enemies take ("Ravaged: extra damage taken" setting; 0% for now).
 - [ ] Is Marianne's Ravaged 15% multiplicative (no "+") or additive?
 - [ ] Gather more hits to pin down the enemy DEF multiplier (later).
 

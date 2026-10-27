@@ -2,9 +2,9 @@
 
     .venv\\Scripts\\python.exe scripts/import_prydwen.py [--cache folder]
 
-Writes web/src/data/prydwen/<character-slug>.json (one file per character) and _meta.json.
+Writes src/data/prydwen/<character-slug>.json (one file per character) and _meta.json.
 These files are generated: never edit them by hand. Our own additions (buffs, notes, corrections)
-go in web/src/data/characters/<slug>.ts, keyed by the card ids here, so re-importing never
+go in src/data/characters/<slug>.ts, keyed by the card ids here, so re-importing never
 overwrites them. Run it again after a game update and review the git diff.
 
 Prydwen has no card list page, but every character page embeds the full card list (Next.js
@@ -21,7 +21,7 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-OUT = ROOT / "web" / "src" / "data" / "prydwen"
+OUT = ROOT / "src" / "data" / "prydwen"
 URL = "https://www.prydwen.gg/chaos-zero-nightmare/characters/{slug}"
 ROMAN = r"(?:I|II|III|IV|V)"
 

@@ -3,30 +3,24 @@
 Calculates Chaos Zero Nightmare card damage so the owner can compare builds (partners, equipment,
 memory fragments, save-data setups) per character and maximize damage.
 
-Two versions exist:
-- **Website (`web/`)**, the new main version: React + TypeScript, mobile-first (the owner plays on
-  phone), data saved in the browser. See "Website" below.
-- **Excel workbook generator (`src/build_workbook.py`)**, the original. Frozen (owner, 2026-10-26):
-  keep it, its tests and the workbook, but new mechanics (teams, per-play debuffs and stacks) are
-  website only and the website/workbook parity test was dropped.
-
-## Website (web/)
+A website: React + TypeScript, mobile-first (the owner plays on phone), data saved in the browser.
+The original Excel workbook generator was removed (owner, 2026-10-27); it is in git history if ever needed.
 
 ```bash
-cd web
 npm install
-npm run dev        # local dev server
-npm test           # Vitest: engine tests (ported Excel scenarios)
-npm run build      # type-check + production build to web/dist
+npm run dev        # local dev server (add -- --host to open it on the phone over Wi-Fi)
+npm test           # Vitest: engine tests
+npm run build      # type-check + production build to dist/
 npm run lint       # oxlint
-# Owner's workbook -> output/czn-save.json (a v8 save; import on the Settings tab migrates it) + web/tests/fixtures/workbook.json:
-.venv\Scripts\python.exe scripts/export_workbook_json.py
 # Re-import every character (cards, potentials, Manifest Ego) from Prydwen (after a game update;
-# review the git diff). One page per character; --cache <folder> keeps them for re-runs:
+# review the git diff). One page per character; --cache <folder> keeps them for re-runs.
+# Python is not on PATH on the owner's PC; use the project venv:
 .venv\Scripts\python.exe scripts/import_prydwen.py
 ```
 After any change: `npm test`, `npm run build`, then commit. Deploy to GitHub Pages only when the
 owner asks (there is no git remote yet).
+
+## Code
 
 - `src/engine/` is the math with no UI code: `types.ts` (presets, settings, save format), `buffs.ts`
   (value parsing, preset switches, class limits, buff matching), `calc.ts` (final stats, then each
@@ -38,7 +32,7 @@ owner asks (there is no git remote yet).
     notes, corrections such as `targetRavaged`), keyed by the import's card ids (`card-341`).
     Manifest Ego buffs are character effects with `egoLevel` (on from the build's level).
     Card fields set here override the import; notes are joined. `src/data/helpers.ts` has `cardBuff()`.
-    Put character `effects` before `cards` (the workbook export script assumes that order).
+    Put character `effects` before `cards`.
   - `src/data/merge.ts` combines the two; `checkAdditions()` (run by the tests) catches unknown
     slugs or card ids and duplicate effect ids.
   - Library cards keep the card id in `Card.preset`, so a card's preset effects count while it's
@@ -50,14 +44,15 @@ owner asks (there is no git remote yet).
 - `src/data/settings.ts`: formula constants and rules (defaults + notes); edited on the Settings tab.
 - `src/store/`: localStorage autosave (`save.ts`: `SAVE_VERSION`, `migrate()`, backup export) and the
   React context (`store.tsx`). If you change the save format, bump `SAVE_VERSION` and add a step to
-  `migrate()` so the owner's saved data keeps working.
+  `migrate()` so the owner's saved data keeps working. `output/czn-save.json` is an old v8 save
+  (from the workbook); `tests/fixtures/workbook.json` is the same save, used by the migration test.
 - `src/ui/`: tabs Setup, Buffs, Cards (library + ordered rotation), Results (color-coded formula
   strip per play, tap for hits), Settings (rules, backup). At 1000px or wider, Results sits beside
   the other tabs.
-- Card upgrade potentials (website only): build `basicLevel` / `signatureLevel`, card `upgrade`
+- Card upgrade potentials: build `basicLevel` / `signatureLevel`, card `upgrade`
   (Basic / Signature; `pct` is then the base %), `potentialFactor()` in calc.ts; the Manifest Ego
   level that adds +3 is parsed from the import (`potentialEgo` in merge.ts). See docs/FORMULA.md 2c.
-- Team snapshot (website only, docs/FORMULA.md 2c): each build has up to `TEAM_SIZE` teammates
+- Team snapshot (docs/FORMULA.md 2c): each build has up to `TEAM_SIZE` teammates
   (character, Ego level, partner, 3 sets, picked cards). Effects have `target` self (default) /
   allies / enemy; teammates give only allies/enemy effects, with switches keyed
   `"Teammate>Owner|effectId"` (`teamKey`). Every switched-on buff counts on every hit (snapshot).
@@ -70,7 +65,11 @@ owner asks (there is no git remote yet).
   picks, stats, team, attack list...), boosts, buffs and cards. Every build shares the card library.
   Preset switches that are missing count as on; own boost/buff switches that are missing count as off.
 - Constants and rules belong in settings, never hard-coded in the engine.
-- The workbook is frozen; formula changes go in the website (ask the owner before also changing the workbook).
+- Document every new assumption in docs/FORMULA.md with its source or "Unconfirmed".
+- "Applies to" matches ALL, an exact card name, or one tag in the card's comma-separated Tags;
+  also `A & B` (all), `A/B` (any), `N+ hits`, card kinds `DoT` / `Extra Attack`, and the card's own
+  type (Attack / Skill / Upgrade), element and cost (`1-cost`, `2+ cost`) fields; buff types
+  Crit Chance / Crit DMG add to the crit stats of matching cards only.
 
 ## Working with the owner
 
@@ -80,93 +79,30 @@ owner asks (there is no git remote yet).
   take precedence over web guides unless they agree to change them.
 - When research conflicts, report the conflict with sources and ask, or make it a toggle
   in the Settings tab rather than silently picking one.
-- Keep the workbook simple to use: yellow inputs, green outputs, dropdowns where possible.
-
-## Workbook commands
-
-```bash
-# Python is not on PATH on the owner's PC; use the project venv: .venv\Scripts\python.exe
-pip install -r requirements.txt
-python src/build_workbook.py                    # -> output/CZN_Damage_Calculator.xlsx
-python scripts/recalc.py output/CZN_Damage_Calculator.xlsx   # recalcs in Excel (COM); must report 0 errors
-python -m pytest tests -q                       # regression test of the math (recalcs a filled copy in Excel)
-# Excel can't save a file the owner has open — close it first (the tests use a temp copy, so they're unaffected).
-```
-After any change: rebuild, recalc (zero errors), run tests, then commit to git (the owner's
-filled-in output workbook is tracked too, so its data has history). If you change layout rows/columns,
-update the cell references in tests/test_formula.py and the layout map below.
-
-## Rules for the workbook generator
-
-- Every result is an Excel formula, never a Python-computed value — the sheet must recalc
-  when the owner edits inputs.
-- Excel-2007-era functions only (SUMIFS, SUMPRODUCT, INDEX/MATCH, IFERROR). No XLOOKUP,
-  FILTER, LET, LAMBDA, or spilling arrays — keep the workbook usable in older Excel and LibreOffice.
-- Font Arial. Inputs: blue text on yellow fill. Calculated: green fill. Helpers: grey.
-- Percentages stored as fractions (0.2 = 20%).
-- Constants and rules live on the Settings tab and are referenced, never hard-coded in formulas.
-- The workbook must work after the owner duplicates the Template tab (no sheet-name
-  references to "Template"; only Settings!, Presets! and the defined names CharList /
-  PartnerAll / PartnerClass / PartnerStart cross sheets).
-- Rebuilding keeps the owner's data: the Presets inputs and every character tab are carried over
-  from the existing output file. Character tabs store LAYOUT_VERSION in A1. If you move any
-  Template input cell, bump LAYOUT_VERSION and add a migration (see migrate_v1 / migrate_v2). Current: 3.
-- Document every new assumption in docs/FORMULA.md with its source or "Unconfirmed".
 
 ## Formula (summary — full notes and sources in docs/FORMULA.md)
 
 ```
 Final ATK  = Stats-screen Attack (includes partner base ATK + fragments; NOT partner effects or equipment)
              x (1 + partner/equipment ATK%) + equipment flat ATK
-Card mult  = (Card % as shown in-game x MultFactor + Additive buffs incl. Morale)
-             x Weakness DMG (if the card's "applies" = Yes or a Weakness Attack buff matches; base 125%)
+Card mult  = (Card % x MultFactor + Additive buffs incl. Morale)
+             x Weakness DMG (if the card applies weakness or a Weakness Attack buff matches; base 125%)
              x (1 + Vulnerable) x (1 - Enemy DR) x (1 - Weakness debuff) x (1 + Ravaged factor if target Ravaged)
 Damage     = Card mult x Stat x 0.35 x (1 + Elemental DMG%) x (1 + Extra/DoT DMG%) x Enemy DEF mult
              Stat = Final ATK, or (ATK x 0.3 + DEF x 2.1) for DEF cards; Fixed ignores all of this
 Crit       = Damage x Crit DMG (stat is the total multiplier); Expected = Damage x (1 + CritRate x (CritDMG - 1)), per hit
 ```
 - "+X%" buff text = Additive; "X%" without "+" = Multiplicative (owner's rule).
-- MultFactor = 1 + sum (Summed, default) or product of (1 + each) (Chained) — Settings!B15.
+- MultFactor = 1 + sum (Summed, default) or product of (1 + each) (Chained) — Settings tab.
 - Morale = +20%/stack additive, max 20 stacks.
-- Vulnerable/Weakness-debuff stacks are used up one per hit, in card-table order across every play;
-  first-hit-only buffs apply to hit 1 of each play.
+- Vulnerable / Weakness debuff are switched on per play; first-hit-only buffs apply to hit 1 of each play.
 - Partner class-limited effects only apply when the partner's class = the character's class.
-
-## Workbook layout (src/build_workbook.py)
-
-Tabs: **How To**, **Settings**, **Presets**, **Template** (+ the owner's character tabs).
-
-Settings: B5 constant 0.35, B6/B7 DEF coefficients, B8 extra weakness factor (default 0; test showed none),
-B9 Vulnerable, B10 Weakness debuff, B11 crit cap, B12 Ravaged extra damage (Unconfirmed, 0), B15 mult mode.
-Dropdown lists in columns E–Q (O Classes, P Effect kind, Q Condition).
-
-Presets (data from row 6): Characters A–D rows 6–55 (Name, Element, Class, Notes); Partners F–K rows
-6–105 (Name, Class, Base HP/DEF/ATK, Notes; grey L–N sorted by class for the filtered dropdown);
-Effects P–AB rows 6–505 (Owner, Kind Stat/Buff, Effect, Category, Stat, Value, Applies to, Hit scope,
-Condition, Max stacks, Default stacks, Class-limited?, Notes; grey AD key Owner|Kind|n).
-
-Template (build columns E/F/G = Builds A/B/C in the top sections):
-| Rows | Section |
-|---|---|
-| 1 | A1 layout version, C1 character (dropdown from Presets), E1 element and G1 class (looked up) |
-| 4–9 | Build summary (totals of all cards x times played; H6 warns if the hit breakdown is full) |
-| 12–15 | 12 Partner per build (class-filtered dropdown; grey J–L distinct partner slots), E13 Show all partners, 14 enemy DEF multiplier, 15 enemy damage reduction |
-| 19–31 | Stats screen: 19 Attack, 20 Defense, 21 Health, 22 Crit Chance, 23 Crit DMG, 24 Weakness DMG, 25–29 Passion/Justice/Order/Instinct/Void DMG, 30 Extra DMG, 31 DoT |
-| 37–66 | Stat boosts: 37–56 preset rows (packed: the character's effects, then partner slots 1–3; up to 5 + 3x5), 57–66 user rows. B source, C stat, D value, E–G switch per build (Yes/No/number), H category, I notes; grey K value, L–N effective, O default, P preset #, Q class ok, R owner, S group (0 = character), U–X running counts (row 37); K34 red note (overflow / press Ctrl+Alt+L) |
-| 71–78 | Final stats: 71 ATK, 72 DEF, 73 Crit Rate, 74 Crit DMG, 75 Elemental DMG%, 76 Extra DMG%, 77 DoT DMG%, 78 Weakness DMG |
-| 83–126 | Buffs: 83 Morale, 84 Vulnerable, 85 Weakness debuff, 86–106 preset rows (packed, up to 6 + 3x5), 107–126 user rows. B source, C category, D text, E auto type, F applies-to, G hit scope, H condition, I max stacks, J–L switch/stacks per build, M notes; grey O value, P–R effective, S default, T preset #, U class ok, V owner, W group, X–AA running counts (row 83); K80 red note |
-| AB36:AB126 | Sheet filter: grey "show"/"hide" per preset row; filter hides "hide" (Ctrl+Alt+L to reapply). The build sets the initial hidden rows |
-| 132–146 | Cards: B name, C tags, D scaling, E kind, F % as shown, G hits, H Weakness DMG applies?, I Target Ravaged?, J times played; K–S totals (A: K non-crit, L crit, M expected; B: N–P; C: Q–S); grey U start, V hit rows (V147 total), W–AQ helper sums (7 per build) |
-| 153–452 | Hit breakdown: B card, C card #, D play #, E hit #; per build F–I / J–M / N–Q (card mult, non-crit, crit, expected) |
-
-"Applies to" matches ALL, an exact card name, or one tag in the card's comma-separated Tags.
-Website only: "Applies to" also takes `A & B` (all), `A/B` (any), `N+ hits`, card kinds `DoT` / `Extra Attack`, and the card's own type (Attack / Skill / Upgrade), element and cost (`1-cost`, `2+ cost`) fields; buff types Crit Chance / Crit DMG add to the crit stats of matching cards only.
 
 ## Status / backlog
 
 - Waiting on the owner: text of two Reddit posts on the formula (Reddit is blocked from the
-  cloud session; in Claude Code you may be able to fetch them) and another player's calculator
-  sheet as .xlsx, to compare against ours line by line.
+  cloud session; in Claude Code you may be able to fetch them). Another player's calculator sheet
+  is in `CZNRedditSheet.xlsx`, to compare against ours line by line.
 - Open mechanics questions are listed in docs/FORMULA.md section 4.
 - Presets: all 38 characters and their cards are imported. Reviewing every character alphabetically
   with the owner (cards, buffs with self/allies/enemy targets, Manifest Ego, potentials; Prydwen +
