@@ -31,7 +31,7 @@ export function PresetList({ kind, team = false }: { kind: 'Stat' | 'Buff'; team
     .filter((s) => s.effect.kind === kind && !s.egoLocked && (s.teammate !== undefined) === team)
   if (!states.length) {
     return <p className="muted">{team
-      ? `No team ${kind === 'Stat' ? 'stat boosts' : 'buffs'} from the build's teammates (pick them on the Setup tab).`
+      ? `${build.team.filter((t) => t.character).map((t) => t.character).join(' and ')} give no ${kind === 'Stat' ? 'stat boosts' : 'buffs'} yet (or none of their cards are picked).`
       : `No ${kind === 'Stat' ? 'stat' : 'buff'} presets for this character, partner or fragment sets.`}</p>
   }
   return (

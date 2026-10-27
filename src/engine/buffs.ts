@@ -137,6 +137,11 @@ export function teamKey(teammate: string, owner: string, effect: Effect): string
   return `${teammate}>${presetKey(owner, effect)}`
 }
 
+/** The build has at least one teammate picked. */
+export function hasTeam(build: Pick<Build, 'team'>): boolean {
+  return (build.team ?? []).some((t) => !!t.character)
+}
+
 /** Effects of a teammate that reach the build's character: ally buffs and enemy debuffs. */
 export function reachesTeam(e: Effect): boolean {
   return e.target === 'allies' || e.target === 'enemy'

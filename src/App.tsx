@@ -36,9 +36,20 @@ export default function App() {
   const wide = useWide()
   const shown = wide && tab === 'results' ? 'setup' : tab
   const needsCharacter = shown !== 'settings' && !ch
+  // Phone: tab bar at the bottom (thumb reach); wide screens: under the header
+  const tabbar = (
+    <nav className={`tabbar ${wide ? 'top' : ''}`}>
+      {TABS.filter((t) => !(wide && t.id === 'results')).map((t) => (
+        <button key={t.id} className={shown === t.id ? 'active' : ''} aria-current={shown === t.id ? 'page' : undefined} onClick={() => setTab(t.id)}>
+          <span className="tab-icon" aria-hidden>{t.icon}</span>
+          {t.label}
+        </button>
+      ))}
+    </nav>
+  )
   return (
     <div className={`app ${wide ? 'wide' : ''}`}>
-      <Header />
+      <Header>{wide && tabbar}</Header>
       <main className="content">
         <div className="pane">
           {needsCharacter ? <Welcome /> : (
@@ -53,14 +64,7 @@ export default function App() {
         </div>
         {wide && ch && <div className="pane results-pane"><ResultsTab /></div>}
       </main>
-      <nav className="tabbar">
-        {TABS.filter((t) => !(wide && t.id === 'results')).map((t) => (
-          <button key={t.id} className={shown === t.id ? 'active' : ''} aria-current={shown === t.id ? 'page' : undefined} onClick={() => setTab(t.id)}>
-            <span className="tab-icon" aria-hidden>{t.icon}</span>
-            {t.label}
-          </button>
-        ))}
-      </nav>
+      {!wide && tabbar}
     </div>
   )
 }

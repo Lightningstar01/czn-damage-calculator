@@ -56,14 +56,15 @@ export function TextField({ label, value, onChange, placeholder, help, list }: {
   )
 }
 
-export function SelectField<T extends string>({ label, value, options, onChange, help }: {
-  label: ReactNode; value: T; options: readonly (T | { value: T; label: string })[]; onChange: (v: T) => void; help?: string
+/** label: shown above the box; leave it out when the section title already says it (ariaLabel then names the box). */
+export function SelectField<T extends string>({ label, ariaLabel, value, options, onChange, help }: {
+  label?: ReactNode; ariaLabel?: string; value: T; options: readonly (T | { value: T; label: string })[]; onChange: (v: T) => void; help?: string
 }) {
   const id = useId()
   return (
     <label className="field" htmlFor={id}>
-      <span className="field-label">{label}{help && <Help text={help} />}</span>
-      <select id={id} value={value} onChange={(e) => onChange(e.target.value as T)}>
+      {(label || help) && <span className="field-label">{label}{help && <Help text={help} />}</span>}
+      <select id={id} aria-label={ariaLabel} value={value} onChange={(e) => onChange(e.target.value as T)}>
         {options.map((o) => typeof o === 'string'
           ? <option key={o} value={o}>{o}</option>
           : <option key={o.value} value={o.value}>{o.label}</option>)}
@@ -124,9 +125,11 @@ export function Help({ text }: { text: string }) {
   )
 }
 
-export function Section({ title, children, actions, help }: { title: string; children: ReactNode; actions?: ReactNode; help?: string }) {
+export function Section({ title, children, actions, help, className = '' }: {
+  title: string; children: ReactNode; actions?: ReactNode; help?: string; className?: string
+}) {
   return (
-    <section className="section">
+    <section className={`section ${className}`}>
       <header className="section-head">
         <h2>{title}{help && <Help text={help} />}</h2>
         {actions}

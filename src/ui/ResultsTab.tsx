@@ -8,6 +8,7 @@ import { Section } from './inputs'
 
 export function ResultsTab() {
   const { build, results } = useCharacter()!
+  const [key, setKey] = useState(false)
   const r = results.get(build.id)
   if (!r) return null
   const s = r.stats
@@ -29,11 +30,16 @@ export function ResultsTab() {
           {s.dotDmg.value !== 0 && <span>DoT <b>+{pct(s.dotDmg.value)}</b></span>}
         </div>
       </Section>
-      <Section title="Attack list" help="One row per play of this build's attack list. Every buff that's on counts (snapshot); the play's Vulnerable, Weakness debuff and per-play stacks (Ember, Spirit of the Aromata...) show under the card. The formula shows hit 1; tap “hits” to see every hit (first-hit buffs can change them). Tap any chip to see where it comes from.">
+      <Section title="Attack list" help="One row per play of this build's attack list. Every buff that's on counts (snapshot); the play's Vulnerable, Weakness debuff and per-play stacks (Ember, Spirit of the Aromata...) show under the card. The formula shows hit 1; tap “hits” to see every hit (first-hit buffs can change them). Tap any chip to see where it comes from."
+        actions={r.plays.length > 0 && (
+          <button className="btn small" onClick={() => setKey(!key)} aria-expanded={key}>{key ? 'Hide colors' : 'Colors'}</button>
+        )}>
         {!r.plays.length && <p className="muted">Add cards to this build's attack list on the Cards tab.</p>}
-        <ul className="legend">
-          {LEGEND.map((l) => <li key={l.group}><span className={`swatch g-${l.group}`} />{l.label}</li>)}
-        </ul>
+        {key && (
+          <ul className="legend">
+            {LEGEND.map((l) => <li key={l.group}><span className={`swatch g-${l.group}`} />{l.label}</li>)}
+          </ul>
+        )}
         <ol className="plays">
           {r.plays.map((p) => <PlayRow key={p.index} play={p} />)}
         </ol>
@@ -52,9 +58,8 @@ function PlayRow({ play }: { play: Play }) {
         <span className="play-no">{play.index + 1}</span>
         <span className="play-name">{card.name || 'Unnamed card'}</span>
         <span className="play-nums">
-          <span title="Non-crit">{num(play.nonCrit)}</span>
-          <span className="muted"> / </span>
-          <strong title="Expected">{num(play.expected)}</strong>
+          <strong>{num(play.expected)}</strong>
+          <span className="play-nums-label">expected · {num(play.nonCrit)} non-crit</span>
         </span>
       </div>
       {(play.counters.length > 0 || play.vulnerable || play.weaknessDebuff) && (

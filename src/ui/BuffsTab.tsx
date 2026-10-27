@@ -1,6 +1,6 @@
 // Buffs: Morale, preset buffs, the teammates' buffs, and the owner's own buffs.
 import { useState } from 'react'
-import { buffType } from '../engine/buffs'
+import { buffType, hasTeam } from '../engine/buffs'
 import { CATEGORIES, type BuffType, type Condition, type HitScope } from '../engine/types'
 import { newBuff } from '../store/save'
 import { useCharacter, useStore } from '../store/store'
@@ -11,15 +11,18 @@ import { PresetList } from './PresetList'
 import { ownBuffPills, Pills } from './BuffChips'
 
 export function BuffsTab() {
+  const { build } = useCharacter()!
   return (
     <>
       <StacksSection />
       <Section title="Buffs from presets" help="The character's, partner's, memory fragment sets' and preset library cards' buffs. Every buff that's on counts on every play (snapshot). Class-limited partner buffs only work when the partner's class matches the character's. Buffs with per-play stacks (Ember, Spirit of the Aromata) are on/off here: set their stacks on each play (Cards tab).">
         <PresetList kind="Buff" />
       </Section>
-      <Section title="Team buffs" help="Ally buffs and enemy debuffs from the build's teammates (Setup tab): their character, Manifest Ego, partner, fragment sets and picked cards.">
-        <PresetList kind="Buff" team />
-      </Section>
+      {hasTeam(build) && (
+        <Section title="Team buffs" help="Ally buffs and enemy debuffs from the build's teammates (Setup tab): their character, Manifest Ego, partner, fragment sets and picked cards.">
+          <PresetList kind="Buff" team />
+        </Section>
+      )}
       <MyBuffsSection />
     </>
   )

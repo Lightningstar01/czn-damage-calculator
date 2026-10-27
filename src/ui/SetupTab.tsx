@@ -1,7 +1,7 @@
 // Setup: build management, partner, Manifest Ego level, memory fragment sets, team, stats-screen values, stat boosts, enemy.
 import { useState } from 'react'
 import { PRESETS } from '../data/presets'
-import { findCharacter, findFragmentSet, findPartner, fragmentPiecesUsed, reachesTeam } from '../engine/buffs'
+import { findCharacter, findFragmentSet, findPartner, fragmentPiecesUsed, hasTeam, reachesTeam } from '../engine/buffs'
 import { CATEGORIES, FRAGMENT_SET_PICKS, MAX_EGO_LEVEL, MAX_POTENTIAL_LEVEL, FRAGMENT_SLOTS, STATS, TEAM_SIZE, type ScreenStats, type StatName, type Teammate } from '../engine/types'
 import { duplicateBuild, newBoost, newTeammate } from '../store/save'
 import { FromField } from './FromField'
@@ -11,22 +11,26 @@ import { NumberField, Section, SelectField, SwitchControl, TextField } from './i
 import { PresetList } from './PresetList'
 import { Pills, statPill } from './BuffChips'
 
+// The stats screen comes first: it's what changes most often (new gear, levels)
 export function SetupTab() {
+  const { build } = useCharacter()!
   return (
     <>
       <BuildSection />
+      <StatsSection />
       <PartnerSection />
       <EgoSection />
       <PotentialSection />
       <FragmentSection />
       <TeamSection />
-      <StatsSection />
       <Section title="Stat boosts from presets" help="The character's, partner's and memory fragment sets' stat effects. Switch them off per build to test without them. Fragment set stats are already on the stats screen, so they are listed for reference only.">
         <PresetList kind="Stat" />
       </Section>
-      <Section title="Team stat boosts" help="Stat boosts the build's teammates give all allies (their character, partner, fragment sets and picked cards).">
-        <PresetList kind="Stat" team />
-      </Section>
+      {hasTeam(build) && (
+        <Section title="Team stat boosts" help="Stat boosts the build's teammates give all allies (their character, partner, fragment sets and picked cards).">
+          <PresetList kind="Stat" team />
+        </Section>
+      )}
       <BoostsSection />
       <EnemySection />
     </>
@@ -37,11 +41,9 @@ function BuildSection() {
   const { cs, build, updateCs, updateBuild } = useCharacter()!
   const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
   return (
-    <Section title="Build">
-      <div className="grid2">
-        <TextField label="Build name" value={build.name} onChange={(v) => updateBuild((b) => { b.name = v })} />
-      </div>
-      <div className="btn-row">
+    <Section title="Build" help="Builds share the card library; each build has its own team and attack list. Duplicate a build, then change one thing to compare.">
+      <div className="inline-row">
+        <TextField label="Name" value={build.name} onChange={(v) => updateBuild((b) => { b.name = v })} />
         <button className="btn" onClick={() => updateCs((c) => {
           const src = c.builds.find((b) => b.id === c.activeBuild)!
           const copy = duplicateBuild(c, src, `Build ${letters[c.builds.length] ?? c.builds.length + 1}`)
@@ -59,7 +61,6 @@ function BuildSection() {
           }}>Delete</button>
         )}
       </div>
-      <p className="muted">Builds share the card library; each build has its own team and attack list. Duplicate a build, then change one thing to compare.</p>
     </Section>
   )
 }
@@ -68,8 +69,12 @@ function BuildSection() {
 function EgoSection() {
   const { name, build, updateBuild } = useCharacter()!
   const ch = findCharacter(PRESETS, name)
+  const [all, setAll] = useState(false)
   if (!ch?.manifestEgo?.length) return null
   const level = build.egoLevel ?? 0
+  // The unlocked levels and the next one; the rest behind "Show all"
+  const shownLevels = all ? ch.manifestEgo : ch.manifestEgo.filter((m) => m.level <= level + 1)
+  const hidden = ch.manifestEgo.length - shownLevels.length
   return (
     <Section title="Manifest Ego" help="The character's dupe level for this build. Effects of higher levels are hidden and off. Set another build to a different level to see what a dupe adds.">
       <SelectField label="Level" value={String(level)}
@@ -78,15 +83,20 @@ function EgoSection() {
         }))}
         onChange={(v) => updateBuild((b) => { b.egoLevel = Number(v) })} />
       <ul className="rows">
-        {ch.manifestEgo.map((m) => (
+        {shownLevels.map((m) => (
           <li key={m.level} className={`row ${m.level <= level ? '' : 'off'}`}>
             <div className="row-main">
-              <div className="row-title">E{m.level} {m.name}</div>
+              <div className="row-title">E{m.level} {m.name}{m.level > level && <span className="tag">next</span>}</div>
               <div className="row-sub pre-line">{m.text}</div>
             </div>
           </li>
         ))}
       </ul>
+      {(hidden > 0 || all) && (
+        <button className="link small" onClick={() => setAll(!all)} aria-expanded={all}>
+          {all ? 'Show fewer levels' : `Show all ${ch.manifestEgo.length} levels`}
+        </button>
+      )}
     </Section>
   )
 }
@@ -128,7 +138,7 @@ function PartnerSection() {
   const p = findPartner(PRESETS, build.partner)
   return (
     <Section title="Partner">
-      <SelectField label="Partner" value={build.partner}
+      <SelectField ariaLabel="Partner" value={build.partner}
         options={[{ value: '', label: 'None' }, ...partners.map((x) => ({ value: x.name, label: cs.showAllPartners ? `${x.name} (${x.class})` : x.name })),
           ...(p && !partners.includes(p) ? [{ value: p.name, label: `${p.name} (${p.class})` }] : [])]}
         onChange={(v) => updateBuild((b) => { b.partner = v })} />

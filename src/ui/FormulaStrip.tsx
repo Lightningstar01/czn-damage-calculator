@@ -1,11 +1,11 @@
 // Color-coded formula of one hit: each multiplier is a chip; tap a chip to see where it comes from.
-import { Fragment, useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import type { Source } from '../engine/buffs'
 import type { Factor, Hit } from '../engine/calc'
 import type { Card } from '../engine/types'
 import { num, pct, times } from './format'
 
-export type ChipGroup = 'card' | 'add' | 'mult' | 'weak' | 'enemy' | 'stat' | 'elem' | 'const' | 'crit' | 'result'
+export type ChipGroup = 'card' | 'add' | 'mult' | 'weak' | 'enemy' | 'stat' | 'elem' | 'const' | 'crit' | 'result' | 'total'
 
 export const LEGEND: { group: ChipGroup; label: string }[] = [
   { group: 'card', label: 'Card %' },
@@ -86,36 +86,43 @@ export function FormulaStrip({ hit, card, showCrit = true }: { hit: Hit; card: C
     sources: [...hit.critDmgSources, ...hit.critRateSources.map((s) => ({ ...s, label: `Crit Chance: ${s.label}` }))],
     note: `Crit hit = non-crit × Crit DMG. Expected uses ${pct(hit.critRate)} crit rate: × (1 + rate × (Crit DMG − 1)).` }
   const cardPcts: Chip[] = card.scaling === 'Fixed' ? [] : [
-    { key: 'hand', op: '', group: 'card', label: 'In hand', value: pct(hit.inHand, 1), note: HAND_NOTE },
-    { key: 'target', op: '', group: 'weak', label: 'On target', value: pct(hit.cardMult, 1), note: TARGET_NOTE },
+    { key: 'hand', op: '', group: 'total', label: 'In hand', value: pct(hit.inHand, 1), note: HAND_NOTE },
+    { key: 'target', op: '', group: 'total', label: 'On target', value: pct(hit.cardMult, 1), note: TARGET_NOTE },
   ]
   const selected = [...all, ...cardPcts, critChip].find((c) => c.key === sel)
 
-  const chip = (c: Chip) => (
-    <Fragment key={c.key}>
+  // One term = operator + chip (+ bracket), kept on one line so the strip only wraps between terms
+  const chip = (c: Chip, before?: ReactNode, after?: ReactNode) => (
+    <span key={c.key} className="term">
       {c.op && <span className="op">{c.op}</span>}
+      {before}
       <button type="button" className={`chip g-${c.group} ${sel === c.key ? 'sel' : ''}`} onClick={() => setSel(sel === c.key ? null : c.key)}>
         <span className="chip-label">{c.label}</span>
         <span className="chip-value">{c.value}</span>
       </button>
-    </Fragment>
+      {after}
+    </span>
   )
+  const result = (label: string, value: number) => (
+    <span className="term">
+      <span className="op">=</span>
+      <span className="chip g-result"><span className="chip-label">{label}</span><span className="chip-value">{num(value)}</span></span>
+    </span>
+  )
+  const paren = inner.length > 1
   return (
     <div className="strip-wrap">
       <div className="strip">
-        {inner.length > 1 && <span className="paren">(</span>}
-        {inner.map(chip)}
-        {inner.length > 1 && <span className="paren">)</span>}
-        {outer.map(chip)}
-        <span className="op">=</span>
-        <span className="chip g-result"><span className="chip-label">Hit</span><span className="chip-value">{num(hit.nonCrit)}</span></span>
+        {inner.map((c, i) => chip(c, paren && i === 0 && <span className="paren">(</span>,
+          paren && i === inner.length - 1 && <span className="paren">)</span>))}
+        {outer.map((c) => chip(c))}
+        {result('Hit', hit.nonCrit)}
       </div>
-      {cardPcts.length > 0 && <div className="strip">{cardPcts.map(chip)}</div>}
+      {cardPcts.length > 0 && <div className="strip">{cardPcts.map((c) => chip(c))}</div>}
       {showCrit && card.scaling !== 'Fixed' && (
         <div className="strip crit-line">
           {chip({ ...critChip, op: '' })}
-          <span className="op">=</span>
-          <span className="chip g-result"><span className="chip-label">Crit</span><span className="chip-value">{num(hit.crit)}</span></span>
+          {result('Crit', hit.crit)}
           <span className="op sep">·</span>
           <span className="chip g-result"><span className="chip-label">Expected</span><span className="chip-value">{num(hit.expected)}</span></span>
         </div>

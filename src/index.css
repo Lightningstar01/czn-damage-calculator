@@ -65,7 +65,8 @@ h2 { font-size: 1.05rem; margin: 0; display: flex; align-items: center; gap: 6px
 .app { min-height: 100dvh; display: flex; flex-direction: column; }
 .content { flex: 1; width: 100%; max-width: 720px; margin: 0 auto; padding: 12px 12px 88px; }
 .app.wide .content { max-width: 1400px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 16px; align-items: start; }
-.app.wide .results-pane { position: sticky; top: 130px; max-height: calc(100dvh - 150px); overflow-y: auto; }
+.app.wide .content { padding-bottom: 24px; }
+.app.wide .results-pane { position: sticky; top: 176px; max-height: calc(100dvh - 192px); overflow-y: auto; }
 
 .topbar {
   position: sticky; top: 0; z-index: 10;
@@ -92,6 +93,7 @@ h2 { font-size: 1.05rem; margin: 0; display: flex; align-items: center; gap: 6px
 .build-chip.add { min-width: 44px; align-items: center; justify-content: center; font-size: 1.4rem; }
 .build-name { font-size: 0.75rem; color: var(--muted); white-space: nowrap; }
 .build-total { font-weight: 700; font-variant-numeric: tabular-nums; }
+.build-total.empty { color: var(--muted); }
 .build-diff { font-size: 0.75rem; font-variant-numeric: tabular-nums; }
 .build-diff.up { color: var(--good); }
 .build-diff.down { color: var(--bad); }
@@ -107,6 +109,11 @@ h2 { font-size: 1.05rem; margin: 0; display: flex; align-items: center; gap: 6px
 }
 .tabbar button.active { color: var(--accent); font-weight: 600; }
 .tab-icon { font-size: 1.2rem; line-height: 1; }
+/* Wide screens: the tabs sit under the build cards, in the pinned header */
+.tabbar.top { position: static; justify-content: flex-start; gap: 4px; max-width: 1400px; margin: 6px auto 0; border-top: none; padding: 0; background: none; }
+.tabbar.top button { flex: 0 0 auto; max-width: none; flex-direction: row; gap: 6px; padding: 8px 14px; font-size: 0.95rem; border-bottom: 2px solid transparent; }
+.tabbar.top button.active { border-bottom-color: var(--accent); }
+.tabbar.top .tab-icon { font-size: 1rem; }
 
 /* ---------------------------------------------------------------- sections and rows */
 .section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 12px; }
@@ -129,7 +136,10 @@ h2 { font-size: 1.05rem; margin: 0; display: flex; align-items: center; gap: 6px
 .row-line { display: flex; align-items: center; gap: 10px; }
 .row.off .row-title, .row.off .row-sub { opacity: 0.55; }
 .row-main { flex: 1; min-width: 0; }
-.row-main.link { border: none; background: none; text-align: left; padding: 0; cursor: pointer; }
+.row-main.link { border: none; background: none; text-align: left; padding: 0; cursor: pointer; color: var(--text); }
+/* Rows that open an editor: a chevron instead of link-blue text */
+.row-main.link .row-title::after { content: '›'; color: var(--muted); font-weight: 400; font-size: 1.1rem; line-height: 1; transition: transform 0.15s; }
+.row-main.link[aria-expanded="true"] .row-title::after { transform: rotate(90deg); }
 .row-title { font-weight: 600; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .row-sub { font-size: 0.85rem; color: var(--muted); }
 .pills { display: flex; flex-wrap: wrap; gap: 3px 4px; margin-top: 3px; }
@@ -171,6 +181,10 @@ h2 { font-size: 1.05rem; margin: 0; display: flex; align-items: center; gap: 6px
 .btn.small { padding: 4px 10px; min-height: 32px; font-size: 0.85rem; white-space: nowrap; }
 .btn.danger { color: var(--bad); }
 .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.inline-row { display: flex; gap: 8px; align-items: flex-end; flex-wrap: wrap; }
+.inline-row .field { flex: 1 1 140px; }
+.gap-top { margin-top: 10px; }
+.danger-zone { margin-top: 32px; border-color: color-mix(in srgb, var(--bad) 35%, var(--border)); }
 .link { border: none; background: none; color: var(--accent); cursor: pointer; padding: 4px 0; }
 
 .toggle {
@@ -217,10 +231,12 @@ h2 { font-size: 1.05rem; margin: 0; display: flex; align-items: center; gap: 6px
 .play:first-child { border-top: none; }
 .play-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
 .play-name { font-weight: 600; flex: 1; min-width: 0; }
-.play-nums { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.play-nums { font-variant-numeric: tabular-nums; white-space: nowrap; display: flex; flex-direction: column; align-items: flex-end; line-height: 1.15; }
+.play-nums-label { font-size: 0.72rem; color: var(--muted); }
 .hits li { margin-top: 8px; padding-left: 10px; border-left: 3px solid var(--border); }
 
 .strip { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 3px; }
+.term { display: inline-flex; align-items: center; gap: 3px; white-space: nowrap; }
 .crit-line { margin-top: 4px; }
 .op, .paren { color: var(--muted); font-weight: 600; padding: 0 1px; }
 .paren { font-size: 1.3rem; line-height: 1; }
@@ -248,3 +264,12 @@ h2 { font-size: 1.05rem; margin: 0; display: flex; align-items: center; gap: 6px
 .g-const { background: var(--g-const); color: var(--g-const-t); }
 .g-crit { background: var(--g-crit); color: var(--g-crit-t); }
 .g-result { background: var(--g-result); color: var(--g-result-t); cursor: default; }
+.chip.g-total { background: transparent; color: var(--text); border-color: var(--border); }
+
+/* ---------------------------------------------------------------- wide screens: a little larger text */
+.app.wide .chip-label { font-size: 0.7rem; }
+.app.wide .chip-value { font-size: 1rem; }
+.app.wide .legend { font-size: 0.82rem; }
+.app.wide .build-name, .app.wide .build-diff { font-size: 0.82rem; }
+.app.wide .build-total { font-size: 1.1rem; }
+.app.wide .pill { font-size: 0.8rem; }
