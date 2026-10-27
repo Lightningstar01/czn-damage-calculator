@@ -78,6 +78,8 @@ export interface BuffEffect {
   /** Per-play stacks (e.g. 'Ember'): the stacks are set on each play of the attack list (default 0), instead of
    * by the switch, which is then on/off only. Buffs with the same counter share the play's number; maxStacks caps it. */
   counter?: string
+  /** Extra value added automatically while the build's stats-screen Attack is above `above` (Mei Lin 5-1: +5% more above 500). */
+  attackBonus?: { above: number; value: string }
   /** See StatEffect.hint. */
   hint?: string
 }

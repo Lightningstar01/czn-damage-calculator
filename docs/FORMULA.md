@@ -159,6 +159,8 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
     500 Attack) are part of the in-game card % (User: Strike shows 132% at Basic Card Upgrade 10 =
     100% x 1.2 x 1.1). They are buffs of type **Card %**: card % = base x (1 + upgrade levels x 2%)
     x (1 + sum of Card % buffs), only on cards with an upgrade (entered at base %).
+    The "above 500 Attack" part is one buff with the node (owner, 2026-10-27): it adds the extra +5% by
+    itself when the stats-screen Attack is above 500 (`attackBonus`).
 - **Team snapshot** (User, 2026-10-26), website only. Replaces the rotation buffs counted along
   the rotation (2026-10-25):
   - Each build has a team of up to 2 teammates (character, Manifest Ego level, partner, 3 fragment

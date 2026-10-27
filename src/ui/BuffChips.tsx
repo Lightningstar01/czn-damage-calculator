@@ -46,7 +46,7 @@ export function conditionPills(b: {
   return [
     grey(b.appliesTo === 'ALL' ? 'All cards' : b.appliesTo || 'no cards'),
     ...(b.hitScope === 'First hit only' ? [grey('first hit')] : []),
-    ...(b.condition === 'Ravaged only' ? [{ text: 'vs Ravaged', group: 'enemy' as const }] : []),
+    ...(b.condition === 'Ravaged only' ? [{ text: 'vs Ravaged', group: 'weak' as const }] : []),
     ...(stacks ? [grey(stacks)] : []),
     ...(b.target && TARGET_PILL[b.target] ? [grey(TARGET_PILL[b.target])] : []),
     ...(b.hint ? [grey(b.hint)] : []),

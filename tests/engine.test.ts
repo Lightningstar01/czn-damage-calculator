@@ -33,7 +33,7 @@ const presets: Presets = {
 }
 const settings = DEFAULT_SETTINGS
 /** Switch off Mei Lin's potential 5-1 (Strike card %), for tests about something else. */
-const noStrikeNode = (b: Build) => { b.presetSwitches['Mei Lin|p5-1-strike'] = b.presetSwitches['Mei Lin|p5-1-atk'] = false }
+const noStrikeNode = (b: Build) => { b.presetSwitches['Mei Lin|p5-1-strike'] = false }
 
 function card(name: string, tags: string, hits: number, weak = false, ravaged = false): Card {
   return { ...newCard('Passion'), name, tags, hits, pct: 1, weaknessApplies: weak, targetRavaged: ravaged }
@@ -393,6 +393,10 @@ describe('potentials', () => {
     a.signatureLevel = 6
     // the owner's in-game Strike: 132% at Basic Card Upgrade 10
     expect(mults()).toEqual([1.32, spire.pct * 1.12, 1.5].map((x) => expect.closeTo(x)))
+    // the extra +5% follows the stats-screen Attack (above 500, not at 500)
+    a.stats.attack = 500
+    expect(mults()[0]).toBeCloseTo(1.2 * 1.05)
+    a.stats.attack = 1000
     a.egoLevel = mei.potentialEgo!.level
     a.presetSwitches['Mei Lin|e4-atk'] = false
     noStrikeNode(a)

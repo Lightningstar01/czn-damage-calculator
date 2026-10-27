@@ -29,6 +29,12 @@ export function parseBuffValue(text: string): number {
   return text.trim() && Number.isFinite(n) ? n / 100 : 0
 }
 
+/** A preset buff's value for the build: its own value, plus its attackBonus when the stats-screen Attack is above the threshold. */
+export function presetBuffValue(e: BuffEffect, build: Pick<Build, 'stats'>): { value: number; bonus: boolean } {
+  const bonus = !!e.attackBonus && build.stats.attack > e.attackBonus.above
+  return { value: parseBuffValue(e.value) + (bonus ? parseBuffValue(e.attackBonus!.value) : 0), bonus }
+}
+
 /** '+X%' = Additive, 'X%' = Multiplicative (owner's rule), 'Weakness Attack' = Weakness DMG applies. */
 export function buffType(text: string, override: BuffType | '' = ''): BuffType {
   if (override) return override
@@ -213,7 +219,9 @@ export function activeBuffs(presets: Presets, charName: string, cs: CharacterSav
   for (const s of presetStates(presets, charName, build, cs.cards)) {
     if (s.effect.kind !== 'Buff' || s.stacks <= 0) continue
     const e = s.effect as BuffEffect
-    out.push({ label: `${stateLabel(s)}: ${e.name}`, type: buffType(e.value, e.type), value: parseBuffValue(e.value),
+    const v = presetBuffValue(e, build)
+    out.push({ label: `${stateLabel(s)}: ${e.name}${v.bonus ? ` (Attack above ${e.attackBonus!.above})` : ''}`,
+      type: buffType(e.value, e.type), value: v.value,
       stacks: e.counter ? 0 : e.maxStacks ? Math.min(s.stacks, e.maxStacks) : s.stacks,
       appliesTo: e.appliesTo, hitScope: e.hitScope, condition: e.condition,
       ...(e.counter ? { counter: e.counter, maxStacks: e.maxStacks } : {}) })
