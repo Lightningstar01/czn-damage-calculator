@@ -22,8 +22,11 @@ export type CardType = (typeof CARD_TYPES)[number]
 export type HitScope = 'All hits' | 'First hit only'
 export type Condition = 'Always' | 'Ravaged only'
 /** Crit Chance / Crit DMG buffs add to the crit stats of matching cards only. Card % raises the card's own %
- * like a potential (shown in the in-game card %), so it only counts on cards entered at base % (with an upgrade). */
-export type BuffType = 'Additive' | 'Multiplicative' | 'Weakness Attack' | 'Crit Chance' | 'Crit DMG' | 'Card %'
+ * like a potential (shown in the in-game card %), so it only counts on cards entered at base % (with an upgrade).
+ * Base % ("+80% base Damage Amount") is added to the card % after the potential, so the multiplicative buffs raise it too.
+ * Final ("final Damage Amount") is its own multiplier: x (1 + the sum of the final buffs), after everything else. */
+export type BuffType = 'Additive' | 'Multiplicative' | 'Weakness Attack' | 'Crit Chance' | 'Crit DMG' | 'Card %' | 'Base %' | 'Final'
+export const BUFF_TYPES: BuffType[] = ['Additive', 'Multiplicative', 'Weakness Attack', 'Crit Chance', 'Crit DMG', 'Card %', 'Base %', 'Final']
 export type MultMode = 'Summed' | 'Chained'
 
 /** On/off switch, or a number of stacks. true = on with the effect's default stacks. */
@@ -52,6 +55,8 @@ export interface StatEffect {
   onStatsScreen?: boolean
   /** Manifest Ego level (1-6) that unlocks it: off for builds below that level. */
   egoLevel?: number
+  /** Manifest Ego level from which it's replaced (by another effect with that egoLevel): off for builds at or above it. */
+  egoBelow?: number
   /** A few words shown as a grey chip when the switch depends on something in the fight, e.g. 'ATK > 500'. No notes on effects. */
   hint?: string
 }
@@ -75,11 +80,17 @@ export interface BuffEffect {
   classLimited?: boolean
   /** Manifest Ego level (1-6) that unlocks it: off for builds below that level. */
   egoLevel?: number
+  /** See StatEffect.egoBelow. */
+  egoBelow?: number
   /** Per-play stacks (e.g. 'Ember'): the stacks are set on each play of the attack list (default 0), instead of
    * by the switch, which is then on/off only. Buffs with the same counter share the play's number; maxStacks caps it. */
   counter?: string
-  /** Extra value added automatically while the build's stats-screen Attack is above `above` (Mei Lin 5-1: +5% more above 500). */
-  attackBonus?: { above: number; value: string }
+  /** Extra value added automatically while the build's stats-screen Attack is above `above` (Mei Lin 5-1: +5% more above 500);
+   * `orEqual`: from `above` on ('500 or higher'). With `every`, the value is added for every full `every` Attack above
+   * `above`, up to `max` (Rossweisse 7: +2% for every 20 Attack exceeding 600, max +10%). */
+  attackBonus?: { above: number; value: string; orEqual?: boolean; every?: number; max?: string }
+  /** Stats-screen Attack the buff needs: it's worth 0 below it (Rossweisse 7: 'If Attack is 600 or higher'). */
+  minAttack?: number
   /** See StatEffect.hint. */
   hint?: string
 }
@@ -153,6 +164,9 @@ export interface CardPreset {
   notes?: string
   /** Stat boosts / buffs the card gives while it's in the library (switch per build, default on). */
   effects?: Effect[]
+  /** Fixed damage on the next play of a matching card ('Equilux'), as a share of that play's damage (Rossweisse's Ego skill);
+   * `ego` raises the share from that Manifest Ego level. */
+  followUp?: { appliesTo: string; share: number; ego?: { level: number; share: number } }
 }
 
 export interface PartnerPreset {
@@ -199,8 +213,11 @@ export interface CharacterAdditions {
   notes?: string
   /** The character's own stat boosts and buffs. */
   effects?: Effect[]
-  /** Per card id: fields to override (tags, %, hits, in-game text...), notes (added after the imported ones) and effects. */
-  cards?: Record<string, Partial<Omit<CardPreset, 'id' | 'base' | 'name'>>>
+  /** Per card id: fields to override (in-game name, tags, %, hits, text...), notes (added after the imported ones, or
+   * instead of them with replaceNotes) and effects. */
+  cards?: Record<string, Partial<Omit<CardPreset, 'id' | 'base'>> & { replaceNotes?: boolean }>
+  /** Cards the import doesn't have (ids must not clash with the import's), added after the imported ones. */
+  extraCards?: CardPreset[]
 }
 
 /** Memory fragment slots on a character; the set dropdowns per build. */

@@ -26,6 +26,9 @@ interface Chip {
   value: string
   sources?: Source[]
   note?: string
+  /** Bracket before / after the chip, e.g. around card % x Potential + Base when Mult multiplies all of it. */
+  open?: boolean
+  close?: boolean
 }
 
 const HAND_NOTE = 'Card % as shown on the card in your hand: (card % × Mult + Add), without the buffs that need a target (Ember, vs Ravaged).'
@@ -55,6 +58,11 @@ function chipsFor(hit: Hit, card: Card): { inner: Chip[]; outer: Chip[] } {
   const inner: Chip[] = [{ key: 'card', op: '', group: 'card', label: card.name || 'Card', value: pct(hit.cardPct, 2),
     note: hit.potential ? 'Base damage % of the card (without potentials).' : 'Damage % as shown on the card in-game.' }]
   if (hit.potential) inner.push(potentialChip(hit.potential, `In-game card %: ${pct(hit.cardPct * hit.potential.value, 2)}.`))
+  if (hit.basePct) {
+    inner.push({ key: 'base', op: '+', group: 'card', label: 'Base', value: `+${pct(hit.basePct.value)}`, sources: hit.basePct.sources,
+      note: '"+X% base Damage Amount" is added to the card % after the potential, so Mult raises it too.' })
+    if (hit.multFactor.sources.length) { inner[0].open = true; inner[inner.length - 1].close = true }
+  }
   if (hit.multFactor.sources.length) {
     inner.push({ key: 'mult', op: '×', group: 'mult', label: 'Mult', value: times(hit.multFactor.value), sources: hit.multFactor.sources,
       note: 'Buffs without "+" combine here (Settings: Summed or Chained).' })
@@ -74,6 +82,7 @@ function chipsFor(hit: Hit, card: Card): { inner: Chip[]; outer: Chip[] } {
     factorChip('elem', 'elem', 'Element', hit.elemDmg),
     factorChip('mech', 'elem', card.kind === 'DoT' ? 'DoT' : 'Extra', hit.mechDmg),
     factorChip('def', 'enemy', 'Enemy DEF', hit.enemyDef),
+    factorChip('final', 'mult', 'Final', hit.final, '"final Damage Amount" buffs: their own multiplier, x (1 + their sum).'),
   ].filter((c): c is Chip => c !== null)
   return { inner, outer }
 }
@@ -113,8 +122,8 @@ export function FormulaStrip({ hit, card, showCrit = true }: { hit: Hit; card: C
   return (
     <div className="strip-wrap">
       <div className="strip">
-        {inner.map((c, i) => chip(c, paren && i === 0 && <span className="paren">(</span>,
-          paren && i === inner.length - 1 && <span className="paren">)</span>))}
+        {inner.map((c, i) => chip(c, <>{paren && i === 0 && <span className="paren">(</span>}{c.open && <span className="paren">(</span>}</>,
+          <>{c.close && <span className="paren">)</span>}{paren && i === inner.length - 1 && <span className="paren">)</span>}</>))}
         {outer.map((c) => chip(c))}
         {result('Hit', hit.nonCrit)}
       </div>

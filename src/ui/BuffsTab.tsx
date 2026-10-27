@@ -1,7 +1,7 @@
 // Buffs: Morale, preset buffs, the teammates' buffs, and the owner's own buffs.
 import { useState } from 'react'
 import { buffType, hasTeam } from '../engine/buffs'
-import { CATEGORIES, type BuffType, type Condition, type HitScope } from '../engine/types'
+import { BUFF_TYPES, CATEGORIES, type BuffType, type Condition, type HitScope } from '../engine/types'
 import { newBuff } from '../store/save'
 import { useCharacter, useStore } from '../store/store'
 import { pct } from './format'
@@ -53,7 +53,7 @@ function MyBuffsSection() {
   const [open, setOpen] = useState<string | null>(null)
   const targets = ['ALL', ...new Set(cs.cards.flatMap((c) => [c.name, ...c.tags.split(',').map((t) => t.trim())]).values())].filter(Boolean)
   return (
-    <Section title="My buffs" help="Buffs from memory fragments, equipment, other characters, etc. Type the text as shown in-game: '+30%' is additive, '30%' (no +) is multiplicative, 'Weakness Attack' makes Weakness DMG apply. For crit bonuses that only some cards get, pick Crit Chance / Crit DMG as the type. Card % raises a card's base % like a potential (only on cards with a potential upgrade, entered at base %)."
+    <Section title="My buffs" help="Buffs from memory fragments, equipment, other characters, etc. Type the text as shown in-game: '+30%' is additive, '30%' (no +) is multiplicative, 'Weakness Attack' makes Weakness DMG apply. For crit bonuses that only some cards get, pick Crit Chance / Crit DMG as the type. Card % raises a card's base % like a potential (only on cards with a potential upgrade, entered at base %). Base % ('+X% base Damage Amount') is added to the card % after the potential. Final ('final Damage Amount') is its own multiplier."
       actions={<button className="btn small" onClick={() => {
         const b = newBuff(build.id)
         updateCs((c) => { c.buffs.push(b) })
@@ -78,7 +78,7 @@ function MyBuffsSection() {
                   <TextField label="Source" value={x.source} placeholder="e.g. Seth's Scarab" onChange={(s) => upd((b) => { b.source = s })} />
                   <TextField label="Buff text" value={x.value} placeholder="+30% or 30%" onChange={(s) => upd((b) => { b.value = s })} />
                   <SelectField<BuffType | ''> label="Type" value={x.typeOverride}
-                    options={[{ value: '', label: `Auto (${buffType(x.value)})` }, 'Additive', 'Multiplicative', 'Weakness Attack', 'Crit Chance', 'Crit DMG', 'Card %']}
+                    options={[{ value: '', label: `Auto (${buffType(x.value)})` }, ...BUFF_TYPES]}
                     onChange={(s) => upd((b) => { b.typeOverride = s })} />
                   <TextField label="Applies to" value={x.appliesTo} list={targets} help="ALL, a card name, or card tags. 'A & B' = all of them, 'A/B' = any of them. Also the element, '1-cost', '2+ cost', '2+ hits', DoT, Extra Attack."
                     onChange={(s) => upd((b) => { b.appliesTo = s })} />

@@ -29,10 +29,19 @@ export function parseBuffValue(text: string): number {
   return text.trim() && Number.isFinite(n) ? n / 100 : 0
 }
 
-/** A preset buff's value for the build: its own value, plus its attackBonus when the stats-screen Attack is above the threshold. */
+/** A preset buff's value for the build: its own value (0 below minAttack), plus its attackBonus when the stats-screen Attack
+ * is above the threshold (once, or for every `every` Attack above it up to `max`). */
 export function presetBuffValue(e: BuffEffect, build: Pick<Build, 'stats'>): { value: number; bonus: boolean } {
-  const bonus = !!e.attackBonus && build.stats.attack > e.attackBonus.above
-  return { value: parseBuffValue(e.value) + (bonus ? parseBuffValue(e.attackBonus!.value) : 0), bonus }
+  const atk = build.stats.attack
+  if (e.minAttack !== undefined && atk < e.minAttack) return { value: 0, bonus: false }
+  const ab = e.attackBonus
+  const bonus = !!ab && (ab.orEqual ? atk >= ab.above : atk > ab.above)
+  let extra = bonus ? parseBuffValue(ab!.value) : 0
+  if (bonus && ab!.every) {
+    extra *= Math.floor((atk - ab!.above) / ab!.every)
+    if (ab!.max) extra = Math.min(extra, parseBuffValue(ab!.max))
+  }
+  return { value: parseBuffValue(e.value) + extra, bonus: extra > 0 }
 }
 
 /** '+X%' = Additive, 'X%' = Multiplicative (owner's rule), 'Weakness Attack' = Weakness DMG applies. */
@@ -80,7 +89,7 @@ export interface PresetState {
   classBlocked: boolean
   /** Stat already on the stats screen: shown for reference, not added. */
   onStatsScreen: boolean
-  /** Needs a higher Manifest Ego level than the build has. */
+  /** Needs a higher Manifest Ego level than the build has, or is replaced at the build's level (egoBelow). */
   egoLocked: boolean
   stacks: number
   /** Card preset id, for effects of a library card. */
@@ -171,7 +180,7 @@ export function presetStates(presets: Presets, charName: string, build: Build, c
       const classBlocked = blocked(e)
       // On the stats screen means the build's own screen; a teammate's ally stat isn't on it
       const onStatsScreen = !team && e.kind === 'Stat' && !!e.onStatsScreen
-      const egoLocked = (e.egoLevel ?? 0) > ego
+      const egoLocked = (e.egoLevel ?? 0) > ego || (e.egoBelow !== undefined && ego >= e.egoBelow)
       const stacks = classBlocked || onStatsScreen || egoLocked ? 0 : switchStacks(sw === undefined ? true : sw, e.defaultStacks)
       out.push({ owner, ownerKind, effect: e, classBlocked, onStatsScreen, egoLocked, stacks, cardId, key,
         ...(team ? { teammate: team.slot, teammateName: team.name } : {}) })
@@ -225,7 +234,7 @@ export function activeBuffs(presets: Presets, charName: string, cs: CharacterSav
     if (s.effect.kind !== 'Buff' || s.stacks <= 0) continue
     const e = s.effect as BuffEffect
     const v = presetBuffValue(e, build)
-    out.push({ label: `${stateLabel(s)}: ${e.name}${v.bonus ? ` (Attack above ${e.attackBonus!.above})` : ''}`,
+    out.push({ label: `${stateLabel(s)}: ${e.name}${v.bonus ? ` (Attack ${e.attackBonus!.orEqual ? `${e.attackBonus!.above}+` : `above ${e.attackBonus!.above}`})` : ''}`,
       type: buffType(e.value, e.type), value: v.value,
       stacks: e.counter ? 0 : e.maxStacks ? Math.min(s.stacks, e.maxStacks) : s.stacks,
       appliesTo: e.appliesTo, hitScope: e.hitScope, condition: e.condition,
@@ -291,13 +300,18 @@ export interface CardBuffs {
   critDmg: { all: Bucket; first: Bucket }
   /** Card % buffs (raise the card's base %, like potentials). */
   cardPct: { all: Bucket; first: Bucket }
+  /** Base % buffs (added to the card % after the potential). */
+  basePct: { all: Bucket; first: Bucket }
+  /** Final damage buffs (their own multiplier). */
+  final: { all: Bucket; first: Bucket }
 }
 
 /** Sum the buffs that match a card into additive / multiplicative buckets (all hits vs first hit only). */
 export function cardBuffs(buffs: ActiveBuff[], card: Card): CardBuffs {
   const b = (): Bucket => ({ value: 0, sources: [] })
   const out: CardBuffs = { additive: { all: b(), first: b() }, multiplicative: { all: b(), first: b() }, weaknessAttack: [],
-    critRate: { all: b(), first: b() }, critDmg: { all: b(), first: b() }, cardPct: { all: b(), first: b() } }
+    critRate: { all: b(), first: b() }, critDmg: { all: b(), first: b() }, cardPct: { all: b(), first: b() },
+    basePct: { all: b(), first: b() }, final: { all: b(), first: b() } }
   for (const buff of buffs) {
     if (buff.stacks <= 0 || !buffMatches(buff, card)) continue
     const label = buff.stacks !== 1 ? `${buff.label} x${buff.stacks}` : buff.label
@@ -307,7 +321,7 @@ export function cardBuffs(buffs: ActiveBuff[], card: Card): CardBuffs {
     }
     const v = buff.value * buff.stacks
     const group = { Additive: out.additive, Multiplicative: out.multiplicative, 'Crit Chance': out.critRate, 'Crit DMG': out.critDmg,
-      'Card %': out.cardPct }[buff.type]
+      'Card %': out.cardPct, 'Base %': out.basePct, Final: out.final }[buff.type]
     const bucket = group[buff.hitScope === 'First hit only' ? 'first' : 'all']
     bucket.value += v
     bucket.sources.push({ label: buff.hitScope === 'First hit only' ? `${label} (first hit)` : label, value: v, unit: '%',

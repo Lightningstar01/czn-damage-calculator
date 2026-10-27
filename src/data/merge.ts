@@ -16,8 +16,10 @@ export function mergeCharacter(imported: ImportedCharacter, additions: Character
   const cards: CardPreset[] = imported.cards.map((card) => {
     const add = additions.cards?.[card.id]
     if (!add) return card
-    return { ...card, ...add, notes: joinNotes(card.notes, add.notes) }
+    const { replaceNotes, ...fields } = add
+    return { ...card, ...fields, notes: replaceNotes ? add.notes : joinNotes(card.notes, add.notes) }
   })
+  cards.push(...(additions.extraCards ?? []))
   return {
     name: imported.name,
     slug: imported.slug,
@@ -45,6 +47,12 @@ export function checkAdditions(imported: Record<string, ImportedCharacter>, addi
     for (const id of Object.keys(add.cards ?? {})) {
       if (!ch.cards.some((c) => c.id === id)) problems.push(`characters/${slug}.ts: no card '${id}' in prydwen/${slug}.json`)
     }
+    const extra = add.extraCards ?? []
+    for (const c of extra) {
+      if (ch.cards.some((x) => x.id === c.id) || extra.filter((x) => x.id === c.id).length > 1) {
+        problems.push(`characters/${slug}.ts: extra card id '${c.id}' is used twice`)
+      }
+    }
     const dupes = (owner: string, effects: { id: string }[] = []) => {
       const seen = new Set<string>()
       for (const e of effects) {
@@ -53,12 +61,15 @@ export function checkAdditions(imported: Record<string, ImportedCharacter>, addi
       }
     }
     dupes(ch.name, add.effects)
-    for (const e of [...(add.effects ?? []), ...Object.values(add.cards ?? {}).flatMap((c) => c.effects ?? [])]) {
-      if (e.egoLevel !== undefined && !ch.manifestEgo.some((m) => m.level === e.egoLevel)) {
-        problems.push(`characters/${slug}.ts: effect '${e.id}' has egoLevel ${e.egoLevel}, which ${ch.name} doesn't have`)
+    for (const e of [...(add.effects ?? []), ...[...Object.values(add.cards ?? {}), ...extra].flatMap((c) => c.effects ?? [])]) {
+      for (const level of [e.egoLevel, e.egoBelow]) {
+        if (level !== undefined && !ch.manifestEgo.some((m) => m.level === level)) {
+          problems.push(`characters/${slug}.ts: effect '${e.id}' has Manifest Ego level ${level}, which ${ch.name} doesn't have`)
+        }
       }
     }
     for (const [id, c] of Object.entries(add.cards ?? {})) dupes(id, c.effects)
+    for (const c of extra) dupes(c.id, c.effects)
   }
   return problems
 }

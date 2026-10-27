@@ -1,5 +1,5 @@
 // The damage formula (docs/FORMULA.md). Pure functions: inputs in, numbers and their sources out.
-import { activeBuffs, activeCounters, activeStats, cardBuffs, findCharacter, type ActiveBuff, type ActiveStat, type Source } from './buffs'
+import { activeBuffs, activeCounters, activeStats, buffMatches, cardBuffs, findCharacter, type ActiveBuff, type ActiveStat, type Source } from './buffs'
 import type { Build, Card, CardPreset, CharacterPreset, CharacterSave, PotentialUpgrade, Presets, RotationPlay, Settings, StatName } from './types'
 
 export interface Stat {
@@ -32,6 +32,8 @@ export interface Hit {
   cardPct: number
   /** Basic / Signature Card Upgrade potential (card % x this); null for cards without one. */
   potential: Factor | null
+  /** Base % buffs, added to the card % after the potential (null: none). */
+  basePct: Factor | null
   multFactor: Factor
   additive: Factor
   weakness: Factor | null
@@ -49,6 +51,8 @@ export interface Hit {
   elemDmg: Factor | null
   mechDmg: Factor | null
   enemyDef: Factor | null
+  /** Final damage buffs: x (1 + their sum). */
+  final: Factor | null
   critDmg: number
   critRate: number
   /** Final Crit DMG / Crit Chance plus this card's crit buffs. */
@@ -69,6 +73,17 @@ export interface Play {
   counters: { name: string; stacks: number }[]
   vulnerable: boolean
   weaknessDebuff: boolean
+  /** Fixed damage an earlier card (Rossweisse's Ego skill) adds to this play: a share of its damage, included in the totals. */
+  followUp?: FollowUp
+  nonCrit: number
+  crit: number
+  expected: number
+}
+
+export interface FollowUp {
+  /** The card that set it up. */
+  from: string
+  share: number
   nonCrit: number
   crit: number
   expected: number
@@ -166,6 +181,7 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
   const cards = new Map(cs.cards.map((c) => [c.id, c]))
   const plays: Play[] = []
   let k = 0
+  let pending: { from: string; appliesTo: string; share: number } | null = null
   // Snapshot (owner, 2026-10-26): every switched-on buff counts on every hit; each play sets its own debuffs and counter stacks
   ;(build.rotation ?? []).forEach((play, index) => {
     const base = cards.get(play.cardId)
@@ -181,9 +197,20 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
     const hits: Hit[] = []
     for (let h = 1; h <= hitCount; h++) hits.push(computeHit(card, h, ++k, cb, potential, stats, build, play, settings))
     const sum = (f: (x: Hit) => number) => hits.reduce((a, x) => a + f(x), 0)
+    const own = { nonCrit: sum((x) => x.nonCrit), crit: sum((x) => x.crit), expected: sum((x) => x.expected) }
+    // Fixed damage set up by an earlier play: a share of this play's damage (crit or not), on the next matching card
+    let followUp: FollowUp | undefined
+    if (pending && buffMatches({ appliesTo: pending.appliesTo, condition: 'Always' }, card)) {
+      const { from, share } = pending
+      followUp = { from, share, nonCrit: own.nonCrit * share, crit: own.crit * share, expected: own.expected * share }
+      pending = null
+    }
+    const fu = ch?.cards?.find((p) => p.id === base.preset)?.followUp
+    if (fu) pending = { from: card.name, appliesTo: fu.appliesTo, share: fu.ego && (build.egoLevel ?? 0) >= fu.ego.level ? fu.ego.share : fu.share }
     plays.push({ card, index, hits, counters: counters.filter((c) => c.stacks > 0),
-      vulnerable: !!play.vulnerable, weaknessDebuff: !!play.weaknessDebuff,
-      nonCrit: sum((x) => x.nonCrit), crit: sum((x) => x.crit), expected: sum((x) => x.expected) })
+      vulnerable: !!play.vulnerable, weaknessDebuff: !!play.weaknessDebuff, followUp,
+      nonCrit: own.nonCrit + (followUp?.nonCrit ?? 0), crit: own.crit + (followUp?.crit ?? 0),
+      expected: own.expected + (followUp?.expected ?? 0) })
   })
   const sum = (f: (x: Play) => number) => plays.reduce((a, x) => a + f(x), 0)
   return { stats, plays, nonCrit: sum((x) => x.nonCrit), crit: sum((x) => x.crit), expected: sum((x) => x.expected) }
@@ -200,7 +227,13 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
       sources: [...potential.sources, ...cardPctSources],
     }
   }
-  const pct = card.pct * (potential?.value ?? 1)
+  const both = (b: { all: { sources: Source[] }; first: { sources: Source[] } }) => [...b.all.sources, ...(first ? b.first.sources : [])]
+  const total = (sources: Source[]) => sources.reduce((a, s) => a + s.value, 0)
+  const baseSources = both(cb.basePct)
+  const basePct: Factor | null = baseSources.length ? { value: total(baseSources), sources: baseSources } : null
+  const pct = card.pct * (potential?.value ?? 1) + (basePct?.value ?? 0)
+  const finalSources = both(cb.final)
+  const final: Factor | null = finalSources.length ? { value: 1 + total(finalSources), sources: finalSources } : null
   const multSources = [...cb.multiplicative.all.sources, ...(first ? cb.multiplicative.first.sources : [])]
   const combine = (sources: Source[]) => settings.multMode === 'Chained'
     ? sources.reduce((a, s) => a * (1 + s.value), 1)
@@ -265,13 +298,14 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
     nonCrit = crit = expected = pct   // Fixed damage ignores every multiplier and can't crit (Unconfirmed)
   } else {
     nonCrit = cardMult * stat.value * settings.atkConstant * (elemDmg?.value ?? 1) * (mechDmg?.value ?? 1) * (enemyDef?.value ?? 1)
+      * (final?.value ?? 1)
     crit = nonCrit * critDmg
     expected = nonCrit * (1 + critRate * (critDmg - 1))
   }
   return {
-    globalHit: k, hitNo, cardPct: card.pct, potential, multFactor: { value: multValue, sources: multSources }, additive,
+    globalHit: k, hitNo, cardPct: card.pct, potential, basePct, multFactor: { value: multValue, sources: multSources }, additive,
     weakness, vulnerable, enemyDr, weaknessDebuff, ravaged, inHand, cardMult, stat, constant: settings.atkConstant,
-    elemDmg, mechDmg, enemyDef, critDmg, critRate, critDmgSources, critRateSources, nonCrit, crit, expected,
+    elemDmg, mechDmg, enemyDef, final, critDmg, critRate, critDmgSources, critRateSources, nonCrit, crit, expected,
   }
 }
 

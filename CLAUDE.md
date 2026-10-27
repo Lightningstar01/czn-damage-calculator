@@ -36,6 +36,9 @@ owner asks (there is no git remote yet).
     Manifest Ego buffs are character effects with `egoLevel` (on from the build's level).
     Card fields set here override the import; notes are joined. `src/data/helpers.ts` has `cardBuff()`.
     Put character `effects` before `cards`.
+    Overrides may rename a card (`name`, e.g. Flicker Blade (Amped)); `replaceNotes` drops the import's notes;
+    `extraCards` adds cards Prydwen lacks. A new characters/*.ts file isn't seen by `npm test` until
+    node_modules/.vitest-cache is deleted (cached glob).
   - `src/data/merge.ts` combines the two; `checkAdditions()` (run by the tests) catches unknown
     slugs or card ids and duplicate effect ids.
   - Library cards keep the card id in `Card.preset`, so a card's preset effects count while it's
@@ -62,7 +65,7 @@ owner asks (there is no git remote yet).
   `characters/<slug>.ts`, with tokens for the active build's numbers (`src/engine/cardText.ts`): `{100%}` base %
   raised by the card's potential and Card % buffs (`shownPct` in calc.ts), `{E1:...}` / `{E3:6|4}` Manifest Ego,
   `{P3-1:...}` Potential node (switch on Setup > Potentials, `build.potentialNodes`, missing = on). A card's
-  `upgrade: null` turns off its potential upgrade (Mei Lin's Jewel V). Done: Mei Lin.
+  `upgrade: null` turns off its potential upgrade (Mei Lin's Jewel V). Done: Mei Lin, Rossweisse.
 - Card upgrade potentials: build `basicLevel` / `signatureLevel`, card `upgrade`
   (Basic / Signature; `pct` is then the base %), `potentialFactor()` in calc.ts; the Manifest Ego
   level that adds +3 is parsed from the import (`potentialEgo` in merge.ts). See docs/FORMULA.md 2c.
@@ -74,7 +77,9 @@ owner asks (there is no git remote yet).
 - Attack list (per build, `build.rotation`): each play has optional hits, `vulnerable`,
   `weaknessDebuff` and `stacks` per counter name; buffs with `counter` read the play's stacks
   (capped at max stacks). Buff type `Card %` raises a card's base % like a potential (only on cards
-  with an upgrade).
+  with an upgrade); `Base %` ("+X% base Damage Amount") adds to the shown card %; `Final` ("final Damage
+  Amount") is its own multiplier. Effects: `egoBelow` (off from that Ego level), `minAttack`, `attackBonus.every`.
+  A card's `followUp` adds Fixed damage (a share of the next matching play's damage), e.g. Rossweisse's Ego skill.
 - Saves are per character: builds (partner, Manifest Ego level, card upgrade levels, 3 fragment set
   picks, stats, team, attack list...), boosts, buffs and cards. Every build shares the card library.
   Preset switches that are missing count as on; own boost/buff switches that are missing count as off.
@@ -119,7 +124,7 @@ Crit       = Damage x Crit DMG (stat is the total multiplier); Expected = Damage
   is in `CZNRedditSheet.xlsx`, to compare against ours line by line.
 - Open mechanics questions are listed in docs/FORMULA.md section 4.
 - Card text check: the owner is saving in-game card screenshots to `card-screenshots/<slug>/` (git-ignored);
-  compare them with the cards and confirm corrections with the owner. Mei Lin done (2026-10-27); next as the owner sends them.
+  compare them with the cards and confirm corrections with the owner. Mei Lin and Rossweisse done (2026-10-27); next as the owner sends them.
 - Idea for later (owner, 2026-10-27, not now): build the library/deck like the game, with card art. Plan: the Prydwen
   import also records each card's picture (art only, 200x300 webp, e.g. cdn.prydwen.gg/images/chaos/cards/mei_4.webp);
   the site draws its own frame (cost, name, type, element, our text with formula colors and potentials applied);

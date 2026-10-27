@@ -15,11 +15,18 @@ function effectPills(e: Effect, onStatsScreen: boolean, build: Build): Pill[] {
       ...(e.hint ? [{ text: e.hint, group: 'const' as const }] : []),
       ...(onStatsScreen ? [{ text: 'on the stats screen: not added', group: 'const' as const }] : [])]
   }
-  // attackBonus: the value already includes the extra while the stats-screen Attack is above the threshold
+  // attackBonus / minAttack: the value already follows the stats-screen Attack
   const v = presetBuffValue(e, build)
-  const shown = e.attackBonus ? `${e.value.trim().startsWith('+') ? '+' : ''}${pct(v.value)}` : e.value
-  const bonus: Pill[] = e.attackBonus ? [{ group: 'const', text: v.bonus ? `Attack above ${e.attackBonus.above}`
-    : `${e.attackBonus.value} more above ${e.attackBonus.above} Attack` }] : []
+  const ab = e.attackBonus
+  const byAttack = !!ab || e.minAttack !== undefined
+  const shown = byAttack ? `${e.value.trim().startsWith('+') ? '+' : ''}${pct(v.value)}` : e.value
+  const bonus: Pill[] = [
+    ...(e.minAttack !== undefined ? [{ group: 'const' as const, text: `needs ${e.minAttack} Attack` }] : []),
+    ...(ab ? [{ group: 'const' as const, text: ab.every
+      ? `${ab.value} per ${ab.every} Attack above ${ab.above}${ab.max ? ` (max ${ab.max})` : ''}`
+      : v.bonus ? `Attack ${ab.orEqual ? `${ab.above}+` : `above ${ab.above}`}`
+      : `${ab.value} more ${ab.orEqual ? 'from' : 'above'} ${ab.above} Attack` }] : []),
+  ]
   return [buffPill(shown, e.type ?? buffType(e.value)), ...conditionPills(e), ...bonus]
 }
 

@@ -69,6 +69,12 @@ function PlayRow({ play }: { play: Play }) {
         </div>
       )}
       {hits.length > 0 && <FormulaStrip hit={hits[0]} card={card} />}
+      {play.followUp && (
+        <div className="muted small">
+          + {play.followUp.from}: Fixed {pct(play.followUp.share)} of this play's damage = <b>{num(play.followUp.expected)}</b> expected
+          ({num(play.followUp.nonCrit)} non-crit), included above
+        </div>
+      )}
       {hits.length > 1 && (
         <button className="link small" onClick={() => setOpen(!open)} aria-expanded={open}>
           {open ? 'Hide hits' : `${hits.length} hits${varies ? ' (they differ)' : ', all the same'}`}
