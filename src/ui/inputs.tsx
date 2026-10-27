@@ -1,5 +1,5 @@
 // Small form controls, sized for phones.
-import { useId, useState, type ReactNode } from 'react'
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import type { Switch } from '../engine/types'
 
 function fmtNumber(v: number, pct: boolean): string {
@@ -114,10 +114,23 @@ export function SwitchControl({ value, onChange, defaultStacks = 1, maxStacks, l
   )
 }
 
+/** Tap "?" to show the text; tapping anywhere else (or Escape) closes it. */
 export function Help({ text }: { text: string }) {
   const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLSpanElement>(null)
+  useEffect(() => {
+    if (!open) return
+    const close = (e: PointerEvent) => { if (!ref.current?.contains(e.target as Node)) setOpen(false) }
+    const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
+    document.addEventListener('pointerdown', close)
+    document.addEventListener('keydown', esc)
+    return () => {
+      document.removeEventListener('pointerdown', close)
+      document.removeEventListener('keydown', esc)
+    }
+  }, [open])
   return (
-    <span className="help">
+    <span className="help" ref={ref}>
       <button type="button" className="help-btn" aria-label="Help" aria-expanded={open}
         onClick={(e) => { e.preventDefault(); setOpen(!open) }}>?</button>
       {open && <span className="help-text" role="note">{text}</span>}
