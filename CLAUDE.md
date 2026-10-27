@@ -12,12 +12,15 @@ npm run dev        # local dev server (add -- --host to open it on the phone ove
 npm test           # Vitest: engine tests
 npm run build      # type-check + production build to dist/
 npm run lint       # oxlint
+npm run screenshot # phone (390px) + desktop PNGs of every tab -> screenshots/ (see scripts/screenshot.mjs:
+                   # --tab Buffs, --phone, --tap "text", --save file); read them to check design changes
 # Re-import every character (cards, potentials, Manifest Ego) from Prydwen (after a game update;
 # review the git diff). One page per character; --cache <folder> keeps them for re-runs.
 # Python is not on PATH on the owner's PC; use the project venv:
 .venv\Scripts\python.exe scripts/import_prydwen.py
 ```
-After any change: `npm test`, `npm run build`, then commit. Deploy to GitHub Pages only when the
+After any change: `npm test`, `npm run build`, then commit. After UI changes, also run `npm run screenshot` and
+look at the phone pictures (the owner plays on phone) for layout, readability and ease of use. Deploy to GitHub Pages only when the
 owner asks (there is no git remote yet).
 
 ## Code

@@ -17,3 +17,6 @@ __pycache__/
 .idea
 .DS_Store
 *.sw?
+
+# Screenshots for design review (npm run screenshot)
+screenshots/
