@@ -7,7 +7,7 @@ import { PRESETS } from '../data/presets'
 import { playCard } from '../engine/calc'
 import { activeBuffs, activeCounters, findCharacter } from '../engine/buffs'
 import { CARD_CATEGORIES, CARD_TYPES, ELEMENTS, type Card, type CardPreset, type CardType, type DamageKind, type Element, type PotentialUpgrade, type RotationPlay, type Scaling } from '../engine/types'
-import { cardFromPreset, newCard, newId } from '../store/save'
+import { cardFromPreset, clone, newCard, newId } from '../store/save'
 import { useCharacter, useStore } from '../store/store'
 import { pct } from './format'
 import { NumberField, Section, SelectField, Stepper, TextField, Toggle } from './inputs'
@@ -156,7 +156,7 @@ function LibrarySection() {
                   </div>
                   <div className="btn-row">
                     <button className="btn" onClick={() => updateCs((s) => {
-                      const copy = { ...structuredClone(s.cards[i]), id: newId(), name: `${c.name} (copy)` }
+                      const copy = { ...clone(s.cards[i]), id: newId(), name: `${c.name} (copy)` }
                       s.cards.splice(i + 1, 0, copy)
                     })}>Duplicate</button>
                     <button className="btn danger" onClick={() => {

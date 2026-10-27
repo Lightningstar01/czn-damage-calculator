@@ -1,4 +1,5 @@
 // Saved data: defaults, versioning/migrations, browser storage, backup files.
+import { current, isDraft, type Draft } from 'immer'
 import { PRESETS } from '../data/presets'
 import { cardUpgrade } from '../engine/calc'
 import { DEFAULT_SETTINGS } from '../data/settings'
@@ -72,9 +73,14 @@ export function newBuff(buildId: string): UserBuff {
   }
 }
 
+/** Deep copy; works on immer drafts too (structuredClone can't copy a draft). */
+export function clone<T>(x: T): T {
+  return structuredClone(isDraft(x) ? (current(x as Draft<T>) as T) : x)
+}
+
 /** Copy of a build with a new id; the owner's boosts/buffs get the same switch for the copy. */
 export function duplicateBuild(cs: CharacterSave, build: Build, name: string): Build {
-  const copy: Build = { ...structuredClone(build), id: newId(), name }
+  const copy: Build = { ...clone(build), id: newId(), name }
   for (const row of [...cs.boosts, ...cs.buffs]) {
     if (build.id in row.switches) row.switches[copy.id] = row.switches[build.id]
   }
