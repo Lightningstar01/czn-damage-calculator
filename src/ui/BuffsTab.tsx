@@ -8,6 +8,7 @@ import { pct } from './format'
 import { Help, NumberField, Section, SelectField, Stepper, SwitchControl, TextField } from './inputs'
 import { FromField } from './FromField'
 import { PresetList } from './PresetList'
+import { ownBuffPills, Pills } from './BuffChips'
 
 export function BuffsTab() {
   return (
@@ -59,17 +60,12 @@ function MyBuffsSection() {
       <ul className="rows">
         {cs.buffs.map((x, i) => {
           const upd = (fn: (b: typeof x) => void) => updateCs((c) => fn(c.buffs[i]))
-          const type = buffType(x.value, x.typeOverride)
           return (
             <li key={x.id} className="row col">
               <div className="row-line">
                 <button className="row-main link" onClick={() => setOpen(open === x.id ? null : x.id)} aria-expanded={open === x.id}>
                   <div className="row-title">{x.source || 'Unnamed buff'}</div>
-                  <div className="row-sub">
-                    <span className={`type-${type.split(' ')[0].toLowerCase()}`}>{x.value || '—'} {type}</span>
-                    {' · '}{x.appliesTo || '(applies to nothing)'}{x.from && ` · from ${x.from}`}
-                    {x.hitScope === 'First hit only' && ' · first hit'}{x.condition === 'Ravaged only' && ' · Ravaged only'}
-                  </div>
+                  <Pills pills={ownBuffPills(x)} />
                 </button>
                 <SwitchControl label={x.source || 'buff'} value={x.switches[build.id]} maxStacks={x.maxStacks}
                   onChange={(sw) => upd((b) => { b.switches[build.id] = sw })} />

@@ -27,15 +27,15 @@ export const PRESETS: Presets = {
       effects: [
         { kind: 'Stat', id: 'atk', name: 'Attack', category: 'Partner', stat: 'ATK%', value: '16%', classLimited: true },
         { kind: 'Stat', id: 'weak', name: 'Weakness DMG', category: 'Partner', stat: 'Weakness DMG', value: '5%', classLimited: true },
+        // '15% increased damage to Ravaged enemies': no '+', so multiplicative (owner's rule)
         {
           kind: 'Buff', id: 'ravaged', name: 'Damage vs Ravaged', category: 'Partner', value: '15%',
           appliesTo: 'ALL', hitScope: 'All hits', condition: 'Ravaged only', classLimited: true,
-          notes: "'15% increased damage to Ravaged enemies' — no '+', so multiplicative (owner's rule)",
         },
+        // Weakness DMG applies to Basic Attack cards even when the target isn't weak
         {
           kind: 'Buff', id: 'basic-weak', name: 'Basic cards are Weakness Attacks', category: 'Partner',
           value: 'Weakness Attack', appliesTo: 'Basic Attack', hitScope: 'All hits', condition: 'Always', classLimited: true,
-          notes: "Weakness DMG applies to Basic Attack cards even when the target isn't weak",
         },
       ],
     },
@@ -47,16 +47,16 @@ export const PRESETS: Presets = {
   // DoT and Extra Attack match the card's own fields.
   fragmentSets: [
     {
+      // 1 stack each (max once) on Extra Attack, an Attack card created in the Draw Pile, and a draw through an Attack card
       name: 'Battlefield Evolution', pieces: 4, effects: [
         {
           kind: 'Buff', id: 'evolving', name: 'Evolving Battlefield', category: 'Memory Fragment', type: 'Crit DMG', value: '+10%',
           appliesTo: 'ALL', hitScope: 'All hits', condition: 'Always', maxStacks: 3, defaultStacks: 3,
-          notes: '1 stack each (max once) on Extra Attack, an Attack card created in the Draw Pile, and a draw through an Attack card',
         },
         {
           kind: 'Buff', id: 'evolving-full', name: 'Evolving Battlefield at 3 stacks', category: 'Memory Fragment', type: 'Crit DMG',
           value: '+5%', appliesTo: 'ALL', hitScope: 'All hits', condition: 'Always',
-          notes: 'Only when all 3 stacks are reached: switch off if not',
+          hint: 'at 3 stacks',
         },
       ],
     },
@@ -65,7 +65,7 @@ export const PRESETS: Presets = {
         {
           kind: 'Buff', id: 'exhaust', name: 'Justice/Order Exhaust Attack damage', category: 'Memory Fragment', value: '30%',
           appliesTo: 'Justice/Order & Exhaust & Attack', hitScope: 'All hits', condition: 'Always',
-          notes: '5 times per turn (not tracked)',
+          hint: '5 times per turn',
         },
       ],
     },
@@ -75,11 +75,11 @@ export const PRESETS: Presets = {
       ],
     },
     {
+      // A stack for 1 turn each time an Attack card is used (max 2)
       name: 'Bullet of Order', pieces: 4, effects: [
         {
           kind: 'Buff', id: 'order', name: 'Order card damage', category: 'Memory Fragment', value: '10%',
           appliesTo: 'Order', hitScope: 'All hits', condition: 'Always', maxStacks: 2, defaultStacks: 2,
-          notes: 'A stack for 1 turn each time an Attack card is used (max 2)',
         },
       ],
     },
@@ -87,7 +87,7 @@ export const PRESETS: Presets = {
       name: "Conquerer's Aspect", pieces: 4, effects: [
         {
           kind: 'Buff', id: 'crit', name: '1-cost Crit DMG', category: 'Memory Fragment', type: 'Crit DMG', value: '+35%',
-          appliesTo: '1-cost', hitScope: 'All hits', condition: 'Always', notes: 'Cards with cost 1',
+          appliesTo: '1-cost', hitScope: 'All hits', condition: 'Always',
         },
       ],
     },
@@ -95,7 +95,7 @@ export const PRESETS: Presets = {
       name: 'Cursed Corpse', pieces: 2, effects: [
         {
           kind: 'Buff', id: 'agony', name: 'Damage vs Agony', category: 'Memory Fragment', value: '10%',
-          appliesTo: 'ALL', hitScope: 'All hits', condition: 'Always', notes: 'Only vs targets with Agony: switch off if not',
+          appliesTo: 'ALL', hitScope: 'All hits', condition: 'Always', hint: 'vs Agony',
         },
       ],
     },
@@ -105,11 +105,11 @@ export const PRESETS: Presets = {
       ],
     },
     {
+      // A stack when generating or using Exhaust Skill cards (max 15%)
       name: "Glory's Reign", pieces: 4, effects: [
         {
           kind: 'Buff', id: 'allies', name: 'Damage (all allies)', category: 'Memory Fragment', target: 'allies', value: '5%',
           appliesTo: 'ALL', hitScope: 'All hits', condition: 'Always', maxStacks: 3, defaultStacks: 3,
-          notes: 'A stack when generating or using Exhaust Skill cards (max 15%)',
         },
       ],
     },
@@ -120,7 +120,7 @@ export const PRESETS: Presets = {
       name: 'Instinctual Growth', pieces: 4, effects: [
         {
           kind: 'Buff', id: 'instinct', name: 'Instinct card damage', category: 'Memory Fragment', value: '20%',
-          appliesTo: 'Instinct', hitScope: 'All hits', condition: 'Always', notes: 'Only with 3 or more cards in hand',
+          appliesTo: 'Instinct', hitScope: 'All hits', condition: 'Always', hint: '3+ cards in hand',
         },
       ],
     },
@@ -136,7 +136,7 @@ export const PRESETS: Presets = {
       name: 'Line of Justice', pieces: 4, effects: [
         {
           kind: 'Buff', id: 'crit', name: 'Crit Chance of 2+ cost cards', category: 'Memory Fragment', type: 'Crit Chance', value: '+20%',
-          appliesTo: '2+ cost', hitScope: 'All hits', condition: 'Always', notes: 'Cards with cost 2 or more',
+          appliesTo: '2+ cost', hitScope: 'All hits', condition: 'Always',
         },
       ],
     },
@@ -144,7 +144,7 @@ export const PRESETS: Presets = {
       name: 'Offering of the Void', pieces: 4, effects: [
         {
           kind: 'Buff', id: 'void', name: 'Void card damage', category: 'Memory Fragment', value: '20%',
-          appliesTo: 'Void', hitScope: 'All hits', condition: 'Always', notes: 'For 1 turn after a card is Exhausted',
+          appliesTo: 'Void', hitScope: 'All hits', condition: 'Always', hint: '1 turn after an Exhaust',
         },
       ],
     },
@@ -157,24 +157,26 @@ export const PRESETS: Presets = {
       ],
     },
     {
+      // Max 15% total; the 2 stacks are only turns of duration (owner)
       name: 'Prelude to a Hero', pieces: 4, effects: [
         {
           kind: 'Buff', id: 'crit', name: 'Crit Chance', category: 'Memory Fragment', type: 'Crit Chance', value: '+15%',
           appliesTo: 'ALL', hitScope: 'All hits', condition: 'Always', maxStacks: 1, defaultStacks: 1,
-          notes: "For 1 turn after this unit's Passion or Void Attack card is Discarded. Max 15% total; the 2 stacks are only turns of duration (owner)",
+          hint: '1 turn after a Passion/Void Attack Discard',
         },
       ],
     },
     {
+      // Max 25% total; the 2 stacks are only turns of duration (owner)
       name: 'Sanguine Thorn', pieces: 4, effects: [
         {
           kind: 'Buff', id: 'fracture', name: 'Crit DMG after Fracture', category: 'Memory Fragment', type: 'Crit DMG', value: '+25%',
           appliesTo: 'ALL', hitScope: 'All hits', condition: 'Always', maxStacks: 1, defaultStacks: 1,
-          notes: 'For 1 turn after a card applies Fracture. Max 25% total; the 2 stacks are only turns of duration (owner)',
+          hint: '1 turn after a Fracture',
         },
         {
           kind: 'Buff', id: 'dot', name: 'DoT Crit DMG', category: 'Memory Fragment', type: 'Crit DMG', value: '+15%',
-          appliesTo: 'DoT', hitScope: 'All hits', condition: 'Always', notes: 'After 10 or more Fractures applied through cards',
+          appliesTo: 'DoT', hitScope: 'All hits', condition: 'Always', hint: 'after 10+ Fractures',
         },
       ],
     },
@@ -187,21 +189,21 @@ export const PRESETS: Presets = {
       ],
     },
     {
+      // A Powder Snow stack when a Bind card is stacked (1 per combatant)
       name: 'Snowflake of Our First Meeting', pieces: 4, effects: [
         {
           kind: 'Buff', id: 'powder', name: 'Powder Snow: Attack card damage', category: 'Memory Fragment', value: '10%',
           appliesTo: 'Attack', hitScope: 'All hits', condition: 'Always', maxStacks: 2, defaultStacks: 2,
-          notes: 'A stack when a Bind card is stacked (1 per combatant)',
         },
         {
           kind: 'Buff', id: 'powder-justice', name: 'Powder Snow: extra for Justice', category: 'Memory Fragment', value: '5%',
           appliesTo: 'Justice & Attack', hitScope: 'All hits', condition: 'Always', maxStacks: 2, defaultStacks: 2,
-          notes: 'Keep the stacks the same as Powder Snow',
+          hint: 'same stacks as Powder Snow',
         },
         {
           kind: 'Buff', id: 'powder-crit', name: 'Powder Snow x2: Justice Crit DMG', category: 'Memory Fragment', type: 'Crit DMG',
           value: '+15%', appliesTo: 'Justice & Attack', hitScope: 'All hits', condition: 'Always',
-          notes: 'Only at 2 Powder Snow stacks: switch off if not',
+          hint: 'at 2 Powder Snow',
         },
       ],
     },
@@ -210,16 +212,16 @@ export const PRESETS: Presets = {
         {
           kind: 'Buff', id: 'passion', name: 'Passion card damage', category: 'Memory Fragment', value: '20%',
           appliesTo: 'Passion', hitScope: 'All hits', condition: 'Always', maxStacks: 1, defaultStacks: 1,
-          notes: 'After an Upgrade card is used',
+          hint: 'after an Upgrade card',
         },
       ],
     },
     {
+      // A stack when Shield is gained through an ability (max 25%)
       name: 'Starlight and Dreams', pieces: 4, effects: [
         {
           kind: 'Buff', id: 'shield', name: 'Counterattack / Extra Attack damage', category: 'Memory Fragment', value: '5%',
           appliesTo: 'Counterattack/Extra Attack', hitScope: 'All hits', condition: 'Always', maxStacks: 5, defaultStacks: 5,
-          notes: 'A stack when Shield is gained through an ability (max 25%)',
         },
       ],
     },
@@ -229,11 +231,11 @@ export const PRESETS: Presets = {
       ],
     },
     {
+      // A stack when a Justice card is stacked
       name: 'Veiled Radiance', pieces: 4, effects: [
         {
           kind: 'Buff', id: 'crit', name: 'Attack card Crit Chance', category: 'Memory Fragment', type: 'Crit Chance', value: '+8%',
           appliesTo: 'Attack', hitScope: 'All hits', condition: 'Always', maxStacks: 2, defaultStacks: 2,
-          notes: 'A stack when a Justice card is stacked',
         },
       ],
     },

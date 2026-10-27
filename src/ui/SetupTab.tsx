@@ -1,7 +1,7 @@
 // Setup: build management, partner, Manifest Ego level, memory fragment sets, team, stats-screen values, stat boosts, enemy.
 import { useState } from 'react'
 import { PRESETS } from '../data/presets'
-import { findCharacter, findFragmentSet, findPartner, fragmentPiecesUsed, parseStatValue, reachesTeam } from '../engine/buffs'
+import { findCharacter, findFragmentSet, findPartner, fragmentPiecesUsed, reachesTeam } from '../engine/buffs'
 import { CATEGORIES, FRAGMENT_SET_PICKS, MAX_EGO_LEVEL, MAX_POTENTIAL_LEVEL, FRAGMENT_SLOTS, STATS, TEAM_SIZE, type ScreenStats, type StatName, type Teammate } from '../engine/types'
 import { duplicateBuild, newBoost, newTeammate } from '../store/save'
 import { FromField } from './FromField'
@@ -9,6 +9,7 @@ import { useCharacter, useStore } from '../store/store'
 import { pct } from './format'
 import { NumberField, Section, SelectField, SwitchControl, TextField } from './inputs'
 import { PresetList } from './PresetList'
+import { Pills, statPill } from './BuffChips'
 
 export function SetupTab() {
   return (
@@ -287,13 +288,12 @@ function BoostsSection() {
       <ul className="rows">
         {cs.boosts.map((x, i) => {
           const upd = (fn: (b: typeof x) => void) => updateCs((c) => fn(c.boosts[i]))
-          const v = parseStatValue(x.value)
           return (
             <li key={x.id} className="row col">
               <div className="row-line">
                 <button className="row-main link" onClick={() => setOpen(open === x.id ? null : x.id)} aria-expanded={open === x.id}>
                   <div className="row-title">{x.source || 'Unnamed boost'}</div>
-                  <div className="row-sub">{x.stat} {x.value.includes('%') ? pct(v) : x.value || '—'} · {x.category}{x.from && ` · from ${x.from}`}</div>
+                  <Pills pills={[statPill(x.stat, x.value || '0'), ...(x.from ? [{ text: `from ${x.from}`, group: 'const' as const }] : [])]} />
                 </button>
                 <SwitchControl label={x.source || 'boost'} value={x.switches[build.id]} onChange={(sw) => upd((b) => { b.switches[build.id] = sw })} />
               </div>

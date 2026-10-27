@@ -52,7 +52,8 @@ export interface StatEffect {
   onStatsScreen?: boolean
   /** Manifest Ego level (1-6) that unlocks it: off for builds below that level. */
   egoLevel?: number
-  notes?: string
+  /** A few words shown as a grey chip when the switch depends on something in the fight, e.g. 'ATK > 500'. No notes on effects. */
+  hint?: string
 }
 
 export interface BuffEffect {
@@ -77,7 +78,8 @@ export interface BuffEffect {
   /** Per-play stacks (e.g. 'Ember'): the stacks are set on each play of the attack list (default 0), instead of
    * by the switch, which is then on/off only. Buffs with the same counter share the play's number; maxStacks caps it. */
   counter?: string
-  notes?: string
+  /** See StatEffect.hint. */
+  hint?: string
 }
 
 export type Effect = StatEffect | BuffEffect

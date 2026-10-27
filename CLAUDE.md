@@ -41,6 +41,10 @@ owner asks (there is no git remote yet).
   effects (entered by hand, not imported). The owner and Claude edit these files; there is no
   in-app preset editor. Effect ids must be unique per owner, because saved switches are keyed
   `"Owner|effectId"` (owner = character, partner, set or card name). Renaming an id resets that switch.
+- Preset effect wording (owner, 2026-10-27): `name` uses the in-game words (Prydwen's text, or the owner's
+  wording for keywords, partners and sets); no `notes` on effects. When the switch depends on the fight, set
+  `hint` (a few words, e.g. `'ATK > 500'`), shown as a grey chip; other explanations go in code comments.
+  Buff rows show colored chips in the formula strip's colors (`src/ui/BuffChips.tsx`).
 - `src/data/settings.ts`: formula constants and rules (defaults + notes); edited on the Settings tab.
 - `src/store/`: localStorage autosave (`save.ts`: `SAVE_VERSION`, `migrate()`, backup export) and the
   React context (`store.tsx`). If you change the save format, bump `SAVE_VERSION` and add a step to

@@ -1,18 +1,20 @@
 // Preset effects for the active build, as switches: the character's own (with partner, fragment sets, library cards),
 // or the teammates' ally buffs and enemy debuffs.
 import { PRESETS } from '../data/presets'
-import { findCharacter, findPartner, presetStates, stateLabel, type PresetState } from '../engine/buffs'
+import { buffType, findCharacter, findPartner, presetStates, stateLabel, type PresetState } from '../engine/buffs'
 import { useCharacter } from '../store/store'
 import type { Effect } from '../engine/types'
+import { buffPill, conditionPills, Pills, statPill, type Pill } from './BuffChips'
 import { SwitchControl } from './inputs'
 
-const TARGET_TEXT = { self: '', allies: ' · all allies', enemy: ' · on the enemy' }
-
-function detailText(e: Effect): string {
-  if (e.kind === 'Stat') return `${e.stat} ${e.value}${TARGET_TEXT[e.target ?? 'self']}`
-  return `${e.value}${e.type ? ` ${e.type}` : ''} · ${e.appliesTo}${e.hitScope === 'First hit only' ? ' · first hit' : ''}`
-    + `${e.condition === 'Ravaged only' ? ' · Ravaged only' : ''}${TARGET_TEXT[e.target ?? 'self']}`
-    + `${e.counter ? ` · per ${e.counter} stack${e.maxStacks ? ` (max ${e.maxStacks})` : ''}, stacks set per play (Cards tab)` : ''}`
+function effectPills(e: Effect, onStatsScreen: boolean): Pill[] {
+  if (e.kind === 'Stat') {
+    return [statPill(e.stat, e.value),
+      ...(e.target && e.target !== 'self' ? [{ text: e.target === 'allies' ? 'all allies' : 'on the enemy', group: 'const' as const }] : []),
+      ...(e.hint ? [{ text: e.hint, group: 'const' as const }] : []),
+      ...(onStatsScreen ? [{ text: 'on the stats screen: not added', group: 'const' as const }] : [])]
+  }
+  return [buffPill(e.value, e.type ?? buffType(e.value)), ...conditionPills(e)]
 }
 
 /** team: list the teammates' effects instead of the character's own. */
@@ -47,12 +49,10 @@ function PresetRow({ s, sw, mainName, partnerName, onChange }: {
     <li className={`row ${s.stacks > 0 ? '' : 'off'}`}>
       <div className="row-main">
         <div className="row-title">{e.name} <span className="tag">{stateLabel(s)}</span></div>
-        <div className="row-sub">{detailText(e)}</div>
+        <Pills pills={effectPills(e, s.onStatsScreen)} />
         {s.classBlocked && (
           <div className="row-warn">Class-limited: {partner?.name} is {partner?.class}, {ch?.name} is {ch?.class}</div>
         )}
-        {s.onStatsScreen && <div className="row-note">Already on the stats screen: not added again</div>}
-        {e.notes && <div className="row-note">{e.notes}</div>}
       </div>
       {!s.onStatsScreen && <SwitchControl label={e.name} value={sw === undefined ? true : counted ? sw !== false && sw !== 0 : sw}
         disabled={s.classBlocked} defaultStacks={e.defaultStacks}
