@@ -4,7 +4,7 @@
 //   Cards, in order: Test (3 hits x 1 play), Two (2 hits x 2 plays), Weak (1 hit, Weakness DMG applies)
 //   Build A: Morale 2 stacks (+40% additive)          -> mult 1.40 -> 490/hit
 //   Build B: + "30%" multiplicative on ALL            -> (1.0*1.3 + 0.4) = 1.70
-//   Build C: Morale 2, "+50%" first-hit-only on tag Attack, 1 Vulnerable stack
+//   Build C: Morale 2, "+50%" first-hit-only on tag Attack, Vulnerable on the first play (website: per play, not per hit)
 // Partner scenarios: Mei Lin (Striker) with Marianne (Striker partner), ATK 1000, no crit.
 import { describe, expect, it } from 'vitest'
 import { computeBuild, type BuildResult } from '../src/engine/calc'
@@ -13,7 +13,7 @@ import { ADDITIONS, IMPORTED, PRESETS } from '../src/data/presets'
 import { checkAdditions } from '../src/data/merge'
 import { DEFAULT_SETTINGS } from '../src/data/settings'
 import { cardFromPreset, newBuff, newBuild, newCard, newCharacterSave, migrate, defaultSave, SAVE_VERSION } from '../src/store/save'
-import type { Build, Card, CharacterSave, Presets } from '../src/engine/types'
+import type { Build, Card, CharacterSave, Presets, RotationPlay } from '../src/engine/types'
 import fixture from './fixtures/workbook.json'
 
 const presets: Presets = {
@@ -38,7 +38,9 @@ function card(name: string, tags: string, hits: number, weak = false, ravaged = 
   return { ...newCard('Passion'), name, tags, hits, pct: 1, weaknessApplies: weak, targetRavaged: ravaged }
 }
 
-const plays = (...ids: string[]) => ids.map((cardId) => ({ cardId }))
+const plays = (...ids: string[]): RotationPlay[] => ids.map((cardId) => ({ cardId }))
+/** The same attack list for every build of the save. */
+const setPlays = (cs: CharacterSave, list: RotationPlay[]) => { for (const b of cs.builds) b.rotation = structuredClone(list) }
 
 /** Sum of a card's plays in a build result. */
 function cardTotal(r: BuildResult, name: string, key: 'nonCrit' | 'crit' | 'expected' = 'nonCrit') {
@@ -56,13 +58,13 @@ function mainScenario() {
     x.stats.critDmg = 2
     x.morale = 2
   }
-  c.vulnerable = 1
   cs.buffs.push({ ...newBuff(b.id), source: 'Mult test', value: '30%', appliesTo: 'ALL' })
   cs.buffs.push({ ...newBuff(c.id), source: 'First hit', value: '+50%', appliesTo: 'Attack', hitScope: 'First hit only' })
   const test = card('Test', 'Attack', 3), two = card('Two', 'x', 2), weak = card('Weak', 'x', 1, true)
   two.cardType = weak.cardType = 'Skill'   // only "Test" is an Attack, as in the Excel scenario
   cs.cards.push(test, two, weak)
-  cs.rotation = plays(test.id, two.id, two.id, weak.id)
+  setPlays(cs, plays(test.id, two.id, two.id, weak.id))
+  c.rotation[0].vulnerable = true
   const run = (i: number) => computeBuild(presets, '', cs, cs.builds[i], settings)
   return { A: run(0), B: run(1), C: run(2) }
 }
@@ -100,11 +102,11 @@ describe('main scenario', () => {
     expect(cardTotal(B, 'Weak')).toBeCloseTo(743.75)
   })
 
-  it('build C: first-hit buff and Vulnerable used up in order', () => {
+  it('build C: first-hit buff, and Vulnerable on every hit of its play', () => {
     expect(C.plays[0].hits[0].cardMult).toBeCloseTo(2.85)
-    expect(C.plays[0].hits[1].cardMult).toBeCloseTo(1.4)
+    expect(C.plays[0].hits[1].cardMult).toBeCloseTo(2.1)
     expect(C.plays[1].hits[0].cardMult).toBeCloseTo(1.4)
-    expect(cardTotal(C, 'Test')).toBeCloseTo(1977.5)
+    expect(cardTotal(C, 'Test')).toBeCloseTo(2467.5)
     expect(cardTotal(C, 'Two')).toBeCloseTo(1960)
   })
 
@@ -123,10 +125,9 @@ function partnerScenario(character: string) {
   for (const x of cs.builds) x.stats.attack = 1000
   a.partner = b.partner = 'Marianne'
   b.presetSwitches['Marianne|atk'] = false
-  for (const x of cs.builds) x.presetSwitches['Mei Lin|p3-1-ember'] = false   // no Ember in this scenario
   const strike = card('Strike', 'Basic Attack', 1, false, true), other = card('Other', 'x', 1)
   cs.cards.push(strike, other)
-  cs.rotation = plays(strike.id, other.id)
+  setPlays(cs, plays(strike.id, other.id))
   return cs.builds.map((x) => computeBuild(presets, character, cs, x, settings))
 }
 
@@ -167,7 +168,7 @@ describe('memory fragment sets', () => {
   c.fragments = ['Test Four', 'Test Four', 'Test Two']
   const x = card('X', '', 1)
   cs.cards.push(x)
-  cs.rotation = plays(x.id)
+  setPlays(cs, plays(x.id))
   const [A, B, C] = cs.builds.map((bd) => computeBuild(presets, 'Mei Lin', cs, bd, settings))
 
   it('set buffs apply; set stats are already on the stats screen', () => {
@@ -245,7 +246,7 @@ describe('per-card crit buffs', () => {
     cs.buffs.push({ ...newBuff(a.id), value: '+20%', typeOverride: 'Crit Chance', appliesTo: '1-cost' })
     const one = { ...card('One', '', 1), cost: 1 }, two = { ...card('Two', '', 1), cost: 2 }
     cs.cards.push(one, two)
-    cs.rotation = plays(one.id, two.id)
+    setPlays(cs, plays(one.id, two.id))
     const r = computeBuild(presets, '', cs, a, settings)
     expect(r.plays[0].hits[0].critDmg).toBeCloseTo(1.85)
     expect(r.plays[0].hits[0].critRate).toBeCloseTo(1)
@@ -295,7 +296,7 @@ describe('card presets', () => {
     noStrikeNode(a)
     const strike = cardFromPreset(preset('card-338'), 'Passion')
     cs.cards.push(strike)
-    cs.rotation = plays(strike.id)
+    setPlays(cs, plays(strike.id))
     const mult = () => computeBuild(PRESETS, 'Mei Lin', cs, a, settings).plays[0].hits[0].cardMult
     expect(mult()).toBeCloseTo(1)
     a.egoLevel = 3
@@ -345,7 +346,7 @@ describe('card presets', () => {
     expect(strike).toMatchObject({ name: 'Strike', element: 'Passion', cost: 1, tags: 'Basic, Basic Attack', pct: 1, hits: 1, preset: 'card-338' })
     expect(cardFromPreset(preset('card-337'), 'Passion').cost).toBeNull()
     cs.cards.push(strike)
-    cs.rotation = plays(strike.id)
+    setPlays(cs, plays(strike.id))
     const before = computeBuild(PRESETS, 'Mei Lin', cs, a, settings)
     expect(before.plays[0].hits[0].cardMult).toBeCloseTo(1)
     cs.cards.push(jewel, { ...jewel, id: 'copy' })   // a second copy doesn't double the buff
@@ -383,7 +384,7 @@ describe('potentials', () => {
     const strike = cardFromPreset(preset('card-338'), 'Passion'), spire = cardFromPreset(preset('card-346'), 'Passion')
     const own = { ...newCard('Passion'), pct: 1.5 }
     cs.cards.push(strike, spire, own)
-    cs.rotation = plays(strike.id, spire.id, own.id)
+    setPlays(cs, plays(strike.id, spire.id, own.id))
     const mults = () => computeBuild(PRESETS, 'Mei Lin', cs, a, settings).plays.map((p) => p.hits[0].cardMult)
     // Strike also has potential 5-1: +5%, +5% more above 500 Attack (x1.1 on the card %)
     expect(mults()).toEqual([1.1, spire.pct, 1.5].map((x) => expect.closeTo(x)))
@@ -403,7 +404,7 @@ describe('potentials', () => {
     a.signatureLevel = 10
     const fixed: Card = { ...newCard('Passion'), scaling: 'Fixed', pct: 100, upgrade: 'Signature' }
     cs.cards.push(fixed)
-    cs.rotation = plays(fixed.id)
+    setPlays(cs, plays(fixed.id))
     expect(computeBuild(PRESETS, 'Mei Lin', cs, a, settings).nonCrit).toBeCloseTo(100)
     expect(computeBuild(PRESETS, 'Mei Lin', cs, a, { ...settings, potentialFixed: true }).nonCrit).toBeCloseTo(120)
   })
@@ -422,7 +423,7 @@ describe('potentials', () => {
   })
 })
 
-describe('rotation buffs', () => {
+describe('per-play stacks', () => {
   const mei = PRESETS.characters.find((c) => c.name === 'Mei Lin')!
   const preset = (id: string) => mei.cards!.find((p) => p.id === id)!
   const setup = (...ids: string[]) => {
@@ -436,59 +437,138 @@ describe('rotation buffs', () => {
   }
   const adds = (r: BuildResult) => r.plays.map((p) => p.hits.map((h) => Math.round(h.additive.value * 100) / 100))
 
-  it('Spirit of the Aromata stacks from its own play on, that play included', () => {
+  it('Spirit of the Aromata: the stacks set on each play, capped at 20', () => {
     const { cs, a, lib: [strike, aromata, spire] } = setup('card-338', 'card-358', 'card-346')
-    cs.rotation = plays(strike.id, aromata.id, strike.id, spire.id)
+    a.rotation = [{ cardId: strike.id }, { cardId: aromata.id }, { cardId: strike.id, stacks: { 'Spirit of the Aromata': 2 } },
+      { cardId: spire.id, stacks: { 'Spirit of the Aromata': 25 } }]
     const r = computeBuild(PRESETS, 'Mei Lin', cs, a, settings)
-    expect(adds(r)).toEqual([[0], [], [0.4], [0.6]])
-    expect(r.plays[3].counters).toContainEqual({ name: 'Spirit of the Aromata', before: 3, after: 3 })
+    expect(adds(r)).toEqual([[0], [], [0.4], [4]])
+    expect(r.plays[3].counters).toEqual([{ name: 'Spirit of the Aromata', stacks: 20 }])
     a.presetSwitches['Spirit of the Aromata|dmg'] = false
     expect(adds(computeBuild(PRESETS, 'Mei Lin', cs, a, settings))).toEqual([[0], [], [0], [0]])
   })
 
-  it('Aromata I only counts Passion cards; Aromata V only boosts Basic cards', () => {
+  it('Aromata V only boosts Basic cards', () => {
     const { cs, a, lib: [strike, aromata, spire] } = setup('card-338', 'card-363', 'card-346')
-    cs.rotation = plays(aromata.id, spire.id, strike.id)
+    const n = { 'Spirit of the Aromata V': 3 }
+    a.rotation = [{ cardId: aromata.id }, { cardId: spire.id, stacks: n }, { cardId: strike.id, stacks: n }]
     expect(adds(computeBuild(PRESETS, 'Mei Lin', cs, a, settings))).toEqual([[], [0], [1.5]])
-    const own = { ...newCard('Justice'), name: 'Off-element' }
-    const s2 = setup('card-359', 'card-338')
-    s2.cs.cards.push(own)
-    s2.cs.rotation = plays(s2.lib[0].id, own.id, s2.lib[1].id)
-    // Aromata I itself is Passion (stack 1), the Justice card adds none, Strike adds one: 2 stacks
-    expect(adds(computeBuild(PRESETS, 'Mei Lin', s2.cs, s2.a, settings))).toEqual([[], [0.2], [0.4]])
   })
 
-  it('Ember: gained before the damage, +30% per stack on Ravaged targets, one used per hit', () => {
-    const { cs, a, lib: [strike, spire] } = setup('card-338', 'card-346')
-    a.egoLevel = 2   // E2: damaging cards apply 1 Ember
-    for (const c of cs.cards) c.targetRavaged = true
-    cs.rotation = [{ cardId: spire.id, hits: 2 }, { cardId: strike.id }]
-    const r = computeBuild(PRESETS, 'Mei Lin', cs, a, settings)
-    // Spire: 2 + 1 (E2) = 3 Ember -> hits at 3 and 2 stacks. Strike: 1 left + 1 (E2) + 1 (potential 3-1) = 3
-    expect(adds(r)).toEqual([[0.9, 0.6], [0.9]])
-    expect(r.plays.map((p) => p.counters.find((c) => c.name === 'Ember'))).toEqual([
-      { name: 'Ember', before: 3, after: 1 }, { name: 'Ember', before: 3, after: 2 }])
-  })
-
-  it('Ember piles up unused on a target that is not Ravaged, up to 5', () => {
-    const { cs, a, lib: [strike, spire2] } = setup('card-338', 'card-348')
-    a.egoLevel = 2
-    const ravagedStrike = { ...strike, id: 'rs', targetRavaged: true }
-    cs.cards.push(ravagedStrike)
-    cs.rotation = plays(strike.id, spire2.id, ravagedStrike.id)
-    // Strike 2, Spire II +3 +1 = 6 -> capped at 5; the Ravaged Strike adds 2 more (still 5): +150%
-    expect(adds(computeBuild(PRESETS, 'Mei Lin', cs, a, settings))).toEqual([[0], [0], [1.5]])
-    a.presetSwitches['Mei Lin|ember'] = false
-    expect(adds(computeBuild(PRESETS, 'Mei Lin', cs, a, settings))).toEqual([[0], [0], [0]])
-  })
-
-  it('Ember needs E2 or an Ember card: E0 Strikes only get the potential 3-1 Ember', () => {
+  it('Ember: +30% per stack on every hit vs a Ravaged target, up to 5; nothing otherwise', () => {
     const { cs, a, lib: [strike] } = setup('card-338')
-    strike.targetRavaged = true
-    cs.rotation = plays(strike.id, strike.id)
-    expect(adds(computeBuild(PRESETS, 'Mei Lin', cs, a, settings))).toEqual([[0.3], [0.3]])
-    a.presetSwitches['Mei Lin|p3-1-ember'] = false
-    expect(adds(computeBuild(PRESETS, 'Mei Lin', cs, a, settings))).toEqual([[0], [0]])
+    const ravaged = { ...strike, id: 'rs', targetRavaged: true }
+    cs.cards.push(ravaged)
+    a.rotation = [{ cardId: ravaged.id, hits: 2, stacks: { Ember: 3 } }, { cardId: strike.id, stacks: { Ember: 5 } },
+      { cardId: ravaged.id, stacks: { Ember: 7 } }, { cardId: ravaged.id }]
+    expect(adds(computeBuild(PRESETS, 'Mei Lin', cs, a, settings))).toEqual([[0.9, 0.9], [0], [1.5], [0]])
+    a.presetSwitches['Mei Lin|ember'] = false
+    expect(adds(computeBuild(PRESETS, 'Mei Lin', cs, a, settings))).toEqual([[0, 0], [0], [0], [0]])
+  })
+})
+
+describe('per-play debuffs and per-build attack lists', () => {
+  it('Vulnerable and the Weakness debuff count on every hit of the plays that have them', () => {
+    const cs = newCharacterSave()
+    const [a] = cs.builds
+    a.stats.attack = 1000
+    const x = card('X', '', 2)
+    cs.cards.push(x)
+    a.rotation = [{ cardId: x.id, vulnerable: true }, { cardId: x.id, weaknessDebuff: true }, { cardId: x.id, vulnerable: true, weaknessDebuff: true }, { cardId: x.id }]
+    const r = computeBuild(presets, '', cs, a, settings)
+    expect(r.plays.map((p) => p.hits.map((h) => h.cardMult))).toEqual(
+      [[1.5, 1.5], [0.75, 0.75], [1.125, 1.125], [1, 1]].map((xs) => xs.map((v) => expect.closeTo(v))))
+    expect(r.plays[2]).toMatchObject({ vulnerable: true, weaknessDebuff: true })
+  })
+
+  it('each build plays its own list', () => {
+    const cs = newCharacterSave()
+    const [a] = cs.builds
+    const b = newBuild('Build B')
+    cs.builds.push(b)
+    for (const x of cs.builds) x.stats.attack = 1000
+    const x = card('X', '', 1)
+    cs.cards.push(x)
+    a.rotation = plays(x.id)
+    b.rotation = plays(x.id, x.id, x.id)
+    expect(cs.builds.map((bd) => computeBuild(presets, '', cs, bd, settings).nonCrit)).toEqual([350, 1050].map((v) => expect.closeTo(v)))
+  })
+
+  it('migrate v8: each build gets the rotation, Vulnerable / Weakness debuff on the plays their stacks reached, an empty team', () => {
+    const old = { version: 8, characters: { X: {
+      builds: [{ id: 'a', vulnerable: 3, weaknessDebuff: 0 }, { id: 'b', vulnerable: 0, weaknessDebuff: 1 }],
+      cards: [{ id: 'two', hits: 2 }, { id: 'one', hits: 1 }],
+      rotation: [{ cardId: 'two' }, { cardId: 'gone' }, { cardId: 'one', hits: 3 }, { cardId: 'two' }],
+    } } }
+    const cs = migrate(old).characters.X
+    expect(cs).not.toHaveProperty('rotation')
+    const [a, b] = cs.builds
+    expect(a.rotation).toEqual([{ cardId: 'two', vulnerable: true }, { cardId: 'gone' }, { cardId: 'one', hits: 3, vulnerable: true }, { cardId: 'two' }])
+    expect(b.rotation).toEqual([{ cardId: 'two', weaknessDebuff: true }, { cardId: 'gone' }, { cardId: 'one', hits: 3 }, { cardId: 'two' }])
+    expect(a.team).toEqual([])
+    expect(a).not.toHaveProperty('vulnerable')
+    expect(b).not.toHaveProperty('weaknessDebuff')
+  })
+})
+
+describe('team', () => {
+  const buff = (id: string, value: string, extra: object = {}) => ({ kind: 'Buff' as const, id, name: id, category: 'Character' as const,
+    value, appliesTo: 'ALL', hitScope: 'All hits' as const, condition: 'Always' as const, ...extra })
+  const teamPresets: Presets = {
+    ...presets,
+    characters: [...presets.characters, {
+      name: 'Helper', element: 'Void', class: 'Controller', effects: [
+        buff('own', '+50%'),
+        buff('ally', '+20%', { target: 'allies' }),
+        buff('e2', '+10%', { target: 'allies', egoLevel: 2 }),
+        { kind: 'Stat', id: 'atk', name: 'Attack', category: 'Character', stat: 'ATK%', value: '10%', target: 'allies', onStatsScreen: true },
+      ],
+      cards: [{ id: 'h-1', base: 'Help', name: 'Help', cardType: 'Skill', pct: 0, hits: 0, text: '',
+        effects: [buff('taken', '+100%', { target: 'enemy', category: 'Card Epiphany' }), buff('self', '+40%', { category: 'Card Epiphany' })] }],
+    }],
+    partners: [...presets.partners, { name: 'Buddy', class: 'Controller', baseHp: 0, baseDef: 0, baseAtk: 0, effects: [
+      buff('pego', '30%', { target: 'allies', category: 'Partner Ego Skill', classLimited: true }),
+    ] }],
+  }
+  const setup = () => {
+    const cs = newCharacterSave()
+    const [a] = cs.builds
+    a.stats.attack = 1000
+    const x = card('X', '', 1)
+    cs.cards.push(x)
+    a.rotation = plays(x.id)
+    a.team = [{ character: 'Helper', egoLevel: 0, partner: 'Buddy', fragments: ['', '', ''], cards: [] }]
+    const run = () => computeBuild(teamPresets, 'Testy', cs, a, settings)
+    return { cs, a, run }
+  }
+
+  it("only a teammate's ally and enemy effects count; class limits use the teammate's class", () => {
+    const { a, run } = setup()
+    // +20% ally (additive), ATK +10% (an ally stat isn't on the main's stats screen), Buddy's 30% (Controller = Controller)
+    expect(run().plays[0].hits[0].cardMult).toBeCloseTo(1.3 + 0.2)
+    expect(run().stats.atk.value).toBeCloseTo(1100)
+    a.team[0].egoLevel = 2
+    expect(run().plays[0].hits[0].cardMult).toBeCloseTo(1.3 + 0.3)
+    a.team[0].cards = ['h-1']
+    // The picked card's enemy debuff counts, its self buff doesn't
+    expect(run().plays[0].hits[0].cardMult).toBeCloseTo(1.3 + 1.3)
+    a.presetSwitches['Helper>Help|taken'] = false
+    expect(run().plays[0].hits[0].cardMult).toBeCloseTo(1.3 + 0.3)
+  })
+
+  it('teammate switches are keyed per teammate; the same partner on the main keeps its own switch', () => {
+    const { a, run } = setup()
+    a.presetSwitches['Helper>Buddy|pego'] = false
+    expect(run().plays[0].hits[0].cardMult).toBeCloseTo(1.2)
+    a.partner = 'Buddy'   // Testy is a Vanguard: Buddy's class-limited buff is off for the main
+    expect(run().plays[0].hits[0].cardMult).toBeCloseTo(1.2)
+    a.team = []
+    expect(run().plays[0].hits[0].cardMult).toBeCloseTo(1)
+  })
+
+  it("Glory's Reign reaches allies", () => {
+    const glory = PRESETS.fragmentSets.find((f) => f.name === "Glory's Reign")!
+    expect(glory.effects[0].target).toBe('allies')
   })
 })
 
@@ -500,7 +580,7 @@ describe('rotation plays', () => {
     cs.buffs.push({ ...newBuff(a.id), value: '+50%', appliesTo: '2+ hits' })
     const x = card('X', '', 1)
     cs.cards.push(x)
-    cs.rotation = [{ cardId: x.id }, { cardId: x.id, hits: 3 }, { cardId: x.id }]
+    setPlays(cs, [{ cardId: x.id }, { cardId: x.id, hits: 3 }, { cardId: x.id }])
     const r = computeBuild(presets, '', cs, a, settings)
     expect(r.plays.map((p) => p.hits.length)).toEqual([1, 3, 1])
     expect(r.plays[0].hits[0].cardMult).toBeCloseTo(1)
@@ -509,8 +589,8 @@ describe('rotation plays', () => {
   })
 
   it('migrate turns card ids into plays', () => {
-    const old = { version: 3, characters: { X: { builds: [], cards: [], rotation: ['a', 'b'] } } }
-    expect(migrate(old).characters.X.rotation).toEqual([{ cardId: 'a' }, { cardId: 'b' }])
+    const old = { version: 3, characters: { X: { builds: [{ id: 'a' }], cards: [], rotation: ['a', 'b'] } } }
+    expect(migrate(old).characters.X.builds[0].rotation).toEqual([{ cardId: 'a' }, { cardId: 'b' }])
   })
 })
 
@@ -533,7 +613,7 @@ describe('parsing', () => {
     cs.buffs.push({ ...newBuff(a.id), value: '30%' }, { ...newBuff(a.id), value: '20%' })
     const x = card('X', '', 1)
     cs.cards.push(x)
-    cs.rotation = plays(x.id)
+    setPlays(cs, plays(x.id))
     const summed = computeBuild(presets, '', cs, a, settings)
     const chained = computeBuild(presets, '', cs, a, { ...settings, multMode: 'Chained' })
     expect(summed.plays[0].hits[0].cardMult).toBeCloseTo(1.5)
@@ -564,6 +644,7 @@ describe('card % in hand and on target', () => {
     expect(hit().cardMult).toBeCloseTo(2.5064 * 1.42, 4)
     // Buffs that need a Ravaged target (Ember, Marianne) only show on target
     cs.cards[0].targetRavaged = true
+    a.rotation[0].stacks = { Ember: 1 }
     expect(hit().inHand).toBeCloseTo(2.5064, 4)
     expect(hit().cardMult).toBeCloseTo((1.32 * 1.67 + 0.5 + 0.3) * 1.42, 4)
   })

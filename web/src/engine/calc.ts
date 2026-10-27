@@ -1,5 +1,5 @@
 // The damage formula (docs/FORMULA.md). Pure functions: inputs in, numbers and their sources out.
-import { activeBuffs, activeStacks, activeStats, buffMatches, cardBuffs, findCharacter, type ActiveBuff, type ActiveStacks, type ActiveStat, type Source } from './buffs'
+import { activeBuffs, activeCounters, activeStats, cardBuffs, findCharacter, type ActiveBuff, type ActiveStat, type Source } from './buffs'
 import type { Build, Card, CardPreset, CharacterPreset, CharacterSave, PotentialUpgrade, Presets, RotationPlay, Settings, StatName } from './types'
 
 export interface Stat {
@@ -25,7 +25,7 @@ export interface Factor {
 
 /** Every factor of one hit, so the UI can draw the formula. A null factor doesn't apply to this hit. */
 export interface Hit {
-  /** 1-based hit number across the whole rotation (Vulnerable / Weakness debuff stacks use this order). */
+  /** 1-based hit number across the build's whole attack list. */
   globalHit: number
   hitNo: number
   /** The card's %: the base when a potential upgrade applies, otherwise as shown in-game. */
@@ -62,11 +62,13 @@ export interface Hit {
 export interface Play {
   /** The card as played (with this play's hit count). */
   card: Card
-  /** Position in the rotation (0-based). */
+  /** Position in the build's attack list (0-based). */
   index: number
   hits: Hit[]
-  /** Rotation counters (Ember, Spirit of the Aromata...) after this play's gains, before its hits; then after its hits. */
-  counters: { name: string; before: number; after: number }[]
+  /** Per-play counter stacks (Ember, Spirit of the Aromata...) set on this play, capped by max stacks; only those above 0. */
+  counters: { name: string; stacks: number }[]
+  vulnerable: boolean
+  weaknessDebuff: boolean
   nonCrit: number
   crit: number
   expected: number
@@ -141,58 +143,34 @@ export function playCard(card: Card, play: RotationPlay): Card {
   return play.hits === undefined ? card : { ...card, hits: play.hits }
 }
 
-/** Damage of every hit of every play in the rotation, for one build. */
+/** Damage of every hit of every play in the build's attack list. */
 export function computeBuild(presets: Presets, charName: string, cs: CharacterSave, build: Build, settings: Settings): BuildResult {
   const stats = finalStats(presets, charName, cs, build, settings)
   const buffs = activeBuffs(presets, charName, cs, build, settings)
   const fixedBuffs = buffs.filter((b) => !b.counter)
   const counterBuffs = buffs.filter((b) => b.counter)
-  const gains = activeStacks(presets, charName, cs, build)
-  // A counter holds at most the smallest max stacks of the buffs that read it
-  const caps = new Map<string, number>()
-  for (const b of counterBuffs) if (b.maxStacks) caps.set(b.counter!, Math.min(caps.get(b.counter!) ?? Infinity, b.maxStacks))
-  const counters = new Map<string, number>()
-  const started = new Set<ActiveStacks>()
+  const counterCaps = activeCounters(buffs)
   const ch = findCharacter(presets, charName)
   const cards = new Map(cs.cards.map((c) => [c.id, c]))
-  const perCard = new Map<string, ReturnType<typeof cardBuffs>>()
   const plays: Play[] = []
   let k = 0
-  cs.rotation.forEach((play, index) => {
+  // Snapshot (owner, 2026-10-26): every switched-on buff counts on every hit; each play sets its own debuffs and counter stacks
+  ;(build.rotation ?? []).forEach((play, index) => {
     const base = cards.get(play.cardId)
     if (!base) return
     // A per-play hit count also counts for '2+ hits' buffs, so it's buffed as its own card
     const card = playCard(base, play)
     const hitCount = Math.max(0, Math.floor(card.hits))
-    // Stacks land before the card's damage (owner, 2026-10-25)
-    const damaging = card.pct > 0 && hitCount > 0
-    for (const g of gains) {
-      const own = !!g.cardId && card.preset === g.cardId
-      if (g.trigger === 'afterSelf' && own) started.add(g)
-      if ((g.trigger === 'self' && !own) || (g.trigger === 'afterSelf' && !started.has(g))) continue
-      if (g.damagingOnly && !damaging) continue
-      if (!buffMatches({ appliesTo: g.on, condition: 'Always' }, card)) continue
-      counters.set(g.counter, Math.min(caps.get(g.counter) ?? Infinity, (counters.get(g.counter) ?? 0) + g.amount))
-    }
-    const before = new Map(counters)
-    const key = `${card.id}|${card.hits}`
-    let fixedCb = perCard.get(key)
-    if (!fixedCb) perCard.set(key, (fixedCb = cardBuffs(fixedBuffs, card)))
+    const counters = counterCaps.map(({ name, max }) => ({ name, stacks: Math.min(Math.max(0, play.stacks?.[name] ?? 0), max ?? Infinity) }))
+    const live: ActiveBuff[] = counterBuffs.map((b) => ({ ...b, stacks: counters.find((c) => c.name === b.counter)?.stacks ?? 0 }))
+    const cb = cardBuffs([...fixedBuffs, ...live], card)
     const upgradable = !(card.scaling === 'Fixed' && !settings.potentialFixed)
     const potential = upgradable ? potentialFactor(card.upgrade, build, ch, settings) : null
     const hits: Hit[] = []
-    for (let h = 1; h <= hitCount; h++) {
-      k++
-      const live: ActiveBuff[] = counterBuffs.map((b) => ({ ...b, stacks: Math.min(counters.get(b.counter!) ?? 0, b.maxStacks ?? Infinity) }))
-      const cb = live.some((b) => b.stacks > 0) ? cardBuffs([...fixedBuffs, ...live], card) : fixedCb
-      hits.push(computeHit(card, h, k, cb, potential, stats, build, settings))
-      // A consumed counter (Ember) loses one stack per hit it boosted
-      for (const name of new Set(live.filter((b) => b.consumePerHit && b.stacks > 0 && buffMatches(b, card)).map((b) => b.counter!))) {
-        counters.set(name, (counters.get(name) ?? 0) - 1)
-      }
-    }
+    for (let h = 1; h <= hitCount; h++) hits.push(computeHit(card, h, ++k, cb, potential, stats, build, play, settings))
     const sum = (f: (x: Hit) => number) => hits.reduce((a, x) => a + f(x), 0)
-    plays.push({ card, index, hits, counters: [...before].map(([name, n]) => ({ name, before: n, after: counters.get(name) ?? 0 })),
+    plays.push({ card, index, hits, counters: counters.filter((c) => c.stacks > 0),
+      vulnerable: !!play.vulnerable, weaknessDebuff: !!play.weaknessDebuff,
       nonCrit: sum((x) => x.nonCrit), crit: sum((x) => x.crit), expected: sum((x) => x.expected) })
   })
   const sum = (f: (x: Play) => number) => plays.reduce((a, x) => a + f(x), 0)
@@ -200,7 +178,7 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
 }
 
 function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof cardBuffs>, potential: Factor | null,
-  stats: FinalStats, build: Build, settings: Settings): Hit {
+  stats: FinalStats, build: Build, play: RotationPlay, settings: Settings): Hit {
   const first = hitNo === 1
   // Card % buffs raise the base % like the card upgrade potentials, so only on cards entered at base %
   const cardPctSources = potential ? [...cb.cardPct.all.sources, ...(first ? cb.cardPct.first.sources : [])] : []
@@ -230,14 +208,14 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
       ...(settings.extraWeakness ? [{ label: 'Extra weakness factor (Settings)', value: settings.extraWeakness, unit: '%' as const }] : []),
     ],
   } : null
-  const vulnerable = k <= (build.vulnerable || 0)
-    ? { value: 1 + settings.vulnerable, sources: [{ label: `Vulnerable stack (hit ${k} of ${build.vulnerable})`, value: settings.vulnerable, unit: '%' as const }] }
+  const vulnerable = play.vulnerable
+    ? { value: 1 + settings.vulnerable, sources: [{ label: 'Vulnerable on the target (this play)', value: settings.vulnerable, unit: '%' as const }] }
     : null
   const enemyDr = build.enemyDr
     ? { value: 1 - build.enemyDr, sources: [{ label: 'Enemy damage reduction', value: build.enemyDr, unit: '%' as const }] }
     : null
-  const weaknessDebuff = k <= (build.weaknessDebuff || 0)
-    ? { value: 1 - settings.weaknessDebuff, sources: [{ label: `Weakness debuff stack (hit ${k} of ${build.weaknessDebuff})`, value: settings.weaknessDebuff, unit: '%' as const }] }
+  const weaknessDebuff = play.weaknessDebuff
+    ? { value: 1 - settings.weaknessDebuff, sources: [{ label: 'Weakness debuff on you (this play)', value: settings.weaknessDebuff, unit: '%' as const }] }
     : null
   const ravaged = card.targetRavaged && settings.ravaged
     ? { value: 1 + settings.ravaged, sources: [{ label: 'Ravaged target (Settings)', value: settings.ravaged, unit: '%' as const }] }

@@ -6,7 +6,7 @@ export const SETTING_INFO: { key: keyof Settings; label: string; pct: boolean; n
   { key: 'defCardAtkCoef', label: 'DEF card: ATK coefficient', pct: false, note: 'Prydwen: DEF-based damage uses (ATK x 0.3 + DEF x 2.1)' },
   { key: 'defCardDefCoef', label: 'DEF card: DEF coefficient', pct: false, note: 'Prydwen' },
   { key: 'extraWeakness', label: 'Extra weakness factor (Unconfirmed)', pct: true, note: 'Mei Lin test (204% -> 290% = x1.42 Weakness DMG) shows no extra factor. Leave 0% unless a test says otherwise' },
-  { key: 'vulnerable', label: 'Vulnerable bonus', pct: true, note: 'Prydwen: x1.5, one stack used per hit' },
+  { key: 'vulnerable', label: 'Vulnerable bonus', pct: true, note: 'Prydwen: x1.5. Switched on per play (Cards tab)' },
   { key: 'weaknessDebuff', label: 'Weakness debuff penalty', pct: true, note: 'Prydwen: x0.75 while the Weakness debuff is on you' },
   { key: 'critCap', label: 'Crit rate cap', pct: true, note: 'Assumed 100%' },
   { key: 'ravaged', label: 'Ravaged: extra damage taken (Unconfirmed)', pct: true, note: "Ravaged enemies take more damage; size unknown. Applies to cards with 'Target Ravaged' on" },

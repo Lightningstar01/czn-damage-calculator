@@ -1,14 +1,14 @@
-// Cards: the character's card library and the ordered rotation (one entry per play).
+// Cards: the active build's attack list (one entry per play) and the character's card library (shared by all builds).
 import { DndContext, KeyboardSensor, PointerSensor, TouchSensor, closestCenter, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useState } from 'react'
 import { PRESETS } from '../data/presets'
 import { playCard } from '../engine/calc'
-import { findCharacter } from '../engine/buffs'
-import { CARD_CATEGORIES, CARD_TYPES, ELEMENTS, type Card, type CardPreset, type CardType, type DamageKind, type Element, type PotentialUpgrade, type Scaling } from '../engine/types'
+import { activeBuffs, activeCounters, findCharacter } from '../engine/buffs'
+import { CARD_CATEGORIES, CARD_TYPES, ELEMENTS, type Card, type CardPreset, type CardType, type DamageKind, type Element, type PotentialUpgrade, type RotationPlay, type Scaling } from '../engine/types'
 import { cardFromPreset, newCard, newId } from '../store/save'
-import { useCharacter } from '../store/store'
+import { useCharacter, useStore } from '../store/store'
 import { pct } from './format'
 import { NumberField, Section, SelectField, Stepper, TextField, Toggle } from './inputs'
 
@@ -89,7 +89,7 @@ function PresetPicker() {
 }
 
 function LibrarySection() {
-  const { name, cs, updateCs } = useCharacter()!
+  const { name, cs, build, updateCs, updateBuild } = useCharacter()!
   const [open, setOpen] = useState<string | null>(null)
   const ch = findCharacter(PRESETS, name)
   const presetCards = ch?.cards ?? []
@@ -100,7 +100,7 @@ function LibrarySection() {
         updateCs((x) => { x.cards.push(c) })
         setOpen(c.id)
       }}>+ Add</button>}>
-      {!cs.cards.length && <p className="muted">No cards yet. Add one (or pick from the character's cards below), then tap “+ Play” to put it in the rotation.</p>}
+      {!cs.cards.length && <p className="muted">No cards yet. Add one (or pick from the character's cards below), then tap “+ Play” to put it in the active build's attack list.</p>}
       <ul className="rows">
         {cs.cards.map((c, i) => {
           const upd = (fn: (x: Card) => void) => updateCs((s) => fn(s.cards[i]))
@@ -112,7 +112,7 @@ function LibrarySection() {
                   <div className="row-title">{c.name || 'Unnamed card'}</div>
                   <div className="row-sub">{cardSummary(c)}{c.tags && ` · ${c.tags}`}</div>
                 </button>
-                <button className="btn small" onClick={() => updateCs((s) => { s.rotation.push({ cardId: c.id }) })}>+ Play</button>
+                <button className="btn small" onClick={() => updateBuild((b) => { b.rotation.push({ cardId: c.id }) })} aria-label={`Play ${c.name} in ${build.name}`}>+ Play</button>
               </div>
               {open === c.id && (
                 <div className="editor grid2">
@@ -160,10 +160,10 @@ function LibrarySection() {
                       s.cards.splice(i + 1, 0, copy)
                     })}>Duplicate</button>
                     <button className="btn danger" onClick={() => {
-                      if (!confirm(`Delete ${c.name || 'this card'}? It's also removed from the rotation.`)) return
+                      if (!confirm(`Delete ${c.name || 'this card'}? It's also removed from every build's attack list.`)) return
                       updateCs((s) => {
                         s.cards.splice(i, 1)
-                        s.rotation = s.rotation.filter((p) => p.cardId !== c.id)
+                        for (const b of s.builds) b.rotation = (b.rotation ?? []).filter((p) => p.cardId !== c.id)
                       })
                     }}>Delete</button>
                   </div>
@@ -177,41 +177,50 @@ function LibrarySection() {
   )
 }
 
-/** Rotation entries need unique ids for drag and drop; the saved rotation is just card ids. */
+/** The active build's attack list. Entries need unique ids for drag and drop. */
 function RotationSection() {
-  const { cs, updateCs } = useCharacter()!
+  const { name, cs, build, updateBuild } = useCharacter()!
+  const { data: { settings } } = useStore()
+  const [open, setOpen] = useState<number | null>(null)
   const cards = new Map(cs.cards.map((c) => [c.id, c]))
+  const rotation = build.rotation ?? []
+  const counters = activeCounters(activeBuffs(PRESETS, name, cs, build, settings))
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
     useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 6 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   )
-  const ids = cs.rotation.map((_, i) => `p${i}`)
+  const ids = rotation.map((_, i) => `p${i}`)
   const onDragEnd = (e: DragEndEvent) => {
     if (!e.over || e.active.id === e.over.id) return
     const from = ids.indexOf(String(e.active.id)), to = ids.indexOf(String(e.over.id))
-    updateCs((s) => { s.rotation = arrayMove(s.rotation, from, to) })
+    updateBuild((b) => { b.rotation = arrayMove(b.rotation, from, to) })
+    setOpen(null)
   }
-  const played = cs.rotation.map((p) => { const c = cards.get(p.cardId); return c && playCard(c, p) })
-  const ends = played.reduce<number[]>((acc, c) => {
-    acc.push((acc.at(-1) ?? 0) + (c ? Math.max(0, Math.floor(c.hits)) : 0))
-    return acc
-  }, [])
+  const others = cs.builds.filter((b) => b.id !== build.id)
   return (
-    <Section title="Rotation" help="The cards you play, in order. Vulnerable and Weakness-debuff stacks are used up hit by hit in this order. Drag ⠿ to reorder. − / + sets the hits of that play only (Combo, extra-hit effects)."
-      actions={cs.rotation.length > 0 && <button className="btn small" onClick={() => { if (confirm('Clear the rotation?')) updateCs((s) => { s.rotation = [] }) }}>Clear</button>}>
-      {!cs.rotation.length && <p className="muted">Empty. Tap “+ Play” on a card below to add it.</p>}
+    <Section title={`${build.name} attack list`} help={`The main character's plays for this build (each build has its own list). Every buff that's on counts on every play (snapshot). Tap a play to set its hits (Combo, extra-hit effects), whether Vulnerable (×${1 + settings.vulnerable}) or the Weakness debuff (×${1 - settings.weaknessDebuff}) is up, and the stacks of per-play buffs (Ember, Spirit of the Aromata...). Drag ⠿ to reorder.`}
+      actions={rotation.length > 0 && <button className="btn small" onClick={() => { if (confirm(`Clear ${build.name}'s attack list?`)) updateBuild((b) => { b.rotation = [] }) }}>Clear</button>}>
+      {!rotation.length && <p className="muted">Empty. Tap “+ Play” on a card below to add it.</p>}
+      {others.length > 0 && (
+        <SelectField label="Copy the attack list from" value=""
+          options={[{ value: '', label: 'Pick a build…' }, ...others.map((b) => ({ value: b.id, label: `${b.name} (${b.rotation?.length ?? 0} plays)` }))]}
+          onChange={(id) => {
+            const src = others.find((b) => b.id === id)
+            if (!src || (rotation.length && !confirm(`Replace ${build.name}'s attack list with ${src.name}'s?`))) return
+            updateBuild((b) => { b.rotation = structuredClone(src.rotation ?? []) })
+          }} />
+      )}
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
         <SortableContext items={ids} strategy={verticalListSortingStrategy}>
           <ol className="rows rotation">
-            {cs.rotation.map((play, i) => {
-              const c = played[i], base = cards.get(play.cardId)
-              const first = (ends[i - 1] ?? 0) + 1, hit = ends[i]
+            {rotation.map((play, i) => {
+              const base = cards.get(play.cardId)
               return (
-                <RotationItem key={ids[i]} id={ids[i]} index={i} card={c} baseHits={play.hits === undefined ? undefined : base?.hits}
-                  hits={c && c.hits > 0 ? (first === hit ? `hit ${hit}` : `hits ${first}–${hit}`) : ''}
-                  onHits={(n) => updateCs((s) => { s.rotation[i].hits = n === base?.hits ? undefined : n })}
-                  onRemove={() => updateCs((s) => { s.rotation.splice(i, 1) })} />
+                <RotationItem key={ids[i]} id={ids[i]} index={i} play={play} card={base && playCard(base, play)} baseHits={base?.hits}
+                  counters={counters} open={open === i} onToggle={() => setOpen(open === i ? null : i)}
+                  onChange={(fn) => updateBuild((b) => fn(b.rotation[i]))}
+                  onRemove={() => { updateBuild((b) => { b.rotation.splice(i, 1) }); setOpen(null) }} />
               )
             })}
           </ol>
@@ -221,24 +230,56 @@ function RotationSection() {
   )
 }
 
-/** baseHits: the card's own hits, set when this play overrides them. */
-function RotationItem({ id, index, card, baseHits, hits, onHits, onRemove }: {
-  id: string; index: number; card?: Card; baseHits?: number; hits: string; onHits: (n: number) => void; onRemove: () => void
+function playFlags(play: RotationPlay): string {
+  const stacks = Object.entries(play.stacks ?? {}).filter(([, n]) => n > 0).map(([name, n]) => `${name} ${n}`)
+  return [...(play.vulnerable ? ['Vulnerable'] : []), ...(play.weaknessDebuff ? ['Weakness debuff'] : []), ...stacks].join(' · ')
+}
+
+/** baseHits: the card's own hits. counters: the per-play stacks the switched-on buffs read. */
+function RotationItem({ id, index, play, card, baseHits, counters, open, onToggle, onChange, onRemove }: {
+  id: string; index: number; play: RotationPlay; card?: Card; baseHits?: number; counters: { name: string; max: number | null }[]
+  open: boolean; onToggle: () => void; onChange: (fn: (p: RotationPlay) => void) => void; onRemove: () => void
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
+  const flags = playFlags(play)
   return (
-    <li ref={setNodeRef} className={`row ${isDragging ? 'dragging' : ''}`}
+    <li ref={setNodeRef} className={`row col ${isDragging ? 'dragging' : ''}`}
       style={{ transform: CSS.Transform.toString(transform), transition }}>
-      <button className="drag" aria-label={`Move play ${index + 1}`} {...attributes} {...listeners}>⠿</button>
-      <div className="row-main">
-        <div className="row-title"><span className="play-no">{index + 1}</span> {card?.name || 'Unnamed card'}</div>
-        <div className="row-sub">{card ? `${cardSummary(card)} · ${hits}` : 'Card was deleted'}</div>
-        {baseHits !== undefined && <div className="row-note">Hits set for this play (card: {baseHits})</div>}
+      <div className="row-line">
+        <button className="drag" aria-label={`Move play ${index + 1}`} {...attributes} {...listeners}>⠿</button>
+        <button className="row-main link" onClick={onToggle} aria-expanded={open}>
+          <div className="row-title"><span className="play-no">{index + 1}</span> {card?.name || 'Unnamed card'}</div>
+          <div className="row-sub">{card ? cardSummary(card) : 'Card was deleted'}</div>
+          {play.hits !== undefined && <div className="row-note">Hits set for this play (card: {baseHits})</div>}
+          {flags && <div className="row-note">{flags}</div>}
+        </button>
+        <button className="icon-btn" aria-label={`Remove play ${index + 1}`} onClick={onRemove}>×</button>
       </div>
-      {card && (card.pct !== 0 || baseHits !== undefined) && (
-        <Stepper label={`Play ${index + 1} hits`} value={card.hits} onChange={onHits} />
+      {open && card && (
+        <div className="play-opts">
+          <div className="toggle-field"><span>Hits</span>
+            <Stepper label={`Play ${index + 1} hits`} value={card.hits}
+              onChange={(n) => onChange((p) => { p.hits = n === baseHits ? undefined : n })} />
+          </div>
+          <div className="toggle-field"><span>Vulnerable</span>
+            <Toggle label="Vulnerable" checked={!!play.vulnerable} onChange={(v) => onChange((p) => { if (v) p.vulnerable = true; else delete p.vulnerable })} />
+          </div>
+          <div className="toggle-field"><span>Weakness debuff</span>
+            <Toggle label="Weakness debuff" checked={!!play.weaknessDebuff} onChange={(v) => onChange((p) => { if (v) p.weaknessDebuff = true; else delete p.weaknessDebuff })} />
+          </div>
+          {counters.map((c) => (
+            <div key={c.name} className="toggle-field"><span>{c.name}</span>
+              <Stepper label={`Play ${index + 1} ${c.name} stacks`} value={play.stacks?.[c.name] ?? 0} max={c.max ?? undefined}
+                onChange={(n) => onChange((p) => {
+                  p.stacks ??= {}
+                  if (n > 0) p.stacks[c.name] = n
+                  else delete p.stacks[c.name]
+                  if (!Object.keys(p.stacks).length) delete p.stacks
+                })} />
+            </div>
+          ))}
+        </div>
       )}
-      <button className="icon-btn" aria-label={`Remove play ${index + 1}`} onClick={onRemove}>×</button>
     </li>
   )
 }

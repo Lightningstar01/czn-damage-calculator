@@ -1,9 +1,10 @@
-// Setup: build management, partner, Manifest Ego level, memory fragment sets, stats-screen values, stat boosts, enemy.
+// Setup: build management, partner, Manifest Ego level, memory fragment sets, team, stats-screen values, stat boosts, enemy.
 import { useState } from 'react'
 import { PRESETS } from '../data/presets'
-import { findCharacter, findFragmentSet, findPartner, fragmentPiecesUsed, parseStatValue } from '../engine/buffs'
-import { CATEGORIES, FRAGMENT_SET_PICKS, MAX_EGO_LEVEL, MAX_POTENTIAL_LEVEL, FRAGMENT_SLOTS, STATS, type ScreenStats, type StatName } from '../engine/types'
-import { duplicateBuild, newBoost } from '../store/save'
+import { findCharacter, findFragmentSet, findPartner, fragmentPiecesUsed, parseStatValue, reachesTeam } from '../engine/buffs'
+import { CATEGORIES, FRAGMENT_SET_PICKS, MAX_EGO_LEVEL, MAX_POTENTIAL_LEVEL, FRAGMENT_SLOTS, STATS, TEAM_SIZE, type ScreenStats, type StatName, type Teammate } from '../engine/types'
+import { duplicateBuild, newBoost, newTeammate } from '../store/save'
+import { FromField } from './FromField'
 import { useCharacter, useStore } from '../store/store'
 import { pct } from './format'
 import { NumberField, Section, SelectField, SwitchControl, TextField } from './inputs'
@@ -17,9 +18,13 @@ export function SetupTab() {
       <EgoSection />
       <PotentialSection />
       <FragmentSection />
+      <TeamSection />
       <StatsSection />
       <Section title="Stat boosts from presets" help="The character's, partner's and memory fragment sets' stat effects. Switch them off per build to test without them. Fragment set stats are already on the stats screen, so they are listed for reference only.">
         <PresetList kind="Stat" />
+      </Section>
+      <Section title="Team stat boosts" help="Stat boosts the build's teammates give all allies (their character, partner, fragment sets and picked cards).">
+        <PresetList kind="Stat" team />
       </Section>
       <BoostsSection />
       <EnemySection />
@@ -53,7 +58,7 @@ function BuildSection() {
           }}>Delete</button>
         )}
       </div>
-      <p className="muted">Builds share the card list and rotation. Duplicate a build, then change one thing to compare.</p>
+      <p className="muted">Builds share the card library; each build has its own team and attack list. Duplicate a build, then change one thing to compare.</p>
     </Section>
   )
 }
@@ -171,6 +176,81 @@ function FragmentSection() {
   )
 }
 
+const egoOptions = Array.from({ length: MAX_EGO_LEVEL + 1 }, (_, i) => ({ value: String(i), label: i === 0 ? 'E0 (none)' : `E${i}` }))
+
+/** The build's 2 teammates: buff sources only. Their ally buffs and enemy debuffs show on the Buffs tab. */
+function TeamSection() {
+  const { name, build, updateBuild } = useCharacter()!
+  const slots = Array.from({ length: TEAM_SIZE }, (_, i) => build.team?.[i])
+  const upd = (i: number, fn: (t: Teammate) => void) => updateBuild((b) => {
+    b.team ??= []
+    while (b.team.length <= i) b.team.push(newTeammate())
+    fn(b.team[i])
+  })
+  return (
+    <Section title="Team" help="The build's other two characters. Only their effects that reach allies or the enemy count (marked in the presets): their character and Manifest Ego effects, partner (its Ego skill too), fragment sets and the cards you pick here. Their damage isn't counted. Their equipment: add it under My stat boosts / My buffs with From set to the teammate.">
+      {slots.map((t, i) => {
+        const others = slots.filter((x, j) => j !== i && x?.character).map((x) => x!.character)
+        const chars = PRESETS.characters.filter((c) => c.name !== name && !others.includes(c.name))
+        return (
+          <div key={i} className="team-slot">
+            <div className="grid2">
+              <SelectField label={`Teammate ${i + 1}`} value={t?.character ?? ''}
+                options={[{ value: '', label: 'None' }, ...chars.map((c) => ({ value: c.name, label: c.name }))]}
+                onChange={(v) => upd(i, (x) => { x.character = v; x.cards = [] })} />
+              {t?.character && <TeammateFields t={t} onChange={(fn) => upd(i, fn)} />}
+            </div>
+            {t?.character && <TeammateCards t={t} onChange={(fn) => upd(i, fn)} />}
+          </div>
+        )
+      })}
+    </Section>
+  )
+}
+
+function TeammateFields({ t, onChange }: { t: Teammate; onChange: (fn: (t: Teammate) => void) => void }) {
+  const picks = Array.from({ length: FRAGMENT_SET_PICKS }, (_, i) => t.fragments?.[i] ?? '')
+  const partners = [...PRESETS.partners].sort((a, b) => a.class.localeCompare(b.class) || a.name.localeCompare(b.name))
+  const sets = [...PRESETS.fragmentSets].sort((a, b) => a.pieces - b.pieces || a.name.localeCompare(b.name))
+  return (
+    <>
+      <SelectField label="Manifest Ego" value={String(t.egoLevel ?? 0)} options={egoOptions} onChange={(v) => onChange((x) => { x.egoLevel = Number(v) })} />
+      <SelectField label="Partner" value={t.partner}
+        options={[{ value: '', label: 'None' }, ...partners.map((p) => ({ value: p.name, label: `${p.name} (${p.class})` }))]}
+        onChange={(v) => onChange((x) => { x.partner = v })} />
+      {picks.map((v, i) => (
+        <SelectField key={i} label={`Set ${i + 1}`} value={v}
+          options={[{ value: '', label: 'None' }, ...sets.map((f) => ({ value: f.name, label: `${f.name} (${f.pieces}-piece)` }))]}
+          onChange={(n) => onChange((x) => { x.fragments = [...picks]; x.fragments[i] = n })} />
+      ))}
+    </>
+  )
+}
+
+/** The teammate's cards that have team effects; switch on the ones they bring (exact epiphany, Ego skill included). */
+function TeammateCards({ t, onChange }: { t: Teammate; onChange: (fn: (t: Teammate) => void) => void }) {
+  const cards = (findCharacter(PRESETS, t.character)?.cards ?? []).filter((c) => (c.effects ?? []).some(reachesTeam))
+  if (!cards.length) return <p className="muted">No team buffs entered for {t.character}'s cards yet.</p>
+  return (
+    <ul className="rows">
+      {cards.map((c) => {
+        const on = t.cards.includes(c.id)
+        return (
+          <li key={c.id} className={`row ${on ? '' : 'off'}`}>
+            <div className="row-main">
+              <div className="row-title">{c.name}</div>
+              <div className="row-sub">{(c.effects ?? []).filter(reachesTeam).map((e) => e.name).join(' · ')}</div>
+            </div>
+            <SwitchControl label={c.name} value={on} onChange={(v) => onChange((x) => {
+              x.cards = v ? [...x.cards, c.id] : x.cards.filter((id) => id !== c.id)
+            })} />
+          </li>
+        )
+      })}
+    </ul>
+  )
+}
+
 function StatsSection() {
   const { name, build, updateBuild } = useCharacter()!
   const el = findCharacter(PRESETS, name)?.element
@@ -213,7 +293,7 @@ function BoostsSection() {
               <div className="row-line">
                 <button className="row-main link" onClick={() => setOpen(open === x.id ? null : x.id)} aria-expanded={open === x.id}>
                   <div className="row-title">{x.source || 'Unnamed boost'}</div>
-                  <div className="row-sub">{x.stat} {x.value.includes('%') ? pct(v) : x.value || '—'} · {x.category}</div>
+                  <div className="row-sub">{x.stat} {x.value.includes('%') ? pct(v) : x.value || '—'} · {x.category}{x.from && ` · from ${x.from}`}</div>
                 </button>
                 <SwitchControl label={x.source || 'boost'} value={x.switches[build.id]} onChange={(sw) => upd((b) => { b.switches[build.id] = sw })} />
               </div>
@@ -223,6 +303,7 @@ function BoostsSection() {
                   <SelectField<StatName> label="Stat" value={x.stat} options={STATS} onChange={(s) => upd((b) => { b.stat = s })} />
                   <TextField label="Value" value={x.value} placeholder="16% or 74" help="Percent stats with %, flat values without." onChange={(s) => upd((b) => { b.value = s })} />
                   <SelectField label="Category" value={x.category} options={CATEGORIES} onChange={(s) => upd((b) => { b.category = s })} />
+                  <FromField value={x.from} onChange={(s) => upd((b) => { b.from = s })} />
                   <TextField label="Notes" value={x.notes} onChange={(s) => upd((b) => { b.notes = s })} />
                   <div className="btn-row">
                     <button className="btn danger" onClick={() => updateCs((c) => { c.boosts.splice(i, 1) })}>Delete</button>

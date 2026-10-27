@@ -2,11 +2,15 @@
 import { PRESETS } from '../data/presets'
 import { cardUpgrade } from '../engine/calc'
 import { DEFAULT_SETTINGS } from '../data/settings'
-import { ELEMENTS, CARD_TYPES, FRAGMENT_SET_PICKS, type Build, type Card, type CardPreset, type CharacterSave, type Element, type SaveData, type ScreenStats, type UserBoost, type UserBuff } from '../engine/types'
+import { ELEMENTS, CARD_TYPES, FRAGMENT_SET_PICKS, type Build, type Card, type CardPreset, type CharacterSave, type Element, type RotationPlay, type SaveData, type ScreenStats, type Teammate, type UserBoost, type UserBuff } from '../engine/types'
 
 /** Bump when the save format changes, and add a step to migrate(). */
-export const SAVE_VERSION = 8
+export const SAVE_VERSION = 9
 const STORAGE_KEY = 'czn-damage-calculator'
+
+/** Fields that older saves had (removed in v9). */
+type LegacyCharacter = CharacterSave & { rotation?: unknown[] }
+type LegacyBuild = Build & { vulnerable?: number; weaknessDebuff?: number }
 
 /** Mei Lin's card preset ids before v6 -> Prydwen card ids. */
 const MEI_LIN_V5_IDS: Record<string, string> = {
@@ -30,13 +34,17 @@ export function newStats(): ScreenStats {
 export function newBuild(name: string): Build {
   return {
     id: newId(), name, partner: '', fragments: Array(FRAGMENT_SET_PICKS).fill(''), stats: newStats(), enemyDefMult: 1, enemyDr: 0,
-    morale: 0, vulnerable: 0, weaknessDebuff: 0, egoLevel: 0, basicLevel: 0, signatureLevel: 0, presetSwitches: {},
+    morale: 0, egoLevel: 0, basicLevel: 0, signatureLevel: 0, presetSwitches: {}, team: [], rotation: [],
   }
+}
+
+export function newTeammate(): Teammate {
+  return { character: '', egoLevel: 0, partner: '', fragments: Array(FRAGMENT_SET_PICKS).fill(''), cards: [] }
 }
 
 export function newCharacterSave(): CharacterSave {
   const a = newBuild('Build A')
-  return { builds: [a], activeBuild: a.id, showAllPartners: false, boosts: [], buffs: [], cards: [], rotation: [] }
+  return { builds: [a], activeBuild: a.id, showAllPartners: false, boosts: [], buffs: [], cards: [] }
 }
 
 /** element: the character's. */
@@ -54,12 +62,12 @@ export function cardFromPreset(p: CardPreset, element: Element): Card {
 }
 
 export function newBoost(buildId: string): UserBoost {
-  return { id: newId(), source: '', stat: 'Flat ATK', value: '', category: 'Equipment', notes: '', switches: { [buildId]: true } }
+  return { id: newId(), source: '', from: '', stat: 'Flat ATK', value: '', category: 'Equipment', notes: '', switches: { [buildId]: true } }
 }
 
 export function newBuff(buildId: string): UserBuff {
   return {
-    id: newId(), source: '', category: 'Other', value: '', typeOverride: '', appliesTo: 'ALL', hitScope: 'All hits',
+    id: newId(), source: '', from: '', category: 'Other', value: '', typeOverride: '', appliesTo: 'ALL', hitScope: 'All hits',
     condition: 'Always', maxStacks: null, notes: '', switches: { [buildId]: true },
   }
 }
@@ -82,7 +90,7 @@ export function migrate(raw: unknown): SaveData {
   if (!raw || typeof raw !== 'object' || !('characters' in raw)) throw new Error("This file isn't a calculator save.")
   const data = raw as SaveData
   if ((data.version ?? 0) > SAVE_VERSION) throw new Error('This save is from a newer version of the calculator.')
-  // Future migrations go here: if (data.version === 8) { ...; data.version = 9 }
+  // Future migrations go here: if (data.version === 9) { ...; data.version = 10 }
   if ((data.version ?? 1) <= 1) {
     // v2: memory fragment set picks per build
     for (const cs of Object.values(data.characters ?? {})) {
@@ -105,7 +113,8 @@ export function migrate(raw: unknown): SaveData {
   if (data.version === 3) {
     // v4: rotation plays are objects, so a play can override the card's hits
     for (const cs of Object.values(data.characters ?? {})) {
-      cs.rotation = ((cs.rotation ?? []) as unknown[]).map((p) => typeof p === 'string' ? { cardId: p } : p as CharacterSave['rotation'][number])
+      const old = cs as LegacyCharacter
+      old.rotation = (old.rotation ?? []).map((p) => typeof p === 'string' ? { cardId: p } : p)
     }
     data.version = 4
   }
@@ -157,6 +166,33 @@ export function migrate(raw: unknown): SaveData {
       }
     }
     data.version = 8
+  }
+  if (data.version === 8) {
+    // v9: team snapshot (owner, 2026-10-26). Each build gets its own copy of the attack list and an empty team.
+    // The build's Vulnerable / Weakness debuff stacks (used one per hit, in order) become a switch on each play
+    // whose first hit had a stack. Per-play counter stacks (Ember, Aromata) start at 0.
+    for (const cs of Object.values(data.characters ?? {}) as LegacyCharacter[]) {
+      const rotation = (cs.rotation ?? []) as RotationPlay[]
+      const cards = new Map((cs.cards ?? []).map((c) => [c.id, c]))
+      for (const b of (cs.builds ?? []) as LegacyBuild[]) {
+        let k = 0
+        b.rotation = rotation.map((p) => {
+          const card = cards.get(p.cardId)
+          const play: RotationPlay = { ...p }
+          if (card) {
+            if (k < (b.vulnerable ?? 0)) play.vulnerable = true
+            if (k < (b.weaknessDebuff ?? 0)) play.weaknessDebuff = true
+            k += Math.max(0, Math.floor(p.hits ?? card.hits))
+          }
+          return play
+        })
+        b.team ??= []
+        delete b.vulnerable
+        delete b.weaknessDebuff
+      }
+      delete cs.rotation
+    }
+    data.version = 9
   }
   return {
     ...defaultSave(),

@@ -1,4 +1,4 @@
-// Buffs: Morale / Vulnerable / Weakness debuff stacks, preset buffs, and the owner's own buffs.
+// Buffs: Morale, preset buffs, the teammates' buffs, and the owner's own buffs.
 import { useState } from 'react'
 import { buffType } from '../engine/buffs'
 import { CATEGORIES, type BuffType, type Condition, type HitScope } from '../engine/types'
@@ -6,14 +6,18 @@ import { newBuff } from '../store/save'
 import { useCharacter, useStore } from '../store/store'
 import { pct } from './format'
 import { Help, NumberField, Section, SelectField, Stepper, SwitchControl, TextField } from './inputs'
+import { FromField } from './FromField'
 import { PresetList } from './PresetList'
 
 export function BuffsTab() {
   return (
     <>
       <StacksSection />
-      <Section title="Buffs from presets" help="The character's, partner's, memory fragment sets' and preset library cards' buffs. Class-limited partner buffs only work when the partner's class matches the character's. Stack effects (Ember, Spirit of the Aromata) are counted along the rotation: their switch is on/off only.">
+      <Section title="Buffs from presets" help="The character's, partner's, memory fragment sets' and preset library cards' buffs. Every buff that's on counts on every play (snapshot). Class-limited partner buffs only work when the partner's class matches the character's. Buffs with per-play stacks (Ember, Spirit of the Aromata) are on/off here: set their stacks on each play (Cards tab).">
         <PresetList kind="Buff" />
+      </Section>
+      <Section title="Team buffs" help="Ally buffs and enemy debuffs from the build's teammates (Setup tab): their character, Manifest Ego, partner, fragment sets and picked cards.">
+        <PresetList kind="Buff" team />
       </Section>
       <MyBuffsSection />
     </>
@@ -23,13 +27,11 @@ export function BuffsTab() {
 function StacksSection() {
   const { data: { settings } } = useStore()
   const { build, updateBuild } = useCharacter()!
-  const rows: { key: 'morale' | 'vulnerable' | 'weaknessDebuff'; label: string; help: string; max?: number }[] = [
+  const rows: { key: 'morale'; label: string; help: string; max?: number }[] = [
     { key: 'morale', label: 'Morale', max: settings.moraleMax, help: `+${pct(settings.moralePerStack, 0)} additive per stack on every card, max ${settings.moraleMax} stacks.` },
-    { key: 'vulnerable', label: 'Vulnerable (on target)', help: `Damage ×${1 + settings.vulnerable} on the first N hits of the rotation; one stack is used up per hit.` },
-    { key: 'weaknessDebuff', label: 'Weakness debuff (on you)', help: `Damage ×${1 - settings.weaknessDebuff} on the first N hits of the rotation; one stack is used up per hit.` },
   ]
   return (
-    <Section title="Stacks">
+    <Section title="Stacks" help="Vulnerable and the Weakness debuff are switched on per play, on the Cards tab.">
       <ul className="rows">
         {rows.map((r) => (
           <li key={r.key} className="row">
@@ -65,7 +67,7 @@ function MyBuffsSection() {
                   <div className="row-title">{x.source || 'Unnamed buff'}</div>
                   <div className="row-sub">
                     <span className={`type-${type.split(' ')[0].toLowerCase()}`}>{x.value || '—'} {type}</span>
-                    {' · '}{x.appliesTo || '(applies to nothing)'}
+                    {' · '}{x.appliesTo || '(applies to nothing)'}{x.from && ` · from ${x.from}`}
                     {x.hitScope === 'First hit only' && ' · first hit'}{x.condition === 'Ravaged only' && ' · Ravaged only'}
                   </div>
                 </button>
@@ -86,6 +88,7 @@ function MyBuffsSection() {
                   <NumberField label="Max stacks" value={x.maxStacks ?? 0} min={0} help="0 = no limit. Above 1, the switch gets a stack counter."
                     onChange={(v) => upd((b) => { b.maxStacks = v > 0 ? Math.floor(v) : null })} />
                   <SelectField label="Category" value={x.category} options={CATEGORIES} onChange={(s) => upd((b) => { b.category = s })} />
+                  <FromField value={x.from} onChange={(s) => upd((b) => { b.from = s })} />
                   <TextField label="Notes" value={x.notes} onChange={(s) => upd((b) => { b.notes = s })} />
                   <div className="btn-row">
                     <button className="btn danger" onClick={() => updateCs((c) => { c.buffs.splice(i, 1) })}>Delete</button>

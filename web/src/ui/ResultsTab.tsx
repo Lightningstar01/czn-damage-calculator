@@ -29,8 +29,8 @@ export function ResultsTab() {
           {s.dotDmg.value !== 0 && <span>DoT <b>+{pct(s.dotDmg.value)}</b></span>}
         </div>
       </Section>
-      <Section title="Rotation" help="One row per play. Rotation stacks (Ember, Spirit of the Aromata...) show under the card: before its hits → after. The formula shows hit 1; tap “hits” to see every hit (first-hit buffs and Vulnerable stacks can change them). Tap any chip to see where it comes from.">
-        {!r.plays.length && <p className="muted">Add cards to the rotation on the Cards tab.</p>}
+      <Section title="Attack list" help="One row per play of this build's attack list. Every buff that's on counts (snapshot); the play's Vulnerable, Weakness debuff and per-play stacks (Ember, Spirit of the Aromata...) show under the card. The formula shows hit 1; tap “hits” to see every hit (first-hit buffs can change them). Tap any chip to see where it comes from.">
+        {!r.plays.length && <p className="muted">Add cards to this build's attack list on the Cards tab.</p>}
         <ul className="legend">
           {LEGEND.map((l) => <li key={l.group}><span className={`swatch g-${l.group}`} />{l.label}</li>)}
         </ul>
@@ -57,10 +57,10 @@ function PlayRow({ play }: { play: Play }) {
           <strong title="Expected">{num(play.expected)}</strong>
         </span>
       </div>
-      {play.counters.some((c) => c.before || c.after) && (
+      {(play.counters.length > 0 || play.vulnerable || play.weaknessDebuff) && (
         <div className="muted small">
-          {play.counters.filter((c) => c.before || c.after)
-            .map((c) => `${c.name} ${c.before}${c.after !== c.before ? ` → ${c.after}` : ''}`).join(' · ')}
+          {[...(play.vulnerable ? ['Vulnerable'] : []), ...(play.weaknessDebuff ? ['Weakness debuff'] : []),
+            ...play.counters.map((c) => `${c.name} ${c.stacks}`)].join(' · ')}
         </div>
       )}
       {hits.length > 0 && <FormulaStrip hit={hits[0]} card={card} />}
@@ -73,7 +73,7 @@ function PlayRow({ play }: { play: Play }) {
         <ol className="hits">
           {hits.map((h) => (
             <li key={h.hitNo}>
-              <div className="muted small">Hit {h.hitNo} (rotation hit {h.globalHit})</div>
+              <div className="muted small">Hit {h.hitNo} (hit {h.globalHit} of the list)</div>
               <FormulaStrip hit={h} card={card} showCrit={false} />
             </li>
           ))}

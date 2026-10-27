@@ -1,7 +1,7 @@
 // Which stat boosts and buffs are active for a build, and which buffs match a card.
 import type {
   BuffEffect, BuffType, Build, Card, CardPreset, CharacterPreset, CharacterSave, Condition, Effect, FragmentSetPreset, HitScope, PartnerPreset,
-  Presets, Settings, StackEffect, StackTrigger, StatEffect, StatName, Switch,
+  Presets, Settings, StatEffect, StatName, Switch, Teammate,
 } from './types'
 
 /** Where a number came from, for the "tap a chip" breakdown. */
@@ -60,22 +60,9 @@ export interface ActiveBuff {
   appliesTo: string
   hitScope: HitScope
   condition: Condition
-  /** Rotation counter that sets the stacks (stacks is then filled in per hit by the engine). */
+  /** Per-play counter that sets the stacks (filled in per play by the engine). */
   counter?: string
   maxStacks?: number
-  consumePerHit?: boolean
-}
-
-/** A switched-on Stacks effect: adds to a rotation counter when cards are played. */
-export interface ActiveStacks {
-  label: string
-  counter: string
-  amount: number
-  trigger: StackTrigger
-  on: string
-  damagingOnly: boolean
-  /** The card preset that owns it ('self' / 'afterSelf' triggers). */
-  cardId?: string
 }
 
 /** Why a preset effect is (in)active for a build — shown greyed out in the UI. */
@@ -92,6 +79,12 @@ export interface PresetState {
   stacks: number
   /** Card preset id, for effects of a library card. */
   cardId?: string
+  /** Team slot (0-based) for a teammate's effect; undefined = the build's own character. */
+  teammate?: number
+  /** The teammate's character name (teammate effects only). */
+  teammateName?: string
+  /** Key in Build.presetSwitches. */
+  key: string
 }
 
 export function findCharacter(presets: Presets, name: string): CharacterPreset | undefined {
@@ -115,7 +108,11 @@ export function findFragmentSet(presets: Presets, name: string): FragmentSetPres
 
 /** The build's distinct memory fragment sets (a set picked twice counts once). */
 export function buildFragmentSets(presets: Presets, build: Build): FragmentSetPreset[] {
-  const names = [...new Set((build.fragments ?? []).filter(Boolean))]
+  return distinctSets(presets, build.fragments ?? [])
+}
+
+function distinctSets(presets: Presets, fragments: string[]): FragmentSetPreset[] {
+  const names = [...new Set(fragments.filter(Boolean))]
   return names.map((n) => findFragmentSet(presets, n)).filter((f): f is FragmentSetPreset => !!f)
 }
 
@@ -129,26 +126,61 @@ export function presetKey(owner: string, effect: Effect): string {
   return `${owner}|${effect.id}`
 }
 
-/** The preset effects of the build's character, partner, memory fragment sets and library cards, with their switch state. */
+/** Key of a teammate's preset effect: prefixed with the teammate, so the same partner or set on two characters keeps two switches. */
+export function teamKey(teammate: string, owner: string, effect: Effect): string {
+  return `${teammate}>${presetKey(owner, effect)}`
+}
+
+/** Effects of a teammate that reach the build's character: ally buffs and enemy debuffs. */
+export function reachesTeam(e: Effect): boolean {
+  return e.target === 'allies' || e.target === 'enemy'
+}
+
+/** The teammate's picked cards (preset ids that still exist), in their order. */
+export function teammateCards(presets: Presets, t: Teammate): CardPreset[] {
+  const all = findCharacter(presets, t.character)?.cards ?? []
+  return [...new Set(t.cards)].map((id) => all.find((p) => p.id === id)).filter((p): p is CardPreset => !!p)
+}
+
+/** Label prefix of a preset state: the owner, or 'Teammate › owner' for a teammate's partner, set or card. */
+export function stateLabel(s: Pick<PresetState, 'owner' | 'teammateName'>): string {
+  return s.teammateName && s.teammateName !== s.owner ? `${s.teammateName} › ${s.owner}` : s.owner
+}
+
+/** The preset effects of the build's character, partner, memory fragment sets and library cards, with their switch state;
+ * then each teammate's ally / enemy effects (character, partner, sets, picked cards). */
 export function presetStates(presets: Presets, charName: string, build: Build, cards: Card[] = []): PresetState[] {
   const out: PresetState[] = []
-  const ch = findCharacter(presets, charName)
-  const add = (owner: string, ownerKind: PresetState['ownerKind'], effects: Effect[], blocked: (e: Effect) => boolean, cardId?: string) => {
+  const add = (owner: string, ownerKind: PresetState['ownerKind'], effects: Effect[], blocked: (e: Effect) => boolean,
+    ego: number, cardId?: string, team?: { slot: number; name: string }) => {
     for (const e of effects) {
-      const sw = build.presetSwitches[presetKey(owner, e)]
+      if (team && !reachesTeam(e)) continue
+      const key = team ? teamKey(team.name, owner, e) : presetKey(owner, e)
+      const sw = build.presetSwitches[key]
       const classBlocked = blocked(e)
-      const onStatsScreen = e.kind === 'Stat' && !!e.onStatsScreen
-      const egoLocked = (e.egoLevel ?? 0) > (build.egoLevel ?? 0)
-      const defaultStacks = e.kind === 'Stacks' ? 1 : e.defaultStacks
-      const stacks = classBlocked || onStatsScreen || egoLocked ? 0 : switchStacks(sw === undefined ? true : sw, defaultStacks)
-      out.push({ owner, ownerKind, effect: e, classBlocked, onStatsScreen, egoLocked, stacks, cardId })
+      // On the stats screen means the build's own screen; a teammate's ally stat isn't on it
+      const onStatsScreen = !team && e.kind === 'Stat' && !!e.onStatsScreen
+      const egoLocked = (e.egoLevel ?? 0) > ego
+      const stacks = classBlocked || onStatsScreen || egoLocked ? 0 : switchStacks(sw === undefined ? true : sw, e.defaultStacks)
+      out.push({ owner, ownerKind, effect: e, classBlocked, onStatsScreen, egoLocked, stacks, cardId, key,
+        ...(team ? { teammate: team.slot, teammateName: team.name } : {}) })
     }
   }
-  if (ch) add(ch.name, 'Character', ch.effects, () => false)
-  const p = build.partner ? findPartner(presets, build.partner) : undefined
-  if (p) add(p.name, 'Partner', p.effects, (e) => !!e.classLimited && p.class !== ch?.class)
-  for (const f of buildFragmentSets(presets, build)) add(f.name, 'Memory Fragment', f.effects, () => false)
-  for (const c of libraryCardPresets(presets, charName, cards)) add(c.name, 'Card', c.effects ?? [], () => false, c.id)
+  const addAll = (ch: CharacterPreset | undefined, partner: string, fragments: string[], ego: number, cardPresets: CardPreset[],
+    team?: { slot: number; name: string }) => {
+    if (ch) add(ch.name, 'Character', ch.effects, () => false, ego, undefined, team)
+    const p = partner ? findPartner(presets, partner) : undefined
+    if (p) add(p.name, 'Partner', p.effects, (e) => !!e.classLimited && p.class !== ch?.class, ego, undefined, team)
+    for (const f of distinctSets(presets, fragments)) add(f.name, 'Memory Fragment', f.effects, () => false, ego, undefined, team)
+    for (const c of cardPresets) add(c.name, 'Card', c.effects ?? [], () => false, ego, c.id, team)
+  }
+  addAll(findCharacter(presets, charName), build.partner, build.fragments ?? [], build.egoLevel ?? 0,
+    libraryCardPresets(presets, charName, cards))
+  ;(build.team ?? []).forEach((t, slot) => {
+    if (!t.character || t.character === charName) return
+    addAll(findCharacter(presets, t.character), t.partner, t.fragments ?? [], t.egoLevel ?? 0, teammateCards(presets, t),
+      { slot, name: t.character })
+  })
   return out
 }
 
@@ -158,7 +190,7 @@ export function activeStats(presets: Presets, charName: string, cs: CharacterSav
   for (const s of presetStates(presets, charName, build, cs.cards)) {
     if (s.effect.kind !== 'Stat' || s.stacks <= 0) continue
     const e = s.effect as StatEffect
-    out.push({ label: `${s.owner}: ${e.name}`, stat: e.stat, value: parseStatValue(e.value), stacks: s.stacks,
+    out.push({ label: `${stateLabel(s)}: ${e.name}`, stat: e.stat, value: parseStatValue(e.value), stacks: s.stacks,
       unit: e.value.includes('%') ? '%' : 'flat' })
   }
   for (const b of cs.boosts) {
@@ -181,10 +213,10 @@ export function activeBuffs(presets: Presets, charName: string, cs: CharacterSav
   for (const s of presetStates(presets, charName, build, cs.cards)) {
     if (s.effect.kind !== 'Buff' || s.stacks <= 0) continue
     const e = s.effect as BuffEffect
-    out.push({ label: `${s.owner}: ${e.name}`, type: buffType(e.value, e.type), value: parseBuffValue(e.value),
+    out.push({ label: `${stateLabel(s)}: ${e.name}`, type: buffType(e.value, e.type), value: parseBuffValue(e.value),
       stacks: e.counter ? 0 : e.maxStacks ? Math.min(s.stacks, e.maxStacks) : s.stacks,
       appliesTo: e.appliesTo, hitScope: e.hitScope, condition: e.condition,
-      ...(e.counter ? { counter: e.counter, maxStacks: e.maxStacks, consumePerHit: !!e.consumePerHit } : {}) })
+      ...(e.counter ? { counter: e.counter, maxStacks: e.maxStacks } : {}) })
   }
   for (const b of cs.buffs) {
     const st = switchStacks(b.switches[build.id])
@@ -196,15 +228,15 @@ export function activeBuffs(presets: Presets, charName: string, cs: CharacterSav
   return out
 }
 
-/** Stacks effects switched on for the build (they fill rotation counters). */
-export function activeStacks(presets: Presets, charName: string, cs: CharacterSave, build: Build): ActiveStacks[] {
-  return presetStates(presets, charName, build, cs.cards)
-    .filter((s) => s.effect.kind === 'Stacks' && s.stacks > 0)
-    .map((s) => {
-      const e = s.effect as StackEffect
-      return { label: `${s.owner}: ${e.name}`, counter: e.counter, amount: e.amount, trigger: e.trigger, on: e.on || 'ALL',
-        damagingOnly: !!e.damagingOnly, cardId: s.cardId }
-    })
+/** Per-play counters of the switched-on buffs, with the smallest max stacks of the buffs reading each. */
+export function activeCounters(buffs: ActiveBuff[]): { name: string; max: number | null }[] {
+  const caps = new Map<string, number | null>()
+  for (const b of buffs) {
+    if (!b.counter) continue
+    const prev = caps.has(b.counter) ? caps.get(b.counter)! : null
+    caps.set(b.counter, b.maxStacks ? Math.min(prev ?? Infinity, b.maxStacks) : prev)
+  }
+  return [...caps].map(([name, max]) => ({ name, max }))
 }
 
 const norm = (s: string) => s.replace(/\s/g, '').toLowerCase()

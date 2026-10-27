@@ -70,7 +70,7 @@ function Welcome() {
   return (
     <section className="section welcome">
       <h2>CZN Damage Calculator</h2>
-      <p>Pick a character to start. Each character keeps its own builds, cards and rotation.</p>
+      <p>Pick a character to start. Each character keeps its own builds (with their team and attack list) and cards.</p>
       <div className="btn-row">
         {PRESETS.characters.map((c) => (
           <button key={c.name} className="btn" onClick={() => update((d) => selectCharacter(d, c.name))}>{c.name}</button>

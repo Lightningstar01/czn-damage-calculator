@@ -107,7 +107,7 @@ export const PRESETS: Presets = {
     {
       name: "Glory's Reign", pieces: 4, effects: [
         {
-          kind: 'Buff', id: 'allies', name: 'Damage (all allies)', category: 'Memory Fragment', value: '5%',
+          kind: 'Buff', id: 'allies', name: 'Damage (all allies)', category: 'Memory Fragment', target: 'allies', value: '5%',
           appliesTo: 'ALL', hitScope: 'All hits', condition: 'Always', maxStacks: 3, defaultStacks: 3,
           notes: 'A stack when generating or using Exhaust Skill cards (max 15%)',
         },

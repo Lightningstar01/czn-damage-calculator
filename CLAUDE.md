@@ -6,9 +6,9 @@ memory fragments, save-data setups) per character and maximize damage.
 Two versions exist:
 - **Website (`web/`)**, the new main version: React + TypeScript, mobile-first (the owner plays on
   phone), data saved in the browser. See "Website" below.
-- **Excel workbook generator (`src/build_workbook.py`)**, the original. Keep it, its tests and the
-  workbook untouched until the owner confirms the website matches it; then the owner decides whether
-  to retire it.
+- **Excel workbook generator (`src/build_workbook.py`)**, the original. Frozen (owner, 2026-10-26):
+  keep it, its tests and the workbook, but new mechanics (teams, per-play debuffs and stacks) are
+  website only and the website/workbook parity test was dropped.
 
 ## Website (web/)
 
@@ -16,10 +16,10 @@ Two versions exist:
 cd web
 npm install
 npm run dev        # local dev server
-npm test           # Vitest: engine tests (ported Excel scenarios) + parity with the owner's workbook
+npm test           # Vitest: engine tests (ported Excel scenarios)
 npm run build      # type-check + production build to web/dist
 npm run lint       # oxlint
-# Owner's workbook -> output/czn-save.json (import on the Settings tab) + web/tests/fixtures/workbook.json:
+# Owner's workbook -> output/czn-save.json (a v8 save; import on the Settings tab migrates it) + web/tests/fixtures/workbook.json:
 .venv\Scripts\python.exe scripts/export_workbook_json.py
 # Re-import every character (cards, potentials, Manifest Ego) from Prydwen (after a game update;
 # review the git diff). One page per character; --cache <folder> keeps them for re-runs:
@@ -57,16 +57,20 @@ owner asks (there is no git remote yet).
 - Card upgrade potentials (website only): build `basicLevel` / `signatureLevel`, card `upgrade`
   (Basic / Signature; `pct` is then the base %), `potentialFactor()` in calc.ts; the Manifest Ego
   level that adds +3 is parsed from the import (`potentialEgo` in merge.ts). See docs/FORMULA.md 2c.
-- Rotation buffs (website only): `Stacks` effects fill named counters as the rotation is played
-  (triggers `self` / `afterSelf` / `always`, before the card's damage); buffs with `counter` read
-  them per hit (`consumePerHit` for Ember). Each play's `counters` show on the Results tab.
-  Buff type `Card %` raises a card's base % like a potential (only on cards with an upgrade).
-- Saves are per character: builds (partner, Manifest Ego level, card upgrade levels, 3 fragment set picks, stats...), boosts, buffs, cards and rotation. Every build shares the cards
-  and rotation (a list of plays; a play can override the card's hits). Preset switches that are missing count as on; own boost/buff switches that are
-  missing count as off.
+- Team snapshot (website only, docs/FORMULA.md 2c): each build has up to `TEAM_SIZE` teammates
+  (character, Ego level, partner, 3 sets, picked cards). Effects have `target` self (default) /
+  allies / enemy; teammates give only allies/enemy effects, with switches keyed
+  `"Teammate>Owner|effectId"` (`teamKey`). Every switched-on buff counts on every hit (snapshot).
+  My boosts/buffs have a label-only `from` field (teammate equipment).
+- Attack list (per build, `build.rotation`): each play has optional hits, `vulnerable`,
+  `weaknessDebuff` and `stacks` per counter name; buffs with `counter` read the play's stacks
+  (capped at max stacks). Buff type `Card %` raises a card's base % like a potential (only on cards
+  with an upgrade).
+- Saves are per character: builds (partner, Manifest Ego level, card upgrade levels, 3 fragment set
+  picks, stats, team, attack list...), boosts, buffs and cards. Every build shares the card library.
+  Preset switches that are missing count as on; own boost/buff switches that are missing count as off.
 - Constants and rules belong in settings, never hard-coded in the engine.
-- Keep the engine and the workbook in step while both exist. A formula change goes in both places
-  (or ask the owner), and the parity test must keep passing.
+- The workbook is frozen; formula changes go in the website (ask the owner before also changing the workbook).
 
 ## Working with the owner
 
@@ -164,6 +168,7 @@ Website only: "Applies to" also takes `A & B` (all), `A/B` (any), `N+ hits`, car
   cloud session; in Claude Code you may be able to fetch them) and another player's calculator
   sheet as .xlsx, to compare against ours line by line.
 - Open mechanics questions are listed in docs/FORMULA.md section 4.
-- Presets: all 38 characters and their cards are imported; buffs are added character by character
-  with the owner (Mei Lin's card buffs done; her own character buffs, many conditional, still to design).
+- Presets: all 38 characters and their cards are imported. Reviewing every character alphabetically
+  with the owner (cards, buffs with self/allies/enemy targets, Manifest Ego, potentials; Prydwen +
+  the owner's in-game check); next: Adelheid, then on (re-check Mei Lin at M).
   Partners: only Marianne so far, entered by the owner.

@@ -40,9 +40,10 @@ Final Card Mult = ((Base + Potential additive base) x (1 + Potential mult) x Gen
   its inputs may have been incomplete. The "Extra weakness factor" setting (workbook Settings!B8) stays at 0% as a test hook.
 - Cards: enter the damage % the card shows in-game; it already includes potentials and
   epiphany (User), so the workbook has no potential columns.
-- Vulnerable / Weakness debuff: one stack is used up per hit, in card-table order across
+- Vulnerable / Weakness debuff: workbook: one stack is used up per hit, in card-table order across
   every play of every card (User: "one sequence"). Every hit counts, including Fixed damage
-  (**Unconfirmed**).
+  (**Unconfirmed**). Website (2026-10-26): switched on per play and counts on every hit of it
+  (see Team snapshot).
 - Same in-game test: non-crit hit 500 with Final ATK 1272.28 back-solves to an enemy DEF
   multiplier of about 0.387 (1st enemy targeted; more data needed).
 - Second test enemy (User, 2026-10-25, DEF guessed): Strike 592 and Rising Dragon Spire V 641
@@ -158,26 +159,32 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
     500 Attack) are part of the in-game card % (User: Strike shows 132% at Basic Card Upgrade 10 =
     100% x 1.2 x 1.1). They are buffs of type **Card %**: card % = base x (1 + upgrade levels x 2%)
     x (1 + sum of Card % buffs), only on cards with an upgrade (entered at base %).
-- **Rotation buffs** (User, 2026-10-25), website only. One turn, every card played in it; no turn
-  breaks, and 1-turn buffs never expire. Played in rotation order:
-  - A **Stacks** effect adds stacks to a named counter when a card is played, **before** that
-    card's damage. Triggers: `self` (when its own card is played, e.g. Rising Dragon Spire's
-    "2 Ember"), `afterSelf` (each matching card from its card's first play on, that play included,
-    e.g. Spirit of the Aromata), `always` (each matching card, e.g. E2, Jewel III).
-  - A buff with a `counter` takes its stacks from the counter at each hit (capped at its max
-    stacks). Its switch is on/off only.
-  - **Spirit of the Aromata** stacks with every own card played after it, Skills and Upgrades too,
-    and boosts the card that adds the stack. Aromata I counts Passion cards only (allies' cards
-    are not counted).
+- **Team snapshot** (User, 2026-10-26), website only. Replaces the rotation buffs counted along
+  the rotation (2026-10-25):
+  - Each build has a team of up to 2 teammates (character, Manifest Ego level, partner, 3 fragment
+    sets, picked cards incl. the Ego skill). Effects have a **target**: `self` (default), `allies`
+    or `enemy`. The main character gets all of its own effects; a teammate gives only its allies /
+    enemy effects (character and Ego, partner incl. the partner's Ego skill, fragment sets, picked
+    cards). Teammates' equipment goes in My stat boosts / My buffs with a "From" label.
+  - **Snapshot**: every switched-on buff counts on every hit of every play, including the card that
+    applies it. "Damage taken" debuffs on the enemy (e.g. Adelheid's Truth) are additive. Only the
+    main character's damage is calculated.
+  - Each build has its own ordered **attack list** (the card library is shared; a list can be copied
+    from another build). Per play: hits, Vulnerable on/off, Weakness debuff on/off, and the stacks of
+    each per-play buff (`counter`), all off / 0 by default. A counter buff's switch is on/off only;
+    its stacks are capped at its max stacks.
+  - **Spirit of the Aromata**: stacks set per play (max 20). Aromata I counts Passion cards; allies'
+    Passion cards count in the play's stacks.
   - **Ember** (text from the owner: "When hitting or putting a target in a Ravage state, deal +30%
     Damage for each stack of Ember the target has (up to 5 stacks). Upon activation, an Ember is
     removed."): +30% **additive** per stack, only on hits on a Ravaged target (cards marked Target
-    Ravaged); one stack is used up per such hit. On other targets the Embers pile up unused.
-    Sources: E2 (each damaging card, 1), potential 3-1 (each Strike, 1 more), Rising Dragon
-    Spire / I / II (2 / 2 / 3), Jewel III (each Attack card, 1), Aromata IV (each own card after
-    it, 1; assumes one enemy). **Unconfirmed**: the target holds at most 5 Embers (a counter is
-    capped at the smallest max stacks of the buffs reading it).
-  - Not modeled: Jewel IV's Ember on crit, Sovereignty's "Destroy: Retain Embers", E6.
+    Ravaged). Stacks are set per play; one is used per hit in-game, so lower the play's stacks to
+    estimate that. Sources (notes on the cards): E2, potential 3-1, Rising Dragon Spire / I / II,
+    Jewel III, Aromata IV.
+  - Save v9: each build got a copy of the old shared rotation; a play has Vulnerable / Weakness
+    debuff on if its first hit was within the build's old stack count; counter stacks start at 0.
+  - The workbook is frozen (no team, per-play debuffs or counters); the website/workbook parity test
+    was dropped.
 - **Card % in hand / on target** (User, 2026-10-25), website only. The Results tab shows both for
   each hit. In hand = card % x Mult + Add, without the buffs that need a Ravaged target (Ember,
   Marianne's and E4's vs Ravaged). On target = the full card multiplier: those buffs, then x Weakness
@@ -192,11 +199,10 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
 - A card's buffs (e.g. Flame Dragon's Jewel's Attack damage, Spirit of the Aromata's per-card
   stacks) show as preset buffs while the card is in the library, on by default, switch per build.
   The "+" rule applies: "by 20%" = multiplicative, "+20%" = additive.
-- Extra hits (Combo, Rising Dragon Spire V, Ego skill) are set per play in the rotation; a play's
+- Extra hits (Combo, Rising Dragon Spire V, Ego skill) are set per play in the attack list; a play's
   hit count also drives `N+ hits` matching.
 - Jewel's "1 Passion Weakness to the target" is a Weakness Attack buff on all cards.
   **Unconfirmed** whether the first Attack card already gets it.
-- Aromata stacks are one number for the whole rotation, so early plays are over-counted.
 - Not modeled: Embers, Tenacity Damage, shields, draw/cost effects. Jewel V's Ravage hit is a
   300% card with Target Ravaged on; each play is one Ravage.
 

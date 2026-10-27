@@ -29,6 +29,11 @@ export type MultMode = 'Summed' | 'Chained'
 /** On/off switch, or a number of stacks. true = on with the effect's default stacks. */
 export type Switch = boolean | number
 
+/** Who an effect reaches (owner, 2026-10-26). 'self' (default): only its owner ("this unit"); 'allies': the whole team
+ * ("allies"); 'enemy': a debuff on the target, so every ally's hits get it ("Damage Amount taken by the target").
+ * A teammate's effects only count for the main character when they are 'allies' or 'enemy'. */
+export type EffectTarget = 'self' | 'allies' | 'enemy'
+
 // ---------------------------------------------------------------- presets (src/data: imported from Prydwen + our additions)
 
 export interface StatEffect {
@@ -36,6 +41,7 @@ export interface StatEffect {
   id: string
   name: string
   category: string
+  target?: EffectTarget
   stat: StatName
   /** As shown in-game: '16%' for percents, '74' for flat values. */
   value: string
@@ -54,6 +60,7 @@ export interface BuffEffect {
   id: string
   name: string
   category: string
+  target?: EffectTarget
   /** Buff text as shown in-game: '+30%' = Additive, '30%' = Multiplicative, or 'Weakness Attack'. */
   value: string
   /** Set for Crit Chance / Crit DMG buffs; otherwise the type comes from the value text. */
@@ -67,37 +74,13 @@ export interface BuffEffect {
   classLimited?: boolean
   /** Manifest Ego level (1-6) that unlocks it: off for builds below that level. */
   egoLevel?: number
-  /** Rotation counter (e.g. 'Ember') that sets the stacks as the rotation plays out, instead of the switch;
-   * maxStacks caps the counter. Filled by Stacks effects with the same counter. */
+  /** Per-play stacks (e.g. 'Ember'): the stacks are set on each play of the attack list (default 0), instead of
+   * by the switch, which is then on/off only. Buffs with the same counter share the play's number; maxStacks caps it. */
   counter?: string
-  /** One counter stack is used up by each hit the buff applies to (Ember). */
-  consumePerHit?: boolean
   notes?: string
 }
 
-/** When a Stacks effect adds stacks: 'self' = when its card is played; 'afterSelf' = each matching card played
- * from its card's first play on (that play included); 'always' = each matching card played. */
-export type StackTrigger = 'self' | 'afterSelf' | 'always'
-
-/** Adds stacks to a rotation counter when cards are played, before the card's damage (owner, 2026-10-25). */
-export interface StackEffect {
-  kind: 'Stacks'
-  id: string
-  name: string
-  category: string
-  counter: string
-  amount: number
-  trigger: StackTrigger
-  /** Which played cards add stacks ("Applies to" syntax); default ALL. */
-  on?: string
-  /** Only cards that deal damage. */
-  damagingOnly?: boolean
-  classLimited?: boolean
-  egoLevel?: number
-  notes?: string
-}
-
-export type Effect = StatEffect | BuffEffect | StackEffect
+export type Effect = StatEffect | BuffEffect
 
 export interface CharacterPreset {
   name: string
@@ -174,6 +157,8 @@ export interface PartnerPreset {
   baseDef: number
   baseAtk: number
   notes?: string
+  /** Passive effects, plus the effects of the partner's Ego skill (category 'Partner Ego Skill'), which the
+   * character holding the partner can use besides their own Ego skill. */
   effects: Effect[]
 }
 
@@ -264,21 +249,40 @@ export interface Build {
   enemyDefMult: number
   enemyDr: number
   morale: number
-  vulnerable: number
-  weaknessDebuff: number
   /** Manifest Ego level (dupes), 0-6: unlocks the character's effects with an egoLevel. */
   egoLevel: number
   /** Basic / Signature Card Upgrade potential levels, 0-10 (Manifest Ego levels are added on top). */
   basicLevel: number
   signatureLevel: number
-  /** Preset effect id -> switch. Missing = on (default stacks). */
+  /** Preset effect key (presetKey / teamKey) -> switch. Missing = on (default stacks). */
   presetSwitches: Record<string, Switch>
+  /** Up to TEAM_SIZE teammates whose ally buffs and enemy debuffs count for this character. */
+  team: Teammate[]
+  /** This build's attack list: the main character's plays, in order. */
+  rotation: RotationPlay[]
+}
+
+/** The other two team slots. */
+export const TEAM_SIZE = 2
+
+/** A teammate in a build: a buff source only (their damage isn't counted). */
+export interface Teammate {
+  /** Character name ('' = empty slot). */
+  character: string
+  egoLevel: number
+  partner: string
+  /** Memory fragment set names, one per dropdown. */
+  fragments: string[]
+  /** Card preset ids they bring (their Ego skill too): those cards' team effects count. */
+  cards: string[]
 }
 
 /** The owner's own stat boost (equipment etc.), shared by the character's builds with a switch per build. */
 export interface UserBoost {
   id: string
   source: string
+  /** Who it comes from, a label only: '' = this character, else a teammate slot (FROM_OPTIONS). */
+  from?: string
   stat: StatName
   value: string
   category: string
@@ -289,6 +293,8 @@ export interface UserBoost {
 export interface UserBuff {
   id: string
   source: string
+  /** Who it comes from, a label only: '' = this character, else a teammate slot (FROM_OPTIONS). */
+  from?: string
   category: string
   value: string
   /** Empty = auto from the text ('+' = Additive). */
@@ -326,10 +332,21 @@ export interface Card {
   preset?: string
 }
 
-/** One play in the rotation. hits overrides the card's hits for this play (Combo, extra-hit effects). */
+/** Labels for UserBoost.from / UserBuff.from. */
+export const FROM_OPTIONS = ['', 'Teammate 1', 'Teammate 2'] as const
+
+/** One play in a build's attack list. Every switched-on buff applies to it (snapshot, owner 2026-10-26); the play
+ * itself says which target debuffs are up and how many per-play stacks each counter has. */
 export interface RotationPlay {
   cardId: string
+  /** Overrides the card's hits for this play (Combo, extra-hit effects). */
   hits?: number
+  /** Vulnerable on the target for this play's hits. */
+  vulnerable?: boolean
+  /** Weakness debuff on the character for this play's hits. */
+  weaknessDebuff?: boolean
+  /** Counter name (BuffEffect.counter, e.g. 'Ember') -> stacks for this play. Missing = 0. */
+  stacks?: Record<string, number>
 }
 
 export interface CharacterSave {
@@ -338,9 +355,8 @@ export interface CharacterSave {
   showAllPartners: boolean
   boosts: UserBoost[]
   buffs: UserBuff[]
+  /** The card library, shared by every build (each build has its own attack list). */
   cards: Card[]
-  /** Plays in order. */
-  rotation: RotationPlay[]
 }
 
 export interface SaveData {
