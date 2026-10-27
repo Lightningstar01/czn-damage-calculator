@@ -7,8 +7,9 @@
 //   Build C: Morale 2, "+50%" first-hit-only on tag Attack, Vulnerable on the first play (website: per play, not per hit)
 // Partner scenarios: Mei Lin (Striker) with Marianne (Striker partner), ATK 1000, no crit.
 import { describe, expect, it } from 'vitest'
-import { computeBuild, type BuildResult } from '../src/engine/calc'
-import { buffMatches, buffType, fragmentPiecesUsed, parseBuffValue, parseStatValue } from '../src/engine/buffs'
+import { computeBuild, shownPct, type BuildResult } from '../src/engine/calc'
+import { renderCardText } from '../src/engine/cardText'
+import { activeBuffs, buffMatches, buffType, fragmentPiecesUsed, parseBuffValue, parseStatValue } from '../src/engine/buffs'
 import { ADDITIONS, IMPORTED, PRESETS } from '../src/data/presets'
 import { checkAdditions } from '../src/data/merge'
 import { DEFAULT_SETTINGS } from '../src/data/settings'
@@ -401,6 +402,33 @@ describe('potentials', () => {
     a.presetSwitches['Mei Lin|e4-atk'] = false
     noStrikeNode(a)
     expect(mults()).toEqual([strike.pct * 1.26, spire.pct * 1.18, 1.5].map((x) => expect.closeTo(x)))
+  })
+
+  it("card text shows the build's numbers like the owner's in-game screenshots (E6, Basic 7, Signature 3)", () => {
+    const cs = newCharacterSave()
+    const [a] = cs.builds
+    Object.assign(a, { egoLevel: 6, basicLevel: 7, signatureLevel: 3 })
+    a.stats.attack = 1000
+    const text = (id: string) => {
+      const p = preset(id)
+      const c = cardFromPreset(p, 'Passion')
+      const buffs = activeBuffs(PRESETS, 'Mei Lin', cs, a, settings)
+      return renderCardText(p.text, {
+        egoLevel: a.egoLevel, nodeOn: (n) => a.potentialNodes?.[n] !== false, pct: (base) => shownPct(base, c, a, mei, buffs, settings),
+      })
+    }
+    expect(text('card-338')).toBe('132% Damage\n1 Ember')
+    expect(text('card-339')).toBe('120% Shield')
+    expect(text('card-346')).toBe('112% Damage\n2 Ember\nStreak: Add 1 Hit(s)')
+    expect(text('card-364')).toContain('336% Damage\nIf the target is in a Ravage state, guaranteed Critical\n')
+    // Jewel V: no potential upgrade (in-game 300%)
+    expect(text('card-345')).toBe('[Initiation]\nOn Ravage, 300% Damage to the target')
+    expect(text('card-337')).toContain('next 6 Basic')
+    a.potentialNodes = { '3-1': false }
+    a.egoLevel = 0
+    expect(text('card-338')).not.toContain('Ember')
+    expect(text('card-364')).not.toContain('guaranteed')
+    expect(text('card-337')).toContain('next 4 Basic')
   })
 
   it('Fixed damage gets the upgrade only with the setting on', () => {

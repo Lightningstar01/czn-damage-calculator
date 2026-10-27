@@ -147,6 +147,10 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
     card, the 4 other cards, their epiphanies and the cards they generate, whatever the Unique tag
     says. Not Ego skills (their upgrades come from Manifest Ego). Common/Neutral Card Upgrade
     (cards from other characters) is not modeled yet.
+    Exception (User, 2026-10-27, from the in-game epiphany screen): Mei Lin's Flame Dragon's Jewel V shows
+    300% while Spire and Sovereignty show their upgrade; the owner thinks damage from a condition (On Ravage)
+    instead of an Attack card isn't raised. Only Jewel V is marked (`upgrade: null`); other characters' non-basic
+    starting cards stay Signature until checked.
   - In-game card % = base % x (1 + 2% x level) (Settings: per level). Levels 0-10 per build
     (default 0; in-game "by 12%" = level 6). The Manifest Ego level whose text says "+3 levels" (E5 for most,
     E3 for some, read from the import) adds 3 (max 13 = 26%).

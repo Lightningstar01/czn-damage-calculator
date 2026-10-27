@@ -7,7 +7,8 @@ import { duplicateBuild, newBoost, newTeammate } from '../store/save'
 import { FromField } from './FromField'
 import { useCharacter, useStore } from '../store/store'
 import { pct } from './format'
-import { NumberField, Section, SelectField, SwitchControl, TextField } from './inputs'
+import { NumberField, Section, SelectField, SwitchControl, TextField, Toggle } from './inputs'
+import { textNodes } from '../engine/cardText'
 import { PresetList } from './PresetList'
 import { Pills, statPill } from './BuffChips'
 
@@ -126,7 +127,34 @@ function PotentialSection() {
       {ch?.potentialEgo && (
         <p className="muted">E{ch.potentialEgo.level} adds {ch.potentialEgo.levels} levels to both{ego ? ' (on for this build)' : ''}.</p>
       )}
+      <PotentialNodes />
     </Section>
+  )
+}
+
+/** Switches for the Potential nodes that change a card's text (e.g. 3-1: Strike gains 1 Ember). Missing = on. */
+function PotentialNodes() {
+  const { name, build, updateBuild } = useCharacter()!
+  const ch = findCharacter(PRESETS, name)
+  const used = new Set((ch?.cards ?? []).flatMap((c) => textNodes(c.text)))
+  const nodes = (ch?.potentials ?? []).filter((p) => used.has(p.node))
+  if (!nodes.length) return null
+  return (
+    <ul className="rows gap-top">
+      {nodes.map((p) => {
+        const on = build.potentialNodes?.[p.node] !== false
+        return (
+          <li key={p.node} className={`row ${on ? '' : 'off'}`}>
+            <div className="row-main">
+              <div className="row-title">{p.node} {p.name}</div>
+              <div className="row-sub">{p.text}</div>
+            </div>
+            <Toggle checked={on} label={`Potential ${p.node} ${p.name}`}
+              onChange={(v) => updateBuild((b) => { b.potentialNodes = { ...b.potentialNodes, [p.node]: v } })} />
+          </li>
+        )
+      })}
+    </ul>
   )
 }
 

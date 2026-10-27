@@ -58,6 +58,11 @@ owner asks (there is no git remote yet).
 - `src/ui/`: tabs Setup, Buffs, Cards (library + ordered rotation), Results (color-coded formula
   strip per play, tap for hits), Settings (rules, backup). At 1000px or wider, Results sits beside
   the other tabs.
+- Card text (owner, 2026-10-27): the in-game wording from the owner's screenshots goes in `text` in
+  `characters/<slug>.ts`, with tokens for the active build's numbers (`src/engine/cardText.ts`): `{100%}` base %
+  raised by the card's potential and Card % buffs (`shownPct` in calc.ts), `{E1:...}` / `{E3:6|4}` Manifest Ego,
+  `{P3-1:...}` Potential node (switch on Setup > Potentials, `build.potentialNodes`, missing = on). A card's
+  `upgrade: null` turns off its potential upgrade (Mei Lin's Jewel V). Done: Mei Lin.
 - Card upgrade potentials: build `basicLevel` / `signatureLevel`, card `upgrade`
   (Basic / Signature; `pct` is then the base %), `potentialFactor()` in calc.ts; the Manifest Ego
   level that adds +3 is parsed from the import (`potentialEgo` in merge.ts). See docs/FORMULA.md 2c.
@@ -114,7 +119,7 @@ Crit       = Damage x Crit DMG (stat is the total multiplier); Expected = Damage
   is in `CZNRedditSheet.xlsx`, to compare against ours line by line.
 - Open mechanics questions are listed in docs/FORMULA.md section 4.
 - Card text check: the owner is saving in-game card screenshots to `card-screenshots/<slug>/` (git-ignored);
-  compare them with the cards and confirm corrections with the owner (Mei Lin first: known differences).
+  compare them with the cards and confirm corrections with the owner. Mei Lin done (2026-10-27); next as the owner sends them.
 - Idea for later (owner, 2026-10-27, not now): build the library/deck like the game, with card art. Plan: the Prydwen
   import also records each card's picture (art only, 200x300 webp, e.g. cdn.prydwen.gg/images/chaos/cards/mei_4.webp);
   the site draws its own frame (cost, name, type, element, our text with formula colors and potentials applied);

@@ -2,9 +2,10 @@
 import { DndContext, KeyboardSensor, PointerSensor, TouchSensor, closestCenter, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { PRESETS } from '../data/presets'
-import { playCard } from '../engine/calc'
+import { playCard, shownPct } from '../engine/calc'
+import { renderCardText } from '../engine/cardText'
 import { activeBuffs, activeCounters, findCharacter } from '../engine/buffs'
 import { CARD_CATEGORIES, CARD_TYPES, ELEMENTS, type Card, type CardPreset, type CardType, type DamageKind, type Element, type PotentialUpgrade, type RotationPlay, type Scaling } from '../engine/types'
 import { cardFromPreset, clone, newCard, newId } from '../store/save'
@@ -29,8 +30,21 @@ function cardSummary(c: Card): string {
   return `${c.cost === null ? '' : `${c.cost} AP · `}${c.cardType} · ${amount} × ${c.hits} hit${c.hits === 1 ? '' : 's'}${c.scaling === 'DEF' ? ' · DEF' : ''}${c.kind !== 'Normal' ? ` · ${c.kind}` : ''}`
 }
 
-function presetText(p: CardPreset): string {
-  return `${p.cost == null ? '' : `${p.cost} AP · `}${p.cardType} · ${p.text.replace(/\n/g, ' ')}`
+/** Cost and type, then the card text as the game shows it for the active build (potentials, Ego level, node switches). */
+function usePresetText(): (p: CardPreset) => string {
+  const { name, cs, build } = useCharacter()!
+  const { data: { settings } } = useStore()
+  const ch = findCharacter(PRESETS, name)
+  const buffs = useMemo(() => activeBuffs(PRESETS, name, cs, build, settings), [name, cs, build, settings])
+  return (p) => {
+    const card = cardFromPreset(p, ch?.element ?? ELEMENTS[0])
+    const text = renderCardText(p.text, {
+      egoLevel: build.egoLevel ?? 0,
+      nodeOn: (node) => build.potentialNodes?.[node] !== false,
+      pct: (base) => shownPct(base, card, build, ch, buffs, settings),
+    })
+    return `${p.cost == null ? '' : `${p.cost} AP · `}${p.cardType}\n${text}`
+  }
 }
 
 /** The character's preset cards, by category (Starting, Unique...) and base card; tapping + Add copies one into the library. */
@@ -38,6 +52,7 @@ function PresetPicker() {
   const { name, cs, updateCs } = useCharacter()!
   const ch = findCharacter(PRESETS, name)
   const [open, setOpen] = useState<string | null>(null)
+  const presetText = usePresetText()
   if (!ch?.cards?.length) return null
   const all = ch.cards
   const groups = [...new Set(all.map((p) => p.base))]
@@ -48,7 +63,7 @@ function PresetPicker() {
   const counts = new Map<string, number>()
   for (const c of cs.cards) if (c.preset) counts.set(c.preset, (counts.get(c.preset) ?? 0) + 1)
   return (
-    <Section title={`${ch.name}'s cards`} help="Base values, without potentials: the build's Basic / Signature Card Upgrade levels (Setup tab) are applied. Buffs a card gives show on the Buffs tab while it's in the library.">
+    <Section title={`${ch.name}'s cards`} help="Card text as in-game for the active build: its card upgrade potentials, Manifest Ego level and Potential nodes (Setup tab). Buffs a card gives show on the Buffs tab while it's in the library.">
       {categories.map((cat) => (
         <div key={cat}>
           {categories.length > 1 && <div className="muted">{cat}s</div>}
@@ -59,7 +74,7 @@ function PresetPicker() {
               <li key={g} className="row col">
                 <button className="row-main link" onClick={() => setOpen(open === g ? null : g)} aria-expanded={open === g}>
                   <div className="row-title">{g}</div>
-                  <div className="row-sub">{variants.length > 1 ? `Base + ${variants.length - 1} epiphanies` : presetText(variants[0])}</div>
+                  <div className="row-sub card-text">{variants.length > 1 ? `Base + ${variants.length - 1} epiphanies` : presetText(variants[0])}</div>
                 </button>
                 {open === g && (
                   <ul className="rows">
@@ -69,7 +84,7 @@ function PresetPicker() {
                         <li key={p.id} className="row">
                           <div className="row-main">
                             <div className="row-title">{p.name}{n > 0 && <span className="tag">in library{n > 1 ? ` ×${n}` : ''}</span>}</div>
-                            <div className="row-sub">{presetText(p)}</div>
+                            <div className="row-sub card-text">{presetText(p)}</div>
                             {p.notes && <div className="row-note">{p.notes}</div>}
                           </div>
                           <button className="btn small" onClick={() => updateCs((s) => { s.cards.push(cardFromPreset(p, ch.element)) })}>+ Add</button>
@@ -93,6 +108,7 @@ function LibrarySection() {
   const [open, setOpen] = useState<string | null>(null)
   const ch = findCharacter(PRESETS, name)
   const presetCards = ch?.cards ?? []
+  const presetText = usePresetText()
   return (
     <Section title="Card library" help="Add cards from the character's cards below (base %, the build's potentials applied), or add your own. For a card with no potential upgrade, enter the damage % exactly as the card shows it in-game. Cards are shared by all builds."
       actions={<button className="btn small" onClick={() => {
@@ -118,7 +134,7 @@ function LibrarySection() {
                 <div className="editor grid2">
                   {preset && (
                     <div className="full-row">
-                      <div className="row-sub">From {preset.name}: {presetText(preset)}</div>
+                      <div className="row-sub card-text">From {preset.name}: {presetText(preset)}</div>
                       {preset.notes && <div className="row-note">{preset.notes}</div>}
                     </div>
                   )}

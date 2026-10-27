@@ -146,8 +146,10 @@ export interface CardPreset {
   hits: number
   weaknessApplies?: boolean
   targetRavaged?: boolean
-  /** Card text as shown in-game. */
+  /** Card text as shown in-game; may hold tokens for the build's numbers (src/engine/cardText.ts). */
   text: string
+  /** Overrides the card upgrade potential picked from its category (null: none). */
+  upgrade?: PotentialUpgrade | null
   notes?: string
   /** Stat boosts / buffs the card gives while it's in the library (switch per build, default on). */
   effects?: Effect[]
@@ -197,8 +199,8 @@ export interface CharacterAdditions {
   notes?: string
   /** The character's own stat boosts and buffs. */
   effects?: Effect[]
-  /** Per card id: fields to override (tags, %, hits...), notes (added after the imported ones) and effects. */
-  cards?: Record<string, Partial<Omit<CardPreset, 'id' | 'base' | 'name' | 'text'>>>
+  /** Per card id: fields to override (tags, %, hits, in-game text...), notes (added after the imported ones) and effects. */
+  cards?: Record<string, Partial<Omit<CardPreset, 'id' | 'base' | 'name'>>>
 }
 
 /** Memory fragment slots on a character; the set dropdowns per build. */
@@ -258,6 +260,8 @@ export interface Build {
   /** Basic / Signature Card Upgrade potential levels, 0-10 (Manifest Ego levels are added on top). */
   basicLevel: number
   signatureLevel: number
+  /** Potential node ('3-1') -> unlocked, for nodes that change card text. Missing = on. */
+  potentialNodes?: Record<string, boolean>
   /** Preset effect key (presetKey / teamKey) -> switch. Missing = on (default stacks). */
   presetSwitches: Record<string, Switch>
   /** Up to TEAM_SIZE teammates whose ally buffs and enemy debuffs count for this character. */

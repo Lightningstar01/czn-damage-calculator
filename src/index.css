@@ -273,3 +273,6 @@ h2 { font-size: 1.05rem; margin: 0; display: flex; align-items: center; gap: 6px
 .app.wide .build-name, .app.wide .build-diff { font-size: 0.82rem; }
 .app.wide .build-total { font-size: 1.1rem; }
 .app.wide .pill { font-size: 0.8rem; }
+
+/* Card text keeps the game's line breaks */
+.card-text { white-space: pre-line; }

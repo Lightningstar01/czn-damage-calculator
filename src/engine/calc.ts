@@ -121,6 +121,7 @@ export function finalStats(presets: Presets, charName: string, cs: CharacterSave
 
 /** Which card upgrade potential raises a preset card: Basic cards Basic, Ego skills none, the rest Signature. */
 export function cardUpgrade(p: CardPreset): PotentialUpgrade | undefined {
+  if (p.upgrade !== undefined) return p.upgrade ?? undefined
   if ((p.tags ?? '').split(',').some((t) => t.trim() === 'Basic')) return 'Basic'
   if (p.category === 'Ego Skill') return undefined
   return 'Signature'
@@ -136,6 +137,17 @@ export function potentialFactor(upgrade: PotentialUpgrade | undefined, build: Bu
   const sources: Source[] = [{ label: `${upgrade} Card Upgrade level ${set}`, value: set * settings.potentialPerLevel, unit: '%' }]
   if (ego) sources.push({ label: `E${ego.level}: +${ego.levels} levels`, value: ego.levels * settings.potentialPerLevel, unit: '%' })
   return { value: 1 + level * settings.potentialPerLevel, sources }
+}
+
+/** The % the game shows on a card for a base % (1 = 100%): raised by the card's potential and the Card % buffs that match it. */
+export function shownPct(base: number, card: Card, build: Build, ch: CharacterPreset | undefined, buffs: ActiveBuff[],
+  settings: Settings): number {
+  if (card.scaling === 'Fixed' && !settings.potentialFixed) return base
+  const potential = potentialFactor(card.upgrade, build, ch, settings)
+  if (!potential) return base
+  const cb = cardBuffs(buffs.filter((b) => !b.counter), card)
+  const cardPct = [...cb.cardPct.all.sources, ...cb.cardPct.first.sources].reduce((a, s) => a + s.value, 0)
+  return base * potential.value * (1 + cardPct)
 }
 
 /** The card as played: the play's own hit count, if set, replaces the card's. */
