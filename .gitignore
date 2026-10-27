@@ -20,3 +20,6 @@ __pycache__/
 
 # Screenshots for design review (npm run screenshot)
 screenshots/
+
+# In-game card screenshots from the owner (reference for checking card text)
+card-screenshots/
