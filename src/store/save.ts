@@ -196,12 +196,15 @@ export function migrate(raw: unknown): SaveData {
     }
     data.version = 9
   }
-  if (data.version === 9) {
+  // A save stamped v10 while the v10 step was being written (dev server) has builds without a deck: run the step again
+  const deckless = data.version === 10 && Object.values(data.characters ?? {}).some((cs) => (cs.builds ?? []).some((b) => !b.deck))
+  if (data.version === 9 || deckless) {
     // v10: a deck per build (owner, 2026-10-27). The shared card library is copied into every build with the same ids, so the
     // attack lists still match. Preset cards follow their preset (cards can't be edited any more, so edited numbers go); the
     // Ego skill and created cards now come with the deck, so they leave it and their plays point at 'auto:<preset id>';
     // other cards stay as custom cards. Teammates drop the cards that now come with their deck.
     for (const [name, cs] of Object.entries(data.characters ?? {}) as [string, LegacyCharacter][]) {
+      if (data.version === 10 && cs.builds?.every((b) => b.deck)) continue
       const ch = PRESETS.characters.find((c) => c.name === name)
       const picked: DeckCard[] = (cs.cards ?? []).map((c) => c.preset && ch?.cards?.some((p) => p.id === c.preset)
         ? { id: c.id, preset: c.preset } : { id: c.id, custom: c })
@@ -209,6 +212,7 @@ export function migrate(raw: unknown): SaveData {
       const moved = new Map(picked.filter((d) => d.preset && auto.has(d.preset)).map((d) => [d.id, AUTO + d.preset]))
       const deck = picked.filter((d) => !moved.has(d.id))
       for (const b of cs.builds ?? []) {
+        if (b.deck) continue
         b.deck = structuredClone(deck)
         b.rotation = (b.rotation ?? []).map((p) => moved.has(p.cardId) ? { ...p, cardId: moved.get(p.cardId)! } : p)
         for (const t of b.team ?? []) {

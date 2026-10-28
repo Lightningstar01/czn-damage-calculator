@@ -824,4 +824,15 @@ describe('deck', () => {
     expect(b.team[0].cards).toEqual(['card-1384'])
     expect(migrate(old).characters.Rossweisse).not.toHaveProperty('cards')
   })
+
+  it('a v10 save with builds missing a deck gets them (stamped v10 by a half-written step)', () => {
+    const old = { version: 10, characters: {
+      Rossweisse: { builds: [{ id: 'a', rotation: [{ cardId: 'f' }], team: [] }, { id: 'b', deck: [], rotation: [], team: [] }],
+        cards: [{ id: 'f', preset: 'card-1384' }] },
+      'Mei Lin': { builds: [{ id: 'm', deck: [{ id: 'x', preset: 'card-341' }], rotation: [], team: [] }] },
+    } }
+    const chars = migrate(old).characters
+    expect(chars.Rossweisse.builds.map((b) => b.deck)).toEqual([[{ id: 'f', preset: 'card-1384' }], []])
+    expect(chars['Mei Lin'].builds[0].deck).toEqual([{ id: 'x', preset: 'card-341' }])
+  })
 })
