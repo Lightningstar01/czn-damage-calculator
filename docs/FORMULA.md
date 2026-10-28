@@ -154,8 +154,9 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
     instead of an Attack card isn't raised. Only Jewel V is marked (`upgrade: null`); other characters' non-basic
     starting cards stay Signature until checked.
   - In-game card % = base % x (1 + 2% x level) (Settings: per level). Levels 0-10 per build
-    (default 0; in-game "by 12%" = level 6). The Manifest Ego level whose text says "+3 levels" (E5 for most,
-    E3 for some, read from the import) adds 3 (max 13 = 26%).
+    (default 0; in-game "by 12%" = level 6). The Manifest Ego levels whose text says "+3 levels" (E5 for most,
+    E3 for some, both E3 and E5 for 12 characters such as Mika; read from the import) each add 3 (max 13 or 16 = 32%;
+    Mika's Water Arrow 132% at Basic 10 and E5, owner's screenshots 2026-10-28).
   - Raises ATK- and DEF-scaling damage (User). Fixed damage: **Unconfirmed**, a Settings toggle
     (default off). In-game, Orlea's Annoying I shows its Fixed 40% unraised but its Heal raised (228% at Signature 7),
     which fits the default; card text marks Fixed damage %s as `{F40%}`.
@@ -225,6 +226,15 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
   - Potential 7 "+6% Critical Chance of Combatant" (ATK > 700 or DEF > 300) reaches all allies (User, 2026-10-28).
     E4 "increase Damage Amount of allies by 10%" while holding a Creation: multiplicative, allies, hint. Not counted:
     E6 Fixed damage (★ x 50%) when a Creation is used.
+- **Mika** (owner's screenshots, 2026-10-28; E5 = +6 card upgrade levels from E3 and E5, Basic 10 = x1.32, Signature 1 = x1.14):
+  every in-game % = Prydwen's base x upgrade (Whirlpool IV 300% -> 342%). A healer: no damage buffs.
+  - Water Barrier Heal 172% = (100% + Potential 3-1's +30%) x 1.32: "+30% Healing" is +30% base heal. 5-1 "+5% Heal" is
+    read the same way (**Unconfirmed**; not unlocked by the owner, 2026-10-28).
+  - Whirlpool's "Heal 50% / 100% for each target hit" isn't raised in-game.
+  - **Whirlpool V** "114%(228%) Damage ... Increase Damage Amount equal to Heal Amount of this card" (User, 2026-10-28):
+    counts the bracket value, 228% (100% + its 100% Heal, both raised); Heal Amount buffs aren't added.
+  - **Blessing of Waves IV** "Inflict Damage equal to Heal Amount to a random enemy": not counted (User, 2026-10-28).
+  - Surge (Ego skill) creates Source of Water; E4 adds Retain to it, E1 adds Initiation to Deluge (in-game text).
 - **Team snapshot** (User, 2026-10-26), website only. Replaces the rotation buffs counted along
   the rotation (2026-10-25):
   - Each build has a team of up to 2 teammates (character, Manifest Ego level, partner, 3 fragment

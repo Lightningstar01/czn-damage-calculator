@@ -29,7 +29,7 @@ see "Card text check" in CLAUDE.md. Worked examples: `src/data/characters/mei-li
 
 - Basic level: a Basic card's in-game % / Prydwen's base (102% / 100% = level 1, 2% per level).
 - Signature level: same with a Unique card (134% / 120% = 1.12 = level 6).
-- Ego level: from E-dependent text (Tiphera's Ego skill says "2 times", so below E3). The E5 potential +3 levels count in
+- Ego level: from E-dependent text (Tiphera's Ego skill says "2 times", so below E3). The E3 / E5 potential +3 levels (some characters have both: Mika) count in
   the upgrade factor. The number badge on the Ego skill icon is its EP cost, not the Ego level.
 - Every in-game % should then be Prydwen x factor. A mismatch is a correction (Rossweisse's Ego skill: 1,200%, Prydwen
   200%) or a potential at work (Tiphera's Archetype 67% = (50% + 5-1's +10%) x 1.12). Never guess: ask if unexplained.

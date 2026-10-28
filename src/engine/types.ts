@@ -112,8 +112,9 @@ export interface CharacterPreset {
   potentials?: PotentialNode[]
   /** Manifest Ego levels (dupes); their buffs are effects with egoLevel set. */
   manifestEgo?: EgoLevel[]
-  /** The Manifest Ego level that raises the Basic / Signature Card Upgrade potentials, and by how many levels (from its text). */
-  potentialEgo?: { level: number; levels: number }
+  /** The Manifest Ego levels that raise the Basic / Signature Card Upgrade potentials, and by how many levels each (from their
+   * text; some characters have two, E3 and E5). */
+  potentialEgo?: { level: number; levels: number }[]
 }
 
 /** A Potential node ('3-1') or a Manifest Ego level (dupes, 1-6), as Prydwen lists them. Reference text. */

@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { PRESETS } from '../data/presets'
 import { findCharacter, findFragmentSet, findPartner, fragmentPiecesUsed, hasTeam } from '../engine/buffs'
+import { unlockedPotentialEgo } from '../engine/calc'
 import { CATEGORIES, FRAGMENT_SET_PICKS, MAX_EGO_LEVEL, MAX_POTENTIAL_LEVEL, FRAGMENT_SLOTS, STATS, TEAM_SIZE, type ScreenStats, type StatName, type Teammate } from '../engine/types'
 import { duplicateBuild, newBoost, newTeammate } from '../store/save'
 import { FromField } from './FromField'
@@ -107,14 +108,14 @@ function PotentialSection() {
   const { name, build, updateBuild } = useCharacter()!
   const { data } = useStore()
   const ch = findCharacter(PRESETS, name)
-  const ego = ch?.potentialEgo && (build.egoLevel ?? 0) >= ch.potentialEgo.level ? ch.potentialEgo : undefined
+  const egoLevels = unlockedPotentialEgo(ch, build).reduce((n, e) => n + e.levels, 0)
   const per = data.settings.potentialPerLevel
   const levels = Array.from({ length: MAX_POTENTIAL_LEVEL + 1 }, (_, i) => ({ value: String(i), label: `${i} (+${pct(i * per, 0)})` }))
   const field = (label: string, key: 'basicLevel' | 'signatureLevel') => {
     const set = build[key] ?? 0
     return (
       <SelectField label={label} value={String(set)} options={levels}
-        help={ego ? `E${ego.level} adds ${ego.levels} levels: total ${set + ego.levels} (+${pct((set + ego.levels) * per, 0)}).` : undefined}
+        help={egoLevels ? `Manifest Ego adds ${egoLevels} levels: total ${set + egoLevels} (+${pct((set + egoLevels) * per, 0)}).` : undefined}
         onChange={(v) => updateBuild((b) => { b[key] = Number(v) })} />
     )
   }
@@ -124,9 +125,9 @@ function PotentialSection() {
         {field('Basic Card Upgrade', 'basicLevel')}
         {field('Signature Card Upgrade', 'signatureLevel')}
       </div>
-      {ch?.potentialEgo && (
-        <p className="muted">E{ch.potentialEgo.level} adds {ch.potentialEgo.levels} levels to both{ego ? ' (on for this build)' : ''}.</p>
-      )}
+      {ch?.potentialEgo?.map((e) => (
+        <p key={e.level} className="muted">E{e.level} adds {e.levels} levels to both{(build.egoLevel ?? 0) >= e.level ? ' (on for this build)' : ''}.</p>
+      ))}
       <PotentialNodes />
     </Section>
   )

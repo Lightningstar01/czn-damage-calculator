@@ -135,15 +135,19 @@ export function finalStats(presets: Presets, charName: string, cs: CharacterSave
   }
 }
 
-/** Potential factor for a card upgrade: 1 + per level x (build level + the Manifest Ego bonus, if unlocked). */
+/** The Manifest Ego levels that raise the card upgrade potentials and are unlocked in this build. */
+export const unlockedPotentialEgo = (ch: CharacterPreset | undefined, build: Build) =>
+  (ch?.potentialEgo ?? []).filter((e) => (build.egoLevel ?? 0) >= e.level)
+
+/** Potential factor for a card upgrade: 1 + per level x (build level + the Manifest Ego bonuses that are unlocked). */
 export function potentialFactor(upgrade: PotentialUpgrade | undefined, build: Build, ch: CharacterPreset | undefined,
   settings: Settings): Factor | null {
   if (!upgrade) return null
   const set = (upgrade === 'Basic' ? build.basicLevel : build.signatureLevel) || 0
-  const ego = ch?.potentialEgo && (build.egoLevel ?? 0) >= ch.potentialEgo.level ? ch.potentialEgo : undefined
-  const level = set + (ego?.levels ?? 0)
+  const egos = unlockedPotentialEgo(ch, build)
+  const level = set + egos.reduce((n, e) => n + e.levels, 0)
   const sources: Source[] = [{ label: `${upgrade} Card Upgrade level ${set}`, value: set * settings.potentialPerLevel, unit: '%' }]
-  if (ego) sources.push({ label: `E${ego.level}: +${ego.levels} levels`, value: ego.levels * settings.potentialPerLevel, unit: '%' })
+  for (const e of egos) sources.push({ label: `E${e.level}: +${e.levels} levels`, value: e.levels * settings.potentialPerLevel, unit: '%' })
   return { value: 1 + level * settings.potentialPerLevel, sources }
 }
 

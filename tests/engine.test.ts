@@ -369,10 +369,13 @@ describe('potentials', () => {
   const mei = PRESETS.characters.find((c) => c.name === 'Mei Lin')!
   const preset = (id: string) => mei.cards!.find((p) => p.id === id)!
 
-  it('every character has a Manifest Ego level that adds 3 card upgrade levels (E3 or E5)', () => {
+  it('every character has one or two Manifest Ego levels that add 3 card upgrade levels (E3 and/or E5)', () => {
     for (const ch of PRESETS.characters) {
-      expect(ch.potentialEgo?.levels).toBe(3)
-      expect([3, 5]).toContain(ch.potentialEgo?.level)
+      expect(ch.potentialEgo!.length).toBeGreaterThan(0)
+      for (const e of ch.potentialEgo!) {
+        expect(e.levels).toBe(3)
+        expect([3, 5]).toContain(e.level)
+      }
     }
   })
 
@@ -403,7 +406,7 @@ describe('potentials', () => {
     a.stats.attack = 500
     expect(mults()[0]).toBeCloseTo(1.2 * 1.05)
     a.stats.attack = 1000
-    a.egoLevel = mei.potentialEgo!.level
+    a.egoLevel = mei.potentialEgo![0].level
     a.presetSwitches['Mei Lin|e4-atk'] = false
     noStrikeNode(a)
     expect(mults()).toEqual([strike.pct * 1.26, spire.pct * 1.18, 1.5].map((x) => expect.closeTo(x)))
@@ -962,5 +965,48 @@ describe('deck', () => {
     const chars = migrate(old).characters
     expect(chars.Rossweisse.builds.map((b) => b.deck)).toEqual([[{ id: 'f', preset: 'card-1384' }], []])
     expect(chars['Mei Lin'].builds[0].deck).toEqual([{ id: 'x', preset: 'card-341' }])
+  })
+})
+
+describe('Mika', () => {
+  const mika = PRESETS.characters.find((c) => c.name === 'Mika')!
+  const preset = (id: string) => mika.cards!.find((p) => p.id === id)!
+  // Owner's screenshots (2026-10-28): E5 (Surge grants Retain; Basic 10 + 6 = 132%), Signature 1 + 6 (100% -> 114%), 5-1 not unlocked
+  const ownerBuild = () => {
+    const cs = newCharacterSave()
+    const [a] = cs.builds
+    Object.assign(a, { egoLevel: 5, basicLevel: 10, signatureLevel: 1 })
+    a.stats.attack = 100
+    return { cs, a }
+  }
+
+  it("card text matches the owner's in-game screenshots", () => {
+    const { cs, a } = ownerBuild()
+    const text = (id: string) => {
+      const p = preset(id)
+      const c = cardFromPreset(p, 'Justice')
+      const buffs = activeBuffs(PRESETS, 'Mika', cs, a, settings)
+      return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: (n) => n !== '5-1', pct: (base, fixed) => shownPct(base, c, a, mika, buffs, settings, fixed) })
+    }
+    expect(text('card-543')).toBe('Create 2 Source of Water Card(s), grant Exhaust and Retain to it')
+    expect(text('card-544')).toBe('132% Damage')
+    expect(text('card-545')).toBe('Heal 172%')
+    expect(text('card-546')).toBe('Heal 114%\nGain 1 AP')
+    expect(text('card-547')).toContain('Heal 171%')
+    expect(text('card-557')).toContain('Heal 57%')
+    expect(text('card-559')).toContain('Heal 57%')
+    expect(text('card-564')).toBe('228% Damage to all enemies\nHeal 50% for each target hit')
+    expect(text('card-568')).toContain('342% Damage')
+    expect(text('card-569')).toContain('Heal 114%\n114%(228%) Damage to all enemies')
+    expect(text('card-570')).toBe('[Unique / Initiation]\n1 Wave\nAt the start of the turn, 1 Wave')
+  })
+
+  it('Whirlpool V counts the bracket value, 228%', () => {
+    const { cs, a } = ownerBuild()
+    const wv = cardFromPreset(preset('card-569'), 'Justice')
+    addCards(cs, wv)
+    a.rotation = [{ cardId: wv.id }]
+    const r = computeBuild(PRESETS, 'Mika', cs, a, settings)
+    expect(r.plays[0].nonCrit).toBeCloseTo(2.28 * 100 * 0.35)
   })
 })
