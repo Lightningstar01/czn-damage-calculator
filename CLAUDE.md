@@ -73,7 +73,8 @@ owner asks (there is no git remote yet).
   `characters/<slug>.ts`, with tokens for the active build's numbers (`src/engine/cardText.ts`): `{100%}` base %
   raised by the card's potential and Card % buffs (`shownPct` in calc.ts), `{E1:...}` / `{E3:6|4}` Manifest Ego,
   `{P3-1:...}` Potential node (switch on Setup > Potentials, `build.potentialNodes`, missing = on). A card's
-  `upgrade: null` turns off its potential upgrade (Mei Lin's Jewel V). Done: Mei Lin, Rossweisse.
+  `upgrade: null` turns off its potential upgrade (Mei Lin's Jewel V). Tokens nest: `Heal {P3-1:{70%}|{100%}}`.
+  Done: Mei Lin, Rossweisse, Tiphera. The step-by-step process is the `card-review` skill (.claude/skills/card-review).
 - Card upgrade potentials: build `basicLevel` / `signatureLevel`, card `upgrade`
   (Basic / Signature; `pct` is then the base %), `potentialFactor()` in calc.ts; the Manifest Ego
   level that adds +3 is parsed from the import (`potentialEgo` in merge.ts). See docs/FORMULA.md 2c.
@@ -94,7 +95,7 @@ owner asks (there is no git remote yet).
 - Constants and rules belong in settings, never hard-coded in the engine.
 - Document every new assumption in docs/FORMULA.md with its source or "Unconfirmed".
 - "Applies to" matches ALL, an exact card name, or one tag in the card's comma-separated Tags;
-  also `A & B` (all), `A/B` (any), `N+ hits`, card kinds `DoT` / `Extra Attack`, and the card's own
+  also `A & B` (all), `A/B` (any), `N+ hits`, card kinds `DoT` / `Extra Attack`, `Defense-Based` (DEF cards), and the card's own
   type (Attack / Skill / Upgrade), element and cost (`1-cost`, `2+ cost`) fields; buff types
   Crit Chance / Crit DMG add to the crit stats of matching cards only.
 
@@ -132,7 +133,9 @@ Crit       = Damage x Crit DMG (stat is the total multiplier); Expected = Damage
   is in `CZNRedditSheet.xlsx`, to compare against ours line by line.
 - Open mechanics questions are listed in docs/FORMULA.md section 4.
 - Card text check: the owner is saving in-game card screenshots to `card-screenshots/<slug>/` (git-ignored);
-  compare them with the cards and confirm corrections with the owner. Mei Lin and Rossweisse done (2026-10-27); next as the owner sends them.
+  compare them with the cards and confirm corrections with the owner (`card-review` skill). Mei Lin, Rossweisse (2026-10-27),
+  Tiphera (2026-10-28) done; next: every other character the owner has, as they send them; Luke, Kayron, Olga and Fei
+  last (the owner doesn't have them yet).
 - Idea for later (owner, 2026-10-27): animated card art. cznmetadecks has the game's animated unique cards as video
   (`https://cdn.czndecksmeta.com/card/cards_animated/<artId>.mp4`, 900x770, ~1 MB each, ~200 MB in all): skipped for size.
 - `creates` links: Rossweisse only; add each character's during the alphabetical review (until then their created

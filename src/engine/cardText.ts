@@ -14,7 +14,17 @@ export interface CardTextContext {
 const TOKEN = /\{([^{}]*)\}/g
 
 export function renderCardText(text: string, ctx: CardTextContext): string {
-  const out = text.replace(TOKEN, (whole, body: string) => {
+  // Innermost tokens first, so a condition can hold % tokens: 'Heal {P3-1:{70%}|{100%}}'
+  let out = text
+  for (let prev = ''; prev !== out;) {
+    prev = out
+    out = replaceTokens(out, ctx)
+  }
+  return out.split('\n').map((l) => l.trim()).filter(Boolean).join('\n')
+}
+
+function replaceTokens(text: string, ctx: CardTextContext): string {
+  return text.replace(TOKEN, (whole, body: string) => {
     const pct = /^(\d+(?:\.\d+)?)%$/.exec(body)
     if (pct) return `${Math.round(ctx.pct(Number(pct[1]) / 100) * 100)}%`
     const cond = /^(E|P)([\d-]+):(.*)$/s.exec(body)
@@ -24,7 +34,6 @@ export function renderCardText(text: string, ctx: CardTextContext): string {
     const on = kind === 'E' ? ctx.egoLevel >= Number(key) : ctx.nodeOn(key)
     return on ? then : otherwise
   })
-  return out.split('\n').map((l) => l.trim()).filter(Boolean).join('\n')
 }
 
 /** Potential nodes a text depends on ('3-1'). */
