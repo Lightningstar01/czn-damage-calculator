@@ -83,7 +83,8 @@ owner asks (there is no git remote yet).
   allies / enemy; teammates give only allies/enemy effects, with switches keyed
   `"Teammate>Owner|effectId"` (`teamKey`). Every switched-on buff counts on every hit (snapshot).
   My boosts/buffs have a label-only `from` field (teammate equipment).
-- Attack list (per build, `build.rotation`): each play has optional hits, `vulnerable`,
+- Attack list (per build, `build.rotation`): each play has optional hits, `cost` (only for `perCost` cards: "X% for
+  each Cost of this card", damage = % x Cost), `vulnerable`,
   `weaknessDebuff` and `stacks` per counter name; buffs with `counter` read the play's stacks
   (capped at max stacks). Buff type `Card %` raises a card's base % like a potential (only on cards
   with an upgrade); `Base %` ("+X% base Damage Amount") adds to the shown card %; `Final` ("final Damage

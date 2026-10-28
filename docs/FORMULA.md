@@ -199,8 +199,9 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
     Not counted: Event Horizon's Form Upgrade (+100% to a random effect) and Form Convergence's "Double a random effect".
   - **Harmonization "Double all effects"** (User, 2026-10-28) doubles the card % (134% -> 268%): a Card % buff of +100%,
     switched on per play. Creation and Destruction III's Retain ("Increase all effects by 100% until activated, max 4
-    times") is the same, +100% per stack. C&D V "150% for each Cost of this card": +100% Card % per Cost above 1
-    (**Unconfirmed** that the Signature upgrade raises each Cost's 150%; in-game shows 168%, so it seems to).
+    times") is the same, +100% per stack.
+  - **C&D V "150% for each Cost of this card"** (User, 2026-10-28): the in-game % (168%) x the Cost, set on each play
+    (1-9, the card's 5 by default): Cost 3 = 168% x 3. Cards with `perCost` get a Cost setting per play (`RotationPlay.cost`).
   - Potential 7 (+10% Crit DMG of allies at Defense above 300) is an allies stat with a hint; E4 Power of Archetype is
     5% multiplicative each on Attack cards, Order and Defense-Based Damage (DEF cards), per-play stacks (max 2), allies.
 - **Team snapshot** (User, 2026-10-26), website only. Replaces the rotation buffs counted along

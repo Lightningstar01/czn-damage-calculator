@@ -826,6 +826,18 @@ describe('Tiphera', () => {
     expect(triangle.target).toBe('allies')
   })
 
+  it('Creation and Destruction V: 168% x the play\'s Cost (the card\'s 5 unless set)', () => {
+    const { cs, a } = ownerBuild()
+    const v = cardFromPreset(preset('card-977'), 'Order')
+    addCards(cs, v)
+    a.rotation = [{ cardId: v.id, cost: 3 }, { cardId: v.id }]
+    const r = computeBuild(PRESETS, 'Tiphera', cs, a, settings)
+    const unit = 660 * 0.35
+    expect(r.plays[0].nonCrit).toBeCloseTo(1.5 * 1.12 * 3 * unit)
+    expect(r.plays[0].card.cost).toBe(3)
+    expect(r.plays[1].nonCrit).toBeCloseTo(1.5 * 1.12 * 5 * unit)
+  })
+
   it('Defense-Based matches DEF cards only', () => {
     expect(buffMatches({ appliesTo: 'Defense-Based', condition: 'Always' }, cardFromPreset(preset('card-958'), 'Order'))).toBe(true)
     expect(buffMatches({ appliesTo: 'Defense-Based', condition: 'Always' }, card('Strike', 'Attack', 1))).toBe(false)

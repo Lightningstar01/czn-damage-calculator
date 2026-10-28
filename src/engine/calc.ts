@@ -158,9 +158,11 @@ export function shownPct(base: number, card: Card, build: Build, ch: CharacterPr
   return base * potential.value * (1 + cardPct)
 }
 
-/** The card as played: the play's own hit count, if set, replaces the card's. */
+/** The card as played: the play's own hit count and Cost, if set, replace the card's. A per-Cost card's % is its % x the Cost. */
 export function playCard(card: Card, play: RotationPlay): Card {
-  return play.hits === undefined ? card : { ...card, hits: play.hits }
+  const played = { ...card, hits: play.hits ?? card.hits, cost: play.cost ?? card.cost }
+  if (card.perCost) played.pct = card.pct * (played.cost ?? 1)
+  return played
 }
 
 /** Damage of every hit of every play in the build's attack list. */

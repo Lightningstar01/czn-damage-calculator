@@ -161,6 +161,8 @@ export interface CardPreset {
   text: string
   /** Card art (art only, 420x632 from cznmetadecks or 200x300 from Prydwen): 'cards/<slug>/<file>', copied into public/ by the import. */
   image?: string
+  /** See Card.perCost. */
+  perCost?: boolean
   /** Ids of the cards it creates (shards, Sword Tassel): they join the deck with it (src/engine/deck.ts). */
   creates?: string[]
   /** Overrides the card upgrade potential picked from its category (null: none). */
@@ -371,6 +373,8 @@ export interface Card {
   targetRavaged: boolean
   /** CardPreset id this card was copied from: its effects then show with the preset effects. */
   preset?: string
+  /** "X% Damage for each Cost of this card": pct is per Cost; each play sets the Cost (RotationPlay.cost). */
+  perCost?: boolean
 }
 
 /** Labels for UserBoost.from / UserBuff.from. */
@@ -382,6 +386,8 @@ export interface RotationPlay {
   cardId: string
   /** Overrides the card's hits for this play (Combo, extra-hit effects). */
   hits?: number
+  /** Overrides the card's Cost for this play (cards whose damage is per Cost, e.g. Creation and Destruction V). */
+  cost?: number
   /** Vulnerable on the target for this play's hits. */
   vulnerable?: boolean
   /** Weakness debuff on the character for this play's hits. */

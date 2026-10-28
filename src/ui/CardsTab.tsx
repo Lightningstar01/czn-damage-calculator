@@ -336,7 +336,7 @@ function RotationSection() {
             {rotation.map((play, i) => {
               const base = cards.get(play.cardId)
               return (
-                <RotationItem key={ids[i]} id={ids[i]} index={i} play={play} card={base && playCard(base, play)} baseHits={base?.hits}
+                <RotationItem key={ids[i]} id={ids[i]} index={i} play={play} card={base && playCard(base, play)} baseHits={base?.hits} baseCost={base?.cost}
                   counters={counters} open={open === i} onToggle={() => setOpen(open === i ? null : i)}
                   onChange={(fn) => updateBuild((b) => fn(b.rotation[i]))}
                   onRemove={() => { updateBuild((b) => { b.rotation.splice(i, 1) }); setOpen(null) }} />
@@ -356,8 +356,9 @@ function playFlags(play: RotationPlay): string {
 }
 
 /** baseHits: the card's own hits. counters: the per-play stacks the switched-on buffs read. */
-function RotationItem({ id, index, play, card, baseHits, counters, open, onToggle, onChange, onRemove }: {
-  id: string; index: number; play: RotationPlay; card?: Card; baseHits?: number; counters: { name: string; max: number | null }[]
+function RotationItem({ id, index, play, card, baseHits, baseCost, counters, open, onToggle, onChange, onRemove }: {
+  id: string; index: number; play: RotationPlay; card?: Card; baseHits?: number; baseCost?: number | null
+  counters: { name: string; max: number | null }[]
   open: boolean; onToggle: () => void; onChange: (fn: (p: RotationPlay) => void) => void; onRemove: () => void
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
@@ -371,6 +372,7 @@ function RotationItem({ id, index, play, card, baseHits, counters, open, onToggl
           <div className="row-title"><span className="play-no">{index + 1}</span> {card?.name || 'Unnamed card'}</div>
           <div className="row-sub">{card ? cardSummary(card) : 'Card is not in the deck'}</div>
           {play.hits !== undefined && <div className="row-note">Hits set for this play (card: {baseHits})</div>}
+          {card?.perCost && <div className="row-note">Damage × Cost {card.cost}{play.cost !== undefined ? ` (card: ${baseCost})` : ''}</div>}
           {flags && <div className="row-note">{flags}</div>}
         </button>
         <button className="icon-btn" aria-label={`Remove play ${index + 1}`} onClick={onRemove}>×</button>
@@ -381,6 +383,12 @@ function RotationItem({ id, index, play, card, baseHits, counters, open, onToggl
             <Stepper label={`Play ${index + 1} hits`} value={card.hits}
               onChange={(n) => onChange((p) => { p.hits = n === baseHits ? undefined : n })} />
           </div>
+          {card.perCost && (
+            <div className="toggle-field"><span>Cost (damage × Cost)</span>
+              <Stepper label={`Play ${index + 1} cost`} value={card.cost ?? 1} min={1} max={9}
+                onChange={(n) => onChange((p) => { if (n === baseCost) delete p.cost; else p.cost = n })} />
+            </div>
+          )}
           <div className="toggle-field"><span>Vulnerable</span>
             <Toggle label="Vulnerable" checked={!!play.vulnerable} onChange={(v) => onChange((p) => { if (v) p.vulnerable = true; else delete p.vulnerable })} />
           </div>

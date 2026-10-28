@@ -27,7 +27,7 @@ export function presetCard(p: CardPreset, element: Element, id: string): Card {
   return {
     id, name: p.name, cardType: p.cardType, element: p.element ?? element, cost: p.cost ?? null, tags: p.tags ?? '',
     scaling: p.scaling ?? 'ATK', kind: p.kind ?? 'Normal', pct: p.pct, hits: p.hits, weaknessApplies: !!p.weaknessApplies,
-    targetRavaged: !!p.targetRavaged, upgrade: cardUpgrade(p), preset: p.id,
+    targetRavaged: !!p.targetRavaged, upgrade: cardUpgrade(p), preset: p.id, ...(p.perCost ? { perCost: true } : {}),
   }
 }
 

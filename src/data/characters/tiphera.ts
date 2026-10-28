@@ -8,7 +8,7 @@ import { cardBuff } from '../helpers'
 // The cards that create Archetype cards bring all three into the deck
 const archetypes = ['card-985', 'card-986', 'card-987']
 
-/** Card % raised per play: Harmonization (on/off), Retain stacks, Cost. */
+/** Card % raised per play: Harmonization (on/off), Retain stacks. */
 const cardPct = (id: string, name: string, card: string, counter: string, maxStacks: number) =>
   cardBuff(id, name, '+100%', card, { type: 'Card %', maxStacks, counter })
 const harmonization = (card: string) => cardPct('harmonization', 'Harmonization: Double all effects', card, 'Harmonization', 1)
@@ -20,7 +20,7 @@ const archetypePct = '{P5-1:{60%}|{50%}}'
 export default {
   notes: 'Stat potentials are in the stats screen; card upgrades are set on the Setup tab. Per play (Cards tab): Archetype △ '
     + 'stacks (30% each, max 10) and Event Horizon on the first hit of the next Attack card, any ally\'s; Harmonization on '
-    + 'Creation and Destruction / I; Retain stacks on III; Cost above 1 on V (Cost 4 = 3); Power of Archetype stacks (E4). '
+    + 'Creation and Destruction / I; Retain stacks on III; the Cost of V; Power of Archetype stacks (E4). '
     + 'Not counted: Event Horizon\'s Form Upgrade and Form Convergence doubling a random effect',
   effects: [
     // 7: "If Tiphera's Defense is greater than 300, at the start of battle, +10% to Critical Damage of allies"
@@ -89,11 +89,11 @@ export default {
       creates: ['card-972'],
       text: '[Unique]\nWhen AP is 0, create 1 Creation and Destruction\nDecrease Cost of those cards by 1 and apply Exhaust (1 time per turn)',
     },
-    // "for each Cost": the card's 150% plus +100% of it per Cost above 1
+    // "for each Cost": 150% (168% in-game) x the play's Cost (owner, 2026-10-28)
     'card-977': {
+      perCost: true,
       text: '{150%} Defense-Based Damage for each Cost of this card\nWhen a card is Exhausted, randomly change Cost of this card from 1 - 9',
-      notes: 'Set the Cost above 1 on each play (Cost 5 = 4)',
-      effects: [cardPct('cost', 'Damage for each Cost of this card', 'Creation and Destruction V', 'Cost above 1 (C&D V)', 8)],
+      notes: 'Set the Cost (1-9) on each play',
     },
 
     // Dual Creation, I–V
