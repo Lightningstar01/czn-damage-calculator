@@ -7,7 +7,7 @@ import { useStore } from '../store/store'
 import { NumberField, Section, SelectField } from './inputs'
 
 // Unconfirmed rules, shown first; the rest are game constants (folded away)
-const TO_TEST: string[] = ['extraWeakness', 'ravaged']
+const TO_TEST: string[] = ['extraWeakness', 'ravaged', 'fixedAtkCoef']
 
 export function SettingsTab() {
   const { data, update, replace } = useStore()

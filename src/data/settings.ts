@@ -10,6 +10,7 @@ export const SETTING_INFO: { key: keyof Settings; label: string; pct: boolean; n
   { key: 'weaknessDebuff', label: 'Weakness debuff penalty', pct: true, note: 'Prydwen: x0.75 while the Weakness debuff is on you' },
   { key: 'critCap', label: 'Crit rate cap', pct: true, note: 'Assumed 100%' },
   { key: 'ravaged', label: 'Ravaged: extra damage taken (Unconfirmed)', pct: true, note: "Ravaged enemies take more damage; size unknown. Applies to cards with 'Target Ravaged' on" },
+  { key: 'fixedAtkCoef', label: 'Fixed damage: ATK coefficient (Unconfirmed)', pct: false, note: "Fixed damage = Fixed % x Final ATK x this. The owner thinks it's ATK-based (2026-10-28); 0.35 like other cards until tested" },
   { key: 'moralePerStack', label: 'Morale per stack', pct: true, note: 'Game8: +20% additive per stack' },
   { key: 'moraleMax', label: 'Morale max stacks', pct: false, note: 'Owner' },
   { key: 'potentialPerLevel', label: 'Card upgrade potential per level', pct: true, note: "Owner and the in-game text: Basic / Signature Card Upgrade raise the card's base damage by 2% per level (max 10 = 20%)" },
@@ -29,4 +30,5 @@ export const DEFAULT_SETTINGS: Settings = {
   moraleMax: 20,
   potentialPerLevel: 0.02,
   potentialFixed: false,
+  fixedAtkCoef: 0.35,
 }

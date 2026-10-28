@@ -252,6 +252,8 @@ export interface Settings {
   potentialPerLevel: number
   /** Whether those upgrades also raise Fixed damage (Unconfirmed). */
   potentialFixed: boolean
+  /** Fixed damage = % x Final ATK x this (Unconfirmed). */
+  fixedAtkCoef: number
 }
 
 // ---------------------------------------------------------------- saved data (per character)

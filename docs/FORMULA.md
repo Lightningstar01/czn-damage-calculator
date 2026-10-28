@@ -51,6 +51,8 @@ Final Card Mult = ((Base + Potential additive base) x (1 + Potential mult) x Gen
 - Vulnerable x1.5, used up per hit (Prydwen; per-hit use from the owner).
 - Weakness x0.75 (Prydwen). Per-hit use is **Unconfirmed** (assumed same as Vulnerable).
 - Fixed damage ignores all multipliers (Prydwen). Whether it can crit: **Unconfirmed**, assumed not.
+  Fixed damage = Fixed % x Final ATK x a constant (Settings, default 0.35 like other cards): the owner thinks it is
+  ATK-based (2026-10-28, not sure); **Unconfirmed**, test in-game.
 
 **Additive vs multiplicative wording — User:** after a localization update, a buff written
 with a leading "+" (e.g. "+30% Damage Amount") is additive; one without "+" is multiplicative.
@@ -209,7 +211,7 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
   (Annoying III 450% -> 513%), except Fixed damage % and the buff %s (Softie, Swiftie's Retain, Sacred Censer IV / V).
   - Prydwen's Heaven's Healing is "Healing of Light" in-game, and Potential 3-1's 50% chance to create a Creation★ is on
     it (Prydwen: on Attack, My Minions). Potential 5-1 "Healing of Light's Healing +10%" is read as +10% base heal
-    (**Unconfirmed**; it was off in the screenshots: Heal 102%).
+    (**Unconfirmed**; the owner hasn't unlocked 5-1 yet, 2026-10-28: Heal 102%).
   - Base Annoying's Heal 20% isn't raised in-game either (Annoying I's Heal is); the text shows 20% as is.
   - Creation cards (Softie / Swiftie / Sturdie ★-★★★) evolve, so every card that creates one brings all nine into the deck.
   - **Softie** (User, 2026-10-28): "Increase Damage Amount by 10% for 1 turn" and "Retain: Increase Damage Amount of the

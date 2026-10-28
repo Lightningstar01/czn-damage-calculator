@@ -436,15 +436,17 @@ describe('potentials', () => {
     expect(text('card-337')).toContain('next 4 Basic')
   })
 
-  it('Fixed damage gets the upgrade only with the setting on', () => {
+  it('Fixed damage: % x Final ATK x its constant; the upgrade only with the setting on', () => {
     const cs = newCharacterSave()
     const [a] = cs.builds
     a.signatureLevel = 10
-    const fixed: Card = { ...newCard('Passion'), scaling: 'Fixed', pct: 100, upgrade: 'Signature' }
+    a.stats.attack = 100
+    const fixed: Card = { ...newCard('Passion'), scaling: 'Fixed', pct: 1, upgrade: 'Signature' }
     addCards(cs, fixed)
     setPlays(cs, plays(fixed.id))
-    expect(computeBuild(PRESETS, 'Mei Lin', cs, a, settings).nonCrit).toBeCloseTo(100)
-    expect(computeBuild(PRESETS, 'Mei Lin', cs, a, { ...settings, potentialFixed: true }).nonCrit).toBeCloseTo(120)
+    expect(computeBuild(PRESETS, 'Mei Lin', cs, a, settings).nonCrit).toBeCloseTo(35)
+    expect(computeBuild(PRESETS, 'Mei Lin', cs, a, { ...settings, potentialFixed: true }).nonCrit).toBeCloseTo(42)
+    expect(computeBuild(PRESETS, 'Mei Lin', cs, a, { ...settings, fixedAtkCoef: 1 }).nonCrit).toBeCloseTo(100)
   })
 
   it('migrate: levels 0; preset cards follow their preset (v10), others stay custom without an upgrade', () => {

@@ -32,7 +32,7 @@ export function useCardText(teammate?: Teammate): (p: CardPreset) => string {
 
 /** A custom card (from an older save): its numbers instead of card text. */
 export function customText(c: Card): string {
-  const amount = c.scaling === 'Fixed' ? `${c.pct} Fixed Damage` : `${pct(c.pct, 2)}${c.scaling === 'DEF' ? ' Defense-Based' : ''} Damage`
+  const amount = c.scaling === 'Fixed' ? `${pct(c.pct, 2)} Fixed Damage` : `${pct(c.pct, 2)}${c.scaling === 'DEF' ? ' Defense-Based' : ''} Damage`
   return `${amount}${c.hits > 1 ? ` × ${c.hits}` : ''}${c.tags ? `\n[${c.tags}]` : ''}`
 }
 

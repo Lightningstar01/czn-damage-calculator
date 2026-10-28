@@ -26,7 +26,7 @@ export function CardsTab() {
 }
 
 function cardSummary(c: Card): string {
-  const amount = `${c.scaling === 'Fixed' ? `${+c.pct.toFixed(4)} fixed` : pct(c.pct, 2)}${c.upgrade ? ` base (${c.upgrade})` : ''}`
+  const amount = `${c.scaling === 'Fixed' ? `${pct(c.pct, 2)} fixed` : pct(c.pct, 2)}${c.upgrade ? ` base (${c.upgrade})` : ''}`
   return `${c.cost === null ? '' : `${c.cost} AP · `}${c.cardType} · ${amount} × ${c.hits} hit${c.hits === 1 ? '' : 's'}${c.scaling === 'DEF' ? ' · DEF' : ''}${c.kind !== 'Normal' ? ` · ${c.kind}` : ''}`
 }
 

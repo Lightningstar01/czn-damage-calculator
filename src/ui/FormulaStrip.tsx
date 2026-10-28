@@ -51,8 +51,10 @@ function potentialChip(f: Factor, note: string): Chip {
 function chipsFor(hit: Hit, card: Card): { inner: Chip[]; outer: Chip[] } {
   if (card.scaling === 'Fixed') {
     return { inner: [], outer: [
-      { key: 'fixed', op: '', group: 'card', label: 'Fixed', value: num(card.pct), note: 'Fixed damage ignores every multiplier and crit.' },
+      { key: 'fixed', op: '', group: 'card', label: 'Fixed', value: pct(card.pct, 2), note: 'Fixed damage ignores every multiplier and crit.' },
       ...(hit.potential ? [potentialChip(hit.potential, 'Potential upgrades apply to Fixed damage (Settings).')] : []),
+      { key: 'stat', op: '×', group: 'stat', label: 'ATK', value: num(hit.stat.value, 1), sources: hit.stat.sources },
+      { key: 'const', op: '×', group: 'const', label: 'Const', value: String(hit.constant), note: 'Fixed damage constant (Settings, Unconfirmed).' },
     ] }
   }
   const inner: Chip[] = [{ key: 'card', op: '', group: 'card', label: card.name || 'Card', value: pct(hit.cardPct, 2),

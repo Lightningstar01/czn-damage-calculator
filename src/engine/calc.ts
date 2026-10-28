@@ -296,7 +296,9 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
 
   let nonCrit: number, crit: number, expected: number
   if (card.scaling === 'Fixed') {
-    nonCrit = crit = expected = pct   // Fixed damage ignores every multiplier and can't crit (Unconfirmed)
+    // Fixed damage: % x Final ATK x its constant (owner thinks ATK-based, 2026-10-28; Unconfirmed); ignores every
+    // multiplier and can't crit (Unconfirmed)
+    nonCrit = crit = expected = pct * stats.atk.value * settings.fixedAtkCoef
   } else {
     nonCrit = cardMult * stat.value * settings.atkConstant * (elemDmg?.value ?? 1) * (mechDmg?.value ?? 1) * (enemyDef?.value ?? 1)
       * (final?.value ?? 1)
@@ -305,7 +307,8 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
   }
   return {
     globalHit: k, hitNo, cardPct: card.pct, potential, basePct, multFactor: { value: multValue, sources: multSources }, additive,
-    weakness, vulnerable, enemyDr, weaknessDebuff, ravaged, inHand, cardMult, stat, constant: settings.atkConstant,
+    weakness, vulnerable, enemyDr, weaknessDebuff, ravaged, inHand, cardMult, stat,
+    constant: card.scaling === 'Fixed' ? settings.fixedAtkCoef : settings.atkConstant,
     elemDmg, mechDmg, enemyDef, final, critDmg, critRate, critDmgSources, critRateSources, nonCrit, crit, expected,
   }
 }

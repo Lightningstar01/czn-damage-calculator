@@ -120,7 +120,7 @@ Card mult  = (Card % x MultFactor + Additive buffs incl. Morale)
              x Weakness DMG (if the card applies weakness or a Weakness Attack buff matches; base 125%)
              x (1 + Vulnerable) x (1 - Enemy DR) x (1 - Weakness debuff) x (1 + Ravaged factor if target Ravaged)
 Damage     = Card mult x Stat x 0.35 x (1 + Elemental DMG%) x (1 + Extra/DoT DMG%) x Enemy DEF mult
-             Stat = Final ATK, or (ATK x 0.3 + DEF x 2.1) for DEF cards; Fixed ignores all of this
+             Stat = Final ATK, or (ATK x 0.3 + DEF x 2.1) for DEF cards; Fixed = % x Final ATK x 0.35 (Unconfirmed), no other factor
 Crit       = Damage x Crit DMG (stat is the total multiplier); Expected = Damage x (1 + CritRate x (CritDMG - 1)), per hit
 ```
 - "+X%" buff text = Additive; "X%" without "+" = Multiplicative (owner's rule).
