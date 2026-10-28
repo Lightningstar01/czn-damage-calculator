@@ -55,8 +55,11 @@ Copy the shape of the worked examples. Rules:
   play and what isn't counted.
 - `text`: the in-game wording, one line per in-game line, keywords first as `[Unique / Retain]`. Tokens
   (`src/engine/cardText.ts`): `{120%}` base % (shown raised by the build's upgrade; use it for Heal/Shield % too),
-  `{E3:3|2}` Ego level, `{P3-1:text|else}` potential node; they nest: `Heal {P3-1:{70%}|{100%}}`.
+  `{F40%}` Fixed damage % (not raised by default, Orlea's Annoying), `{E3:3|2}` Ego level, `{P3-1:text|else}` potential
+  node; they nest: `Heal {P3-1:{70%}|{100%}}`. Buff %s on a card (Softie's "by 10%") aren't raised: write them as is.
 - Corrections override the import: `pct`, `cost`, `name`, `cardType`, `tags`, `upgrade: null`, `replaceNotes`.
+- Card % "for each Cost of this card" = `perCost: true` (Tiphera's C&D V); "for each <thing>" = `perCount: '<Thing>'`
+  (Orlea's Annoying: 'Cards in hand'); both give a setting per play.
 - `creates: [ids]` on every card that creates others (shards, Archetypes...), so they join the deck.
 - Damage buffs: card buffs via `cardBuff()` in that card's `effects`; character, potential and Ego buffs in `effects`.
   - "+X%" = Additive, "by X%" (no "+") = Multiplicative; "+X% base Damage Amount" = `type: 'Base %'`;

@@ -5,7 +5,7 @@ import { SortableContext, arrayMove, sortableKeyboardCoordinates, useSortable, v
 import { CSS } from '@dnd-kit/utilities'
 import { useState } from 'react'
 import { PRESETS } from '../data/presets'
-import { playCard } from '../engine/calc'
+import { playCard, playCount } from '../engine/calc'
 import { activeBuffs, activeCounters, findCharacter } from '../engine/buffs'
 import { buildDeck, changeEpiphany, deckItems, prunePlays, teammateDeck, type DeckItem } from '../engine/deck'
 import { TEAM_SIZE, type Card, type CardPreset, type CharacterPreset, type RotationPlay, type Teammate } from '../engine/types'
@@ -26,7 +26,7 @@ export function CardsTab() {
 }
 
 function cardSummary(c: Card): string {
-  const amount = `${c.scaling === 'Fixed' ? `${c.pct} fixed` : pct(c.pct, 2)}${c.upgrade ? ` base (${c.upgrade})` : ''}`
+  const amount = `${c.scaling === 'Fixed' ? `${+c.pct.toFixed(4)} fixed` : pct(c.pct, 2)}${c.upgrade ? ` base (${c.upgrade})` : ''}`
   return `${c.cost === null ? '' : `${c.cost} AP · `}${c.cardType} · ${amount} × ${c.hits} hit${c.hits === 1 ? '' : 's'}${c.scaling === 'DEF' ? ' · DEF' : ''}${c.kind !== 'Normal' ? ` · ${c.kind}` : ''}`
 }
 
@@ -373,6 +373,7 @@ function RotationItem({ id, index, play, card, baseHits, baseCost, counters, ope
           <div className="row-sub">{card ? cardSummary(card) : 'Card is not in the deck'}</div>
           {play.hits !== undefined && <div className="row-note">Hits set for this play (card: {baseHits})</div>}
           {card?.perCost && <div className="row-note">Damage × Cost {card.cost}{play.cost !== undefined ? ` (card: ${baseCost})` : ''}</div>}
+          {card?.perCount && play.stacks?.[card.perCount] === undefined && <div className="row-note">Damage × {card.perCount} 1</div>}
           {flags && <div className="row-note">{flags}</div>}
         </button>
         <button className="icon-btn" aria-label={`Remove play ${index + 1}`} onClick={onRemove}>×</button>
@@ -387,6 +388,17 @@ function RotationItem({ id, index, play, card, baseHits, baseCost, counters, ope
             <div className="toggle-field"><span>Cost (damage × Cost)</span>
               <Stepper label={`Play ${index + 1} cost`} value={card.cost ?? 1} min={1} max={9}
                 onChange={(n) => onChange((p) => { if (n === baseCost) delete p.cost; else p.cost = n })} />
+            </div>
+          )}
+          {card.perCount && (
+            <div className="toggle-field"><span>{card.perCount} (damage × count)</span>
+              <Stepper label={`Play ${index + 1} ${card.perCount}`} value={playCount(card.perCount, play)} min={0}
+                onChange={(n) => onChange((p) => {
+                  p.stacks ??= {}
+                  if (n !== 1) p.stacks[card.perCount!] = n
+                  else delete p.stacks[card.perCount!]
+                  if (!Object.keys(p.stacks).length) delete p.stacks
+                })} />
             </div>
           )}
           <div className="toggle-field"><span>Vulnerable</span>

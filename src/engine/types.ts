@@ -163,6 +163,8 @@ export interface CardPreset {
   image?: string
   /** See Card.perCost. */
   perCost?: boolean
+  /** See Card.perCount. */
+  perCount?: string
   /** Ids of the cards it creates (shards, Sword Tassel): they join the deck with it (src/engine/deck.ts). */
   creates?: string[]
   /** Overrides the card upgrade potential picked from its category (null: none). */
@@ -375,6 +377,9 @@ export interface Card {
   preset?: string
   /** "X% Damage for each Cost of this card": pct is per Cost; each play sets the Cost (RotationPlay.cost). */
   perCost?: boolean
+  /** "X% for each <thing>" (Orlea's Annoying: 'Cards in hand'): pct is per thing; each play sets the count in its stacks
+   * under this name (default 1). */
+  perCount?: string
 }
 
 /** Labels for UserBoost.from / UserBuff.from. */

@@ -74,7 +74,8 @@ owner asks (there is no git remote yet).
   raised by the card's potential and Card % buffs (`shownPct` in calc.ts), `{E1:...}` / `{E3:6|4}` Manifest Ego,
   `{P3-1:...}` Potential node (switch on Setup > Potentials, `build.potentialNodes`, missing = on). A card's
   `upgrade: null` turns off its potential upgrade (Mei Lin's Jewel V). Tokens nest: `Heal {P3-1:{70%}|{100%}}`.
-  Done: Mei Lin, Rossweisse, Tiphera. The step-by-step process is the `card-review` skill (.claude/skills/card-review).
+  `{F40%}` is a Fixed damage % (raised only with the potentialFixed setting).
+  Done: Mei Lin, Rossweisse, Tiphera, Orlea. The step-by-step process is the `card-review` skill (.claude/skills/card-review).
 - Card upgrade potentials: build `basicLevel` / `signatureLevel`, card `upgrade`
   (Basic / Signature; `pct` is then the base %), `potentialFactor()` in calc.ts; the Manifest Ego
   level that adds +3 is parsed from the import (`potentialEgo` in merge.ts). See docs/FORMULA.md 2c.
@@ -84,7 +85,8 @@ owner asks (there is no git remote yet).
   `"Teammate>Owner|effectId"` (`teamKey`). Every switched-on buff counts on every hit (snapshot).
   My boosts/buffs have a label-only `from` field (teammate equipment).
 - Attack list (per build, `build.rotation`): each play has optional hits, `cost` (only for `perCost` cards: "X% for
-  each Cost of this card", damage = % x Cost), `vulnerable`,
+  each Cost of this card", damage = % x Cost), `vulnerable`, a count for `perCount` cards ("X% for each card in
+  hand", kept in `stacks` under the card's `perCount` name, default 1),
   `weaknessDebuff` and `stacks` per counter name; buffs with `counter` read the play's stacks
   (capped at max stacks). Buff type `Card %` raises a card's base % like a potential (only on cards
   with an upgrade); `Base %` ("+X% base Damage Amount") adds to the shown card %; `Final` ("final Damage
@@ -135,7 +137,7 @@ Crit       = Damage x Crit DMG (stat is the total multiplier); Expected = Damage
 - Open mechanics questions are listed in docs/FORMULA.md section 4.
 - Card text check: the owner is saving in-game card screenshots to `card-screenshots/<slug>/` (git-ignored);
   compare them with the cards and confirm corrections with the owner (`card-review` skill). Mei Lin, Rossweisse (2026-10-27),
-  Tiphera (2026-10-28) done; next: every other character the owner has, as they send them; Luke, Kayron, Olga and Fei
+  Tiphera, Orlea (2026-10-28) done; next: every other character the owner has, as they send them; Luke, Kayron, Olga and Fei
   last (the owner doesn't have them yet).
 - Idea for later (owner, 2026-10-27): animated card art. cznmetadecks has the game's animated unique cards as video
   (`https://cdn.czndecksmeta.com/card/cards_animated/<artId>.mp4`, 900x770, ~1 MB each, ~200 MB in all): skipped for size.

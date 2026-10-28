@@ -26,7 +26,7 @@ export function useCardText(teammate?: Teammate): (p: CardPreset) => string {
     : renderCardText(p.text, {
       egoLevel: build.egoLevel ?? 0,
       nodeOn: (node) => build.potentialNodes?.[node] !== false,
-      pct: (base) => shownPct(base, presetCard(p, ch?.element ?? ELEMENTS[0], p.id), build, ch, buffs, settings),
+      pct: (base, fixed) => shownPct(base, presetCard(p, ch?.element ?? ELEMENTS[0], p.id), build, ch, buffs, settings, fixed),
     })
 }
 

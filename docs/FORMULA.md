@@ -155,7 +155,8 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
     (default 0; in-game "by 12%" = level 6). The Manifest Ego level whose text says "+3 levels" (E5 for most,
     E3 for some, read from the import) adds 3 (max 13 = 26%).
   - Raises ATK- and DEF-scaling damage (User). Fixed damage: **Unconfirmed**, a Settings toggle
-    (default off).
+    (default off). In-game, Orlea's Annoying I shows its Fixed 40% unraised but its Heal raised (228% at Signature 7),
+    which fits the default; card text marks Fixed damage %s as `{F40%}`.
   - Library cards store the base % with their upgrade (Basic / Signature / none). Own cards with no
     upgrade use the % as shown in-game. Save v8: preset cards still at the base % got their upgrade;
     edited ones kept their in-game % with no upgrade.
@@ -204,6 +205,24 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
     (1-9, the card's 5 by default): Cost 3 = 168% x 3. Cards with `perCost` get a Cost setting per play (`RotationPlay.cost`).
   - Potential 7 (+10% Crit DMG of allies at Defense above 300) is an allies stat with a hint; E4 Power of Archetype is
     5% multiplicative each on Attack cards, Order and Defense-Based Damage (DEF cards), per-play stacks (max 2), allies.
+- **Orlea** (owner's screenshots, 2026-10-28; E0, Basic 1, Signature 7 = x1.14): every in-game % = Prydwen's base x upgrade
+  (Annoying III 450% -> 513%), except Fixed damage % and the buff %s (Softie, Swiftie's Retain, Sacred Censer IV / V).
+  - Prydwen's Heaven's Healing is "Healing of Light" in-game, and Potential 3-1's 50% chance to create a Creation★ is on
+    it (Prydwen: on Attack, My Minions). Potential 5-1 "Healing of Light's Healing +10%" is read as +10% base heal
+    (**Unconfirmed**; it was off in the screenshots: Heal 102%).
+  - Base Annoying's Heal 20% isn't raised in-game either (Annoying I's Heal is); the text shows 20% as is.
+  - Creation cards (Softie / Swiftie / Sturdie ★-★★★) evolve, so every card that creates one brings all nine into the deck.
+  - **Softie** (User, 2026-10-28): "Increase Damage Amount by 10% for 1 turn" and "Retain: Increase Damage Amount of the
+    next Attack Card activated by 10% (max 350%)" raise **any ally's** damage, multiplicative. Per-play counters: Softies
+    used this turn, turns retained (max 350% / the %: ★ 35, ★★ 17, ★★★ 10 stacks).
+  - **Swiftie "Retain: +40% Damage Amount"** (User, 2026-10-28) adds up every turn it is retained (★★ +80%, ★★★ +150%),
+    additive; per-play counter Swiftie retains. Sacred Censer IV "next Swiftie by 40%": multiplicative, on/off per play.
+  - **Annoying "40% Fixed Damage for each card in hand"** (User, 2026-10-28): a Cards in hand setting per play (default 1)
+    multiplies the %. Cards with `perCount` get a count setting per play, kept in `RotationPlay.stacks` under its name.
+    Annoying II / V "+100% / +120% Damage Amount for each Creation" are additive per-play counters.
+  - Potential 7 "+6% Critical Chance of Combatant" (ATK > 700 or DEF > 300) reaches all allies (User, 2026-10-28).
+    E4 "increase Damage Amount of allies by 10%" while holding a Creation: multiplicative, allies, hint. Not counted:
+    E6 Fixed damage (★ x 50%) when a Creation is used.
 - **Team snapshot** (User, 2026-10-26), website only. Replaces the rotation buffs counted along
   the rotation (2026-10-25):
   - Each build has a team of up to 2 teammates (character, Manifest Ego level, partner, 3 fragment

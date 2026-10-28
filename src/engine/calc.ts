@@ -147,10 +147,11 @@ export function potentialFactor(upgrade: PotentialUpgrade | undefined, build: Bu
   return { value: 1 + level * settings.potentialPerLevel, sources }
 }
 
-/** The % the game shows on a card for a base % (1 = 100%): raised by the card's potential and the Card % buffs that match it. */
+/** The % the game shows on a card for a base % (1 = 100%): raised by the card's potential and the Card % buffs that match it.
+ * fixed: a Fixed damage % (raised only with the potentialFixed setting; a Fixed card's Heal is raised, Orlea's Annoying I). */
 export function shownPct(base: number, card: Card, build: Build, ch: CharacterPreset | undefined, buffs: ActiveBuff[],
-  settings: Settings): number {
-  if (card.scaling === 'Fixed' && !settings.potentialFixed) return base
+  settings: Settings, fixed = false): number {
+  if (fixed && !settings.potentialFixed) return base
   const potential = potentialFactor(card.upgrade, build, ch, settings)
   if (!potential) return base
   const cb = cardBuffs(buffs.filter((b) => !b.counter), card)
@@ -158,10 +159,15 @@ export function shownPct(base: number, card: Card, build: Build, ch: CharacterPr
   return base * potential.value * (1 + cardPct)
 }
 
-/** The card as played: the play's own hit count and Cost, if set, replace the card's. A per-Cost card's % is its % x the Cost. */
+/** A per-count card's count on this play (Card.perCount; kept in the play's stacks, default 1). */
+export const playCount = (name: string, play: RotationPlay) => play.stacks?.[name] ?? 1
+
+/** The card as played: the play's own hit count and Cost, if set, replace the card's. A per-Cost card's % is its % x the Cost;
+ * a per-count card's, its % x the play's count. */
 export function playCard(card: Card, play: RotationPlay): Card {
   const played = { ...card, hits: play.hits ?? card.hits, cost: play.cost ?? card.cost }
   if (card.perCost) played.pct = card.pct * (played.cost ?? 1)
+  if (card.perCount) played.pct = card.pct * playCount(card.perCount, play)
   return played
 }
 
