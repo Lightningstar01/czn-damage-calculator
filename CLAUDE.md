@@ -15,7 +15,8 @@ npm run lint       # oxlint
 npm run screenshot # phone (390px) + desktop PNGs of every tab -> screenshots/ (see scripts/screenshot.mjs:
                    # --tab Buffs, --phone, --tap "text", --save file); read them to check design changes
 # Re-import every character (cards, potentials, Manifest Ego) from Prydwen (after a game update;
-# review the git diff). One page per character; --cache <folder> keeps them for re-runs.
+# review the git diff). One page per character; --cache <folder> keeps them for re-runs;
+# --art <slug> copies that character's card art into public/cards/ (characters already copied are kept up to date).
 # Python is not on PATH on the owner's PC; use the project venv:
 .venv\Scripts\python.exe scripts/import_prydwen.py
 ```
@@ -41,8 +42,13 @@ owner asks (there is no git remote yet).
     node_modules/.vitest-cache is deleted (cached glob).
   - `src/data/merge.ts` combines the two; `checkAdditions()` (run by the tests) catches unknown
     slugs or card ids and duplicate effect ids.
-  - Library cards keep the card id in `Card.preset`, so a card's preset effects count while it's
-    in the library.
+  - Deck per build (`build.deck`, `src/engine/deck.ts`): `{id, preset}` entries resolved live from the presets
+    (old non-preset cards keep `{id, custom}`). The Ego skill and the cards a picked card `creates`
+    (`creates: [...]` in `characters/<slug>.ts`, e.g. Rossweisse's shards) join automatically with id `auto:<presetId>`;
+    nobody adds them by hand. A deck card's preset effects count while it's in the deck. Teammates' decks
+    (`Teammate.cards`) only add buffs. Cards are picked on the Cards tab as pictures (`src/ui/CardFace.tsx`).
+  - Card art: the import records each card's `image` (Prydwen's CDN URL, 200x300 webp). `--art <slug>` copies that
+    character's art into `public/cards/<slug>/` (then `image` is the local path); trial: Rossweisse copied, Mei Lin CDN.
 - `src/data/presets.ts`: loads the above, plus partners and memory fragment sets with their
   effects (entered by hand, not imported). The owner and Claude edit these files; there is no
   in-app preset editor. Effect ids must be unique per owner, because saved switches are keyed
@@ -81,7 +87,7 @@ owner asks (there is no git remote yet).
   Amount") is its own multiplier. Effects: `egoBelow` (off from that Ego level), `minAttack`, `attackBonus.every`.
   A card's `followUp` adds Fixed damage (a share of the next matching play's damage), e.g. Rossweisse's Ego skill.
 - Saves are per character: builds (partner, Manifest Ego level, card upgrade levels, 3 fragment set
-  picks, stats, team, attack list...), boosts, buffs and cards. Every build shares the card library.
+  picks, stats, team, deck, attack list...), boosts and buffs.
   Preset switches that are missing count as on; own boost/buff switches that are missing count as off.
 - Constants and rules belong in settings, never hard-coded in the engine.
 - Document every new assumption in docs/FORMULA.md with its source or "Unconfirmed".
@@ -125,11 +131,11 @@ Crit       = Damage x Crit DMG (stat is the total multiplier); Expected = Damage
 - Open mechanics questions are listed in docs/FORMULA.md section 4.
 - Card text check: the owner is saving in-game card screenshots to `card-screenshots/<slug>/` (git-ignored);
   compare them with the cards and confirm corrections with the owner. Mei Lin and Rossweisse done (2026-10-27); next as the owner sends them.
-- Idea for later (owner, 2026-10-27, not now): build the library/deck like the game, with card art. Plan: the Prydwen
-  import also records each card's picture (art only, 200x300 webp, e.g. cdn.prydwen.gg/images/chaos/cards/mei_4.webp);
-  the site draws its own frame (cost, name, type, element, our text with formula colors and potentials applied);
-  library as a card grid, tap to add / pick the Epiphany. Before publishing: decide on hosting the art (it's the
-  game's; keep a copy with the site and credit the game and Prydwen rather than loading from Prydwen). Start with one character.
+- Card art: the owner decides between copying every character's art (`--art`, ~450 files, ~6-7 MB) and loading from
+  Prydwen's CDN after comparing the trial (Rossweisse copied, Mei Lin CDN). No bulk download until they pick "copy".
+- `creates` links: Rossweisse only; add each character's during the alphabetical review (until then their created
+  cards can't be added).
+- Cards tab "Other": neutral and seasonal cards later (Prydwen has 31 Neutral cards).
 - Presets: all 38 characters and their cards are imported. Reviewing every character alphabetically
   with the owner (cards, buffs with self/allies/enemy targets, Manifest Ego, potentials; Prydwen +
   the owner's in-game check); next: Adelheid, then on (re-check Mei Lin at M).

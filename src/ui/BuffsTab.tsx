@@ -1,6 +1,8 @@
 // Buffs: Morale, preset buffs, the teammates' buffs, and the owner's own buffs.
 import { useState } from 'react'
-import { buffType, hasTeam } from '../engine/buffs'
+import { PRESETS } from '../data/presets'
+import { buffType, findCharacter, hasTeam } from '../engine/buffs'
+import { buildDeck } from '../engine/deck'
 import { BUFF_TYPES, CATEGORIES, type BuffType, type Condition, type HitScope } from '../engine/types'
 import { newBuff } from '../store/save'
 import { useCharacter, useStore } from '../store/store'
@@ -49,9 +51,10 @@ function StacksSection() {
 }
 
 function MyBuffsSection() {
-  const { cs, build, updateCs } = useCharacter()!
+  const { name, cs, build, updateCs } = useCharacter()!
   const [open, setOpen] = useState<string | null>(null)
-  const targets = ['ALL', ...new Set(cs.cards.flatMap((c) => [c.name, ...c.tags.split(',').map((t) => t.trim())]).values())].filter(Boolean)
+  const deck = buildDeck(findCharacter(PRESETS, name), build).map((i) => i.card)
+  const targets = ['ALL', ...new Set(deck.flatMap((c) => [c.name, ...c.tags.split(',').map((t) => t.trim())]))].filter(Boolean)
   return (
     <Section title="My buffs" help="Buffs from memory fragments, equipment, other characters, etc. Type the text as shown in-game: '+30%' is additive, '30%' (no +) is multiplicative, 'Weakness Attack' makes Weakness DMG apply. For crit bonuses that only some cards get, pick Crit Chance / Crit DMG as the type. Card % raises a card's base % like a potential (only on cards with a potential upgrade, entered at base %). Base % ('+X% base Damage Amount') is added to the card % after the potential. Final ('final Damage Amount') is its own multiplier."
       actions={<button className="btn small" onClick={() => {

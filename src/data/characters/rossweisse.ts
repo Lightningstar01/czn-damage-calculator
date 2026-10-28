@@ -11,11 +11,14 @@ const flickerText = (pct: number, suffix: string, extra = '', keywords = 'Equilu
 const shardText = (kind: 'Light' | 'Dark', pct: number, trigger: string) =>
   `[${kind} / Unique / Retain]\n{${pct}%} Damage to a random enemy\nCreate 1 Sword Tassel\n${trigger}`
 
+// Cards that create Sword Tassel bring it into the deck (CardPreset.creates); each Flicker Blade brings its own two shards
+const tassel = ['card-1408']
+
 // The un-epiphanied Flicker Blade's shards aren't on Prydwen (owner's screenshots, 2026-10-27: 96% = 80% at Signature 10)
 const baseShard = (kind: 'Light' | 'Dark', trigger: string): CardPreset => ({
   id: `shard-${kind.toLowerCase()}`, base: `Shard:${kind}`, name: `Shard:${kind}`, category: 'Generated Card', rarity: 'Blue',
   cardType: 'Attack', cost: 2, element: 'Justice', tags: `${kind}, Unique, Retain`, scaling: 'ATK', pct: 0.8, hits: 1,
-  weaknessApplies: false, text: shardText(kind, 80, trigger),
+  weaknessApplies: false, text: shardText(kind, 80, trigger), creates: tassel,
 })
 
 export default {
@@ -67,23 +70,23 @@ export default {
     'card-1382': { text: '{100%} Shield', notes: 'Shield only, no damage' },
 
     // Flicker Blade (Equilux: hit count fixed to 1)
-    'card-1383': { text: flickerText(400, '') },
-    'card-1384': { name: 'Flicker Blade (Amped)', text: flickerText(600, ' (Amped)') },
-    'card-1385': { name: 'Flicker Blade (Cycle)', text: flickerText(600, ' (Cycle)') },
-    'card-1386': { name: 'Flicker Blade (Aegis)', text: flickerText(400, ' (Aegis)', '20% DMG-Based Shield\n') },
-    'card-1387': { name: 'Flicker Blade (Blink)', text: flickerText(600, ' (Blink)') },
+    'card-1383': { text: flickerText(400, ''), creates: ['shard-light', 'shard-dark'] },
+    'card-1384': { creates: ['card-1409', 'card-1414'], name: 'Flicker Blade (Amped)', text: flickerText(600, ' (Amped)') },
+    'card-1385': { creates: ['card-1410', 'card-1415'], name: 'Flicker Blade (Cycle)', text: flickerText(600, ' (Cycle)') },
+    'card-1386': { creates: ['card-1411', 'card-1416'], name: 'Flicker Blade (Aegis)', text: flickerText(400, ' (Aegis)', '20% DMG-Based Shield\n') },
+    'card-1387': { creates: ['card-1412', 'card-1417'], name: 'Flicker Blade (Blink)', text: flickerText(600, ' (Blink)') },
     'card-1388': {
-      name: 'Flicker Blade (Unbound)', text: flickerText(400, ' (Unbound)', '+120% base Damage Amount for each X\n', 'Equilux / Unique / Finale'),
+      name: 'Flicker Blade (Unbound)', creates: ['card-1413', 'card-1418'], text: flickerText(400, ' (Unbound)', '+120% base Damage Amount for each X\n', 'Equilux / Unique / Finale'),
       replaceNotes: true, notes: 'X-cost: set X (AP spent) on each play; the hit count stays 1 (Equilux)',
       effects: [cardBuff('x', 'Base Damage Amount for each X', '+120%', 'Flicker Blade (Unbound)', { type: 'Base %', counter: 'X (Unbound)' })],
     },
 
     // Sword Resonance, I–V
-    'card-1389': { text: 'Create 3 Sword Tassel' },
-    'card-1390': { text: 'Create 3 Sword Tassel\nActivate effect for 1 random Light or Dark card', notes: 'Add the activated shard as a play' },
-    'card-1391': { text: 'Create 3 Sword Tassel\nDraw 1 card(s) of this unit' },
+    'card-1389': { creates: tassel, text: 'Create 3 Sword Tassel' },
+    'card-1390': { creates: tassel, text: 'Create 3 Sword Tassel\nActivate effect for 1 random Light or Dark card', notes: 'Add the activated shard as a play' },
+    'card-1391': { creates: tassel, text: 'Create 3 Sword Tassel\nDraw 1 card(s) of this unit' },
     'card-1392': { text: '[Unique]\nApply Retrieve to all Light and Dark cards in hand' },
-    'card-1393': { text: 'Create 3 Sword Tassel\nWhen the next Equilux card is coalesced, apply Pulverize to that card' },
+    'card-1393': { creates: tassel, text: 'Create 3 Sword Tassel\nWhen the next Equilux card is coalesced, apply Pulverize to that card' },
     'card-1394': { text: '[Unique]\nActivate effect for all Light and Dark cards in hand', notes: 'Add each activated shard as a play' },
 
     // Radiant Sword Flow, I–V
@@ -106,7 +109,7 @@ export default {
     // Blade of the Cycle, I–V (Brand of the Cycle is a character effect, set per play)
     'card-1401': { text: '{200%} Damage\n4 Brand of the Cycle' },
     'card-1402': { text: '{300%} Damage\n6 Brand of the Cycle' },
-    'card-1403': { text: '{300%} Damage\n2 Brand of the Cycle\nPurity: Create 2 Sword Tassel' },
+    'card-1403': { creates: tassel, text: '{300%} Damage\n2 Brand of the Cycle\nPurity: Create 2 Sword Tassel' },
     'card-1404': { text: '{200%} Damage\n4 Brand of the Cycle\nDraw 1 card(s) of this unit, then decrease Cost of those cards by 1 for 1 turn' },
     'card-1405': { text: '{300%} Damage\n1 Brand of the Cycle for each Justice Card in hand\nPurity: Decrease Cost by 1' },
     'card-1406': {
@@ -132,16 +135,16 @@ export default {
     },
 
     // Shards
-    'card-1409': { text: shardText('Light', 120, 'When 1 card of this unit is activated, activate effect (2 times per turn)') },
-    'card-1410': { text: shardText('Light', 120, 'When a card is Discarded through an ability, activate effect (2 times per turn)') },
-    'card-1411': { text: shardText('Light', 240, 'When attacked, activate effect (1 time per turn)') },
-    'card-1412': { text: '[Light / Unique / Retain / Retrieve]\n{240%} Damage\nCreate 1 Sword Tassel\nDiscard 1 random Status Ailment or Curse Card(s) in hand' },
-    'card-1413': { text: shardText('Light', 120, 'When AP is gained through an ability, activate effect (2 times per turn)') },
-    'card-1414': { text: shardText('Dark', 120, 'When 2 cards of other Combatants are activated, activate effect (2 times per turn)') },
-    'card-1415': { text: shardText('Dark', 120, 'On Draw through an ability, activate effect (2 times per turn)') },
-    'card-1416': { text: shardText('Dark', 240, 'When Shield is gained through an ability, activate effect (1 time per turn)') },
-    'card-1417': { text: '[Dark / Unique / Retain / Retrieve]\n{240%} Damage\nCreate 1 Sword Tassel\nDiscard 1 card(s) of a random different Combatant in hand' },
-    'card-1418': { text: shardText('Dark', 120, 'When a 1-Cost or higher card is activated, activate effect (2 times per turn)') },
+    'card-1409': { creates: tassel, text: shardText('Light', 120, 'When 1 card of this unit is activated, activate effect (2 times per turn)') },
+    'card-1410': { creates: tassel, text: shardText('Light', 120, 'When a card is Discarded through an ability, activate effect (2 times per turn)') },
+    'card-1411': { creates: tassel, text: shardText('Light', 240, 'When attacked, activate effect (1 time per turn)') },
+    'card-1412': { creates: tassel, text: '[Light / Unique / Retain / Retrieve]\n{240%} Damage\nCreate 1 Sword Tassel\nDiscard 1 random Status Ailment or Curse Card(s) in hand' },
+    'card-1413': { creates: tassel, text: shardText('Light', 120, 'When AP is gained through an ability, activate effect (2 times per turn)') },
+    'card-1414': { creates: tassel, text: shardText('Dark', 120, 'When 2 cards of other Combatants are activated, activate effect (2 times per turn)') },
+    'card-1415': { creates: tassel, text: shardText('Dark', 120, 'On Draw through an ability, activate effect (2 times per turn)') },
+    'card-1416': { creates: tassel, text: shardText('Dark', 240, 'When Shield is gained through an ability, activate effect (1 time per turn)') },
+    'card-1417': { creates: tassel, text: '[Dark / Unique / Retain / Retrieve]\n{240%} Damage\nCreate 1 Sword Tassel\nDiscard 1 card(s) of a random different Combatant in hand' },
+    'card-1418': { creates: tassel, text: shardText('Dark', 120, 'When a 1-Cost or higher card is activated, activate effect (2 times per turn)') },
   },
   extraCards: [
     baseShard('Light', 'When 1 card of this unit is activated, activate effect (2 times per turn)'),

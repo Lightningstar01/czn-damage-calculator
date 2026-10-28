@@ -9,6 +9,7 @@
 import { describe, expect, it } from 'vitest'
 import { computeBuild, shownPct, type BuildResult } from '../src/engine/calc'
 import { renderCardText } from '../src/engine/cardText'
+import { AUTO, buildDeck, changeEpiphany, prunePlays } from '../src/engine/deck'
 import { activeBuffs, buffMatches, buffType, fragmentPiecesUsed, parseBuffValue, parseStatValue, presetBuffValue } from '../src/engine/buffs'
 import { ADDITIONS, IMPORTED, PRESETS } from '../src/data/presets'
 import { checkAdditions } from '../src/data/merge'
@@ -41,6 +42,8 @@ function card(name: string, tags: string, hits: number, weak = false, ravaged = 
 }
 
 const plays = (...ids: string[]): RotationPlay[] => ids.map((cardId) => ({ cardId }))
+/** Put cards in every build's deck, as custom cards (a preset copy keeps its preset's effects). */
+const addCards = (cs: CharacterSave, ...cards: Card[]) => { for (const b of cs.builds) b.deck.push(...cards.map((c) => ({ id: c.id, custom: c }))) }
 /** The same attack list for every build of the save. */
 const setPlays = (cs: CharacterSave, list: RotationPlay[]) => { for (const b of cs.builds) b.rotation = structuredClone(list) }
 
@@ -64,7 +67,7 @@ function mainScenario() {
   cs.buffs.push({ ...newBuff(c.id), source: 'First hit', value: '+50%', appliesTo: 'Attack', hitScope: 'First hit only' })
   const test = card('Test', 'Attack', 3), two = card('Two', 'x', 2), weak = card('Weak', 'x', 1, true)
   two.cardType = weak.cardType = 'Skill'   // only "Test" is an Attack, as in the Excel scenario
-  cs.cards.push(test, two, weak)
+  addCards(cs, test, two, weak)
   setPlays(cs, plays(test.id, two.id, two.id, weak.id))
   c.rotation[0].vulnerable = true
   const run = (i: number) => computeBuild(presets, '', cs, cs.builds[i], settings)
@@ -128,7 +131,7 @@ function partnerScenario(character: string) {
   a.partner = b.partner = 'Marianne'
   b.presetSwitches['Marianne|atk'] = false
   const strike = card('Strike', 'Basic Attack', 1, false, true), other = card('Other', 'x', 1)
-  cs.cards.push(strike, other)
+  addCards(cs, strike, other)
   setPlays(cs, plays(strike.id, other.id))
   return cs.builds.map((x) => computeBuild(presets, character, cs, x, settings))
 }
@@ -169,7 +172,7 @@ describe('memory fragment sets', () => {
   b.presetSwitches['Test Four|dmg'] = false
   c.fragments = ['Test Four', 'Test Four', 'Test Two']
   const x = card('X', '', 1)
-  cs.cards.push(x)
+  addCards(cs, x)
   setPlays(cs, plays(x.id))
   const [A, B, C] = cs.builds.map((bd) => computeBuild(presets, 'Mei Lin', cs, bd, settings))
 
@@ -219,19 +222,19 @@ describe('applies to', () => {
   })
 
   it('migrate moves element and cost tags into their fields (else the character element)', () => {
-    const old = { version: 4, characters: { 'Mei Lin': { builds: [], rotation: [], cards: [
+    const old = { version: 4, characters: { 'Mei Lin': { builds: [{ id: 'x' }], rotation: [], cards: [
       { id: 'a', name: 'A', tags: 'Order, Exhaust, 2-cost' }, { id: 'b', name: 'B', tags: 'Basic Attack' },
     ] } } }
-    const [ca, cb] = migrate(old).characters['Mei Lin'].cards
+    const [ca, cb] = migrate(old).characters['Mei Lin'].builds[0].deck.map((d) => d.custom)
     expect(ca).toMatchObject({ element: 'Order', cost: 2, tags: 'Exhaust' })
     expect(cb).toMatchObject({ element: 'Passion', cost: null, tags: 'Basic Attack' })
   })
 
   it('migrate moves a type tag into the card type', () => {
-    const old = { version: 2, characters: { X: { builds: [], cards: [
+    const old = { version: 2, characters: { X: { builds: [{ id: 'x' }], cards: [
       { id: 'a', name: 'A', tags: 'Passion, Upgrade, 1-cost' }, { id: 'b', name: 'B', tags: 'Basic Attack' },
     ] } } }
-    const [ca, cb] = migrate(old).characters.X.cards
+    const [ca, cb] = migrate(old).characters.X.builds[0].deck.map((d) => d.custom)
     expect(ca).toMatchObject({ cardType: 'Upgrade', tags: '', element: 'Passion', cost: 1 })
     expect(cb).toMatchObject({ cardType: 'Attack', tags: 'Basic Attack', cost: null })
   })
@@ -247,7 +250,7 @@ describe('per-card crit buffs', () => {
     cs.buffs.push({ ...newBuff(a.id), value: '+35%', typeOverride: 'Crit DMG', appliesTo: '1-cost' })
     cs.buffs.push({ ...newBuff(a.id), value: '+20%', typeOverride: 'Crit Chance', appliesTo: '1-cost' })
     const one = { ...card('One', '', 1), cost: 1 }, two = { ...card('Two', '', 1), cost: 2 }
-    cs.cards.push(one, two)
+    addCards(cs, one, two)
     setPlays(cs, plays(one.id, two.id))
     const r = computeBuild(presets, '', cs, a, settings)
     expect(r.plays[0].hits[0].critDmg).toBeCloseTo(1.85)
@@ -279,6 +282,7 @@ describe('card presets', () => {
     expect(new Set(PRESETS.characters.map((c) => c.name)).size).toBe(PRESETS.characters.length)
     expect(checkAdditions(IMPORTED, ADDITIONS)).toEqual([])
     expect(checkAdditions(IMPORTED, { nobody: {}, 'mei-lin': { cards: { 'card-0': {} } } })).toHaveLength(2)
+    expect(checkAdditions(IMPORTED, { 'mei-lin': { cards: { 'card-338': { creates: ['card-0'] } } } })).toHaveLength(1)
     const badEgo = { ...PRESETS.characters[0].effects[0], kind: 'Buff', id: 'x', egoLevel: 7 } as never
     expect(checkAdditions(IMPORTED, { 'mei-lin': { effects: [badEgo] } })).toHaveLength(1)
   })
@@ -297,7 +301,7 @@ describe('card presets', () => {
     a.stats.attack = 1000
     noStrikeNode(a)
     const strike = cardFromPreset(preset('card-338'), 'Passion')
-    cs.cards.push(strike)
+    addCards(cs, strike)
     setPlays(cs, plays(strike.id))
     const mult = () => computeBuild(PRESETS, 'Mei Lin', cs, a, settings).plays[0].hits[0].cardMult
     expect(mult()).toBeCloseTo(1)
@@ -322,10 +326,11 @@ describe('card presets', () => {
   })
 
   it('migrate maps the old hand-entered Mei Lin card ids to the imported ones', () => {
-    const cards = ['strike', 'ego', 'jewel', 'jewel-1', 'spire-5', 'unity-1', 'aromata-5', 'sovereignty', 'custom'].map((preset) => ({ preset }))
-    const old = { version: 5, characters: { 'Mei Lin': { builds: [], cards, rotation: [] } } }
-    expect(migrate(old).characters['Mei Lin'].cards.map((c) => c.preset)).toEqual(
-      ['card-338', 'card-337', 'card-340', 'card-341', 'card-351', 'card-353', 'card-363', 'card-364', 'custom'])
+    const cards = ['strike', 'ego', 'jewel', 'jewel-1', 'spire-5', 'unity-1', 'aromata-5', 'sovereignty', 'custom'].map((preset, i) => ({ id: String(i), preset }))
+    const old = { version: 5, characters: { 'Mei Lin': { builds: [{ id: 'x' }], cards, rotation: [] } } }
+    // The Ego skill (card-337) leaves the deck in v10: it comes with every deck
+    expect(migrate(old).characters['Mei Lin'].builds[0].deck.map((d) => d.preset ?? d.custom?.preset)).toEqual(
+      ['card-338', 'card-340', 'card-341', 'card-351', 'card-353', 'card-363', 'card-364', 'custom'])
     for (const id of ['card-338', 'card-351', 'card-353', 'card-363']) expect(preset(id)).toBeDefined()
     expect([preset('card-351').name, preset('card-353').name, preset('card-363').name]).toEqual(
       ['Rising Dragon Spire V', 'Unity of Attack and Defense I', 'Spirit of the Aromata V'])
@@ -347,11 +352,11 @@ describe('card presets', () => {
     const strike = cardFromPreset(preset('card-338'), 'Passion'), jewel = cardFromPreset(preset('card-341'), 'Passion')
     expect(strike).toMatchObject({ name: 'Strike', element: 'Passion', cost: 1, tags: 'Basic, Basic Attack', pct: 1, hits: 1, preset: 'card-338' })
     expect(cardFromPreset(preset('card-337'), 'Passion').cost).toBeNull()
-    cs.cards.push(strike)
+    addCards(cs, strike)
     setPlays(cs, plays(strike.id))
     const before = computeBuild(PRESETS, 'Mei Lin', cs, a, settings)
     expect(before.plays[0].hits[0].cardMult).toBeCloseTo(1)
-    cs.cards.push(jewel, { ...jewel, id: 'copy' })   // a second copy doesn't double the buff
+    addCards(cs, jewel, { ...jewel, id: 'copy' })   // a second copy doesn't double the buff
     const after = computeBuild(PRESETS, 'Mei Lin', cs, a, settings)
     // Jewel I: 30% multiplicative on Attack cards, plus Passion Weakness (Weakness DMG 125%)
     expect(after.plays[0].hits[0].cardMult).toBeCloseTo(1.3 * 1.25)
@@ -385,7 +390,7 @@ describe('potentials', () => {
     a.stats.attack = 1000
     const strike = cardFromPreset(preset('card-338'), 'Passion'), spire = cardFromPreset(preset('card-346'), 'Passion')
     const own = { ...newCard('Passion'), pct: 1.5 }
-    cs.cards.push(strike, spire, own)
+    addCards(cs, strike, spire, own)
     setPlays(cs, plays(strike.id, spire.id, own.id))
     const mults = () => computeBuild(PRESETS, 'Mei Lin', cs, a, settings).plays.map((p) => p.hits[0].cardMult)
     // Strike also has potential 5-1: +5%, +5% more above 500 Attack (x1.1 on the card %)
@@ -436,23 +441,24 @@ describe('potentials', () => {
     const [a] = cs.builds
     a.signatureLevel = 10
     const fixed: Card = { ...newCard('Passion'), scaling: 'Fixed', pct: 100, upgrade: 'Signature' }
-    cs.cards.push(fixed)
+    addCards(cs, fixed)
     setPlays(cs, plays(fixed.id))
     expect(computeBuild(PRESETS, 'Mei Lin', cs, a, settings).nonCrit).toBeCloseTo(100)
     expect(computeBuild(PRESETS, 'Mei Lin', cs, a, { ...settings, potentialFixed: true }).nonCrit).toBeCloseTo(120)
   })
 
-  it('migrate: levels 0; preset cards still at the base % get their upgrade, edited ones keep their in-game %', () => {
+  it('migrate: levels 0; preset cards follow their preset (v10), others stay custom without an upgrade', () => {
     const cards = [
-      { preset: 'card-338', pct: preset('card-338').pct },
-      { preset: 'card-346', pct: 9.99 },
-      { preset: 'card-337', pct: preset('card-337').pct },
-      { pct: 1 },
+      { id: 's', preset: 'card-338', pct: preset('card-338').pct },
+      { id: 'e', preset: 'card-346', pct: 9.99 },
+      { id: 'g', preset: 'card-337', pct: preset('card-337').pct },
+      { id: 'c', pct: 1 },
     ]
     const old = { version: 7, characters: { 'Mei Lin': { builds: [{ id: 'a' }], cards, rotation: [] } } }
-    const cs = migrate(old).characters['Mei Lin']
-    expect(cs.builds[0]).toMatchObject({ basicLevel: 0, signatureLevel: 0 })
-    expect(cs.cards.map((c) => c.upgrade)).toEqual(['Basic', undefined, undefined, undefined])
+    const b = migrate(old).characters['Mei Lin'].builds[0]
+    expect(b).toMatchObject({ basicLevel: 0, signatureLevel: 0 })
+    expect(b.deck).toEqual([{ id: 's', preset: 'card-338' }, { id: 'e', preset: 'card-346' }, { id: 'c', custom: expect.objectContaining({ pct: 1 }) }])
+    expect(b.deck[2].custom!.upgrade).toBeUndefined()
   })
 })
 
@@ -465,7 +471,7 @@ describe('per-play stacks', () => {
     a.stats.attack = 1000
     noStrikeNode(a)
     const lib = ids.map((id) => cardFromPreset(preset(id), 'Passion'))
-    cs.cards.push(...lib)
+    addCards(cs, ...lib)
     return { cs, a, lib }
   }
   const adds = (r: BuildResult) => r.plays.map((p) => p.hits.map((h) => Math.round(h.additive.value * 100) / 100))
@@ -491,7 +497,7 @@ describe('per-play stacks', () => {
   it('Ember: +30% per stack on every hit vs a Ravaged target, up to 5; nothing otherwise', () => {
     const { cs, a, lib: [strike] } = setup('card-338')
     const ravaged = { ...strike, id: 'rs', targetRavaged: true }
-    cs.cards.push(ravaged)
+    addCards(cs, ravaged)
     a.rotation = [{ cardId: ravaged.id, hits: 2, stacks: { Ember: 3 } }, { cardId: strike.id, stacks: { Ember: 5 } },
       { cardId: ravaged.id, stacks: { Ember: 7 } }, { cardId: ravaged.id }]
     expect(adds(computeBuild(PRESETS, 'Mei Lin', cs, a, settings))).toEqual([[0.9, 0.9], [0], [1.5], [0]])
@@ -506,7 +512,7 @@ describe('per-play debuffs and per-build attack lists', () => {
     const [a] = cs.builds
     a.stats.attack = 1000
     const x = card('X', '', 2)
-    cs.cards.push(x)
+    addCards(cs, x)
     a.rotation = [{ cardId: x.id, vulnerable: true }, { cardId: x.id, weaknessDebuff: true }, { cardId: x.id, vulnerable: true, weaknessDebuff: true }, { cardId: x.id }]
     const r = computeBuild(presets, '', cs, a, settings)
     expect(r.plays.map((p) => p.hits.map((h) => h.cardMult))).toEqual(
@@ -521,7 +527,7 @@ describe('per-play debuffs and per-build attack lists', () => {
     cs.builds.push(b)
     for (const x of cs.builds) x.stats.attack = 1000
     const x = card('X', '', 1)
-    cs.cards.push(x)
+    addCards(cs, x)
     a.rotation = plays(x.id)
     b.rotation = plays(x.id, x.id, x.id)
     expect(cs.builds.map((bd) => computeBuild(presets, '', cs, bd, settings).nonCrit)).toEqual([350, 1050].map((v) => expect.closeTo(v)))
@@ -582,7 +588,7 @@ describe('team', () => {
     const [a] = cs.builds
     a.stats.attack = 1000
     const x = card('X', '', 1)
-    cs.cards.push(x)
+    addCards(cs, x)
     a.rotation = plays(x.id)
     a.team = [{ character: 'Helper', egoLevel: 0, partner: 'Buddy', fragments: ['', '', ''], cards: [] }]
     const run = () => computeBuild(teamPresets, 'Testy', cs, a, settings)
@@ -626,7 +632,7 @@ describe('rotation plays', () => {
     a.stats.attack = 1000
     cs.buffs.push({ ...newBuff(a.id), value: '+50%', appliesTo: '2+ hits' })
     const x = card('X', '', 1)
-    cs.cards.push(x)
+    addCards(cs, x)
     setPlays(cs, [{ cardId: x.id }, { cardId: x.id, hits: 3 }, { cardId: x.id }])
     const r = computeBuild(presets, '', cs, a, settings)
     expect(r.plays.map((p) => p.hits.length)).toEqual([1, 3, 1])
@@ -659,7 +665,7 @@ describe('parsing', () => {
     a.stats.attack = 1000
     cs.buffs.push({ ...newBuff(a.id), value: '30%' }, { ...newBuff(a.id), value: '20%' })
     const x = card('X', '', 1)
-    cs.cards.push(x)
+    addCards(cs, x)
     setPlays(cs, plays(x.id))
     const summed = computeBuild(presets, '', cs, a, settings)
     const chained = computeBuild(presets, '', cs, a, { ...settings, multMode: 'Chained' })
@@ -683,14 +689,14 @@ describe('card % in hand and on target', () => {
     a.morale = 1
     a.basicLevel = 10
     const mei = PRESETS.characters.find((c) => c.name === 'Mei Lin')!
-    Object.assign(cs.cards[0], { pct: 1, upgrade: 'Basic' })
-    cs.cards.push(cardFromPreset(mei.cards!.find((p) => p.id === 'card-340')!, 'Passion'))
+    Object.assign(a.deck[0].custom!, { pct: 1, upgrade: 'Basic' })
+    addCards(cs, cardFromPreset(mei.cards!.find((p) => p.id === 'card-340')!, 'Passion'))
     const hit = () => computeBuild(PRESETS, 'Mei Lin', cs, a, settings).plays[0].hits[0]
     // 132% x (1 + 20% Scarab + 12% Sword + 20% Jewel) + 30% Emblem + 20% Morale; x 142% Weakness DMG on target
     expect(hit().inHand).toBeCloseTo(2.5064, 4)
     expect(hit().cardMult).toBeCloseTo(2.5064 * 1.42, 4)
     // Buffs that need a Ravaged target (Ember, Marianne) only show on target
-    cs.cards[0].targetRavaged = true
+    a.deck[0].custom!.targetRavaged = true
     a.rotation[0].stacks = { Ember: 1 }
     expect(hit().inHand).toBeCloseTo(2.5064, 4)
     expect(hit().cardMult).toBeCloseTo((1.32 * 1.67 + 0.5 + 0.3) * 1.42, 4)
@@ -736,7 +742,7 @@ describe('Rossweisse', () => {
   it('Sword Tassel base %, Kyrken\'s Aegis (final) and the Ego skill\'s Fixed damage on the next Flicker Blade', () => {
     const { cs, a } = ownerBuild()
     const [apostle, blade, ego] = ['card-1407', 'card-1383', 'card-1380'].map((id) => cardFromPreset(preset(id), 'Justice'))
-    cs.cards.push(apostle, blade, ego)
+    addCards(cs, apostle, blade, ego)
     a.rotation = [{ cardId: ego.id }, { cardId: blade.id, stacks: { 'Sword Tassel': 2 } }, { cardId: blade.id }]
     let r = computeBuild(PRESETS, 'Rossweisse', cs, a, settings)
     // Ego skill: 1200%, a Skill, so not Kyrken's Aegis (Attack cards); ATK 500 x 0.35 = 175 per 100%
@@ -768,5 +774,54 @@ describe('Rossweisse', () => {
     expect(at(600)).toBeCloseTo(0.05)
     expect(at(659)).toBeCloseTo(0.05 + 0.04)
     expect(at(1000)).toBeCloseTo(0.15)
+  })
+})
+
+describe('deck', () => {
+  const ross = PRESETS.characters.find((c) => c.name === 'Rossweisse')!
+  const names = (b: Build) => buildDeck(ross, b).map((i) => `${i.card.name}${i.createdBy ? ` <${i.createdBy}>` : ''}`)
+
+  it('the Ego skill comes with every deck; a picked card brings the cards it creates, once each', () => {
+    const b = newBuild('A')
+    expect(names(b)).toEqual(['Flickering White Night <Auto>'])
+    b.deck = [{ id: 'f', preset: 'card-1384' }, { id: 'r', preset: 'card-1389' }, { id: 'f2', preset: 'card-1384' }]
+    expect(names(b)).toEqual(['Flickering White Night <Auto>', 'Flicker Blade (Amped)', 'Shard:Light (Amped) <Flicker Blade (Amped)>',
+      'Sword Tassel <Shard:Light (Amped)>', 'Shard:Dark (Amped) <Flicker Blade (Amped)>', 'Sword Resonance', 'Flicker Blade (Amped)'])
+    expect(buildDeck(ross, b).find((i) => i.card.name === 'Sword Tassel')!.card.id).toBe(AUTO + 'card-1408')
+  })
+
+  it('removing the last card that creates one drops it and its plays', () => {
+    const b = newBuild('A')
+    b.deck = [{ id: 'f', preset: 'card-1383' }]
+    b.rotation = [{ cardId: 'f' }, { cardId: AUTO + 'shard-light' }, { cardId: AUTO + 'card-1380' }]
+    b.deck = []
+    prunePlays(ross, b)
+    expect(b.rotation).toEqual([{ cardId: AUTO + 'card-1380' }])
+  })
+
+  it('changing the epiphany keeps the plays, and moves the shard plays to the new shards', () => {
+    const b = newBuild('A')
+    b.deck = [{ id: 'f', preset: 'card-1384' }]
+    b.rotation = [{ cardId: 'f', stacks: { 'Sword Tassel': 2 } }, { cardId: AUTO + 'card-1414' }, { cardId: AUTO + 'card-1408' }]
+    changeEpiphany(ross, b, 'f', 'card-1385')
+    expect(b.deck).toEqual([{ id: 'f', preset: 'card-1385' }])
+    expect(b.rotation).toEqual([{ cardId: 'f', stacks: { 'Sword Tassel': 2 } }, { cardId: AUTO + 'card-1415' }, { cardId: AUTO + 'card-1408' }])
+    // Sword Resonance has no shards: their plays go
+    changeEpiphany(ross, b, 'f', 'card-1389')
+    expect(b.rotation.map((p) => p.cardId)).toEqual(['f', AUTO + 'card-1408'])
+  })
+
+  it('migrate v9: the shared library goes into every build; Ego skill and created cards come with the deck', () => {
+    const old = { version: 9, characters: { Rossweisse: {
+      builds: [{ id: 'a', rotation: [{ cardId: 'e' }, { cardId: 'f' }, { cardId: 's' }], team: [] }, { id: 'b', rotation: [],
+        team: [{ character: 'Rossweisse', cards: ['card-1380', 'card-1384', 'card-1409'] }] }],
+      cards: [{ id: 'e', preset: 'card-1380' }, { id: 'f', preset: 'card-1384', pct: 9 }, { id: 's', preset: 'card-1409' }, { id: 'c', name: 'Mine', pct: 2 }],
+    } } }
+    const [a, b] = migrate(old).characters.Rossweisse.builds
+    expect(a.deck).toEqual([{ id: 'f', preset: 'card-1384' }, { id: 'c', custom: expect.objectContaining({ name: 'Mine' }) }])
+    expect(b.deck).toEqual(a.deck)
+    expect(a.rotation).toEqual([{ cardId: AUTO + 'card-1380' }, { cardId: 'f' }, { cardId: AUTO + 'card-1409' }])
+    expect(b.team[0].cards).toEqual(['card-1384'])
+    expect(migrate(old).characters.Rossweisse).not.toHaveProperty('cards')
   })
 })

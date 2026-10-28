@@ -32,9 +32,9 @@ function effectPills(e: Effect, onStatsScreen: boolean, build: Build): Pill[] {
 
 /** team: list the teammates' effects instead of the character's own. */
 export function PresetList({ kind, team = false }: { kind: 'Stat' | 'Buff'; team?: boolean }) {
-  const { name, cs, build, updateBuild } = useCharacter()!
+  const { name, build, updateBuild } = useCharacter()!
   // Manifest Ego effects above the build's (or teammate's) level are hidden (they can't be on in-game either)
-  const states = presetStates(PRESETS, name, build, cs.cards)
+  const states = presetStates(PRESETS, name, build)
     .filter((s) => s.effect.kind === kind && !s.egoLocked && (s.teammate !== undefined) === team)
   if (!states.length) {
     return <p className="muted">{team

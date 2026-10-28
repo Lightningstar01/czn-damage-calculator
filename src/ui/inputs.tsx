@@ -138,6 +138,26 @@ export function Help({ text }: { text: string }) {
   )
 }
 
+/** A popup over the page; tapping outside it (or Escape) closes it. */
+export function Sheet({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+  useEffect(() => {
+    const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', esc)
+    return () => document.removeEventListener('keydown', esc)
+  }, [onClose])
+  return (
+    <div className="sheet-backdrop" onClick={(e) => { if (e.target === e.currentTarget) onClose() }}>
+      <div className="sheet" role="dialog" aria-modal="true" aria-label={title}>
+        <header className="sheet-head">
+          <h2>{title}</h2>
+          <button type="button" className="icon-btn" aria-label="Close" onClick={onClose}>×</button>
+        </header>
+        {children}
+      </div>
+    </div>
+  )
+}
+
 export function Section({ title, children, actions, help, className = '' }: {
   title: string; children: ReactNode; actions?: ReactNode; help?: string; className?: string
 }) {

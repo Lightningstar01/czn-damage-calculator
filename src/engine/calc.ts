@@ -1,6 +1,7 @@
 // The damage formula (docs/FORMULA.md). Pure functions: inputs in, numbers and their sources out.
+import { buildDeck } from './deck'
 import { activeBuffs, activeCounters, activeStats, buffMatches, cardBuffs, findCharacter, type ActiveBuff, type ActiveStat, type Source } from './buffs'
-import type { Build, Card, CardPreset, CharacterPreset, CharacterSave, PotentialUpgrade, Presets, RotationPlay, Settings, StatName } from './types'
+import type { Build, Card, CharacterPreset, CharacterSave, PotentialUpgrade, Presets, RotationPlay, Settings, StatName } from './types'
 
 export interface Stat {
   value: number
@@ -134,14 +135,6 @@ export function finalStats(presets: Presets, charName: string, cs: CharacterSave
   }
 }
 
-/** Which card upgrade potential raises a preset card: Basic cards Basic, Ego skills none, the rest Signature. */
-export function cardUpgrade(p: CardPreset): PotentialUpgrade | undefined {
-  if (p.upgrade !== undefined) return p.upgrade ?? undefined
-  if ((p.tags ?? '').split(',').some((t) => t.trim() === 'Basic')) return 'Basic'
-  if (p.category === 'Ego Skill') return undefined
-  return 'Signature'
-}
-
 /** Potential factor for a card upgrade: 1 + per level x (build level + the Manifest Ego bonus, if unlocked). */
 export function potentialFactor(upgrade: PotentialUpgrade | undefined, build: Build, ch: CharacterPreset | undefined,
   settings: Settings): Factor | null {
@@ -178,7 +171,7 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
   const counterBuffs = buffs.filter((b) => b.counter)
   const counterCaps = activeCounters(buffs)
   const ch = findCharacter(presets, charName)
-  const cards = new Map(cs.cards.map((c) => [c.id, c]))
+  const cards = new Map(buildDeck(ch, build).map((i) => [i.card.id, i.card]))
   const plays: Play[] = []
   let k = 0
   let pending: { from: string; appliesTo: string; share: number } | null = null

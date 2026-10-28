@@ -1,7 +1,7 @@
 // Setup: build management, partner, Manifest Ego level, memory fragment sets, team, stats-screen values, stat boosts, enemy.
 import { useState } from 'react'
 import { PRESETS } from '../data/presets'
-import { findCharacter, findFragmentSet, findPartner, fragmentPiecesUsed, hasTeam, reachesTeam } from '../engine/buffs'
+import { findCharacter, findFragmentSet, findPartner, fragmentPiecesUsed, hasTeam } from '../engine/buffs'
 import { CATEGORIES, FRAGMENT_SET_PICKS, MAX_EGO_LEVEL, MAX_POTENTIAL_LEVEL, FRAGMENT_SLOTS, STATS, TEAM_SIZE, type ScreenStats, type StatName, type Teammate } from '../engine/types'
 import { duplicateBuild, newBoost, newTeammate } from '../store/save'
 import { FromField } from './FromField'
@@ -227,7 +227,7 @@ function TeamSection() {
     fn(b.team[i])
   })
   return (
-    <Section title="Team" help="The build's other two characters. Only their effects that reach allies or the enemy count (marked in the presets): their character and Manifest Ego effects, partner (its Ego skill too), fragment sets and the cards you pick here. Their damage isn't counted. Their equipment: add it under My stat boosts / My buffs with From set to the teammate.">
+    <Section title="Team" help="The build's other two characters. Only their effects that reach allies or the enemy count (marked in the presets): their character and Manifest Ego effects, partner (its Ego skill too), fragment sets and their cards in the build's deck (Cards tab). Their damage isn't counted. Their equipment: add it under My stat boosts / My buffs with From set to the teammate.">
       {slots.map((t, i) => {
         const others = slots.filter((x, j) => j !== i && x?.character).map((x) => x!.character)
         const chars = PRESETS.characters.filter((c) => c.name !== name && !others.includes(c.name))
@@ -239,7 +239,7 @@ function TeamSection() {
                 onChange={(v) => upd(i, (x) => { x.character = v; x.cards = [] })} />
               {t?.character && <TeammateFields t={t} onChange={(fn) => upd(i, fn)} />}
             </div>
-            {t?.character && <TeammateCards t={t} onChange={(fn) => upd(i, fn)} />}
+            {t?.character && <p className="muted">{t.character}'s cards: Cards tab › Add cards ({t.cards.length} picked).</p>}
           </div>
         )
       })}
@@ -263,30 +263,6 @@ function TeammateFields({ t, onChange }: { t: Teammate; onChange: (fn: (t: Teamm
           onChange={(n) => onChange((x) => { x.fragments = [...picks]; x.fragments[i] = n })} />
       ))}
     </>
-  )
-}
-
-/** The teammate's cards that have team effects; switch on the ones they bring (exact epiphany, Ego skill included). */
-function TeammateCards({ t, onChange }: { t: Teammate; onChange: (fn: (t: Teammate) => void) => void }) {
-  const cards = (findCharacter(PRESETS, t.character)?.cards ?? []).filter((c) => (c.effects ?? []).some(reachesTeam))
-  if (!cards.length) return <p className="muted">No team buffs entered for {t.character}'s cards yet.</p>
-  return (
-    <ul className="rows">
-      {cards.map((c) => {
-        const on = t.cards.includes(c.id)
-        return (
-          <li key={c.id} className={`row ${on ? '' : 'off'}`}>
-            <div className="row-main">
-              <div className="row-title">{c.name}</div>
-              <div className="row-sub">{(c.effects ?? []).filter(reachesTeam).map((e) => e.name).join(' · ')}</div>
-            </div>
-            <SwitchControl label={c.name} value={on} onChange={(v) => onChange((x) => {
-              x.cards = v ? [...x.cards, c.id] : x.cards.filter((id) => id !== c.id)
-            })} />
-          </li>
-        )
-      })}
-    </ul>
   )
 }
 

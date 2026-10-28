@@ -53,6 +53,10 @@ export function checkAdditions(imported: Record<string, ImportedCharacter>, addi
         problems.push(`characters/${slug}.ts: extra card id '${c.id}' is used twice`)
       }
     }
+    const ids = new Set([...ch.cards.map((c) => c.id), ...extra.map((c) => c.id)])
+    for (const [id, c] of [...Object.entries(add.cards ?? {}), ...extra.map((c) => [c.id, c] as const)]) {
+      for (const made of c.creates ?? []) if (!ids.has(made)) problems.push(`characters/${slug}.ts: card '${id}' creates unknown card '${made}'`)
+    }
     const dupes = (owner: string, effects: { id: string }[] = []) => {
       const seen = new Set<string>()
       for (const e of effects) {

@@ -161,6 +161,8 @@ export interface CardPreset {
   text: string
   /** Card art (200x300, art only): Prydwen's CDN URL, or 'cards/<slug>/<file>' copied into public/ by the import's --art. */
   image?: string
+  /** Ids of the cards it creates (shards, Sword Tassel): they join the deck with it (src/engine/deck.ts). */
+  creates?: string[]
   /** Overrides the card upgrade potential picked from its category (null: none). */
   upgrade?: PotentialUpgrade | null
   notes?: string
@@ -285,8 +287,19 @@ export interface Build {
   presetSwitches: Record<string, Switch>
   /** Up to TEAM_SIZE teammates whose ally buffs and enemy debuffs count for this character. */
   team: Teammate[]
+  /** The main character's cards picked on the Cards tab (the Ego skill and created cards come with them: src/engine/deck.ts). */
+  deck: DeckCard[]
   /** This build's attack list: the main character's plays, in order. */
   rotation: RotationPlay[]
+}
+
+/** A card in a build's deck: a card preset (always its current data), or a custom card from an older save. */
+export interface DeckCard {
+  /** Attack list plays point here. */
+  id: string
+  /** Card preset id of the build's character. */
+  preset?: string
+  custom?: Card
 }
 
 /** The other two team slots. */
@@ -300,7 +313,8 @@ export interface Teammate {
   partner: string
   /** Memory fragment set names, one per dropdown. */
   fragments: string[]
-  /** Card preset ids they bring (their Ego skill too): those cards' team effects count. */
+  /** Card preset ids picked for their deck (Cards tab; copies allowed): those cards' team effects count, with their Ego skill and
+   * created cards. */
   cards: string[]
 }
 
@@ -382,8 +396,6 @@ export interface CharacterSave {
   showAllPartners: boolean
   boosts: UserBoost[]
   buffs: UserBuff[]
-  /** The card library, shared by every build (each build has its own attack list). */
-  cards: Card[]
 }
 
 export interface SaveData {

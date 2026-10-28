@@ -1,7 +1,8 @@
 // Which stat boosts and buffs are active for a build, and which buffs match a card.
+import { buildDeck, deckPresets, teammateDeck } from './deck'
 import type {
   BuffEffect, BuffType, Build, Card, CardPreset, CharacterPreset, CharacterSave, Condition, Effect, FragmentSetPreset, HitScope, PartnerPreset,
-  Presets, Settings, StatEffect, StatName, Switch, Teammate,
+  Presets, Settings, StatEffect, StatName, Switch,
 } from './types'
 
 /** Where a number came from, for the "tap a chip" breakdown. */
@@ -110,13 +111,6 @@ export function findPartner(presets: Presets, name: string): PartnerPreset | und
   return presets.partners.find((p) => p.name === name)
 }
 
-/** The character's card presets the library uses (a card copied twice counts once), in library order. */
-export function libraryCardPresets(presets: Presets, charName: string, cards: Card[]): CardPreset[] {
-  const all = findCharacter(presets, charName)?.cards ?? []
-  const ids = [...new Set(cards.map((c) => c.preset).filter(Boolean))]
-  return ids.map((id) => all.find((p) => p.id === id)).filter((p): p is CardPreset => !!p)
-}
-
 export function findFragmentSet(presets: Presets, name: string): FragmentSetPreset | undefined {
   return presets.fragmentSets.find((f) => f.name === name)
 }
@@ -156,20 +150,14 @@ export function reachesTeam(e: Effect): boolean {
   return e.target === 'allies' || e.target === 'enemy'
 }
 
-/** The teammate's picked cards (preset ids that still exist), in their order. */
-export function teammateCards(presets: Presets, t: Teammate): CardPreset[] {
-  const all = findCharacter(presets, t.character)?.cards ?? []
-  return [...new Set(t.cards)].map((id) => all.find((p) => p.id === id)).filter((p): p is CardPreset => !!p)
-}
-
 /** Label prefix of a preset state: the owner, or 'Teammate › owner' for a teammate's partner, set or card. */
 export function stateLabel(s: Pick<PresetState, 'owner' | 'teammateName'>): string {
   return s.teammateName && s.teammateName !== s.owner ? `${s.teammateName} › ${s.owner}` : s.owner
 }
 
-/** The preset effects of the build's character, partner, memory fragment sets and library cards, with their switch state;
- * then each teammate's ally / enemy effects (character, partner, sets, picked cards). */
-export function presetStates(presets: Presets, charName: string, build: Build, cards: Card[] = []): PresetState[] {
+/** The preset effects of the build's character, partner, memory fragment sets and deck cards, with their switch state;
+ * then each teammate's ally / enemy effects (character, partner, sets, deck cards). */
+export function presetStates(presets: Presets, charName: string, build: Build): PresetState[] {
   const out: PresetState[] = []
   const add = (owner: string, ownerKind: PresetState['ownerKind'], effects: Effect[], blocked: (e: Effect) => boolean,
     ego: number, cardId?: string, team?: { slot: number; name: string }) => {
@@ -194,12 +182,12 @@ export function presetStates(presets: Presets, charName: string, build: Build, c
     for (const f of distinctSets(presets, fragments)) add(f.name, 'Memory Fragment', f.effects, () => false, ego, undefined, team)
     for (const c of cardPresets) add(c.name, 'Card', c.effects ?? [], () => false, ego, c.id, team)
   }
-  addAll(findCharacter(presets, charName), build.partner, build.fragments ?? [], build.egoLevel ?? 0,
-    libraryCardPresets(presets, charName, cards))
+  const ch = findCharacter(presets, charName)
+  addAll(ch, build.partner, build.fragments ?? [], build.egoLevel ?? 0, deckPresets(buildDeck(ch, build)))
   ;(build.team ?? []).forEach((t, slot) => {
     if (!t.character || t.character === charName) return
-    addAll(findCharacter(presets, t.character), t.partner, t.fragments ?? [], t.egoLevel ?? 0, teammateCards(presets, t),
-      { slot, name: t.character })
+    const tch = findCharacter(presets, t.character)
+    addAll(tch, t.partner, t.fragments ?? [], t.egoLevel ?? 0, deckPresets(teammateDeck(tch, t)), { slot, name: t.character })
   })
   return out
 }
@@ -207,7 +195,7 @@ export function presetStates(presets: Presets, charName: string, build: Build, c
 /** Stat boosts active for the build: preset stat effects, then the owner's own boosts. */
 export function activeStats(presets: Presets, charName: string, cs: CharacterSave, build: Build): ActiveStat[] {
   const out: ActiveStat[] = []
-  for (const s of presetStates(presets, charName, build, cs.cards)) {
+  for (const s of presetStates(presets, charName, build)) {
     if (s.effect.kind !== 'Stat' || s.stacks <= 0) continue
     const e = s.effect as StatEffect
     out.push({ label: `${stateLabel(s)}: ${e.name}`, stat: e.stat, value: parseStatValue(e.value), stacks: s.stacks,
@@ -230,7 +218,7 @@ export function activeBuffs(presets: Presets, charName: string, cs: CharacterSav
     out.push({ label: 'Morale', type: 'Additive', value: settings.moralePerStack, stacks: morale,
       appliesTo: 'ALL', hitScope: 'All hits', condition: 'Always' })
   }
-  for (const s of presetStates(presets, charName, build, cs.cards)) {
+  for (const s of presetStates(presets, charName, build)) {
     if (s.effect.kind !== 'Buff' || s.stacks <= 0) continue
     const e = s.effect as BuffEffect
     const v = presetBuffValue(e, build)

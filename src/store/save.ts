@@ -1,16 +1,16 @@
 // Saved data: defaults, versioning/migrations, browser storage, backup files.
 import { current, isDraft, type Draft } from 'immer'
 import { PRESETS } from '../data/presets'
-import { cardUpgrade } from '../engine/calc'
+import { AUTO, cardUpgrade, deckItems, presetCard } from '../engine/deck'
 import { DEFAULT_SETTINGS } from '../data/settings'
-import { ELEMENTS, CARD_TYPES, FRAGMENT_SET_PICKS, type Build, type Card, type CardPreset, type CharacterSave, type Element, type RotationPlay, type SaveData, type ScreenStats, type Teammate, type UserBoost, type UserBuff } from '../engine/types'
+import { ELEMENTS, CARD_TYPES, FRAGMENT_SET_PICKS, type Build, type Card, type CardPreset, type CharacterPreset, type CharacterSave, type DeckCard, type Element, type RotationPlay, type SaveData, type ScreenStats, type Teammate, type UserBoost, type UserBuff } from '../engine/types'
 
 /** Bump when the save format changes, and add a step to migrate(). */
-export const SAVE_VERSION = 9
+export const SAVE_VERSION = 10
 const STORAGE_KEY = 'czn-damage-calculator'
 
-/** Fields that older saves had (removed in v9). */
-type LegacyCharacter = CharacterSave & { rotation?: unknown[] }
+/** Fields that older saves had (rotation: removed in v9; the shared card library: removed in v10). */
+type LegacyCharacter = CharacterSave & { rotation?: unknown[]; cards?: Card[] }
 type LegacyBuild = Build & { vulnerable?: number; weaknessDebuff?: number }
 
 /** Mei Lin's card preset ids before v6 -> Prydwen card ids. */
@@ -35,7 +35,7 @@ export function newStats(): ScreenStats {
 export function newBuild(name: string): Build {
   return {
     id: newId(), name, partner: '', fragments: Array(FRAGMENT_SET_PICKS).fill(''), stats: newStats(), enemyDefMult: 1, enemyDr: 0,
-    morale: 0, egoLevel: 0, basicLevel: 0, signatureLevel: 0, presetSwitches: {}, team: [], rotation: [],
+    morale: 0, egoLevel: 0, basicLevel: 0, signatureLevel: 0, presetSwitches: {}, team: [], deck: [], rotation: [],
   }
 }
 
@@ -45,7 +45,7 @@ export function newTeammate(): Teammate {
 
 export function newCharacterSave(): CharacterSave {
   const a = newBuild('Build A')
-  return { builds: [a], activeBuild: a.id, showAllPartners: false, boosts: [], buffs: [], cards: [] }
+  return { builds: [a], activeBuild: a.id, showAllPartners: false, boosts: [], buffs: [] }
 }
 
 /** element: the character's. */
@@ -53,13 +53,9 @@ export function newCard(element: Element): Card {
   return { id: newId(), name: '', cardType: 'Attack', element, cost: 1, tags: '', scaling: 'ATK', kind: 'Normal', pct: 1, hits: 1, weaknessApplies: false, targetRavaged: false }
 }
 
-/** Library copy of a card preset; element: the character's (unless the preset sets its own). */
+/** A card preset as a card with a new id; element: the character's (unless the preset sets its own). */
 export function cardFromPreset(p: CardPreset, element: Element): Card {
-  return {
-    ...newCard(p.element ?? element), name: p.name, cardType: p.cardType, cost: p.cost ?? null, tags: p.tags ?? '', scaling: p.scaling ?? 'ATK',
-    kind: p.kind ?? 'Normal', pct: p.pct, hits: p.hits, weaknessApplies: !!p.weaknessApplies, targetRavaged: !!p.targetRavaged,
-    upgrade: cardUpgrade(p), preset: p.id,
-  }
+  return presetCard(p, element, newId())
 }
 
 export function newBoost(buildId: string): UserBoost {
@@ -106,7 +102,7 @@ export function migrate(raw: unknown): SaveData {
   }
   if (data.version === 2) {
     // v3: card type dropdown. Take it from a matching tag (and drop that tag), else Attack.
-    for (const cs of Object.values(data.characters ?? {})) {
+    for (const cs of Object.values(data.characters ?? {}) as LegacyCharacter[]) {
       for (const c of cs.cards ?? []) {
         const tags = (c.tags ?? '').split(',').map((t) => t.trim()).filter(Boolean)
         const found = tags.find((t) => (CARD_TYPES as readonly string[]).includes(t))
@@ -127,7 +123,7 @@ export function migrate(raw: unknown): SaveData {
   if (data.version === 4) {
     // v5: element and cost are card fields. Take them from tags like 'Passion' / '1-cost' (and drop those tags);
     // else the character's element and no cost.
-    for (const [name, cs] of Object.entries(data.characters ?? {})) {
+    for (const [name, cs] of Object.entries(data.characters ?? {}) as [string, LegacyCharacter][]) {
       const charElement = PRESETS.characters.find((c) => c.name === name)?.element ?? ELEMENTS[0]
       for (const c of cs.cards ?? []) {
         const tags = (c.tags ?? '').split(',').map((t) => t.trim()).filter(Boolean)
@@ -142,7 +138,7 @@ export function migrate(raw: unknown): SaveData {
   }
   if (data.version === 5) {
     // v6: card presets are imported from Prydwen, so Mei Lin's hand-entered preset ids became Prydwen card ids
-    for (const c of data.characters?.['Mei Lin']?.cards ?? []) {
+    for (const c of (data.characters?.['Mei Lin'] as LegacyCharacter | undefined)?.cards ?? []) {
       if (c.preset && c.preset in MEI_LIN_V5_IDS) c.preset = MEI_LIN_V5_IDS[c.preset]
     }
     data.version = 6
@@ -157,7 +153,7 @@ export function migrate(raw: unknown): SaveData {
   if (data.version === 7) {
     // v8: potentials are modeled. Card upgrade levels per build start at 0. A card still at its preset's base %
     // gets the preset's upgrade; cards typed by hand keep their in-game % (no upgrade), so no result changes.
-    for (const [name, cs] of Object.entries(data.characters ?? {})) {
+    for (const [name, cs] of Object.entries(data.characters ?? {}) as [string, LegacyCharacter][]) {
       for (const b of cs.builds ?? []) {
         b.basicLevel ??= 0
         b.signatureLevel ??= 0
@@ -200,12 +196,45 @@ export function migrate(raw: unknown): SaveData {
     }
     data.version = 9
   }
+  if (data.version === 9) {
+    // v10: a deck per build (owner, 2026-10-27). The shared card library is copied into every build with the same ids, so the
+    // attack lists still match. Preset cards follow their preset (cards can't be edited any more, so edited numbers go); the
+    // Ego skill and created cards now come with the deck, so they leave it and their plays point at 'auto:<preset id>';
+    // other cards stay as custom cards. Teammates drop the cards that now come with their deck.
+    for (const [name, cs] of Object.entries(data.characters ?? {}) as [string, LegacyCharacter][]) {
+      const ch = PRESETS.characters.find((c) => c.name === name)
+      const picked: DeckCard[] = (cs.cards ?? []).map((c) => c.preset && ch?.cards?.some((p) => p.id === c.preset)
+        ? { id: c.id, preset: c.preset } : { id: c.id, custom: c })
+      const auto = autoPresets(ch, picked)
+      const moved = new Map(picked.filter((d) => d.preset && auto.has(d.preset)).map((d) => [d.id, AUTO + d.preset]))
+      const deck = picked.filter((d) => !moved.has(d.id))
+      for (const b of cs.builds ?? []) {
+        b.deck = structuredClone(deck)
+        b.rotation = (b.rotation ?? []).map((p) => moved.has(p.cardId) ? { ...p, cardId: moved.get(p.cardId)! } : p)
+        for (const t of b.team ?? []) {
+          const tch = PRESETS.characters.find((c) => c.name === t.character)
+          const tauto = autoPresets(tch, (t.cards ?? []).map((preset, i) => ({ id: String(i), preset })))
+          t.cards = (t.cards ?? []).filter((id) => !tauto.has(id))
+        }
+      }
+      delete cs.cards
+    }
+    data.version = 10
+  }
   return {
     ...defaultSave(),
     ...data,
     settings: { ...DEFAULT_SETTINGS, ...data.settings },
     version: SAVE_VERSION,
   }
+}
+
+/** Preset ids that come with a deck by themselves (Ego skill, cards created by its other cards). */
+function autoPresets(ch: CharacterPreset | undefined, picked: DeckCard[]): Set<string> {
+  const ego = new Set((ch?.cards ?? []).filter((p) => p.category === 'Ego Skill').map((p) => p.id))
+  const others = (id: string) => picked.filter((d) => d.preset !== id)
+  const created = (id: string) => deckItems(ch, others(id)).some((i) => i.createdBy && i.preset?.id === id)
+  return new Set(picked.map((d) => d.preset).filter((id): id is string => !!id && (ego.has(id) || created(id))))
 }
 
 export function loadSave(): SaveData {
