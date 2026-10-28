@@ -20,7 +20,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "350% Damage.\n+50% Damage amount for each Buff owned.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_1.webp"
+   "image": "cards/haru/collapse_1062_01.webp"
   },
   {
    "id": "card-638",
@@ -37,7 +37,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_2.webp"
+   "image": "cards/haru/start_1062_01.webp"
   },
   {
    "id": "card-639",
@@ -54,7 +54,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "220% Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_3.webp"
+   "image": "cards/haru/start_1062_03.webp"
   },
   {
    "id": "card-640",
@@ -71,7 +71,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "100% Shield.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_4.webp"
+   "image": "cards/haru/start_1062_02.webp"
   },
   {
    "id": "card-641",
@@ -88,7 +88,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "300% Damage.\n+100% Damage for each time this card has been used (Max 5).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_5.webp"
+   "image": "cards/haru/unique_1062_01.webp"
   },
   {
    "id": "card-642",
@@ -105,7 +105,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "400% Damage.\n+150% Damage for each time this card has been used (Max 5).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_5.webp"
+   "image": "cards/haru/unique_1062_01.webp"
   },
   {
    "id": "card-643",
@@ -122,7 +122,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "350% Damage.\nCombo: Add 1 hit.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_5.webp"
+   "image": "cards/haru/unique_1062_01.webp"
   },
   {
    "id": "card-644",
@@ -139,7 +139,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "350% Damage.\nDiscard all other Combatant cards, +150% Damage for each card discarded.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_5.webp"
+   "image": "cards/haru/unique_1062_01.webp"
   },
   {
    "id": "card-645",
@@ -156,7 +156,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "3800% Damage.\n+100% Damage per number of times this card was used (Max 10).\nCreate this card in Draw pile (2 per battle).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_5.webp"
+   "image": "cards/haru/unique_1062_01.webp"
   },
   {
    "id": "card-646",
@@ -173,7 +173,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "350% Damage.\n+100% Damage for each use of this card (Max 10).\nUpon Critical Hit, return to hand (1 per turn).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_5.webp"
+   "image": "cards/haru/unique_1062_01.webp"
   },
   {
    "id": "card-647",
@@ -190,7 +190,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "From Draw Pile or Graveyard, move Anchor Shot to hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_6.webp"
+   "image": "cards/haru/unique_1062_03.webp"
   },
   {
    "id": "card-648",
@@ -207,7 +207,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "All Anchor Shot gain Retrieve.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_6.webp"
+   "image": "cards/haru/unique_1062_03.webp"
   },
   {
    "id": "card-649",
@@ -224,7 +224,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "From Draw Pile or Graveyard, move Anchor Shot to hand, Grant that card Retain.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_6.webp"
+   "image": "cards/haru/unique_1062_03.webp"
   },
   {
    "id": "card-650",
@@ -241,7 +241,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "From Draw Pile or Graveyard, move Anchor Shot to hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_6.webp"
+   "image": "cards/haru/unique_1062_03.webp"
   },
   {
    "id": "card-651",
@@ -258,7 +258,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Move Anchor Shot from Draw Pile or Graveyard to hand.\nIncrease Damage Amount of that card by 20% for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_6.webp"
+   "image": "cards/haru/unique_1062_03.webp"
   },
   {
    "id": "card-652",
@@ -275,7 +275,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "From Draw Pile or Graveyard, move Anchor Shot to hand, +25% Critical Chance of that card for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_6.webp"
+   "image": "cards/haru/unique_1062_03.webp"
   },
   {
    "id": "card-653",
@@ -292,7 +292,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "180% Damage to all enemies.\nIf single target, +80% Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_7.webp"
+   "image": "cards/haru/unique_1062_05.webp"
   },
   {
    "id": "card-654",
@@ -309,7 +309,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "270% Damage to all enemies. If single target, +120% Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_7.webp"
+   "image": "cards/haru/unique_1062_05.webp"
   },
   {
    "id": "card-655",
@@ -326,7 +326,7 @@
    "hits": 1,
    "weaknessApplies": true,
    "text": "270% Damage to all enemies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_7.webp"
+   "image": "cards/haru/unique_1062_05.webp"
   },
   {
    "id": "card-656",
@@ -343,7 +343,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "270% Damage to all enemy.\nDefeat: This card activates 1 more time (Max 1).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_7.webp"
+   "image": "cards/haru/unique_1062_05.webp"
   },
   {
    "id": "card-657",
@@ -360,7 +360,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "240% Damage to all enemies.\n+30% Damage per hit to next Attack card.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_7.webp"
+   "image": "cards/haru/unique_1062_05.webp"
   },
   {
    "id": "card-658",
@@ -377,7 +377,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "300% Damage to all enemies.\nCombo: Change this card's cost to 1.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_7.webp"
+   "image": "cards/haru/unique_1062_05.webp"
   },
   {
    "id": "card-659",
@@ -394,7 +394,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Increase Damage Amount of Attacks Cards of this unit by 30% for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_8.webp"
+   "image": "cards/haru/unique_1062_04.webp"
   },
   {
    "id": "card-660",
@@ -411,7 +411,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Increase Damage Amount of Attacks Cards of this unit by 40% for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_8.webp"
+   "image": "cards/haru/unique_1062_04.webp"
   },
   {
    "id": "card-661",
@@ -428,7 +428,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Increase Damage Amount of the next Attack Card used by 50%.\n1 Tenacity Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_8.webp"
+   "image": "cards/haru/unique_1062_04.webp"
   },
   {
    "id": "card-662",
@@ -445,7 +445,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "+70% Damage Amount to Attack Cards of this unit for each card of unit in hand for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_8.webp"
+   "image": "cards/haru/unique_1062_04.webp"
   },
   {
    "id": "card-663",
@@ -462,7 +462,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Increase Damage Amount of Attack Cards of this unit by 30% for 1 turn.\nDraw 1 of this unit's cards.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_8.webp"
+   "image": "cards/haru/unique_1062_04.webp"
   },
   {
    "id": "card-664",
@@ -479,7 +479,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Increases Damage Amount of Attacks Cards of this unit by 20%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_8.webp"
+   "image": "cards/haru/unique_1062_04.webp"
   },
   {
    "id": "card-665",
@@ -496,7 +496,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Increase Damage Amount by 80% of Anchor Shot in hand for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/haru_9.webp",
+   "image": "cards/haru/unique_1062_02.webp",
    "notes": "Mythic card: no epiphanies"
   }
  ],

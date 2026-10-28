@@ -20,7 +20,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "300% Defense-based Damage.\nIncreases Damage Amount by 20% for each Counterattack on this unit",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_1.webp"
+   "image": "cards/magna/collapse_1010_01.webp"
   },
   {
    "id": "card-94",
@@ -37,7 +37,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Defense-based Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_2.webp"
+   "image": "cards/magna/start_1010_01.webp"
   },
   {
    "id": "card-95",
@@ -54,7 +54,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "100% Shield.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_3.webp"
+   "image": "cards/magna/start_1010_02.webp"
   },
   {
    "id": "card-96",
@@ -71,7 +71,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "4 Crystallization.\nAt the start of the turn, 1 Counterattack",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_4.webp"
+   "image": "cards/magna/unique_1010_01.webp"
   },
   {
    "id": "card-97",
@@ -88,7 +88,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "6 Crystallization.\nAt the start of the turn, 1 Counterattack",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_4.webp"
+   "image": "cards/magna/unique_1010_01.webp"
   },
   {
    "id": "card-98",
@@ -105,7 +105,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "4 Crystallization.\nAt the start of the turn, 2 Counterattack",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_4.webp"
+   "image": "cards/magna/unique_1010_01.webp"
   },
   {
    "id": "card-99",
@@ -122,7 +122,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "4 Crystallization.\nAt the start of the turn, 1 Counterattack.\nIncrease Damage of Counterattacks of this unit by 30%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_4.webp"
+   "image": "cards/magna/unique_1010_01.webp"
   },
   {
    "id": "card-100",
@@ -139,7 +139,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "4 Crystallization.\nAt the start of the turn, 200% Defense-based Damage to all enemies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_4.webp"
+   "image": "cards/magna/unique_1010_01.webp"
   },
   {
    "id": "card-101",
@@ -156,7 +156,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "4 Counterattack.\nIncreases Damage Amount of the next Counterattack by 30%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_4.webp"
+   "image": "cards/magna/unique_1010_01.webp"
   },
   {
    "id": "card-102",
@@ -173,7 +173,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "300% Defense-Based Damage.\nGain Fixed Shield equal to 50% Damage dealt (cannot exceed 20% of Max HP).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_5.webp"
+   "image": "cards/magna/unique_1010_02.webp"
   },
   {
    "id": "card-103",
@@ -190,7 +190,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "450% Defense-Based Damage.\nGain Fixed Shield equal to 50% Damage dealt (cannot exceed 20% of Max HP).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_5.webp"
+   "image": "cards/magna/unique_1010_02.webp"
   },
   {
    "id": "card-104",
@@ -207,7 +207,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "300% Defense-based Damage.\n3 Vulnerable.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_5.webp"
+   "image": "cards/magna/unique_1010_02.webp"
   },
   {
    "id": "card-105",
@@ -224,7 +224,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "450% Defense-Based Damage.\nWhen Shield is held, increases Damage Amount by 50%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_5.webp"
+   "image": "cards/magna/unique_1010_02.webp"
   },
   {
    "id": "card-106",
@@ -241,7 +241,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "300% Defense-Based Damage to all enemies.\nGain Fixed Shield equal to 50% Damage dealt (cannot exceed 20% of Max HP).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_5.webp"
+   "image": "cards/magna/unique_1010_02.webp"
   },
   {
    "id": "card-107",
@@ -258,7 +258,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "400% Defense-Based Damage.\nGain Fixed Shield equal to 50% Damage dealt (cannot exceed 20% of Max HP).\nFor 1 turn, Retain Shield 1.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_5.webp"
+   "image": "cards/magna/unique_1010_02.webp"
   },
   {
    "id": "card-108",
@@ -275,7 +275,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "200% Shield.\n2 Counterattack.\nFor 2 turn, Counterattack applies to all enemies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_6.webp"
+   "image": "cards/magna/unique_1010_03.webp"
   },
   {
    "id": "card-109",
@@ -292,7 +292,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "300% Shield.\n3 Counterattack.\nFor 2 turn, Counterattack applies to all enemies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_6.webp"
+   "image": "cards/magna/unique_1010_03.webp"
   },
   {
    "id": "card-110",
@@ -309,7 +309,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "300% Shield.\n3 Counterattack.\nFor 1 turn, Counterattack applies to all enemies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_6.webp"
+   "image": "cards/magna/unique_1010_03.webp"
   },
   {
    "id": "card-111",
@@ -326,7 +326,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "200% Shield.\nCounterattack applies to all enemies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_6.webp"
+   "image": "cards/magna/unique_1010_03.webp"
   },
   {
    "id": "card-112",
@@ -343,7 +343,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "200% Shield.\nDamage to all enemies equal to Shield owned.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_6.webp"
+   "image": "cards/magna/unique_1010_03.webp"
   },
   {
    "id": "card-113",
@@ -360,7 +360,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "200% Shield.\n3 Counterattack.\nFor 3 turns, Counterattack applies to all enemies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_6.webp"
+   "image": "cards/magna/unique_1010_03.webp"
   },
   {
    "id": "card-114",
@@ -377,7 +377,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "140% Shield.\n3 Vulnerable to all enemies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_7.webp"
+   "image": "cards/magna/unique_1010_04.webp"
   },
   {
    "id": "card-115",
@@ -394,7 +394,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "210% Shield.\n3 Vulnerable to all enemies.\nFor each enemy, +60% Shield gain.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_7.webp"
+   "image": "cards/magna/unique_1010_04.webp"
   },
   {
    "id": "card-116",
@@ -411,7 +411,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "210% Shield.\n4 Vulnerable to all enemies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_7.webp"
+   "image": "cards/magna/unique_1010_04.webp"
   },
   {
    "id": "card-117",
@@ -428,7 +428,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "To targets that Counterattack, 2 Vulnerable.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_7.webp"
+   "image": "cards/magna/unique_1010_04.webp"
   },
   {
    "id": "card-118",
@@ -445,7 +445,7 @@
    "hits": 3,
    "weaknessApplies": false,
    "text": "100% Defense-Based Damage x 3 to random enemies.\nTo struck targets, 1 Vulnerable.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_7.webp"
+   "image": "cards/magna/unique_1010_04.webp"
   },
   {
    "id": "card-119",
@@ -462,7 +462,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "3 Vulnerable to all enemies.\n3 Counterattack.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_7.webp"
+   "image": "cards/magna/unique_1010_04.webp"
   },
   {
    "id": "card-120",
@@ -479,7 +479,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "2 Crystallization.\nWhen gaining Shield by an ability, 1 Counterattack.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/magna_8.webp",
+   "image": "cards/magna/unique_1010_05.webp",
    "notes": "Mythic card: no epiphanies"
   }
  ],

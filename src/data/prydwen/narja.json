@@ -20,7 +20,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "10 Voracity.\n250% Defense-Based Damage.\nIf Mealtime is in Graveyard, 5 Predation.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_852.webp"
+   "image": "cards/narja/collapse_1052_01.webp"
   },
   {
    "id": "card-853",
@@ -37,7 +37,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Defense-Based Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_853.webp"
+   "image": "cards/narja/start_1052_01.webp"
   },
   {
    "id": "card-854",
@@ -54,7 +54,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 100%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_854.webp"
+   "image": "cards/narja/start_1052_02.webp"
   },
   {
    "id": "card-855",
@@ -71,7 +71,7 @@
    "hits": 3,
    "weaknessApplies": false,
    "text": "30% Defense-Based Damage × 3.\nAttunement: 4 Voracity.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_855.webp"
+   "image": "cards/narja/unique_1052_02.webp"
   },
   {
    "id": "card-856",
@@ -88,7 +88,7 @@
    "hits": 4,
    "weaknessApplies": false,
    "text": "30% Defense-Based Damage × 4.\nAttunement: 6 Voracity.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_855.webp"
+   "image": "cards/narja/unique_1052_02.webp"
   },
   {
    "id": "card-857",
@@ -105,7 +105,7 @@
    "hits": 2,
    "weaknessApplies": false,
    "text": "30% Defense-Based Damage × 2.\nAt the start of the turn, if Voracity was activated 3 or more times in the previous turn, move to hand.\nAttunement: 1 Voracity.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_855.webp"
+   "image": "cards/narja/unique_1052_02.webp"
   },
   {
    "id": "card-858",
@@ -122,7 +122,7 @@
    "hits": 3,
    "weaknessApplies": false,
    "text": "50% Defense-Based Damage × 3.\nAdd 1 Hit for each 4 Voracity owned (max 3 times).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_855.webp"
+   "image": "cards/narja/unique_1052_02.webp"
   },
   {
    "id": "card-859",
@@ -139,7 +139,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Decrease Voracity by max 5.\n+40% Damage Amount to the next used Attack Card for each amount decreased.\nIf 5 decreased, 3 Predation.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_855.webp"
+   "image": "cards/narja/unique_1052_02.webp"
   },
   {
    "id": "card-860",
@@ -156,7 +156,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "60% Shield.\nDecrease Voracity by max 3.\nRepeat for each amount decreased.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_855.webp"
+   "image": "cards/narja/unique_1052_02.webp"
   },
   {
    "id": "card-861",
@@ -173,7 +173,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "The next 2 times Voracity is activated, decrease Cost of 1 random card in hand by 1 for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_861.webp"
+   "image": "cards/narja/unique_1052_04.webp"
   },
   {
    "id": "card-862",
@@ -190,7 +190,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "3 Voracity.\nThe next 2 times Voracity is activated, decrease Cost of 1 random card in hand by 1 for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_861.webp"
+   "image": "cards/narja/unique_1052_04.webp"
   },
   {
    "id": "card-863",
@@ -207,7 +207,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Decrease Cost of 2 random cards in hand by 1 for 1 turn(s).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_861.webp"
+   "image": "cards/narja/unique_1052_04.webp"
   },
   {
    "id": "card-864",
@@ -224,7 +224,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When Voracity is activated 3 times in 1 turn, decrease Cost of 1 random card in hand by 1 until used (1 time per turn).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_861.webp"
+   "image": "cards/narja/unique_1052_04.webp"
   },
   {
    "id": "card-865",
@@ -241,7 +241,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "For 1 turn, +100% Defense-Based Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_861.webp"
+   "image": "cards/narja/unique_1052_04.webp"
   },
   {
    "id": "card-866",
@@ -258,7 +258,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "7 Voracity.\nFor 1 turn, each time Voracity is activated, +40% Damage Amount to the next Mealtime.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_861.webp"
+   "image": "cards/narja/unique_1052_04.webp"
   },
   {
    "id": "card-867",
@@ -275,7 +275,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "If Voracity is fewer than 6 stacks, gain 6 Voracity.\nIf 6 or more stacks, gain 2 Predation.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_867.webp"
+   "image": "cards/narja/unique_1052_05.webp"
   },
   {
    "id": "card-868",
@@ -292,7 +292,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "If Voracity is fewer than 6 stacks, gain 9 Voracity.\nIf 6 or more stacks, gain 3 Predation.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_867.webp"
+   "image": "cards/narja/unique_1052_05.webp"
   },
   {
    "id": "card-869",
@@ -309,7 +309,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "If Mealtime is in Draw Pile, move to hand.\nIf in Graveyard, 3 Morale for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_867.webp"
+   "image": "cards/narja/unique_1052_05.webp"
   },
   {
    "id": "card-870",
@@ -326,7 +326,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "For 2 turn(s), each time Action Count of the target is decreased, 1 Voracity.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_867.webp"
+   "image": "cards/narja/unique_1052_05.webp"
   },
   {
    "id": "card-871",
@@ -343,7 +343,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "10 Voracity.\nSelect 1 Attack Card(s).\n1 Predation each time that card is moved to hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_867.webp"
+   "image": "cards/narja/unique_1052_05.webp"
   },
   {
    "id": "card-872",
@@ -360,7 +360,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Each time a Basic Attack Card inflicts a Hit, 1 Voracity.\n+50% Damage Amount to Basic Attack Cards.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_867.webp"
+   "image": "cards/narja/unique_1052_05.webp"
   },
   {
    "id": "card-873",
@@ -377,7 +377,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Defense-Based Damage to all enemies.\nIncrease Tenacity Damage taken of the target by 100% until their next Ravage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_873.webp"
+   "image": "cards/narja/unique_1052_03.webp"
   },
   {
    "id": "card-874",
@@ -394,7 +394,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Defense-Based Damage to all enemies.\nIncrease Tenacity Damage taken of the target by 100% until their next Ravage, and on Ravage, 3 Voracity.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_873.webp"
+   "image": "cards/narja/unique_1052_03.webp"
   },
   {
    "id": "card-875",
@@ -411,7 +411,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Defense-Based Damage to all enemies.\nFor 2 turn(s), +100% Defense-Based Damage taken by the target.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_873.webp"
+   "image": "cards/narja/unique_1052_03.webp"
   },
   {
    "id": "card-876",
@@ -428,7 +428,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "150% Defense-Based Damage to all enemies.\nWhen Hitting the target for the next 5 time(s), Heal 40%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_873.webp"
+   "image": "cards/narja/unique_1052_03.webp"
   },
   {
    "id": "card-877",
@@ -445,7 +445,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "320% Defense-Based Damage to all enemies.\nIf granted both Voracity and Predation, activate 1 more time.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_873.webp"
+   "image": "cards/narja/unique_1052_03.webp"
   },
   {
    "id": "card-878",
@@ -462,7 +462,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Each time Mealtime is used, Heal 200%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_873.webp"
+   "image": "cards/narja/unique_1052_03.webp"
   },
   {
    "id": "card-879",
@@ -479,7 +479,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "If Voracity is decreased, decrease Cost by 1 and add +30% Heal Amount (max 10) until used.\n160% Defense-Based Damage to all enemies.\nHeal 100%.\n4 Predation.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/narja_879.webp",
+   "image": "cards/narja/unique_1052_06.webp",
    "notes": "Mythic card: no epiphanies"
   }
  ],

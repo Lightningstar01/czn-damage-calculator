@@ -159,7 +159,7 @@ export interface CardPreset {
   targetRavaged?: boolean
   /** Card text as shown in-game; may hold tokens for the build's numbers (src/engine/cardText.ts). */
   text: string
-  /** Card art (200x300, art only): Prydwen's CDN URL, or 'cards/<slug>/<file>' copied into public/ by the import's --art. */
+  /** Card art (art only, 420x632 from cznmetadecks or 200x300 from Prydwen): 'cards/<slug>/<file>', copied into public/ by the import. */
   image?: string
   /** Ids of the cards it creates (shards, Sword Tassel): they join the deck with it (src/engine/deck.ts). */
   creates?: string[]

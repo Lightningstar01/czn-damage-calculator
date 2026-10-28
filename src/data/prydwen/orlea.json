@@ -20,7 +20,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 1 of each Creation★★.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_1.webp"
+   "image": "cards/orlea/collapse_1024_01.webp"
   },
   {
    "id": "card-122",
@@ -37,7 +37,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Damage",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_2.webp"
+   "image": "cards/orlea/start_1024_01.webp"
   },
   {
    "id": "card-123",
@@ -54,7 +54,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 100%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_3.webp"
+   "image": "cards/orlea/start_1024_02.webp"
   },
   {
    "id": "card-124",
@@ -71,7 +71,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 2 Creation★ Cards.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_4.webp"
+   "image": "cards/orlea/unique_1024_04.webp"
   },
   {
    "id": "card-125",
@@ -88,7 +88,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 3 Creation★ Cards.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_4.webp"
+   "image": "cards/orlea/unique_1024_04.webp"
   },
   {
    "id": "card-126",
@@ -105,7 +105,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 2 Creation★ Cards. At the start of the turn, create 1 Creation★ Card(s).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_4.webp"
+   "image": "cards/orlea/unique_1024_04.webp"
   },
   {
    "id": "card-127",
@@ -122,7 +122,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create Softie★ and 1 Creation★ Card(s).\nUpon next Softie use, create Softie★.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_4.webp"
+   "image": "cards/orlea/unique_1024_04.webp"
   },
   {
    "id": "card-128",
@@ -139,7 +139,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 1 Swiftie★ and Creation★ Card(s).\nIncrease Damage Amount of the next Swiftie used by 40%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_4.webp"
+   "image": "cards/orlea/unique_1024_04.webp"
   },
   {
    "id": "card-129",
@@ -156,7 +156,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 1 Sturdie★ and Creation★ Card(s).\n150% Shield to the next Sturdie used.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_4.webp"
+   "image": "cards/orlea/unique_1024_04.webp"
   },
   {
    "id": "card-130",
@@ -173,7 +173,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 100%.\nSelect 1 of own Cards in hand and trigger Retain effect 2 time(s).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_5.webp"
+   "image": "cards/orlea/unique_1024_03.webp"
   },
   {
    "id": "card-131",
@@ -190,7 +190,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 100%.\nSelect 1 Card in hand and trigger Retain effect 2 time(s).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_5.webp"
+   "image": "cards/orlea/unique_1024_03.webp"
   },
   {
    "id": "card-132",
@@ -207,7 +207,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 200%.\nSelect 1 of own Creation Cards in hand and duplicate it.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_5.webp"
+   "image": "cards/orlea/unique_1024_03.webp"
   },
   {
    "id": "card-133",
@@ -224,7 +224,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 150%.\nSelect 1 of own Cards in hand and trigger Retain effect 2 time(s).\nIf that Card is a Softie, 2 Vulnerable to all enemies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_5.webp"
+   "image": "cards/orlea/unique_1024_03.webp"
   },
   {
    "id": "card-134",
@@ -241,7 +241,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 150%.\nSelect 1 of own Cards in hand and trigger Retain effect 2 time(s).\nIf that card is a Swiftie, trigger Retain effect 3 times.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_5.webp"
+   "image": "cards/orlea/unique_1024_03.webp"
   },
   {
    "id": "card-135",
@@ -258,7 +258,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 150%.\nSelect 1Retain 2 time(s).\nIf the card is Sturdie decrease Stress of an ally by 5.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_5.webp"
+   "image": "cards/orlea/unique_1024_03.webp"
   },
   {
    "id": "card-136",
@@ -275,7 +275,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "40% Fixed Damage equal to the number of cards in hand.\nHeal 20%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_6.webp"
+   "image": "cards/orlea/unique_1024_01.webp"
   },
   {
    "id": "card-137",
@@ -292,7 +292,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "40% Fixed Damage equal to the number of cards in hand. If 6 or more Cards are present, Heal 200%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_6.webp"
+   "image": "cards/orlea/unique_1024_01.webp"
   },
   {
    "id": "card-138",
@@ -309,7 +309,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Defense-Based Damage.\n+100% Damage Amount for each Creation in hand.\nHeal 60%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_6.webp"
+   "image": "cards/orlea/unique_1024_01.webp"
   },
   {
    "id": "card-139",
@@ -326,7 +326,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "450% Defense-Based Damage Damage.\nHeal 200%.\nRetain: Reduce cost by 1.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_6.webp"
+   "image": "cards/orlea/unique_1024_01.webp"
   },
   {
    "id": "card-140",
@@ -343,7 +343,7 @@
    "hits": 3,
    "weaknessApplies": false,
    "text": "Deal 60% x 3 Defense-Based Damage Damage to random enemies.\nCreate 1 Creation★ Card for each target hit.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_6.webp"
+   "image": "cards/orlea/unique_1024_01.webp"
   },
   {
    "id": "card-141",
@@ -360,7 +360,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "120% Defense-Based Damage.\nIf this card is in hand and have created Creations while it was in hand, +120% Damage until used.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_6.webp"
+   "image": "cards/orlea/unique_1024_01.webp"
   },
   {
    "id": "card-142",
@@ -377,7 +377,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 1 Creation★ card(s).\nRetain: Change this card to Creation★★★.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_7.webp"
+   "image": "cards/orlea/unique_1024_05.webp"
   },
   {
    "id": "card-143",
@@ -394,7 +394,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 1 Creation★ card(s).\nRetain: Create 1 Creation★ card(s).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_7.webp"
+   "image": "cards/orlea/unique_1024_05.webp"
   },
   {
    "id": "card-144",
@@ -411,7 +411,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 1 Creation★ card(s).\nRetain: Change this card to Creation★★ and create 1 Creation★ card for each.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_7.webp"
+   "image": "cards/orlea/unique_1024_05.webp"
   },
   {
    "id": "card-145",
@@ -428,7 +428,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 1 Creation★ card(s).\nRetain: Change this card to Softie★★★ and 2 Vulnerable to all enemies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_7.webp"
+   "image": "cards/orlea/unique_1024_05.webp"
   },
   {
    "id": "card-146",
@@ -445,7 +445,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 1 Creation★ card(s).\nRetain: Change this card to Swiftie★★★ and activate Retain effect 2 times.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_7.webp"
+   "image": "cards/orlea/unique_1024_05.webp"
   },
   {
    "id": "card-147",
@@ -462,7 +462,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 1 Creation★ card(s).\nRetain: Change this card to Sturdie★★★ and add 3 Weaken to all enemies",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_7.webp"
+   "image": "cards/orlea/unique_1024_05.webp"
   },
   {
    "id": "card-148",
@@ -479,7 +479,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 200%.\nActivate the Retain effect of all cards in hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_8.webp",
+   "image": "cards/orlea/unique_1024_02.webp",
    "notes": "Mythic card: no epiphanies"
   },
   {
@@ -497,7 +497,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Increase Damage Amount by 10% for 1 turn.\nRetain: Increase Damage Amount of the next Attack Card used by 10%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_9.webp"
+   "image": "cards/orlea/unique_1024_08.webp"
   },
   {
    "id": "card-150",
@@ -514,7 +514,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Damage.\nRetain: +40% Damage Amount.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_10.webp"
+   "image": "cards/orlea/unique_1024_07.webp"
   },
   {
    "id": "card-151",
@@ -531,7 +531,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "100% Shield.\nRetain: Heal 60%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_11.webp"
+   "image": "cards/orlea/unique_1024_06.webp"
   },
   {
    "id": "card-152",
@@ -548,7 +548,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Increase Damage Amount by 20% for 1 turn.\nRetain: Increase Damage Amount of the next Attack Card used by 20%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_12.webp"
+   "image": "cards/orlea/unique_1024_14.webp"
   },
   {
    "id": "card-153",
@@ -565,7 +565,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "200% Damage.\nRetain: +80% Damage Amount.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_13.webp"
+   "image": "cards/orlea/unique_1024_10.webp"
   },
   {
    "id": "card-154",
@@ -582,7 +582,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "200% Shield.\nRetain: Heal 120%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_14.webp"
+   "image": "cards/orlea/unique_1024_12.webp"
   },
   {
    "id": "card-155",
@@ -599,7 +599,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Increase Damage Amount by 35% for 1 turn.\nRetain: Increase Damage Amount of the next Attack Card used by 35%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_15.webp"
+   "image": "cards/orlea/unique_1024_13.webp"
   },
   {
    "id": "card-156",
@@ -616,7 +616,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "350% Damage.\nRetain: +150% Damage Amount.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_16.webp"
+   "image": "cards/orlea/unique_1024_09.webp"
   },
   {
    "id": "card-157",
@@ -633,7 +633,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "350% Shield.\nRetain: Heal 200%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/orlea_17.webp"
+   "image": "cards/orlea/unique_1024_11.webp"
   }
  ],
  "potentials": [

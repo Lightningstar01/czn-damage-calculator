@@ -19,6 +19,7 @@ const baseShard = (kind: 'Light' | 'Dark', trigger: string): CardPreset => ({
   id: `shard-${kind.toLowerCase()}`, base: `Shard:${kind}`, name: `Shard:${kind}`, category: 'Generated Card', rarity: 'Blue',
   cardType: 'Attack', cost: 2, element: 'Justice', tags: `${kind}, Unique, Retain`, scaling: 'ATK', pct: 0.8, hits: 1,
   weaknessApplies: false, text: shardText(kind, 80, trigger), creates: tassel,
+  image: `cards/rossweisse/unique_30134_0${kind === 'Light' ? 6 : 7}.webp`,
 })
 
 export default {

@@ -20,7 +20,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "350% Damage.\n+50% Damage Amount for each Shadow of the Moon created (max 10)",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_793.webp"
+   "image": "cards/chizuru/collapse_1060_01.webp"
   },
   {
    "id": "card-794",
@@ -37,7 +37,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "Deal 100% damage",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_794.webp"
+   "image": "cards/chizuru/start_1060_01.webp"
   },
   {
    "id": "card-795",
@@ -54,7 +54,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "100% Shield",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_795.webp"
+   "image": "cards/chizuru/start_1060_02.webp"
   },
   {
    "id": "card-796",
@@ -71,7 +71,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Damage, 1 Cursed Shackles.\nCursed Shackles: Add 2 Hits.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_796.webp"
+   "image": "cards/chizuru/unique_1060_01.webp"
   },
   {
    "id": "card-797",
@@ -88,7 +88,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "150% Damage.\n1 Cursed Shackles.\nCursed Shackles: Add 2 Hits.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_796.webp"
+   "image": "cards/chizuru/unique_1060_01.webp"
   },
   {
    "id": "card-798",
@@ -105,7 +105,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "150% Damage.\n1 Cursed Shackles.\nCursed Shackles: Decrease Cost of the next card of this unit used by 2.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_796.webp"
+   "image": "cards/chizuru/unique_1060_01.webp"
   },
   {
    "id": "card-799",
@@ -122,7 +122,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "180% Damage.\n1 Cursed Shackles.\nCursed Shackles: Increase Damage Amount by 150%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_796.webp"
+   "image": "cards/chizuru/unique_1060_01.webp"
   },
   {
    "id": "card-800",
@@ -139,7 +139,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "1 Cursed Shackles.\nCreate 1 Shadow of the Moon.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_796.webp"
+   "image": "cards/chizuru/unique_1060_01.webp"
   },
   {
    "id": "card-801",
@@ -156,7 +156,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "1 Cursed Shackles.\nWhen a target inflicted with Cursed Shackles is defeated, create this card.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_796.webp"
+   "image": "cards/chizuru/unique_1060_01.webp"
   },
   {
    "id": "card-802",
@@ -173,7 +173,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "3 Will-O'-Wisp for each Hit of the next Attack Card of this unit used.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_802.webp"
+   "image": "cards/chizuru/unique_1060_03.webp"
   },
   {
    "id": "card-803",
@@ -190,7 +190,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "4 Will-O’-Wisp for each Hit of the next Attack Card of this unit used.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_802.webp"
+   "image": "cards/chizuru/unique_1060_03.webp"
   },
   {
    "id": "card-804",
@@ -207,7 +207,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Add 1 Hit(s) to the next Attack Card of this unit used, 2 Will-O’-Wisp for each Hit.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_802.webp"
+   "image": "cards/chizuru/unique_1060_03.webp"
   },
   {
    "id": "card-805",
@@ -224,7 +224,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Add 2 Hit(s) to the next Shadow of the Moon, Shadow of the Moon+ used.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_802.webp"
+   "image": "cards/chizuru/unique_1060_03.webp"
   },
   {
    "id": "card-806",
@@ -241,7 +241,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "3 Will-O’-Wisp for each Attack Card of this unit in hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_802.webp"
+   "image": "cards/chizuru/unique_1060_03.webp"
   },
   {
    "id": "card-807",
@@ -258,7 +258,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When an Attack Card of this unit is used, 2 Will-O’-Wisp.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_802.webp"
+   "image": "cards/chizuru/unique_1060_03.webp"
   },
   {
    "id": "card-808",
@@ -275,7 +275,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "At the start of the turn, gain Inhibit.\nDecrease Cost by 1 until 2 random cards of another Combatant is used",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_808.webp"
+   "image": "cards/chizuru/unique_1060_02.webp"
   },
   {
    "id": "card-809",
@@ -292,7 +292,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "At the start of the turn, gain Inhibit.\nDecrease Cost by 1 until 2 random card(s) are used.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_808.webp"
+   "image": "cards/chizuru/unique_1060_02.webp"
   },
   {
    "id": "card-810",
@@ -309,7 +309,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "At the start of the turn, gain Inhibit.\nWhen Shadow of the Moon+ is used, decrease Cost of the next 1 card(s) by 1.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_808.webp"
+   "image": "cards/chizuru/unique_1060_02.webp"
   },
   {
    "id": "card-811",
@@ -326,7 +326,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "At the start of the turn, gain Inhibit.\nActivate 2 random card(s) of other Combatants.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_808.webp"
+   "image": "cards/chizuru/unique_1060_02.webp"
   },
   {
    "id": "card-812",
@@ -343,7 +343,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "At the start of the turn, gain Inhibit.\nActivate 2 random Lead card(s).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_808.webp"
+   "image": "cards/chizuru/unique_1060_02.webp"
   },
   {
    "id": "card-813",
@@ -360,7 +360,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "At the start of the turn, gain Inhibit.\nDecrease Cost of the card with the highest Cost by 2.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_808.webp"
+   "image": "cards/chizuru/unique_1060_02.webp"
   },
   {
    "id": "card-814",
@@ -377,7 +377,7 @@
    "hits": 3,
    "weaknessApplies": false,
    "text": "60% Damage x3.\n+80% Damage Amount to the next Bind Card.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_814.webp"
+   "image": "cards/chizuru/unique_1060_04.webp"
   },
   {
    "id": "card-815",
@@ -394,7 +394,7 @@
    "hits": 4,
    "weaknessApplies": false,
    "text": "50% Damage × 4.\n+100% Damage Amount to the next Bind card used.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_814.webp"
+   "image": "cards/chizuru/unique_1060_04.webp"
   },
   {
    "id": "card-816",
@@ -411,7 +411,7 @@
    "hits": 2,
    "weaknessApplies": false,
    "text": "150% x 2 Damage.\n+100% Damage Amount to the next Bind card used.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_814.webp"
+   "image": "cards/chizuru/unique_1060_04.webp"
   },
   {
    "id": "card-817",
@@ -428,7 +428,7 @@
    "hits": 3,
    "weaknessApplies": false,
    "text": "100% Damage × 3.\nIf there are no other Attack Cards in hand Other than Shadow of the Moon, add 2 Hit(s).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_814.webp"
+   "image": "cards/chizuru/unique_1060_04.webp"
   },
   {
    "id": "card-818",
@@ -445,7 +445,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 2 Moonslash. Apply Exhaust to those cards, decrease Cost by 1 until used.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_814.webp"
+   "image": "cards/chizuru/unique_1060_04.webp"
   },
   {
    "id": "card-819",
@@ -462,7 +462,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "+80% Damage Amount to Shadow of the Moon+.\nAt the start of the turn, 3 Will-O’-Wisp.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_814.webp"
+   "image": "cards/chizuru/unique_1060_04.webp"
   },
   {
    "id": "card-820",
@@ -479,7 +479,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "80% Damage.\n+80% Damage Amount for each Bind stack.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_820.webp",
+   "image": "cards/chizuru/unique_1060_06.webp",
    "notes": "Mythic card: no epiphanies"
   },
   {
@@ -497,7 +497,7 @@
    "hits": 2,
    "weaknessApplies": false,
    "text": "180% Damage x 2.\nRecover 5% of Max HP.\n+80% Damage Amount for each Bind stack.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_820.webp"
+   "image": "cards/chizuru/unique_1060_06.webp"
   },
   {
    "id": "card-822",
@@ -514,7 +514,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "Deal 100% damage",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/chizuru_794.webp"
+   "image": "cards/chizuru/chizuru_794.webp"
   }
  ],
  "potentials": [

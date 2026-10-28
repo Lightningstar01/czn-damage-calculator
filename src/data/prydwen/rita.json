@@ -20,7 +20,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "6 Chronal Ascension.\nIncrease Damage Amount of the next Attack Card of this unit used by 10% for each combined Cost of cards activated during this battle (max 200%).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_990.webp"
+   "image": "cards/rita/collapse_30097_01.webp"
   },
   {
    "id": "card-991",
@@ -37,7 +37,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "350% Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_991.webp"
+   "image": "cards/rita/start_30097_01.webp"
   },
   {
    "id": "card-992",
@@ -54,7 +54,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 100%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_992.webp"
+   "image": "cards/rita/start_30097_02.webp"
   },
   {
    "id": "card-993",
@@ -71,7 +71,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When a card is activated, 1 Chronicle for each Cost of that card.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_993.webp"
+   "image": "cards/rita/unique_30097_01.webp"
   },
   {
    "id": "card-994",
@@ -88,7 +88,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When a card is activated, 1 Chronicle for each Cost of that card.\nWhen Chronal Ascension is removed, 3 Chronicle.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_993.webp"
+   "image": "cards/rita/unique_30097_01.webp"
   },
   {
    "id": "card-995",
@@ -105,7 +105,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "When a card is activated, 1 Chronicle for each Cost of that card.\nAt the end of the turn, 100% Damage to a random enemy for each Chronal Ascension.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_993.webp"
+   "image": "cards/rita/unique_30097_01.webp"
   },
   {
    "id": "card-996",
@@ -122,7 +122,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When a card is Exhausted, 1 Chronicle",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_993.webp"
+   "image": "cards/rita/unique_30097_01.webp"
   },
   {
    "id": "card-997",
@@ -139,7 +139,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When a card is activated, 1 Chronicle for each Cost of that card.\nWhen a card is Discarded, 1 Chronicle.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_993.webp"
+   "image": "cards/rita/unique_30097_01.webp"
   },
   {
    "id": "card-998",
@@ -156,7 +156,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When a card is activated, 1 Chronicle for each Cost of that card.\nWhen a Retain effect is activated, 1 Chronicle.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_993.webp"
+   "image": "cards/rita/unique_30097_01.webp"
   },
   {
    "id": "card-999",
@@ -173,7 +173,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "300% Damage.\nIncrease Damage Amount by 20% for each combined Cost of cards in hand (max 200%).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_999.webp"
+   "image": "cards/rita/unique_30097_02.webp"
   },
   {
    "id": "card-1000",
@@ -190,7 +190,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "450% Damage.\nIncrease Damage Amount by 20% for each combined Cost of cards in hand (max 200%).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_999.webp"
+   "image": "cards/rita/unique_30097_02.webp"
   },
   {
    "id": "card-1001",
@@ -207,7 +207,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "300% Damage.\nIncrease Damage Amount by 30% for each 1-Cost or lower card in hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_999.webp"
+   "image": "cards/rita/unique_30097_02.webp"
   },
   {
    "id": "card-1002",
@@ -224,7 +224,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Increase Damage Amount of the next 3 Attack Card(s) of this unit used by 100%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_999.webp"
+   "image": "cards/rita/unique_30097_02.webp"
   },
   {
    "id": "card-1003",
@@ -241,7 +241,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "400% Damage.\n2 Vulnerable. When Chronal Ascension is gained, activate this card if in hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_999.webp"
+   "image": "cards/rita/unique_30097_02.webp"
   },
   {
    "id": "card-1004",
@@ -258,7 +258,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "250% Damage.\nChange Cost of all Fate Imprint in hand to 4.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_999.webp"
+   "image": "cards/rita/unique_30097_02.webp"
   },
   {
    "id": "card-1005",
@@ -275,7 +275,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Increase Cost of 1 2-Cost or lower card(s) by 1 until used, then activate 1 random 3-Cost card(s).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_1005.webp"
+   "image": "cards/rita/unique_30097_03.webp"
   },
   {
    "id": "card-1006",
@@ -292,7 +292,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Increase Cost of 1 2-Cost or lower card(s) by 1 until used, then activate 1 random 3-Cost card(s).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_1005.webp"
+   "image": "cards/rita/unique_30097_03.webp"
   },
   {
    "id": "card-1007",
@@ -309,7 +309,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Activate 1 random 3-Cost Attack Card(s) in hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_1005.webp"
+   "image": "cards/rita/unique_30097_03.webp"
   },
   {
    "id": "card-1008",
@@ -326,7 +326,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Activate 1 random 3-Cost Attack Card(s) in Draw Pile.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_1005.webp"
+   "image": "cards/rita/unique_30097_03.webp"
   },
   {
    "id": "card-1009",
@@ -343,7 +343,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Activate 2 random 2-Cost card(s) in hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_1005.webp"
+   "image": "cards/rita/unique_30097_03.webp"
   },
   {
    "id": "card-1010",
@@ -360,7 +360,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "When a card whose Cost is increased is used manually, 300% Damage to a random enemy.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_1005.webp"
+   "image": "cards/rita/unique_30097_03.webp"
   },
   {
    "id": "card-1011",
@@ -377,7 +377,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 2 Fate Imprint.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_1011.webp"
+   "image": "cards/rita/unique_30097_04.webp"
   },
   {
    "id": "card-1012",
@@ -394,7 +394,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 3 Fate Imprint.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_1011.webp"
+   "image": "cards/rita/unique_30097_04.webp"
   },
   {
    "id": "card-1013",
@@ -411,7 +411,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 2 Fate Imprint.\nRetain: Create 1 Fate Imprint.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_1011.webp"
+   "image": "cards/rita/unique_30097_04.webp"
   },
   {
    "id": "card-1014",
@@ -428,7 +428,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When Chronal Ascension is gained, moves all Basic Cards of this unit to hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_1011.webp"
+   "image": "cards/rita/unique_30097_04.webp"
   },
   {
    "id": "card-1015",
@@ -445,7 +445,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Select and Exhaust 1 Exhaust card(s) from all cards, then create Fate Imprint for each Cost of that card.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_1011.webp"
+   "image": "cards/rita/unique_30097_04.webp"
   },
   {
    "id": "card-1016",
@@ -462,7 +462,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When Chronal Ascension is gained, Draw 3 2-Cost Attack Card(s).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_1011.webp"
+   "image": "cards/rita/unique_30097_04.webp"
   },
   {
    "id": "card-1017",
@@ -479,7 +479,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Decrease all Chronicle. Gain Chronal Ascension for each decreased.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_1017.webp",
+   "image": "cards/rita/unique_30097_05.webp",
    "notes": "Mythic card: no epiphanies"
   },
   {
@@ -497,7 +497,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "120% Damage for each Cost of this card.\nIncrease Cost of all Fate Imprint in hand by 1.\nWhen this card leaves the hand, change Cost to 2.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_1018.webp"
+   "image": "cards/rita/unique_30097_06.webp"
   },
   {
    "id": "card-1019",
@@ -514,7 +514,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Increase Damage Amount of the next Attack Card of this unit used by 30%.\nIncrease Damage Amount by an additional 10% for each Cost of that card.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rita_1019.webp"
+   "image": "cards/rita/unique_30097_07.webp"
   }
  ],
  "potentials": [

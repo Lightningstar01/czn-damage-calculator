@@ -12,13 +12,14 @@ server data). Each character's own page adds their Potential and Manifest Ego (d
 one page per character is fetched (--cache keeps the pages, to re-run without downloading). Card text keeps Prydwen's wording, including the "+"
 that marks additive buffs (owner's rule, docs/FORMULA.md).
 
-Each card's `image` is its art on Prydwen's CDN (200x300 webp, art only: the site draws the frame). --art <slug> copies that
-character's art into public/cards/<slug>/ and points `image` there instead; characters whose folder exists keep being copied.
-Epiphanies share their base card's art, so identical pictures are saved once.
+Card art (art only: the site draws the frame) is copied into public/cards/<slug>/ and each card's `image` points there
+(owner, 2026-10-27). It comes from cznmetadecks.com (420x632, the game's files): each character's page there lists every
+card's art id, and every listed picture is copied, so cards added by hand (extraCards) can use them too. A card is matched by
+its name, else its base card's name (epiphanies share their base card's art); unmatched cards copy Prydwen's picture (200x300).
+Pictures already copied are kept (--refresh-art downloads them again).
 """
 import argparse
 import datetime
-import hashlib
 import html
 import json
 import re
@@ -29,44 +30,87 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "src" / "data" / "prydwen"
 ART = ROOT / "public" / "cards"
 URL = "https://www.prydwen.gg/chaos-zero-nightmare/characters/{slug}"
+META_URL = "https://cznmetadecks.com/characters/{slug}"
+META_ART = "https://cdn.czndecksmeta.com/thumbnails/{art}@2x.webp"
 ROMAN = r"(?:I|II|III|IV|V)"
+AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36"
 
 
 def download(url):
-    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
+    req = urllib.request.Request(url, headers={"User-Agent": AGENT})
     with urllib.request.urlopen(req, timeout=60) as r:
         return r.read()
 
 
-def copy_art(slug, entries):
-    """Save the character's card art in public/cards/<slug>/ (one file per distinct picture) and point `image` there."""
+# Prydwen card name -> cznmetadecks card name, where they differ (checked by comparing the pictures)
+ART_NAMES = {
+    "Maximum Output Charged Shot": "Max Output Charged Shot",
+    "Card": "Cards",
+    "Throw Dagger": "Knife Toss",
+    "Rapid Fire (Luke)": "Chain Fire",
+    "High-Velocity AP Round": "HV AP Round",
+    "Tracer": "Tracer Shot",
+    "Soul Rip": "Soul Riff",
+    "Heaven's Healing": "Healing of Light",
+    "Dark Mist Secret Ark: Slash": "Dark Mist Secret Art: Slash",
+    "Dark Mist Sword: First Form Attack": "Dark Mist Sword: First Form",
+    "Dark Mist Sword: Third Form Attack": "Dark Mist Sword: Third Form",
+}
+
+
+def norm(name):
+    # ★ stays: Orlea's Softie ★★ has its own picture (on Prydwen only), not Softie ★'s
+    return re.sub(r"[^a-z0-9★]", "", name.lower())
+
+
+def meta_art(page):
+    """Card name -> art id from a cznmetadecks character page (each card's `name` comes before its sctName / spineModel)."""
+    text = re.sub(r"\\u([0-9a-fA-F]{4})", lambda m: chr(int(m.group(1), 16)), page.replace('\\"', '"'))
+    arts = {}
+    for m in re.finditer(r'"(?:sctName|spineModel)":"([a-z][a-z0-9_]*)"', text):
+        names = re.findall(r'"name":"([^"]+)"', text[max(0, m.start() - 2500):m.start()])
+        if names:
+            arts.setdefault(norm(names[-1]), m.group(1))
+    return arts
+
+
+def copy_art(slug, entries, page, refresh=False):
+    """Save the character's card art in public/cards/<slug>/ and point `image` there. Returns (pictures, cards on Prydwen's)."""
     folder = ART / slug
     folder.mkdir(parents=True, exist_ok=True)
-    saved, kept = {}, set()
+    arts = meta_art(page)
+    kept, fallback = set(), 0
+
+    def save(name, url):
+        path = folder / name
+        if refresh or not path.exists():
+            path.write_bytes(download(url))
+        kept.add(name)
+        return f"cards/{slug}/{name}"
+
+    for art in sorted(set(arts.values())):
+        save(f"{art}.webp", META_ART.format(art=art))
+    by_base = {}
     for e in entries:
-        if not e.get("image"):
-            continue
-        data = download(e["image"])
-        digest = hashlib.sha256(data).hexdigest()
-        if digest not in saved:
-            name = e["image"].rsplit("/", 1)[1]
-            (folder / name).write_bytes(data)
-            saved[digest] = name
-            kept.add(name)
-        e["image"] = f"cards/{slug}/{saved[digest]}"
+        art = next((arts[norm(n)] for n in (e["name"], e["base"], ART_NAMES.get(e["base"], "")) if norm(n) in arts), None)
+        if art:
+            e["image"] = f"cards/{slug}/{art}.webp"
+        elif e.get("image"):
+            # Prydwen's epiphanies have their own URLs for the same picture: keep the base card's
+            e["image"] = by_base.get(e["base"]) or save(e["image"].rsplit("/", 1)[1], e["image"])
+            by_base[e["base"]] = e["image"]
+            fallback += 1
     for old in folder.iterdir():
         if old.name not in kept:
             old.unlink()
-    return len(kept)
+    return len(kept), fallback
 
 
-def fetch(slug, cache=None):
-    path = Path(cache) / f"{slug}.html" if cache else None
+def fetch(slug, cache=None, url=URL, prefix=""):
+    path = Path(cache) / f"{prefix}{slug}.html" if cache else None
     if path and path.exists():
         return path.read_text(encoding="utf-8")
-    req = urllib.request.Request(URL.format(slug=slug), headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
-    with urllib.request.urlopen(req, timeout=60) as r:
-        page = r.read().decode("utf-8")
+    page = download(url.format(slug=slug)).decode("utf-8")
     if path:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(page, encoding="utf-8")
@@ -210,7 +254,7 @@ def card_entry(c, base, is_basic, has_epiphanies):
     return entry
 
 
-def build(cache=None, art=()):
+def build(cache=None, refresh_art=False):
     characters, cards = find_lists(rsc_rows(fetch("mei-lin", cache)))
     OUT.mkdir(parents=True, exist_ok=True)
     written = set()
@@ -231,7 +275,7 @@ def build(cache=None, art=()):
             for c in own
         ]
         page = fetch(ch["slug"], cache)
-        pictures = copy_art(ch["slug"], entries) if ch["slug"] in art or (ART / ch["slug"]).is_dir() else 0
+        pictures, fallback = copy_art(ch["slug"], entries, fetch(ch["slug"], cache, META_URL, "meta-"), refresh_art)
         ego = kit_section(page, "Manifest Ego", "level")
         for e in ego:
             e["level"] = int(e["level"].lstrip("E"))
@@ -248,8 +292,8 @@ def build(cache=None, art=()):
         path = OUT / f"{ch['slug']}.json"
         path.write_text(json.dumps(doc, indent=1, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
         written.add(path.name)
-        print(f"{ch['name']:12} {len(entries):3} cards, {len(doc['potentials'])} potentials, {len(ego)} ego levels"
-              + (f", {pictures} pictures copied" if pictures else ""))
+        print(f"{ch['name']:12} {len(entries):3} cards, {len(doc['potentials'])} potentials, {len(ego)} ego levels, "
+              f"{pictures} pictures" + (f", {fallback} cards with Prydwen's art" if fallback else ""))
     for old in OUT.glob("*.json"):
         if old.name not in written and old.name != "_meta.json":
             old.unlink()
@@ -261,7 +305,6 @@ def build(cache=None, art=()):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--cache", help="folder for the downloaded pages: reused if there, saved if not")
-    ap.add_argument("--art", action="append", default=[], metavar="SLUG",
-                    help="copy this character's card art into public/cards/<slug>/ (repeatable)")
+    ap.add_argument("--refresh-art", action="store_true", help="download the card art again, even pictures already copied")
     args = ap.parse_args()
-    build(args.cache, set(args.art))
+    build(args.cache, args.refresh_art)

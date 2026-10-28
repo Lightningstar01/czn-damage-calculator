@@ -20,7 +20,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "300% Damage.\n3 Mark.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_1.webp"
+   "image": "cards/selena/collapse_1005_01.webp"
   },
   {
    "id": "card-395",
@@ -37,7 +37,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_2.webp",
+   "image": "cards/selena/start_1005_01.webp",
    "notes": "Costs 1 EP"
   },
   {
@@ -55,7 +55,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "100% Shield.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_3.webp"
+   "image": "cards/selena/start_1005_02.webp"
   },
   {
    "id": "card-397",
@@ -72,7 +72,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "2 Mark.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_4.webp"
+   "image": "cards/selena/unique_1005_01.webp"
   },
   {
    "id": "card-398",
@@ -89,7 +89,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "2 Mark.\nIf the Anticipated Action of the target is in an Attack state, add 2 Mark.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_4.webp"
+   "image": "cards/selena/unique_1005_01.webp"
   },
   {
    "id": "card-399",
@@ -106,7 +106,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When using an Attack Card, 1 Mark to the target.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_4.webp"
+   "image": "cards/selena/unique_1005_01.webp"
   },
   {
    "id": "card-400",
@@ -123,7 +123,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "2 Mark. +50% Mark Damage for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_4.webp"
+   "image": "cards/selena/unique_1005_01.webp"
   },
   {
    "id": "card-401",
@@ -140,7 +140,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When another combatant's Attack Card is used, 100% Coordinated Attack for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_4.webp"
+   "image": "cards/selena/unique_1005_01.webp"
   },
   {
    "id": "card-402",
@@ -157,7 +157,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "At the start of the turn, 1 Mark to all enemies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_4.webp"
+   "image": "cards/selena/unique_1005_01.webp"
   },
   {
    "id": "card-403",
@@ -174,7 +174,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "150% Damage.\nAttunement: 1 Mark to random enemies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_5.webp"
+   "image": "cards/selena/unique_1005_02.webp"
   },
   {
    "id": "card-404",
@@ -191,7 +191,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Damage.\nAttunement: 200% Damage to a random enemy.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_5.webp"
+   "image": "cards/selena/unique_1005_02.webp"
   },
   {
    "id": "card-405",
@@ -208,7 +208,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "150% Damage.\n2 Mark.\nIf the target is affected by Mark, +2 Mark.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_5.webp"
+   "image": "cards/selena/unique_1005_02.webp"
   },
   {
    "id": "card-406",
@@ -225,7 +225,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "150% Shield.\n2 Mark to all enemies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_5.webp"
+   "image": "cards/selena/unique_1005_02.webp"
   },
   {
    "id": "card-407",
@@ -242,7 +242,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "150% Shield.\nAttunement: Draw 1.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_5.webp"
+   "image": "cards/selena/unique_1005_02.webp"
   },
   {
    "id": "card-408",
@@ -259,7 +259,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "On Ravage, 200% Coordinated Attack.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_5.webp"
+   "image": "cards/selena/unique_1005_02.webp"
   },
   {
    "id": "card-409",
@@ -276,7 +276,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "120% Damage to all enemies, 1 Passion Weakness.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_6.webp"
+   "image": "cards/selena/unique_1005_03.webp"
   },
   {
    "id": "card-410",
@@ -293,7 +293,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "120% Damage to all enemies, 2 Passion Weakness.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_6.webp"
+   "image": "cards/selena/unique_1005_03.webp"
   },
   {
    "id": "card-411",
@@ -310,7 +310,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "120% Damage to all enemies.\nCombo: 2 Mark to all enemies",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_6.webp"
+   "image": "cards/selena/unique_1005_03.webp"
   },
   {
    "id": "card-412",
@@ -327,7 +327,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "120% Damage to all enemies.\n+40% Damage per Passion Attack Card used this turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_6.webp"
+   "image": "cards/selena/unique_1005_03.webp"
   },
   {
    "id": "card-413",
@@ -344,7 +344,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "For 1 turn, when performing a Attack Weakness, 100% chance to trigger Coordinated Attack on the target.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_6.webp"
+   "image": "cards/selena/unique_1005_03.webp"
   },
   {
    "id": "card-414",
@@ -361,7 +361,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When using a Passion Attack card, 50% Coordinated Attack to the target.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_6.webp"
+   "image": "cards/selena/unique_1005_03.webp"
   },
   {
    "id": "card-415",
@@ -378,7 +378,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "150% Shield.\n2 Tenacity Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_7.webp"
+   "image": "cards/selena/unique_1005_04.webp"
   },
   {
    "id": "card-416",
@@ -395,7 +395,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "225% Shield.\n3 Tenacity Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_7.webp"
+   "image": "cards/selena/unique_1005_04.webp"
   },
   {
    "id": "card-417",
@@ -412,7 +412,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "150% Damage.\nIncrease Tenacity Damage of this card by 150%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_7.webp"
+   "image": "cards/selena/unique_1005_04.webp"
   },
   {
    "id": "card-418",
@@ -429,7 +429,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "225% Shield.\n2 Tenacity Damage.\n2 Mark on enemies in Ravage state.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_7.webp"
+   "image": "cards/selena/unique_1005_04.webp"
   },
   {
    "id": "card-419",
@@ -446,7 +446,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "If the target is in Ravaged state, recharge Tenacity.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_7.webp"
+   "image": "cards/selena/unique_1005_04.webp"
   },
   {
    "id": "card-420",
@@ -463,7 +463,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "1 Tenacity Damage to all enemies and 1 Mark.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_7.webp"
+   "image": "cards/selena/unique_1005_04.webp"
   },
   {
    "id": "card-421",
@@ -480,7 +480,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "+80% Mark Damage",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/selena_8.webp",
+   "image": "cards/selena/unique_1005_05.webp",
    "notes": "Mythic card: no epiphanies"
   }
  ],

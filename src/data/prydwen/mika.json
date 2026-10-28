@@ -20,7 +20,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 2 Source of Water card(s), grant Exhaust to it.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_8.webp"
+   "image": "cards/mika/collapse_1039_01.webp"
   },
   {
    "id": "card-544",
@@ -37,7 +37,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_1.webp"
+   "image": "cards/mika/start_1039_01.webp"
   },
   {
    "id": "card-545",
@@ -54,7 +54,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 100%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_2.webp"
+   "image": "cards/mika/start_1039_02.webp"
   },
   {
    "id": "card-546",
@@ -71,7 +71,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 100%.\nGain 1 AP.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_3.webp"
+   "image": "cards/mika/unique_1039_01.webp"
   },
   {
    "id": "card-547",
@@ -88,7 +88,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 150%.\nGain 1 AP.\n1 Wave.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_3.webp"
+   "image": "cards/mika/unique_1039_01.webp"
   },
   {
    "id": "card-548",
@@ -105,7 +105,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 150%.\nGain 2 AP.\nWhen Recovering, decrease Cost by 1 for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_3.webp"
+   "image": "cards/mika/unique_1039_01.webp"
   },
   {
    "id": "card-549",
@@ -122,7 +122,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 150%.\nGain 1 AP.\nIncrease Heal Amount of the next card used by 50%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_3.webp"
+   "image": "cards/mika/unique_1039_01.webp"
   },
   {
    "id": "card-550",
@@ -139,7 +139,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 150%.\nGain 1 AP.\nDecrease Stress of allies by 2.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_3.webp"
+   "image": "cards/mika/unique_1039_01.webp"
   },
   {
    "id": "card-551",
@@ -156,7 +156,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 100%.\nGain 3 AP.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_3.webp"
+   "image": "cards/mika/unique_1039_01.webp"
   },
   {
    "id": "card-552",
@@ -173,7 +173,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 100%.\nIncrease Heal Amount by 30% for each AP.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_4.webp"
+   "image": "cards/mika/unique_1039_04.webp"
   },
   {
    "id": "card-553",
@@ -190,7 +190,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 150%.\nIncrease Heal Amount by 30% for each AP.\nGain Shield equal to Heal Amount overflow.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_4.webp"
+   "image": "cards/mika/unique_1039_04.webp"
   },
   {
    "id": "card-554",
@@ -207,7 +207,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 150%.\nIncrease Heal Amount by 30% for each AP.\n1 Wave.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_4.webp"
+   "image": "cards/mika/unique_1039_04.webp"
   },
   {
    "id": "card-555",
@@ -224,7 +224,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 150%.\nIncrease Heal Amount of the next card used by 20% for each AP.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_4.webp"
+   "image": "cards/mika/unique_1039_04.webp"
   },
   {
    "id": "card-556",
@@ -241,7 +241,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 150%.\nDamage to random enemies equal to Healing.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_4.webp"
+   "image": "cards/mika/unique_1039_04.webp"
   },
   {
    "id": "card-557",
@@ -258,7 +258,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 50%.\n+50% Healing for each AP used this turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_4.webp"
+   "image": "cards/mika/unique_1039_04.webp"
   },
   {
    "id": "card-558",
@@ -275,7 +275,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "1 Wave.\nFor 1 turn, +50% Healing.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_5.webp"
+   "image": "cards/mika/unique_1039_03.webp"
   },
   {
    "id": "card-559",
@@ -292,7 +292,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 50%.\n1 Wave.\nFor 2 turns, +50% Healing.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_5.webp"
+   "image": "cards/mika/unique_1039_03.webp"
   },
   {
    "id": "card-560",
@@ -309,7 +309,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "2 Wave.\nFor 1 turn, +50% Healing.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_5.webp"
+   "image": "cards/mika/unique_1039_03.webp"
   },
   {
    "id": "card-561",
@@ -326,7 +326,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "2 Wave.\nFor 1 turn, +100% own Healing.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_5.webp"
+   "image": "cards/mika/unique_1039_03.webp"
   },
   {
    "id": "card-562",
@@ -343,7 +343,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When own card is used, 1 Wave for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_5.webp"
+   "image": "cards/mika/unique_1039_03.webp"
   },
   {
    "id": "card-563",
@@ -360,7 +360,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "2 Wave.\n+50% Healing.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_5.webp"
+   "image": "cards/mika/unique_1039_03.webp"
   },
   {
    "id": "card-564",
@@ -377,7 +377,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "200% Damage to all enemies.\nHeal 50% for each target hit.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_6.webp"
+   "image": "cards/mika/unique_1039_02.webp"
   },
   {
    "id": "card-565",
@@ -394,7 +394,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "200% Damage to all enemies.\nHeal 100% for each target hit.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_6.webp"
+   "image": "cards/mika/unique_1039_02.webp"
   },
   {
    "id": "card-566",
@@ -411,7 +411,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "200% Damage to all enemies.\n1 Wave for each target hit.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_6.webp"
+   "image": "cards/mika/unique_1039_02.webp"
   },
   {
    "id": "card-567",
@@ -428,7 +428,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "200% Damage to all enemies.\nIncrease Heal Amount of the next card used by 20% for each target hit.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_6.webp"
+   "image": "cards/mika/unique_1039_02.webp"
   },
   {
    "id": "card-568",
@@ -445,7 +445,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "300% Damage to all enemies.\nIf Recovered, decrease Cost by 1 until used.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_6.webp"
+   "image": "cards/mika/unique_1039_02.webp"
   },
   {
    "id": "card-569",
@@ -462,7 +462,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "Heal 100%.\n100% (200%) Damage to all enemies.\nIncrease Damage Amount equal to Heal Amount of this card.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_6.webp",
+   "image": "cards/mika/unique_1039_02.webp",
    "notes": "Uses the first % (the one in brackets is the boosted value)"
   },
   {
@@ -480,7 +480,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "1 Wave.\nAt the start of the turn, 1 Wave.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_7.webp",
+   "image": "cards/mika/unique_1039_05.webp",
    "notes": "Mythic card: no epiphanies"
   },
   {
@@ -498,7 +498,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 100%.\nGain 1 AP.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/mika_3.webp"
+   "image": "cards/mika/unique_1039_01.webp"
   }
  ],
  "potentials": [

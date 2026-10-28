@@ -20,7 +20,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "600% Damage.\nFor 2 turns, inflict Fixed Damage to the target equal to 30% of Damage Amount taken by all enemies.\n(Cannot exceed 1,000% of Arabella's Attack per turn).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1295.webp"
+   "image": "cards/arabella/collapse_30115_01.webp"
   },
   {
    "id": "card-1296",
@@ -37,7 +37,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "60% Damage to all enemies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1296.webp"
+   "image": "cards/arabella/start_30115_01.webp"
   },
   {
    "id": "card-1297",
@@ -54,7 +54,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "100% Shield.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1297.webp"
+   "image": "cards/arabella/start_30115_02.webp"
   },
   {
    "id": "card-1298",
@@ -71,7 +71,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "40% Damage and 2 Fracture to all enemies.\n4 Fracture to the enemy with the highest HP.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1298.webp"
+   "image": "cards/arabella/unique_30115_01.webp"
   },
   {
    "id": "card-1299",
@@ -88,7 +88,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "60% Damage and 3 Fracture to all enemies.\n6 Fracture to the enemy with the highest HP.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1299.webp"
+   "image": "cards/arabella/unique_30115_01.webp"
   },
   {
    "id": "card-1300",
@@ -105,7 +105,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "60% Damage and 3 Fracture to all enemies.\nIncrease Damage Amount of Attack Cards of this unity by 50% for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1300.webp"
+   "image": "cards/arabella/unique_30115_01.webp"
   },
   {
    "id": "card-1301",
@@ -122,7 +122,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "60% Damage and 2 Fracture to all enemies.\n1 Fracture for each type of harmful effect the target has (max 5).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1301.webp"
+   "image": "cards/arabella/unique_30115_01.webp"
   },
   {
    "id": "card-1302",
@@ -139,7 +139,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "60% Damage and 3 Fracture to all enemies.\nDraw 2 cards of this unit.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1302.webp"
+   "image": "cards/arabella/unique_30115_01.webp"
   },
   {
    "id": "card-1303",
@@ -156,7 +156,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "60% Damage, 2 Fracture, 4 Agony, and 2 Scorched to all enemies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1303.webp"
+   "image": "cards/arabella/unique_30115_01.webp"
   },
   {
    "id": "card-1304",
@@ -173,7 +173,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "1 Fracture Amplification.\nFor each enemy present, +20% Damage Amount to this unit for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1304.webp"
+   "image": "cards/arabella/unique_30115_02.webp"
   },
   {
    "id": "card-1305",
@@ -190,7 +190,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "1 Fracture Amplification.\nFor each enemy present, +30% Damage Amount to this unit for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1305.webp"
+   "image": "cards/arabella/unique_30115_02.webp"
   },
   {
    "id": "card-1306",
@@ -207,7 +207,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "1 Fracture Amplification.\nFor each type of harmful effect the target has, +20% Damage Amount to this unit for 1 turn (max 120%).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1306.webp"
+   "image": "cards/arabella/unique_30115_02.webp"
   },
   {
    "id": "card-1307",
@@ -224,7 +224,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "1 Fracture Amplification.\n2 Fracture and 2 Vulnerable to all enemies.\nIncrease Damage Amount of Attack Cards of this unit by 50% for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1307.webp"
+   "image": "cards/arabella/unique_30115_02.webp"
   },
   {
    "id": "card-1308",
@@ -241,7 +241,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "1 Fracture Amplification.\nFor 1 turn, +80% Damage Amount to this unit, and when allies defeat an enemy during that turn, transfer Fracture of that target to a random enemy.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1308.webp"
+   "image": "cards/arabella/unique_30115_02.webp"
   },
   {
    "id": "card-1309",
@@ -258,7 +258,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "At the start of the turn, 1 Fracture Amplification and 6 Fracture to the enemy with the highest HP.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1309.webp"
+   "image": "cards/arabella/unique_30115_02.webp"
   },
   {
    "id": "card-1310",
@@ -275,7 +275,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "40% Damage and 2 Fracture to all enemies, and activate Fracture inflicted by this unit.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1310.webp"
+   "image": "cards/arabella/unique_30115_03.webp"
   },
   {
    "id": "card-1311",
@@ -292,7 +292,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "60% Damage and 3 Fracture to all enemies .\nFracture Amplification: Activate Fracture inflicted by allies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1311.webp"
+   "image": "cards/arabella/unique_30115_03.webp"
   },
   {
    "id": "card-1312",
@@ -309,7 +309,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "60% Damage and 3 Fracture to all enemies, and activate Fracture inflicted by this unit.\nFracture Amplification: Activate Fracture inflicted by this unit.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1312.webp"
+   "image": "cards/arabella/unique_30115_03.webp"
   },
   {
    "id": "card-1313",
@@ -326,7 +326,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "360% Damage and 2 Fracture to all enemies.\nDefeat: Activate Fracture inflicted by this unit on all enemies (1 time per turn)",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1313.webp"
+   "image": "cards/arabella/unique_30115_03.webp"
   },
   {
    "id": "card-1314",
@@ -343,7 +343,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "60% Damage , 2 Fracture, and 4 Agony to all enemies.\nFracture Amplification: Activate Agony inflicted by allies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1314.webp"
+   "image": "cards/arabella/unique_30115_03.webp"
   },
   {
    "id": "card-1315",
@@ -360,7 +360,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Damage to all enemies, and remove Fracture inflicted by allies.\nApply the amount of Fracture removed x2 to the target inflicted with Fracture Amplification.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1315.webp"
+   "image": "cards/arabella/unique_30115_03.webp"
   },
   {
    "id": "card-1316",
@@ -377,7 +377,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "60% Damage, and activate Fracture inflicted by this unit 2 times.\nAdd 1 Hit for each type of harmful effect the target has (max 3 times).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1316.webp"
+   "image": "cards/arabella/unique_30115_04.webp"
   },
   {
    "id": "card-1317",
@@ -394,7 +394,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Damage.\nAdd 1 Hit for each type of harmful effect the target has (max 3 times).\nFracture Amplification: Activate Fracture inflicted by allies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1317.webp"
+   "image": "cards/arabella/unique_30115_04.webp"
   },
   {
    "id": "card-1318",
@@ -411,7 +411,7 @@
    "hits": 4,
    "weaknessApplies": false,
    "text": "60% Damage x 4, and activate Fracture inflicted by this unit 2 times.\nFracture Amplification: Draw 1 card of this unit.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1318.webp"
+   "image": "cards/arabella/unique_30115_04.webp"
   },
   {
    "id": "card-1319",
@@ -428,7 +428,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "240% Damage, and activate Fracture inflicted by this unit.\nDefeat: Move this card to hand (2 times per turn).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1319.webp"
+   "image": "cards/arabella/unique_30115_04.webp"
   },
   {
    "id": "card-1320",
@@ -445,7 +445,7 @@
    "hits": 4,
    "weaknessApplies": false,
    "text": "40% Damage x 4 to random enemies.\n2 Fracture on each Hit .\nIf Cost of this card is decreased, add 1 Hit.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1320.webp"
+   "image": "cards/arabella/unique_30115_04.webp"
   },
   {
    "id": "card-1321",
@@ -462,7 +462,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "60% Damage, and activate Fracture inflicted by this unit 2 times.\nAdd 1 Hit for each Fracture inflicted by this unit that was activated this turn (max 5 times).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1321.webp"
+   "image": "cards/arabella/unique_30115_04.webp"
   },
   {
    "id": "card-1322",
@@ -479,7 +479,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "200% Damage to all enemies.\nIncrease Damage Amount by 15% for each type of harmful effect the target has (max 120%).\nFracture Amplification: 2x base Damage Amount.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1322.webp",
+   "image": "cards/arabella/unique_30115_05.webp",
    "notes": "Mythic card: no epiphanies"
   }
  ],

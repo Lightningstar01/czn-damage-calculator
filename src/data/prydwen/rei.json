@@ -20,7 +20,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "300% Damage.\n15% DMG-Based Recovery.\nGain 1 AP.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_1.webp"
+   "image": "cards/rei/collapse_1056_01.webp"
   },
   {
    "id": "card-218",
@@ -37,7 +37,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_2.webp"
+   "image": "cards/rei/start_1056_01.webp"
   },
   {
    "id": "card-219",
@@ -54,7 +54,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 100%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_3.webp"
+   "image": "cards/rei/start_1056_02.webp"
   },
   {
    "id": "card-220",
@@ -71,7 +71,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Damage.\nIncrease Damage Amount of Basic Attack Cards by 100% for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_4.webp"
+   "image": "cards/rei/unique_1056_04.webp"
   },
   {
    "id": "card-221",
@@ -88,7 +88,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "150% Damage.\nIncreases Damage Amount of Basic Attack Cards by 150% for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_4.webp"
+   "image": "cards/rei/unique_1056_04.webp"
   },
   {
    "id": "card-222",
@@ -105,7 +105,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "350% Damage.\n20% DMG-Based Recovery.\nDecrease Damage Amount by 20% for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_4.webp"
+   "image": "cards/rei/unique_1056_04.webp"
   },
   {
    "id": "card-223",
@@ -122,7 +122,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "150% Damage.\nDiscard all Basic Cards, add 1 Hit for each.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_4.webp"
+   "image": "cards/rei/unique_1056_04.webp"
   },
   {
    "id": "card-224",
@@ -139,7 +139,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Increase Damage Amount of Basic Attack Cards by 80%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_4.webp"
+   "image": "cards/rei/unique_1056_04.webp"
   },
   {
    "id": "card-225",
@@ -156,7 +156,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Activate all Basic Cards in hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_4.webp"
+   "image": "cards/rei/unique_1056_04.webp"
   },
   {
    "id": "card-226",
@@ -173,7 +173,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "+40% Damage Amount of cards with Cost 1.\nAt the end of the turn, Heal 60%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_5.webp"
+   "image": "cards/rei/unique_1056_03.webp"
   },
   {
    "id": "card-227",
@@ -190,7 +190,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "+60% Damage Amount of cards with Cost 1.\nAt the end of the turn, Heal 90%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_5.webp"
+   "image": "cards/rei/unique_1056_03.webp"
   },
   {
    "id": "card-228",
@@ -207,7 +207,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "+40% Damage Amount of Void Card.\nAt the end of the turn, Heal 90%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_5.webp"
+   "image": "cards/rei/unique_1056_03.webp"
   },
   {
    "id": "card-229",
@@ -224,7 +224,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "+40% Shield gain, Damage Amount, and Healing of cards with Cost 1.\nAt the end of the turn, Heal 90%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_5.webp"
+   "image": "cards/rei/unique_1056_03.webp"
   },
   {
    "id": "card-230",
@@ -241,7 +241,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "+40% Damage Amount of cards with Cost 1 or less.\nAt the end of the turn, Heal 90%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_5.webp"
+   "image": "cards/rei/unique_1056_03.webp"
   },
   {
    "id": "card-231",
@@ -258,7 +258,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 100%.\nFor 1 turn, +80% Damage Amount of cards with Cost 1.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_5.webp"
+   "image": "cards/rei/unique_1056_03.webp"
   },
   {
    "id": "card-232",
@@ -275,7 +275,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Choose 1 card(s) in hand to Exhaust.\nHeal 200%.\nDraw 1.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_6.webp"
+   "image": "cards/rei/unique_1056_05.webp"
   },
   {
    "id": "card-233",
@@ -292,7 +292,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Choose 1 card(s) in hand to Exhaust.\nHeal 200%.\nDraw 1.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_6.webp"
+   "image": "cards/rei/unique_1056_05.webp"
   },
   {
    "id": "card-234",
@@ -309,7 +309,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 200%.\nDraw 2.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_6.webp"
+   "image": "cards/rei/unique_1056_05.webp"
   },
   {
    "id": "card-235",
@@ -326,7 +326,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 150%.\nSelect and Exhaust up to 2 cards in hand, then Draw for each Exhausted.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_6.webp"
+   "image": "cards/rei/unique_1056_05.webp"
   },
   {
    "id": "card-236",
@@ -343,7 +343,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 150%.\nSelect and Exhaust up to 1 card from the Draw Pile, then Draw for each Exhausted",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_6.webp"
+   "image": "cards/rei/unique_1056_05.webp"
   },
   {
    "id": "card-237",
@@ -360,7 +360,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 150%.\nSelect and Exhaust 2 cards in hand, then select and Draw 1 Void card",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_6.webp"
+   "image": "cards/rei/unique_1056_05.webp"
   },
   {
    "id": "card-238",
@@ -377,7 +377,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Choose 1 Attack Card(s) in hand, +100% Damage Amount for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_7.webp"
+   "image": "cards/rei/unique_1056_01.webp"
   },
   {
    "id": "card-239",
@@ -394,7 +394,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Choose 1 Attack Card(s) in hand, +150% Damage Amount for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_7.webp"
+   "image": "cards/rei/unique_1056_01.webp"
   },
   {
    "id": "card-240",
@@ -411,7 +411,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Choose 1 card(s) in hand, +100% Damage Amount, Shield gain, and Healing for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_7.webp"
+   "image": "cards/rei/unique_1056_01.webp"
   },
   {
    "id": "card-241",
@@ -428,7 +428,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "For 1 turn, +50% Damage Amount of Void Attack Cards.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_7.webp"
+   "image": "cards/rei/unique_1056_01.webp"
   },
   {
    "id": "card-242",
@@ -445,7 +445,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Choose 1 Attack card(s), +100% Damage Amount until used.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_7.webp"
+   "image": "cards/rei/unique_1056_01.webp"
   },
   {
    "id": "card-243",
@@ -462,7 +462,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Choose 1 Attack Card(s) in hand, +50% Damage Amount.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_7.webp"
+   "image": "cards/rei/unique_1056_01.webp"
   },
   {
    "id": "card-244",
@@ -479,7 +479,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "250% Damage.\nFor 1 turn 2 Morale.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/rei_8.webp",
+   "image": "cards/rei/unique_1056_02.webp",
    "notes": "Mythic card: no epiphanies"
   }
  ],

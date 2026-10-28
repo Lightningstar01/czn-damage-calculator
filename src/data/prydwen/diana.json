@@ -20,7 +20,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 1 Cupid Shot, Create 2 Heart Bullet.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1033.webp"
+   "image": "cards/diana/collapse_1061_01.webp"
   },
   {
    "id": "card-1034",
@@ -37,7 +37,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1034.webp"
+   "image": "cards/diana/start_1061_01.webp"
   },
   {
    "id": "card-1035",
@@ -54,7 +54,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 100%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1035.webp"
+   "image": "cards/diana/start_1061_03.webp"
   },
   {
    "id": "card-1036",
@@ -71,7 +71,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Damage.\nCreate 2 Heart Breaker.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1036.webp"
+   "image": "cards/diana/unique_1061_01.webp"
   },
   {
    "id": "card-1037",
@@ -88,7 +88,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "150% Damage.\nCreate 3 Heart Breaker.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1036.webp"
+   "image": "cards/diana/unique_1061_01.webp"
   },
   {
    "id": "card-1038",
@@ -105,7 +105,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "150% Damage.\nCreate 1 Heart Breaker.\nDraw 2 Exhaust Bullet card(s).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1036.webp"
+   "image": "cards/diana/unique_1061_01.webp"
   },
   {
    "id": "card-1039",
@@ -122,7 +122,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "150% Damage.\nChange all 1-Cost or lower Exhaust cards in hand into Heart Breaker.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1036.webp"
+   "image": "cards/diana/unique_1061_01.webp"
   },
   {
    "id": "card-1040",
@@ -139,7 +139,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 2 Heart Breaker.\nApply Quietus to all Exhaust Bullet cards in hand",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1036.webp"
+   "image": "cards/diana/unique_1061_01.webp"
   },
   {
    "id": "card-1041",
@@ -156,7 +156,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "At the start of the turn create 2 Heart Breaker.\nIf 5 or less Heart Bullets are owned, create 1 more.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1036.webp"
+   "image": "cards/diana/unique_1061_01.webp"
   },
   {
    "id": "card-1042",
@@ -173,7 +173,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 2 Heart Shaker.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1042.webp"
+   "image": "cards/diana/unique_1061_02.webp"
   },
   {
    "id": "card-1043",
@@ -190,7 +190,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 2 Heart Breaker. For the next 3 Extra Attacks by a different Combatant, 1 Resonance to the target.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1042.webp"
+   "image": "cards/diana/unique_1061_02.webp"
   },
   {
    "id": "card-1044",
@@ -207,7 +207,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Discard up to 2 cards in hand.\nCreate Heart Shaker for each Discarded +1.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1042.webp"
+   "image": "cards/diana/unique_1061_02.webp"
   },
   {
    "id": "card-1045",
@@ -224,7 +224,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Change 0-Cost Exhaust Card(s) in hand into random Heart Bullet.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1042.webp"
+   "image": "cards/diana/unique_1061_02.webp"
   },
   {
    "id": "card-1046",
@@ -241,7 +241,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 1 of each Heart Bullet.\n1 Resonance to a random enemy for each different Bullet card in hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1042.webp"
+   "image": "cards/diana/unique_1061_02.webp"
   },
   {
    "id": "card-1047",
@@ -258,7 +258,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Change Heart Shaker in hand into Heart Breaker.\nRetain: Create 1 Heart Shaker.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1042.webp"
+   "image": "cards/diana/unique_1061_02.webp"
   },
   {
    "id": "card-1048",
@@ -275,7 +275,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "120% Damage.\n2 Resonance.\nIf this card is Discarded, activate Resonance inflicted on the target by this unit 3 more times.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1048.webp"
+   "image": "cards/diana/unique_1061_03.webp"
   },
   {
    "id": "card-1049",
@@ -292,7 +292,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "180% Damage.\n3 Resonance.\nIf this card is Discarded, activate Resonance inflicted on the target by this unit 5 more times.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1048.webp"
+   "image": "cards/diana/unique_1061_03.webp"
   },
   {
    "id": "card-1050",
@@ -309,7 +309,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "180% Damage.\nFor the next 5 Haste Attack Card(s) used, 1 Resonance to the target.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1048.webp"
+   "image": "cards/diana/unique_1061_03.webp"
   },
   {
    "id": "card-1051",
@@ -326,7 +326,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "180% Damage.\nActivate Resonance inflicted on the target by this unit 10 time(s).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1048.webp"
+   "image": "cards/diana/unique_1061_03.webp"
   },
   {
    "id": "card-1052",
@@ -343,7 +343,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "180% Damage.\n+100% Damage Amount for each Bullet card Discarded this turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1048.webp"
+   "image": "cards/diana/unique_1061_03.webp"
   },
   {
    "id": "card-1053",
@@ -360,7 +360,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "180% Damage to all enemies.\nWhen this card is Discarded, activate Resonance inflicted on all enemies 2 time(s).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1048.webp"
+   "image": "cards/diana/unique_1061_03.webp"
   },
   {
    "id": "card-1054",
@@ -377,7 +377,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Draw 1 Quietus card(s).\nDiscard 2.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1054.webp"
+   "image": "cards/diana/unique_1061_04.webp"
   },
   {
    "id": "card-1055",
@@ -394,7 +394,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Draw 1 Quietus card(s).\nIf the Discarded card was from a different Combatant, create 2 Heart Bullet.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1054.webp"
+   "image": "cards/diana/unique_1061_04.webp"
   },
   {
    "id": "card-1056",
@@ -411,7 +411,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Draw 1 Quietus card(s).\nDiscard 2.\n1 Resonance to all enemies for each combined Cost of Discarded cards (max 6).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1054.webp"
+   "image": "cards/diana/unique_1061_04.webp"
   },
   {
    "id": "card-1057",
@@ -428,7 +428,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Discard up to 3 Bullet card(s) in hand.\nDraw a Quietus card for each Discarded -1.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1054.webp"
+   "image": "cards/diana/unique_1061_04.webp"
   },
   {
    "id": "card-1058",
@@ -445,7 +445,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Discard all Bullet cards in hand.\n80% Extra Attack to a random enemy for each Discarded.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1054.webp"
+   "image": "cards/diana/unique_1061_04.webp"
   },
   {
    "id": "card-1059",
@@ -462,7 +462,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "If no Quietus cards of this unit are in hand, Draw 1 Quietus card(s) of this unit (1 time per turn).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1054.webp"
+   "image": "cards/diana/unique_1061_04.webp"
   },
   {
    "id": "card-1060",
@@ -479,7 +479,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "Draw 2 Exhaust Bullet card(s), 300% Damage, Increase Damage Amount by 30% for each different Bullet card in hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1060.webp",
+   "image": "cards/diana/unique_1061_05.webp",
    "notes": "Mythic card: no epiphanies"
   },
   {
@@ -497,7 +497,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "1 Resonance.\nDiscard 1 random card(s) from Draw Pile.\nIf this card is Discarded, 2 Resonance to a random enemy.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1061.webp"
+   "image": "cards/diana/unique_1061_07.webp"
   },
   {
    "id": "card-1062",
@@ -514,7 +514,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "80% Damage.\nDiscard 1 random Bullet card(s).\nIf this card is Discarded, 120% Extra Attack to a random enemy.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1062.webp"
+   "image": "cards/diana/unique_1061_06.webp"
   },
   {
    "id": "card-1063",
@@ -531,7 +531,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "120% Damage.\n60% Extra Attack to a random enemy for each Bullet card in hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/diana_1063.webp"
+   "image": "cards/diana/start_1061_02.webp"
   }
  ],
  "potentials": [

@@ -20,7 +20,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Select and create 1 Archetype card.\nThe next 3 times an Ego Skill is used, create an additional card.\nDecrease Cost of the next Ego Skill used by 2.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_989.webp"
+   "image": "cards/tiphera/collapse_30084_01.webp"
   },
   {
    "id": "card-958",
@@ -37,7 +37,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Defense-Based Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_958.webp"
+   "image": "cards/tiphera/start_30084_01.webp"
   },
   {
    "id": "card-959",
@@ -54,7 +54,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 100%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_959.webp"
+   "image": "cards/tiphera/start_30084_02.webp"
   },
   {
    "id": "card-960",
@@ -71,7 +71,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 100%, create 2 Archetype cards in Draw Pile.\nDraw 1 of them.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_960.webp"
+   "image": "cards/tiphera/unique_30084_01.webp"
   },
   {
    "id": "card-961",
@@ -88,7 +88,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 150%.\nCreate 3 Archetype card(s) in Draw Pile.\nDraw 1 of them.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_960.webp"
+   "image": "cards/tiphera/unique_30084_01.webp"
   },
   {
    "id": "card-962",
@@ -105,7 +105,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 100%.\nSelect 1 Archetype card.\nCreate 1 in hand and Draw Pile each.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_960.webp"
+   "image": "cards/tiphera/unique_30084_01.webp"
   },
   {
    "id": "card-963",
@@ -122,7 +122,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Draw 1.\nPredict which Archetype card will be created.\nCreate 1 Archetype card.\nIf predicted correctly, create the rest in Draw Pile.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_960.webp"
+   "image": "cards/tiphera/unique_30084_01.webp"
   },
   {
    "id": "card-964",
@@ -139,7 +139,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 3 Archetype card(s) in Draw Pile.\nDraw 1 of them.\nActivate Retain effect 2 times on 1 random card(s) of this unit in hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_960.webp"
+   "image": "cards/tiphera/unique_30084_01.webp"
   },
   {
    "id": "card-965",
@@ -156,7 +156,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 1 Archetype card(s).\nWhen AP is 0, create 1 Archetype card in hand and Draw Pile each (1 time per turn).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_960.webp"
+   "image": "cards/tiphera/unique_30084_01.webp"
   },
   {
    "id": "card-966",
@@ -173,7 +173,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Draw 2 Archetype cards.\nDouble a random effect of those cards for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_966.webp"
+   "image": "cards/tiphera/unique_30084_02.webp"
   },
   {
    "id": "card-967",
@@ -190,7 +190,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Draw 3 Archetype card(s).\nDouble a random effect of those cards for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_966.webp"
+   "image": "cards/tiphera/unique_30084_02.webp"
   },
   {
    "id": "card-968",
@@ -207,7 +207,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Draw 4 Archetype card(s).\nSelect and Exhaust 1 Exhaust card in hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_966.webp"
+   "image": "cards/tiphera/unique_30084_02.webp"
   },
   {
    "id": "card-969",
@@ -224,7 +224,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Change all Archetype cards in hand into a different Archetype card.\nRetain: Draw 1 Archetype card(s).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_966.webp"
+   "image": "cards/tiphera/unique_30084_02.webp"
   },
   {
    "id": "card-970",
@@ -241,7 +241,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Select and Exhaust 3 Exhaust cards from all.\nDraw 1 Exhaust card for each Exhausted.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_966.webp"
+   "image": "cards/tiphera/unique_30084_02.webp"
   },
   {
    "id": "card-971",
@@ -258,7 +258,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Draw 1 Archetype card.\nRepeat until the same card is Drawn consecutively (max 6 time(s)).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_966.webp"
+   "image": "cards/tiphera/unique_30084_02.webp"
   },
   {
    "id": "card-972",
@@ -275,7 +275,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "120% Defense-Based Damage, 80% Shield, Heal 80%.\nHarmonization: Double all effects",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_972.webp"
+   "image": "cards/tiphera/unique_30084_03.webp"
   },
   {
    "id": "card-973",
@@ -292,7 +292,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "180% Defense-Based Damage, 100% Shield, Heal 100%.\nHarmonization: Double all effects.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_972.webp"
+   "image": "cards/tiphera/unique_30084_03.webp"
   },
   {
    "id": "card-974",
@@ -309,7 +309,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "550% Defense-Based Damage.\nWhen a card is Exhausted, decrease Cost of this card by 1 for 1 turn until used.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_972.webp"
+   "image": "cards/tiphera/unique_30084_03.webp"
   },
   {
    "id": "card-975",
@@ -326,7 +326,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "160% Defense-Based Damage, 40% Shield, Heal 40%.\nRetain: increase all effects by 100% until activated (max 4 times).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_972.webp"
+   "image": "cards/tiphera/unique_30084_03.webp"
   },
   {
    "id": "card-976",
@@ -343,7 +343,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When AP is 0, create 1 Creation and Destruction.\nDecrease Cost of those cards by 1 and apply Exhaust (1 time per turn).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_972.webp"
+   "image": "cards/tiphera/unique_30084_03.webp"
   },
   {
    "id": "card-977",
@@ -360,7 +360,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "150% Defense-Based Damage for each Cost of this card.\nWhen a card is Exhausted, randomly change Cost of this card from 1–9.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_972.webp"
+   "image": "cards/tiphera/unique_30084_03.webp"
   },
   {
    "id": "card-978",
@@ -377,7 +377,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When 2 Archetype cards are created, create 1 identical card in Discard Pile.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_978.webp"
+   "image": "cards/tiphera/unique_30084_04.webp"
   },
   {
    "id": "card-979",
@@ -394,7 +394,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When 2 Archetype cards are created, create 1 identical card in Discard Pile.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_978.webp"
+   "image": "cards/tiphera/unique_30084_04.webp"
   },
   {
    "id": "card-980",
@@ -411,7 +411,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When 3 Archetype cards are created, create 1 identical card in hand.\nApply Retain to that card.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_978.webp"
+   "image": "cards/tiphera/unique_30084_04.webp"
   },
   {
    "id": "card-981",
@@ -428,7 +428,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When Archetype: □ is activated, create 1 different Archetype card in Discard Pile.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_978.webp"
+   "image": "cards/tiphera/unique_30084_04.webp"
   },
   {
    "id": "card-982",
@@ -445,7 +445,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 1 of each Archetype card.\nCreate 1 of the next Archetype card Exhausted.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_978.webp"
+   "image": "cards/tiphera/unique_30084_04.webp"
   },
   {
    "id": "card-983",
@@ -462,7 +462,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When an Archetype card is moved to hand, duplicate that card and remove a random effect (5 time(s) per turn).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_978.webp"
+   "image": "cards/tiphera/unique_30084_04.webp"
   },
   {
    "id": "card-984",
@@ -479,7 +479,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "1 AP.\nDraw 1.\nIncrease Damage Amount of the first Hit of the next Attack Card by 40%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_984.webp",
+   "image": "cards/tiphera/unique_30084_05.webp",
    "notes": "Mythic card: no epiphanies"
   },
   {
@@ -497,7 +497,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 50%.\n1 AP.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_985.webp"
+   "image": "cards/tiphera/unique_30084_06.webp"
   },
   {
    "id": "card-986",
@@ -514,7 +514,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "50% Shield.\nIncrease Damage Amount of the first Hit of the next Attack Card by 30% (max 300%).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_986.webp"
+   "image": "cards/tiphera/unique_30084_06.webp"
   },
   {
    "id": "card-987",
@@ -531,7 +531,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 50%.\nDraw 1 Archetype card.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tiphera_987.webp"
+   "image": "cards/tiphera/unique_30084_06.webp"
   }
  ],
  "potentials": [

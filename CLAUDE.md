@@ -15,8 +15,8 @@ npm run lint       # oxlint
 npm run screenshot # phone (390px) + desktop PNGs of every tab -> screenshots/ (see scripts/screenshot.mjs:
                    # --tab Buffs, --phone, --tap "text", --save file); read them to check design changes
 # Re-import every character (cards, potentials, Manifest Ego) from Prydwen (after a game update;
-# review the git diff). One page per character; --cache <folder> keeps them for re-runs;
-# --art <slug> copies that character's card art into public/cards/ (characters already copied are kept up to date).
+# review the git diff). One page per character (plus its cznmetadecks page for card art); --cache <folder> keeps
+# them for re-runs; card art already in public/cards/ is kept (--refresh-art downloads it again).
 # Python is not on PATH on the owner's PC; use the project venv:
 .venv\Scripts\python.exe scripts/import_prydwen.py
 ```
@@ -47,8 +47,10 @@ owner asks (there is no git remote yet).
     (`creates: [...]` in `characters/<slug>.ts`, e.g. Rossweisse's shards) join automatically with id `auto:<presetId>`;
     nobody adds them by hand. A deck card's preset effects count while it's in the deck. Teammates' decks
     (`Teammate.cards`) only add buffs. Cards are picked on the Cards tab as pictures (`src/ui/CardFace.tsx`).
-  - Card art: the import records each card's `image` (Prydwen's CDN URL, 200x300 webp). `--art <slug>` copies that
-    character's art into `public/cards/<slug>/` (then `image` is the local path); trial: Rossweisse copied, Mei Lin CDN.
+  - Card art (owner, 2026-10-27: copy it, best quality): the import copies every character's art into
+    `public/cards/<slug>/` and sets each card's `image`. Source: cznmetadecks.com (420x632, the game's files; matched by
+    card or base card name, `ART_NAMES` for names that differ), else Prydwen (200x300). Every picture on the character's
+    cznmetadecks page is copied, so `extraCards` can set `image` to one (Rossweisse's base shards).
 - `src/data/presets.ts`: loads the above, plus partners and memory fragment sets with their
   effects (entered by hand, not imported). The owner and Claude edit these files; there is no
   in-app preset editor. Effect ids must be unique per owner, because saved switches are keyed
@@ -131,8 +133,8 @@ Crit       = Damage x Crit DMG (stat is the total multiplier); Expected = Damage
 - Open mechanics questions are listed in docs/FORMULA.md section 4.
 - Card text check: the owner is saving in-game card screenshots to `card-screenshots/<slug>/` (git-ignored);
   compare them with the cards and confirm corrections with the owner. Mei Lin and Rossweisse done (2026-10-27); next as the owner sends them.
-- Card art: the owner decides between copying every character's art (`--art`, ~450 files, ~6-7 MB) and loading from
-  Prydwen's CDN after comparing the trial (Rossweisse copied, Mei Lin CDN). No bulk download until they pick "copy".
+- Idea for later (owner, 2026-10-27): animated card art. cznmetadecks has the game's animated unique cards as video
+  (`https://cdn.czndecksmeta.com/card/cards_animated/<artId>.mp4`, 900x770, ~1 MB each, ~200 MB in all): skipped for size.
 - `creates` links: Rossweisse only; add each character's during the alphabetical review (until then their created
   cards can't be added).
 - Cards tab "Other": neutral and seasonal cards later (Prydwen has 31 Neutral cards).

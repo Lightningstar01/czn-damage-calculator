@@ -245,7 +245,7 @@ function AddCardsSection() {
         </div>
       )}
       {owner.teammate && <p className="muted">{owner.name}'s cards only bring their buffs for allies and the enemy.</p>}
-      <p className="muted small">Card art: Chaos Zero Nightmare, via Prydwen.gg.</p>
+      <p className="muted small">Card art: Chaos Zero Nightmare, via cznmetadecks.com and Prydwen.gg.</p>
       {adding && (
         <Sheet title={`Add ${adding.name}?`} onClose={() => setAdding(null)}>
           <div className="sheet-card"><CardFace size="big" preset={adding} text={text(adding)} /></div>

@@ -20,7 +20,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "250% Damage to all enemies, 2 Tenacity Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1352.webp"
+   "image": "cards/anika/collapse_1012_01.webp"
   },
   {
    "id": "card-1353",
@@ -37,7 +37,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1353.webp"
+   "image": "cards/anika/start_1012_01.webp"
   },
   {
    "id": "card-1354",
@@ -54,7 +54,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "100% Shield.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1354.webp"
+   "image": "cards/anika/start_1012_02.webp"
   },
   {
    "id": "card-1355",
@@ -71,7 +71,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "400% Damage, 2 Tenacity Damage.\nEfficiency: Gain 1 AP.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1355.webp"
+   "image": "cards/anika/unique_1012_01.webp"
   },
   {
    "id": "card-1356",
@@ -88,7 +88,7 @@
    "hits": 1,
    "weaknessApplies": true,
    "text": "550% Damage, 2 Tenacity Damage.\nEfficiency: Gain 1 AP.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1356.webp"
+   "image": "cards/anika/unique_1012_01.webp"
   },
   {
    "id": "card-1357",
@@ -105,7 +105,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "450% Damage, 2 Tenacity Damage.\nRavage: Gain 2 AP.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1357.webp"
+   "image": "cards/anika/unique_1012_01.webp"
   },
   {
    "id": "card-1358",
@@ -122,7 +122,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "500% Damage, 2 Tenacity Damage.\n+80% Damage Amount for each Lead card in All Piles.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1358.webp"
+   "image": "cards/anika/unique_1012_01.webp"
   },
   {
    "id": "card-1359",
@@ -139,7 +139,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "400% Damage, Gain 1 AP.\nEfficiency: Draw 1 2-Cost or higher card, then Retain that card for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1359.webp"
+   "image": "cards/anika/unique_1012_01.webp"
   },
   {
    "id": "card-1360",
@@ -156,7 +156,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When a Basic Attack Card is activated, 100% Coordinated Attack and 1 Tenacity Damage to the target.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1360.webp"
+   "image": "cards/anika/unique_1012_01.webp"
   },
   {
    "id": "card-1361",
@@ -173,7 +173,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "150% Damage, 1 Shockwave.\nEfficiency: 1 Tenacity Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1361.webp"
+   "image": "cards/anika/unique_1012_02.webp"
   },
   {
    "id": "card-1362",
@@ -190,7 +190,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "220% Damage, 1 Shockwave.\nEfficiency: 2 Tenacity Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1362.webp"
+   "image": "cards/anika/unique_1012_02.webp"
   },
   {
    "id": "card-1363",
@@ -207,7 +207,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "200% Damage to all enemies, 1 Shockwave.\nEfficiency: 1 Tenacity Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1363.webp"
+   "image": "cards/anika/unique_1012_02.webp"
   },
   {
    "id": "card-1364",
@@ -224,7 +224,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "150% Damage, 2 Tenacity Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1364.webp"
+   "image": "cards/anika/unique_1012_02.webp"
   },
   {
    "id": "card-1365",
@@ -241,7 +241,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "3 Shockwave.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1365.webp"
+   "image": "cards/anika/unique_1012_02.webp"
   },
   {
    "id": "card-1366",
@@ -258,7 +258,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "200% Damage.\nEach Bullet card in hand has a 50% chance to have its Cost decreased by 1 for 1 turn or until activated.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1366.webp"
+   "image": "cards/anika/unique_1012_02.webp"
   },
   {
    "id": "card-1367",
@@ -275,7 +275,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "At the start of the next turn, Draw 2 Lead cards of this unit.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1367.webp"
+   "image": "cards/anika/unique_1012_03.webp"
   },
   {
    "id": "card-1368",
@@ -292,7 +292,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "At the start of the next turn, Draw 2 Lead cards.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1368.webp"
+   "image": "cards/anika/unique_1012_03.webp"
   },
   {
    "id": "card-1369",
@@ -309,7 +309,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "At the start of the next turn, Draw 2 Lead cards of this unit, then decrease Cost of those cards by 1 for 1 turn or until activated.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1369.webp"
+   "image": "cards/anika/unique_1012_03.webp"
   },
   {
    "id": "card-1370",
@@ -326,7 +326,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "For each Lead card in hand at the end of the turn, Draw a Lead card next turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1370.webp"
+   "image": "cards/anika/unique_1012_03.webp"
   },
   {
    "id": "card-1371",
@@ -343,7 +343,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "At the start of the next turn, Draw 1 Lead card.\nOn Ravage, move to hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1371.webp"
+   "image": "cards/anika/unique_1012_03.webp"
   },
   {
    "id": "card-1372",
@@ -360,7 +360,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "At the start of the next turn, Draw 5 cards of this unit, then Hand Lock for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1372.webp"
+   "image": "cards/anika/unique_1012_03.webp"
   },
   {
    "id": "card-1373",
@@ -377,7 +377,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "For 1 turn, decrease Cost of the next card of this unit activated by 1.\nEfficiency: Draw 1 Lead Attack Card of this unit.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1373.webp"
+   "image": "cards/anika/unique_1012_04.webp"
   },
   {
    "id": "card-1374",
@@ -394,7 +394,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "For 1 turn, decrease Cost of the next card of this unit activated by 2.\nEfficiency: Draw 1 Lead Attack Card of this unit.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1374.webp"
+   "image": "cards/anika/unique_1012_04.webp"
   },
   {
    "id": "card-1375",
@@ -411,7 +411,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "For 1 turn, increase Damage Amount of next base 2-Cost or higher Attack Card of this unit activated by 50%.\nEfficiency: Apply 2x the effect.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1375.webp"
+   "image": "cards/anika/unique_1012_04.webp"
   },
   {
    "id": "card-1376",
@@ -428,7 +428,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "For 1 turn, decrease Cost of the next card of this unit activated by 1.\nRetain: Draw 1 Lead Attack Card of this unit.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1376.webp"
+   "image": "cards/anika/unique_1012_04.webp"
   },
   {
    "id": "card-1377",
@@ -445,7 +445,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "For 1 turn, increase Damage Amount of Attack Cards by 25% for each Attack Card of this unit in hand.\nEfficiency: For 1 turn, decrease Cost of Attack Cards of this unit in hand by 1.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1377.webp"
+   "image": "cards/anika/unique_1012_04.webp"
   },
   {
    "id": "card-1378",
@@ -462,7 +462,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "For 1 turn, for each ally, decrease Cost of the next Lead card activated by that ally by 1.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1378.webp"
+   "image": "cards/anika/unique_1012_04.webp"
   },
   {
    "id": "card-1379",
@@ -479,7 +479,7 @@
    "hits": 1,
    "weaknessApplies": true,
    "text": "100% Damage * 4.\nDestroy: +100% Damage Amount.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1379.webp",
+   "image": "cards/anika/unique_1012_05.webp",
    "notes": "Mythic card: no epiphanies"
   }
  ],

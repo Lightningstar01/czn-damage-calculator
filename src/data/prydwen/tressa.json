@@ -20,7 +20,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 2 Shadow Dagger.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_1.webp"
+   "image": "cards/tressa/collapse_1009_01.webp"
   },
   {
    "id": "card-246",
@@ -37,7 +37,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_2.webp"
+   "image": "cards/tressa/start_1009_01.webp"
   },
   {
    "id": "card-247",
@@ -54,7 +54,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 100%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_3.webp"
+   "image": "cards/tressa/start_1009_02.webp"
   },
   {
    "id": "card-248",
@@ -71,7 +71,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 2 Shadow Dagger.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_4.webp"
+   "image": "cards/tressa/unique_1009_01.webp"
   },
   {
    "id": "card-249",
@@ -88,7 +88,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 2 Shadow Dagger.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_4.webp"
+   "image": "cards/tressa/unique_1009_01.webp"
   },
   {
    "id": "card-250",
@@ -105,7 +105,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 3 Shadow Dagger.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_4.webp"
+   "image": "cards/tressa/unique_1009_01.webp"
   },
   {
    "id": "card-251",
@@ -122,7 +122,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 1 Shadow Dagger.\nAt the start of the turn, create 1 Shadow Dagger.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_4.webp"
+   "image": "cards/tressa/unique_1009_01.webp"
   },
   {
    "id": "card-252",
@@ -139,7 +139,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 2 Shadow Dagger.\nIncrease the Agony effect of the created Shadow Dagger by 2.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_4.webp"
+   "image": "cards/tressa/unique_1009_01.webp"
   },
   {
    "id": "card-253",
@@ -156,7 +156,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 4 Shadow Dagger.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_4.webp"
+   "image": "cards/tressa/unique_1009_01.webp"
   },
   {
    "id": "card-254",
@@ -173,7 +173,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "For 1 turn, when using Attack Cards, 1 Agony.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_5.webp"
+   "image": "cards/tressa/unique_1009_05.webp"
   },
   {
    "id": "card-255",
@@ -190,7 +190,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "For 1 turn, when using Cards, 1 Agony to random enemies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_5.webp"
+   "image": "cards/tressa/unique_1009_05.webp"
   },
   {
    "id": "card-256",
@@ -207,7 +207,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "For 2 turns, when using Attack Cards, 1 Agony.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_5.webp"
+   "image": "cards/tressa/unique_1009_05.webp"
   },
   {
    "id": "card-257",
@@ -224,7 +224,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "4 × 2 Agony to random enemies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_5.webp"
+   "image": "cards/tressa/unique_1009_05.webp"
   },
   {
    "id": "card-258",
@@ -241,7 +241,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "2 Agony to all enemies.\nAt the start of turn, 2 Agony to all enemies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_5.webp"
+   "image": "cards/tressa/unique_1009_05.webp"
   },
   {
    "id": "card-259",
@@ -258,7 +258,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When inflicting Agony with a card, add 1 Agony to the target.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_5.webp"
+   "image": "cards/tressa/unique_1009_05.webp"
   },
   {
    "id": "card-260",
@@ -275,7 +275,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 100%.\nCreate 1 Advanced Shadow Dagger.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_6.webp"
+   "image": "cards/tressa/unique_1009_04.webp"
   },
   {
    "id": "card-261",
@@ -292,7 +292,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "80% Damage to all enemies, 2 Agony.\nExhaust all Shadow Dagger in hand, repeat equal to that number",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_6.webp"
+   "image": "cards/tressa/unique_1009_04.webp"
   },
   {
    "id": "card-262",
@@ -309,7 +309,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 10%.\nCreate 1 Advanced Shadow Dagger.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_6.webp"
+   "image": "cards/tressa/unique_1009_04.webp"
   },
   {
    "id": "card-263",
@@ -326,7 +326,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Heal 100% × X.\nCreate X cards, each randomly chosen to be either Shadow Dagger or Advanced Shadow Dagger.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_6.webp"
+   "image": "cards/tressa/unique_1009_04.webp"
   },
   {
    "id": "card-264",
@@ -343,7 +343,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Exhaust all Shadow Dagger, then create Advanced Shadow Dagger for each Exhausted.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_6.webp"
+   "image": "cards/tressa/unique_1009_04.webp"
   },
   {
    "id": "card-265",
@@ -360,7 +360,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Discard all cards.\nCreate Shadow Dagger equal to that number.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_6.webp"
+   "image": "cards/tressa/unique_1009_04.webp"
   },
   {
    "id": "card-266",
@@ -377,7 +377,7 @@
    "hits": 3,
    "weaknessApplies": false,
    "text": "80% x 3 Damage\nIf the target is in Agony, +50% Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_7.webp"
+   "image": "cards/tressa/unique_1009_03.webp"
   },
   {
    "id": "card-267",
@@ -394,7 +394,7 @@
    "hits": 3,
    "weaknessApplies": false,
    "text": "150% x 3 Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_7.webp"
+   "image": "cards/tressa/unique_1009_03.webp"
   },
   {
    "id": "card-268",
@@ -411,7 +411,7 @@
    "hits": 3,
    "weaknessApplies": false,
    "text": "120% x 3 Damage\nIf the target is in Agony, +70% Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_7.webp"
+   "image": "cards/tressa/unique_1009_03.webp"
   },
   {
    "id": "card-269",
@@ -428,7 +428,7 @@
    "hits": 3,
    "weaknessApplies": false,
    "text": "80% x 3 Damage.\n2-6 Agony.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_7.webp"
+   "image": "cards/tressa/unique_1009_03.webp"
   },
   {
    "id": "card-270",
@@ -445,7 +445,7 @@
    "hits": 2,
    "weaknessApplies": false,
    "text": "200% x 2 Damage.\nIf target's Agony is 3, or more, trigger 1 more time.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_7.webp"
+   "image": "cards/tressa/unique_1009_03.webp"
   },
   {
    "id": "card-271",
@@ -462,7 +462,7 @@
    "hits": 3,
    "weaknessApplies": false,
    "text": "150% x 3 Damage.\n+10% Damage per target's Agony.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_7.webp"
+   "image": "cards/tressa/unique_1009_03.webp"
   },
   {
    "id": "card-272",
@@ -479,7 +479,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Activates this unit’s Agony applied to the target.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_8.webp",
+   "image": "cards/tressa/unique_1009_02.webp",
    "notes": "Mythic card: no epiphanies"
   },
   {
@@ -497,7 +497,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "80% Damage. 2 Agony.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_9.webp"
+   "image": "cards/tressa/start_1009_03.webp"
   },
   {
    "id": "card-274",
@@ -514,7 +514,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "4 Agony.\n50% Damage, +10% Damage Amount for each Agony on target.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/tressa_9.webp"
+   "image": "cards/tressa/start_1009_03.webp"
   }
  ],
  "potentials": [

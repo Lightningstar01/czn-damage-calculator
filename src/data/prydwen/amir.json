@@ -20,7 +20,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Gain Shield 120% per Metalize.\nRemove Metalize. At the start of the next turn, gain Metalize 3.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_1.webp"
+   "image": "cards/amir/collapse_1017_01.webp"
   },
   {
    "id": "card-457",
@@ -37,7 +37,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Defense-based Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_2.webp"
+   "image": "cards/amir/start_1017_01.webp"
   },
   {
    "id": "card-458",
@@ -54,7 +54,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "100% Shield.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_3.webp"
+   "image": "cards/amir/start_1017_02.webp"
   },
   {
    "id": "card-459",
@@ -71,7 +71,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "3 Damage Reduction.\n2 Metalize.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_4.webp"
+   "image": "cards/amir/unique_1017_05.webp"
   },
   {
    "id": "card-460",
@@ -88,7 +88,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "3 Damage Reduction.\n4 Metalize",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_4.webp"
+   "image": "cards/amir/unique_1017_05.webp"
   },
   {
    "id": "card-461",
@@ -105,7 +105,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "2 Damage Reduction.\n2 Metallization.\n2 Counterattack",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_4.webp"
+   "image": "cards/amir/unique_1017_05.webp"
   },
   {
    "id": "card-462",
@@ -122,7 +122,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "3 Damage Reduction.\n3 Metalize",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_4.webp"
+   "image": "cards/amir/unique_1017_05.webp"
   },
   {
    "id": "card-463",
@@ -139,7 +139,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "3 Damage Reduction.\n5 Metalize",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_4.webp"
+   "image": "cards/amir/unique_1017_05.webp"
   },
   {
    "id": "card-464",
@@ -156,7 +156,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "2 Metallization.\nAt the start of the turn, 1 Metallization.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_4.webp"
+   "image": "cards/amir/unique_1017_05.webp"
   },
   {
    "id": "card-465",
@@ -173,7 +173,7 @@
    "hits": 2,
    "weaknessApplies": false,
    "text": "90% Defense-based Damage x 2.\nIf in Metallization state, -1 Metallization, 2 Vulnerable.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_5.webp"
+   "image": "cards/amir/unique_1017_01.webp"
   },
   {
    "id": "card-466",
@@ -190,7 +190,7 @@
    "hits": 2,
    "weaknessApplies": false,
    "text": "110% Defense-Based Damage × 2.\nIf in a Metallization state, decrease Metallization by 1, add 1 Hit, inflict 2 Vulnerable.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_5.webp"
+   "image": "cards/amir/unique_1017_01.webp"
   },
   {
    "id": "card-467",
@@ -207,7 +207,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "200% Defense-Based Damage.\nDecrease Metallization by up to 2. +150% Damage Amount for each.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_5.webp"
+   "image": "cards/amir/unique_1017_01.webp"
   },
   {
    "id": "card-468",
@@ -224,7 +224,7 @@
    "hits": 2,
    "weaknessApplies": false,
    "text": "90% × 2 Defense-based Damage.\n1 Vulnerable.\n2 Metallization.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_5.webp"
+   "image": "cards/amir/unique_1017_01.webp"
   },
   {
    "id": "card-469",
@@ -241,7 +241,7 @@
    "hits": 2,
    "weaknessApplies": false,
    "text": "110% Defense-Based Damage × 2.\n1 Vulnerable.\nWhen Recovering, decrease Cost by 1 for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_5.webp"
+   "image": "cards/amir/unique_1017_01.webp"
   },
   {
    "id": "card-470",
@@ -258,7 +258,7 @@
    "hits": 2,
    "weaknessApplies": false,
    "text": "110% Defense-Based Damage × 2.\nIf in a Metallization state, decrease Metallization by 1, and inflict 2 Vulnerable, 2 Weaken.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_5.webp"
+   "image": "cards/amir/unique_1017_01.webp"
   },
   {
    "id": "card-471",
@@ -275,7 +275,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "2 Metallization.\n2 Resolve for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_6.webp"
+   "image": "cards/amir/unique_1017_03.webp"
   },
   {
    "id": "card-472",
@@ -292,7 +292,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "2 Metallization.\nIncrease Shield Gain Amount of Skill Cards by 30% for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_6.webp"
+   "image": "cards/amir/unique_1017_03.webp"
   },
   {
    "id": "card-473",
@@ -309,7 +309,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "3 Metallization.\n3 Resolve for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_6.webp"
+   "image": "cards/amir/unique_1017_03.webp"
   },
   {
    "id": "card-474",
@@ -326,7 +326,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "2 Metallization.\nFor 1 turn, when using Skill Cards, 1 Metallization (Max 2 times).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_6.webp"
+   "image": "cards/amir/unique_1017_03.webp"
   },
   {
    "id": "card-475",
@@ -343,7 +343,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "2 Metallization.\n3 Resolve for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_6.webp"
+   "image": "cards/amir/unique_1017_03.webp"
   },
   {
    "id": "card-476",
@@ -360,7 +360,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "3 Metallization.\nFor 1 turn, +30% Metallization Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_6.webp"
+   "image": "cards/amir/unique_1017_03.webp"
   },
   {
    "id": "card-477",
@@ -377,7 +377,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "200% Defense-based Damage to all enemies.\nFor 1 turn, all enemies are targeted by Metallization effect, +20% Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_7.webp"
+   "image": "cards/amir/unique_1017_02.webp"
   },
   {
    "id": "card-478",
@@ -394,7 +394,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "200% Defense-based Damage to all enemies.\nFor 1 turn, all enemies are targeted by Metallization effect, +60% Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_7.webp"
+   "image": "cards/amir/unique_1017_02.webp"
   },
   {
    "id": "card-479",
@@ -411,7 +411,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "200% Defense-based Damage to all enemies.\nFor 1 turn, each strike from Metallization effect hits 1 additional time, +50% Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_7.webp"
+   "image": "cards/amir/unique_1017_02.webp"
   },
   {
    "id": "card-480",
@@ -428,7 +428,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "200% Defense-based Damage to all enemies.\nAt the end of turn, decrease maximum Metallization by up to 2.\n120% Defense-based Damage to all enemies for each.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_7.webp"
+   "image": "cards/amir/unique_1017_02.webp"
   },
   {
    "id": "card-481",
@@ -445,7 +445,7 @@
    "hits": 4,
    "weaknessApplies": false,
    "text": "80% × 4 Defense-based Damage to all enemies.\nFor 1 turn, Metallization to all enemies, +20% Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_7.webp"
+   "image": "cards/amir/unique_1017_02.webp"
   },
   {
    "id": "card-482",
@@ -462,7 +462,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Defense-based Damage to all enemies × 3.\nDecrease Metallization up to 2.\nAdd 1 hit for each.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_7.webp"
+   "image": "cards/amir/unique_1017_02.webp"
   },
   {
    "id": "card-483",
@@ -479,7 +479,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Decreases Damage Taken by 20% for 1 turn.\nDecrease up to 4 Metallization.\nAdditionally decrease Damage Taken by 20% for each.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/amir_8.webp",
+   "image": "cards/amir/unique_1017_04.webp",
    "notes": "Mythic card: no epiphanies"
   }
  ],

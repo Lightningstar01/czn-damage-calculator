@@ -9,7 +9,7 @@ import { ELEMENTS, type Card, type CardPreset, type Teammate } from '../engine/t
 import { useCharacter, useStore } from '../store/store'
 import { pct } from './format'
 
-/** The picture's URL: copied art is served from the site (public/cards), the rest from Prydwen's CDN. */
+/** The picture's URL: art copied by the import is served from the site (public/cards); a full URL is used as is. */
 function artUrl(image: string): string {
   return /^https?:/.test(image) ? image : `${import.meta.env.BASE_URL}${image}`
 }

@@ -20,7 +20,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "300% Shield.\nFixed heal equal to Shield in possession (does not exceed 30% of max HP).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1126.webp"
+   "image": "cards/adelheid/collapse_1055_01.webp"
   },
   {
    "id": "card-1127",
@@ -37,7 +37,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Defense-Based Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1127.webp"
+   "image": "cards/adelheid/start_1055_01.webp"
   },
   {
    "id": "card-1128",
@@ -54,7 +54,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "100% Shield.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1128.webp"
+   "image": "cards/adelheid/start_1055_02.webp"
   },
   {
    "id": "card-1129",
@@ -71,7 +71,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Apply Blessing to 2 random cards in Draw Pile, Draw 1 of those cards.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1129.webp"
+   "image": "cards/adelheid/unique_1055_01.webp"
   },
   {
    "id": "card-1130",
@@ -88,7 +88,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Apply Blessing to 3 random cards in Draw Pile, Draw 1 of those cards.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1130.webp"
+   "image": "cards/adelheid/unique_1055_01.webp"
   },
   {
    "id": "card-1131",
@@ -105,7 +105,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Select and draw 1 from Draw Pile, then apply Blessing to those cards.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1131.webp"
+   "image": "cards/adelheid/unique_1055_01.webp"
   },
   {
    "id": "card-1132",
@@ -122,7 +122,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Discard 1 random card(s) from Draw Pile; Apply Blessing to 3 random card(s) of the Combatant who owns the Discarded card.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1132.webp"
+   "image": "cards/adelheid/unique_1055_01.webp"
   },
   {
    "id": "card-1133",
@@ -139,7 +139,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Draw equal to X, then apply Blessing to those cards.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1133.webp"
+   "image": "cards/adelheid/unique_1055_01.webp"
   },
   {
    "id": "card-1134",
@@ -156,7 +156,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When a card is created, apply Blessing (5 times per turn).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1134.webp"
+   "image": "cards/adelheid/unique_1055_01.webp"
   },
   {
    "id": "card-1135",
@@ -173,7 +173,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Draw 1 Blessing card on the next 2 Blessing card uses.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1135.webp"
+   "image": "cards/adelheid/unique_1055_02.webp"
   },
   {
    "id": "card-1136",
@@ -190,7 +190,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "For the next 3 Blessing cards activated, draw 1 Blessing card.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1136.webp"
+   "image": "cards/adelheid/unique_1055_02.webp"
   },
   {
    "id": "card-1137",
@@ -207,7 +207,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "The next 2 times 0 cards are in hand, draw 1 Blessing card.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1137.webp"
+   "image": "cards/adelheid/unique_1055_02.webp"
   },
   {
    "id": "card-1138",
@@ -224,7 +224,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Draw 3.\nchange Cost of those cards to 0-2 for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1138.webp"
+   "image": "cards/adelheid/unique_1055_02.webp"
   },
   {
    "id": "card-1139",
@@ -241,7 +241,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Draw 1.\nif that card is a Blessing card, add 1 Draw.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1139.webp"
+   "image": "cards/adelheid/unique_1055_02.webp"
   },
   {
    "id": "card-1140",
@@ -258,7 +258,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Draw 2 Blessing card(s) of this unit.\nIncrease Damage and Shield Gain Amount of those cards by 60% for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1140.webp"
+   "image": "cards/adelheid/unique_1055_02.webp"
   },
   {
    "id": "card-1141",
@@ -275,7 +275,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Select and create 1 Doggie or Teddy card.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1141.webp"
+   "image": "cards/adelheid/unique_1055_03.webp"
   },
   {
    "id": "card-1142",
@@ -292,7 +292,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 1 Doggie.\n+20% Damage Amount to Doggie for every 1 Blessing card in possession (max 15 cards).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1142.webp"
+   "image": "cards/adelheid/unique_1055_03.webp"
   },
   {
    "id": "card-1143",
@@ -309,7 +309,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 1 Teddy.\nIf Damage is taken, move Teddy to hand (1 time per turn).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1143.webp"
+   "image": "cards/adelheid/unique_1055_03.webp"
   },
   {
    "id": "card-1144",
@@ -326,7 +326,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 4 Doggie (Pack) in Draw Pile.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1144.webp"
+   "image": "cards/adelheid/unique_1055_03.webp"
   },
   {
    "id": "card-1145",
@@ -343,7 +343,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 1 Teddy.\nWhen Teddy is used, 1 Counterattack, and for 1 turn, Retain Counterattack.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1145.webp"
+   "image": "cards/adelheid/unique_1055_03.webp"
   },
   {
    "id": "card-1146",
@@ -360,7 +360,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 1 Doggie (Morphed).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1146.webp"
+   "image": "cards/adelheid/unique_1055_03.webp"
   },
   {
    "id": "card-1147",
@@ -377,7 +377,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "200% Defense-Based Damage.\n+100% Damage Amount taken by the target for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1147.webp"
+   "image": "cards/adelheid/unique_1055_04.webp"
   },
   {
    "id": "card-1148",
@@ -394,7 +394,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "300% Defense-Based Damage.\n2 Weaken, +100% Damage Amount taken by the target for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1148.webp"
+   "image": "cards/adelheid/unique_1055_04.webp"
   },
   {
    "id": "card-1149",
@@ -411,7 +411,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "200% Defense-Based Damage\nMove 2 Blessing card(s) from Discard Pile to hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1149.webp"
+   "image": "cards/adelheid/unique_1055_04.webp"
   },
   {
    "id": "card-1150",
@@ -428,7 +428,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "200% Defense-Based Damage.\nIncrease Damage and Shield Gain Amounts of Doggie and Teddy by 100% for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1150.webp"
+   "image": "cards/adelheid/unique_1055_04.webp"
   },
   {
    "id": "card-1151",
@@ -445,7 +445,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "400% Defense-Based Damage.\nIncrease Damage Amount by 30% for each Blessing card in hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1151.webp"
+   "image": "cards/adelheid/unique_1055_04.webp"
   },
   {
    "id": "card-1152",
@@ -462,7 +462,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "300% Defense-Based Damage.\nIncrease Action Count by 4.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1152.webp"
+   "image": "cards/adelheid/unique_1055_04.webp"
   },
   {
    "id": "card-1153",
@@ -479,7 +479,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "200% Shield, 25% Shield Retention.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1153.webp",
+   "image": "cards/adelheid/unique_1055_05.webp",
    "notes": "Mythic card: no epiphanies"
   },
   {
@@ -497,7 +497,7 @@
    "hits": 4,
    "weaknessApplies": false,
    "text": "60% Defense-Based Damage × 4.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1154.webp"
+   "image": "cards/adelheid/unique_1055_06.webp"
   },
   {
    "id": "card-1155",
@@ -514,7 +514,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "200% Shield, 2 Damage Reduction.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1155.webp"
+   "image": "cards/adelheid/unique_1055_07.webp"
   },
   {
    "id": "card-1156",
@@ -531,7 +531,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "200% Defense-Based Damage.\nIncrease Damage Amount by 50% for each Doggie Linked before activation.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1156.webp"
+   "image": "cards/adelheid/unique_1055_06.webp"
   },
   {
    "id": "card-1157",
@@ -548,7 +548,7 @@
    "hits": 4,
    "weaknessApplies": false,
    "text": "90% Defense-Based Damage × 4.\nWhen an Attack Card is activated, change this card to Teddy (Morphed).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1157.webp"
+   "image": "cards/adelheid/unique_1055_06.webp"
   },
   {
    "id": "card-1158",
@@ -565,7 +565,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "300% Shield.\n3 Damage Reduction.\nWhen a Skill Card is activated, change this card to Doggie (Morphed).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1158.webp"
+   "image": "cards/adelheid/unique_1055_07.webp"
   }
  ],
  "potentials": [

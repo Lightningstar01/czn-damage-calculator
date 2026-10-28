@@ -20,7 +20,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "250% Defense-Based Damage to all enemies.\n+50% Damage Amount for each point of the combined Cost of the 2 highest-Cost cards, then Exhaust those cards",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_884.webp"
+   "image": "cards/nine/collapse_30047_01.webp"
   },
   {
    "id": "card-885",
@@ -37,7 +37,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Defense-Based Damage",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_885.webp"
+   "image": "cards/nine/start_30047_01.webp"
   },
   {
    "id": "card-886",
@@ -54,7 +54,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "100% Shield",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_886.webp"
+   "image": "cards/nine/start_30047_02.webp"
   },
   {
    "id": "card-887",
@@ -71,7 +71,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "350% Defense-Based Damage.\nIncinerate: Create 1 Hew Lv. 1",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_887.webp"
+   "image": "cards/nine/unique_30047_01.webp"
   },
   {
    "id": "card-888",
@@ -88,7 +88,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "400% Defense-Based Damage.\n200% Shield.\nIncinerate: Create 1 Hew (Ironclad) Lv. 1.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_887.webp"
+   "image": "cards/nine/unique_30047_01.webp"
   },
   {
    "id": "card-889",
@@ -105,7 +105,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "300% Defense-Based Damage.\nIncinerate: Create 1 Hew (Extreme) Lv. 1.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_887.webp"
+   "image": "cards/nine/unique_30047_01.webp"
   },
   {
    "id": "card-890",
@@ -122,7 +122,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "400% Defense-Based Damage.\nIncinerate: Create 1 Hew (Flash) Lv. 1.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_887.webp"
+   "image": "cards/nine/unique_30047_01.webp"
   },
   {
    "id": "card-891",
@@ -139,7 +139,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "400% Defense-Based Damage to all enemies.\nDecrease Damage Amount by 10% for each target.\nIncinerate: Create 1 Hew (Massacre) Lv. 1.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_887.webp"
+   "image": "cards/nine/unique_30047_01.webp"
   },
   {
    "id": "card-892",
@@ -156,7 +156,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "400% Defense-Based Damage.\nOn ally Counterattack, activate this card.\nIncinerate: Create 1 Hew (Ambush) Lv. 1.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_887.webp"
+   "image": "cards/nine/unique_30047_01.webp"
   },
   {
    "id": "card-893",
@@ -173,7 +173,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "140% Defense-Based Damage.\n20% DMG-Based Shield.\nIncrease Damage Amount of Exhaust Pile cards by 20% for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_893.webp"
+   "image": "cards/nine/unique_30047_02.webp"
   },
   {
    "id": "card-894",
@@ -190,7 +190,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "210% Defense-Based Damage.\n20% DMG-Based Shield.\nIncrease Damage Amount of Exhaust cards by 30% for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_893.webp"
+   "image": "cards/nine/unique_30047_02.webp"
   },
   {
    "id": "card-895",
@@ -207,7 +207,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "210% Defense-Based Damage.\n20% DMG-Based Shield.\nIf a card was Exhausted this turn, increase Damage Amount of this card by 30% for 1 turn until used.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_893.webp"
+   "image": "cards/nine/unique_30047_02.webp"
   },
   {
    "id": "card-896",
@@ -224,7 +224,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "210% Defense-Based Damage.\n20% DMG-Based Shield.\nIncrease Shield Gain Amount of Skill Cards by 30% for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_893.webp"
+   "image": "cards/nine/unique_30047_02.webp"
   },
   {
    "id": "card-897",
@@ -241,7 +241,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "140% Defense-Based Damage.\n20% DMG-Based Shield.\n+60% Damage Amount for each Exhaust card in hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_893.webp"
+   "image": "cards/nine/unique_30047_02.webp"
   },
   {
    "id": "card-898",
@@ -258,7 +258,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "210% Defense-Based Damage.\n20% DMG-Based Shield.\nFor 1 turn, when an Exhaust card is activated, 1 Counterattack.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_893.webp"
+   "image": "cards/nine/unique_30047_02.webp"
   },
   {
    "id": "card-899",
@@ -275,7 +275,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "140% Defense-Based Damage.\nIncrease Damage Amount by 20% for each Cost of the highest-Cost Exhaust card, then Exhaust that card.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_899.webp"
+   "image": "cards/nine/unique_30047_03.webp"
   },
   {
    "id": "card-900",
@@ -292,7 +292,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "210% Defense-Based Damage.\nIncrease Damage Amount by 30% for each Cost of the highest-Cost Exhaust card in hand, then Exhaust that card.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_899.webp"
+   "image": "cards/nine/unique_30047_03.webp"
   },
   {
    "id": "card-901",
@@ -309,7 +309,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "260% Defense-Based Damage.\nIncrease Damage Amount by 20% for each Cost of the highest-Cost card in hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_899.webp"
+   "image": "cards/nine/unique_30047_03.webp"
   },
   {
    "id": "card-902",
@@ -326,7 +326,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Change Hew in hand to its final level.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_899.webp"
+   "image": "cards/nine/unique_30047_03.webp"
   },
   {
    "id": "card-903",
@@ -343,7 +343,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Exhaust 2 random Exhaust cards of other Combatants in hand.\nFor each card Exhausted through this ability, increase Damage Amount of the next used Attack Card of this unit by 30% until used.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_899.webp"
+   "image": "cards/nine/unique_30047_03.webp"
   },
   {
    "id": "card-904",
@@ -360,7 +360,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "210% Defense-Based Damage.\nIncrease Damage Amount by 80% for each ally owning Counterattack.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_899.webp"
+   "image": "cards/nine/unique_30047_03.webp"
   },
   {
    "id": "card-905",
@@ -377,7 +377,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When Shield is gained through an ability, gain 1 Honed Edge.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_905.webp"
+   "image": "cards/nine/unique_30047_04.webp"
   },
   {
    "id": "card-906",
@@ -394,7 +394,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When a card is Exhausted, 1 Honed Edge.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_905.webp"
+   "image": "cards/nine/unique_30047_04.webp"
   },
   {
    "id": "card-907",
@@ -411,7 +411,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Increase Shield Gain Amount by 15%, and when Shield is gained through an ability, 1 Honed Edge.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_905.webp"
+   "image": "cards/nine/unique_30047_04.webp"
   },
   {
    "id": "card-908",
@@ -428,7 +428,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When Shield is gained through an ability, 1 Honed Edge.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_905.webp"
+   "image": "cards/nine/unique_30047_04.webp"
   },
   {
    "id": "card-909",
@@ -445,7 +445,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When Counterattack is gained, 1 Honed Edge+.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_905.webp"
+   "image": "cards/nine/unique_30047_04.webp"
   },
   {
    "id": "card-910",
@@ -462,7 +462,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "At the start of the turn, activate Hew in hand 1 time(s).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_905.webp"
+   "image": "cards/nine/unique_30047_04.webp"
   },
   {
    "id": "card-911",
@@ -479,7 +479,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Activate 1 highest-Cost Attack Card(s) of this unit in hand, then Exhaust those cards.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_911.webp",
+   "image": "cards/nine/unique_30047_05.webp",
    "notes": "Mythic card: no epiphanies"
   },
   {
@@ -497,7 +497,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "420% Defense-Based Damage.\nIncinerate: Create 1 Hew Lv. 2.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_887.webp"
+   "image": "cards/nine/unique_30047_01.webp"
   },
   {
    "id": "card-913",
@@ -514,7 +514,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "500% Defense-Based Damage.\nIncinerate: Create 1 Hew Lv. 3.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_887.webp"
+   "image": "cards/nine/unique_30047_01.webp"
   },
   {
    "id": "card-914",
@@ -531,7 +531,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "600% Defense-Based Damage.\nIncinerate: At the start of the turn, create 1 Hew in hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_887.webp"
+   "image": "cards/nine/unique_30047_01.webp"
   },
   {
    "id": "card-915",
@@ -548,7 +548,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "480% Defense-Based Damage.\n200% Shield.\nIncinerate: Create 1 Hew (Ironclad) Lv. 2.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_887.webp"
+   "image": "cards/nine/unique_30047_01.webp"
   },
   {
    "id": "card-916",
@@ -565,7 +565,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "580% Defense-Based Damage.\n200% Shield.\nIncinerate: Create 1 Hew (Ironclad) Lv. 3.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_887.webp"
+   "image": "cards/nine/unique_30047_01.webp"
   },
   {
    "id": "card-917",
@@ -582,7 +582,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "700% Defense-Based Damage.\n200% Shield.\nIncinerate: At the start of the turn, create 1 Hew (Ironclad) in hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_887.webp"
+   "image": "cards/nine/unique_30047_01.webp"
   },
   {
    "id": "card-918",
@@ -599,7 +599,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "360% Defense-Based Damage.\nIncinerate: Create 1 Hew (Extreme) Lv. 2.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_887.webp"
+   "image": "cards/nine/unique_30047_01.webp"
   },
   {
    "id": "card-919",
@@ -616,7 +616,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "420% Defense-Based Damage.\nIncinerate: Create 1 Hew (Extreme) Lv. 3.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_887.webp"
+   "image": "cards/nine/unique_30047_01.webp"
   },
   {
    "id": "card-920",
@@ -633,7 +633,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "550% Defense-Based Damage.\nIncinerate: Create 1 Hew (Extreme) Lv. 4.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_887.webp"
+   "image": "cards/nine/unique_30047_01.webp"
   },
   {
    "id": "card-921",
@@ -650,7 +650,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "680% Defense-Based Damage.\nIncinerate: Create 1 Hew (Extreme) Lv. 5.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_887.webp"
+   "image": "cards/nine/unique_30047_01.webp"
   },
   {
    "id": "card-922",
@@ -667,7 +667,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "1000% Defense-Based Damage.\nIncinerate: At the start of the turn, create 1 Hew (Extreme) in hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_887.webp"
+   "image": "cards/nine/unique_30047_01.webp"
   },
   {
    "id": "card-923",
@@ -684,7 +684,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "480% Defense-Based Damage.\nIncinerate: Create 1 Hew (Flash) Lv. 2.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_887.webp"
+   "image": "cards/nine/unique_30047_01.webp"
   },
   {
    "id": "card-924",
@@ -701,7 +701,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "580% Defense-Based Damage.\nIncinerate: Create 1 Hew (Flash) Lv. 3.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_887.webp"
+   "image": "cards/nine/unique_30047_01.webp"
   },
   {
    "id": "card-925",
@@ -718,7 +718,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "700% Defense-Based Damage.\nIncinerate: At the start of the turn, create 1 Hew (Flash) in hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_887.webp"
+   "image": "cards/nine/unique_30047_01.webp"
   },
   {
    "id": "card-926",
@@ -735,7 +735,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "480% Defense-Based Damage to all enemies.\nDecrease Damage Amount by 10% for each target.\nIncinerate: Create 1 Hew (Massacre) Lv. 2.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_887.webp"
+   "image": "cards/nine/unique_30047_01.webp"
   },
   {
    "id": "card-927",
@@ -752,7 +752,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "580% Defense-Based Damage to all enemies.\nDecrease Damage Amount by 10% for each target.\nIncinerate: Create 1 Hew (Massacre) Lv. 3.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_887.webp"
+   "image": "cards/nine/unique_30047_01.webp"
   },
   {
    "id": "card-928",
@@ -769,7 +769,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "700% Defense-Based Damage to all enemies.\nDecrease Damage Amount by 10% for each target.\nIncinerate: At the start of the turn, create 1 Hew (Massacre) in hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_887.webp"
+   "image": "cards/nine/unique_30047_01.webp"
   },
   {
    "id": "card-929",
@@ -786,7 +786,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "480% Defense-Based Damage.\nOn ally Counterattack, activate this card.\nIncinerate: Create 1 Hew (Ambush) Lv. 2.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_887.webp"
+   "image": "cards/nine/unique_30047_01.webp"
   },
   {
    "id": "card-930",
@@ -803,7 +803,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "580% Defense-Based Damage.\nOn ally Counterattack, activate this card.\nIncinerate: Create 1 Hew (Ambush) Lv. 3.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_887.webp"
+   "image": "cards/nine/unique_30047_01.webp"
   },
   {
    "id": "card-931",
@@ -820,7 +820,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "700% Defense-Based Damage.\nOn ally Counterattack, activate this card.\nIncinerate: At the start of the turn, create 1 Hew (Ambush) in hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_887.webp"
+   "image": "cards/nine/unique_30047_01.webp"
   },
   {
    "id": "card-932",
@@ -837,7 +837,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "1 Vulnerable, 1 Tenacity Damage",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/nine_932.webp"
+   "image": "cards/nine/unique_30047_06.webp"
   }
  ],
  "potentials": [

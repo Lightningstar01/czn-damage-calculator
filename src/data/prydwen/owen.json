@@ -20,7 +20,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "250% Damage.\n250% Shield.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_1.webp"
+   "image": "cards/owen/collapse_1050_01.webp"
   },
   {
    "id": "card-366",
@@ -37,7 +37,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_2.webp"
+   "image": "cards/owen/start_1050_01.webp"
   },
   {
    "id": "card-367",
@@ -54,7 +54,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "100% Shield.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_3.webp"
+   "image": "cards/owen/start_1050_02.webp"
   },
   {
    "id": "card-368",
@@ -71,7 +71,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Add 1 Hit(s) to the next Attack Card of this unit that is used.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_4.webp"
+   "image": "cards/owen/unique_1050_04.webp"
   },
   {
    "id": "card-369",
@@ -88,7 +88,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Add 1 Hit(s) to the next Attack Card of this unit that is used.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_4.webp"
+   "image": "cards/owen/unique_1050_04.webp"
   },
   {
    "id": "card-370",
@@ -105,7 +105,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Add 1 Hits to the next Attack Card used.\nDecrease Damage Amount by 25%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_4.webp"
+   "image": "cards/owen/unique_1050_04.webp"
   },
   {
    "id": "card-371",
@@ -122,7 +122,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When this unit's Attack Card is used, 30% chance to add 1 Hit(s).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_4.webp"
+   "image": "cards/owen/unique_1050_04.webp"
   },
   {
    "id": "card-372",
@@ -139,7 +139,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Activate next used Skill Card 1 more time(s).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_4.webp"
+   "image": "cards/owen/unique_1050_04.webp"
   },
   {
    "id": "card-373",
@@ -156,7 +156,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Add 3 Hits to the next Attack Card of this unit used.\nDecrease Damage Amount by 50%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_4.webp"
+   "image": "cards/owen/unique_1050_04.webp"
   },
   {
    "id": "card-374",
@@ -173,7 +173,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "280% Damage to all enemies",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_5.webp"
+   "image": "cards/owen/unique_1050_05.webp"
   },
   {
    "id": "card-375",
@@ -190,7 +190,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "280% Damage to all enemies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_5.webp"
+   "image": "cards/owen/unique_1050_05.webp"
   },
   {
    "id": "card-376",
@@ -207,7 +207,7 @@
    "hits": 3,
    "weaknessApplies": false,
    "text": "150% Damage x3.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_5.webp"
+   "image": "cards/owen/unique_1050_05.webp"
   },
   {
    "id": "card-377",
@@ -224,7 +224,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "280% Damage to all enemies.\nDefeat: Activate this card 1 more time.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_5.webp"
+   "image": "cards/owen/unique_1050_05.webp"
   },
   {
    "id": "card-378",
@@ -241,7 +241,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "At the start of the turn, decrease AP by 1.\nAt the end of the turn, 280% Damage to all enemies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_5.webp"
+   "image": "cards/owen/unique_1050_05.webp"
   },
   {
    "id": "card-379",
@@ -258,7 +258,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "280% Damage to all enemies.\nIncrease Tenacity Damage by 100%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_5.webp"
+   "image": "cards/owen/unique_1050_05.webp"
   },
   {
    "id": "card-380",
@@ -275,7 +275,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "140% Damage.\n2 Vulnerable.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_6.webp"
+   "image": "cards/owen/unique_1050_03.webp"
   },
   {
    "id": "card-381",
@@ -292,7 +292,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "210% Damage.\nDecrease Fortitude by 4 for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_6.webp"
+   "image": "cards/owen/unique_1050_03.webp"
   },
   {
    "id": "card-382",
@@ -309,7 +309,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "140% Damage.\n2 Vulnerable.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_6.webp"
+   "image": "cards/owen/unique_1050_03.webp"
   },
   {
    "id": "card-383",
@@ -326,7 +326,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "210% Damage.\n2 Vulnerable.\nWhen the target is in a Vulnerable state, increase Damage Amount by 30%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_6.webp"
+   "image": "cards/owen/unique_1050_03.webp"
   },
   {
    "id": "card-384",
@@ -343,7 +343,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "210% Damage.\n2 Vulnerable.\nIf the target has Shield, increase Damage Amount by 30%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_6.webp"
+   "image": "cards/owen/unique_1050_03.webp"
   },
   {
    "id": "card-385",
@@ -360,7 +360,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "140% Damage.\n3 Vulnerable.\nWhen using Wind Charge, move this card from Discard Pile to hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_6.webp"
+   "image": "cards/owen/unique_1050_03.webp"
   },
   {
    "id": "card-386",
@@ -377,7 +377,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "150% Shield.\nMove Wind Charge from Discard Pile to hand",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_7.webp"
+   "image": "cards/owen/unique_1050_02.webp"
   },
   {
    "id": "card-387",
@@ -394,7 +394,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "220% Shield.\nMove 2 owned card(s) from Discard Pile to hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_7.webp"
+   "image": "cards/owen/unique_1050_02.webp"
   },
   {
    "id": "card-388",
@@ -411,7 +411,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "When using Wind Charge, 120% Shield.\n120% Damage to all enemies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_7.webp"
+   "image": "cards/owen/unique_1050_02.webp"
   },
   {
    "id": "card-389",
@@ -428,7 +428,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "150% Shield.\nAdd 1 Hit(s) to next Attack Card of this unit used.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_7.webp"
+   "image": "cards/owen/unique_1050_02.webp"
   },
   {
    "id": "card-390",
@@ -445,7 +445,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "220% Shield.\n3 Damage Reduction.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_7.webp"
+   "image": "cards/owen/unique_1050_02.webp"
   },
   {
    "id": "card-391",
@@ -462,7 +462,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "220% Shield.\nIf used Wind Charge this turn, activate this card 1 more time.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_7.webp"
+   "image": "cards/owen/unique_1050_02.webp"
   },
   {
    "id": "card-392",
@@ -479,7 +479,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "300% Damage.\n130% Shield.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_8.webp",
+   "image": "cards/owen/unique_1050_01.webp",
    "notes": "Mythic card: no epiphanies"
   },
   {
@@ -497,7 +497,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Add 1 Hit(s) to the next Attack Card of this unit that is used.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/owen_4.webp"
+   "image": "cards/owen/unique_1050_04.webp"
   }
  ],
  "potentials": [

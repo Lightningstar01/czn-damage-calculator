@@ -20,7 +20,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "+450% Damage.\nFor each card in hand +25% Damage Amount.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_8.webp"
+   "image": "cards/luke/collapse_1004_01.webp"
   },
   {
    "id": "card-31",
@@ -37,7 +37,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_1.webp"
+   "image": "cards/luke/start_1004_01.webp"
   },
   {
    "id": "card-32",
@@ -54,7 +54,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "100% Shield.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_2.webp"
+   "image": "cards/luke/start_1004_02.webp"
   },
   {
    "id": "card-33",
@@ -71,7 +71,7 @@
    "hits": 2,
    "weaknessApplies": false,
    "text": "50% Damage x 2.\nFor each Critical Hit create a Handgun Bullet.\n+50% Critical Chance.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_3.webp"
+   "image": "cards/luke/unique_1004_01.webp"
   },
   {
    "id": "card-34",
@@ -88,7 +88,7 @@
    "hits": 2,
    "weaknessApplies": false,
    "text": "75% Damage x 2.\nFor each Critical Hit create a Handgun Bullet.\n+50% Critical Chance.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_3.webp"
+   "image": "cards/luke/unique_1004_01.webp"
   },
   {
    "id": "card-35",
@@ -105,7 +105,7 @@
    "hits": 3,
    "weaknessApplies": false,
    "text": "30% Damage x 3.\nFor each Critical Hit create a Handgun Bullet.\n+50% Critical Chance.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_3.webp"
+   "image": "cards/luke/unique_1004_01.webp"
   },
   {
    "id": "card-36",
@@ -122,7 +122,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "300% Damage.\nFor each Critical Hit, create Handgun Bullet.\nGuaranteed Critical.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_3.webp"
+   "image": "cards/luke/unique_1004_01.webp"
   },
   {
    "id": "card-37",
@@ -139,7 +139,7 @@
    "hits": 3,
    "weaknessApplies": false,
    "text": "100% Damage x 3.\n+50% Critical Chance.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_3.webp"
+   "image": "cards/luke/unique_1004_01.webp"
   },
   {
    "id": "card-38",
@@ -156,7 +156,7 @@
    "hits": 2,
    "weaknessApplies": false,
    "text": "100% Damage x 2.\nFor each Critical Hit, Draw.\n+70% Critical Chance.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_3.webp"
+   "image": "cards/luke/unique_1004_01.webp"
   },
   {
    "id": "card-39",
@@ -173,7 +173,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 3 Handgun Bullet Card(s).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_4.webp"
+   "image": "cards/luke/unique_1004_05.webp"
   },
   {
    "id": "card-40",
@@ -190,7 +190,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 3 Handgun Bullet Card(s).\n+30% Critical Chance of that card.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_4.webp"
+   "image": "cards/luke/unique_1004_05.webp"
   },
   {
    "id": "card-41",
@@ -207,7 +207,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 3 Handgun Bullet Card(s).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_4.webp"
+   "image": "cards/luke/unique_1004_05.webp"
   },
   {
    "id": "card-42",
@@ -224,7 +224,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 3 Handgun Bullet Card(s).\nAt the start of the next turn, create 2 Handgun Bullet Card(s).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_4.webp"
+   "image": "cards/luke/unique_1004_05.webp"
   },
   {
    "id": "card-43",
@@ -241,7 +241,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "At the start of the turn, create 1 Handgun Bullet Card(s).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_4.webp"
+   "image": "cards/luke/unique_1004_05.webp"
   },
   {
    "id": "card-44",
@@ -258,7 +258,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 5 Handgun Bullet Card(s).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_4.webp"
+   "image": "cards/luke/unique_1004_05.webp"
   },
   {
    "id": "card-45",
@@ -275,7 +275,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "100% Shield.\nNext Bullet Card used +120% Damage Amount.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_5.webp"
+   "image": "cards/luke/unique_1004_04.webp"
   },
   {
    "id": "card-46",
@@ -292,7 +292,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "150% Shield.\nNext Bullet Card used +170% Damage Amount.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_5.webp"
+   "image": "cards/luke/unique_1004_04.webp"
   },
   {
    "id": "card-47",
@@ -309,7 +309,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "100% Shield.\nNext 2 Bullet Cards used +120% Damage Amount.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_5.webp"
+   "image": "cards/luke/unique_1004_04.webp"
   },
   {
    "id": "card-48",
@@ -326,7 +326,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "100% Shield.\nFor 1 turn, Bullet Card Damage Amount +70%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_5.webp"
+   "image": "cards/luke/unique_1004_04.webp"
   },
   {
    "id": "card-49",
@@ -343,7 +343,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "100% Shield.\n+100% Damage Amount of the next Attack Card used.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_5.webp"
+   "image": "cards/luke/unique_1004_04.webp"
   },
   {
    "id": "card-50",
@@ -360,7 +360,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "+30% Handgun Bullet Card Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_5.webp"
+   "image": "cards/luke/unique_1004_04.webp"
   },
   {
    "id": "card-51",
@@ -377,7 +377,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "50% Damage.\nFor each Bullet Card used this turn, 1 extra Hit.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_6.webp"
+   "image": "cards/luke/unique_1004_03.webp"
   },
   {
    "id": "card-52",
@@ -394,7 +394,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "75% Damage.\nFor each Bullet Card used this turn, 1 extra Hit.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_6.webp"
+   "image": "cards/luke/unique_1004_03.webp"
   },
   {
    "id": "card-53",
@@ -411,7 +411,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "50% Damage.\nFor each Attack Card used this turn, 1 extra Hit.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_6.webp"
+   "image": "cards/luke/unique_1004_03.webp"
   },
   {
    "id": "card-54",
@@ -428,7 +428,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "50% Damage.\n+1 hit per Bullet card used this turn. Weakness Attack: +50% Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_6.webp"
+   "image": "cards/luke/unique_1004_03.webp"
   },
   {
    "id": "card-55",
@@ -445,7 +445,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "50% Damage.\n50% Shield.\nFor each Bullet Card used this turn, 1 extra Hit and add +50% Shield.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_6.webp"
+   "image": "cards/luke/unique_1004_03.webp"
   },
   {
    "id": "card-56",
@@ -462,7 +462,7 @@
    "hits": 5,
    "weaknessApplies": false,
    "text": "50% Damage x 5.\nWhen Bullets are used, decrease Cost by 1 for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_6.webp"
+   "image": "cards/luke/unique_1004_03.webp"
   },
   {
    "id": "card-57",
@@ -479,7 +479,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "300% Damage.\nAfter using 5 Handgun Bullet card time(s), remove Unusable.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_7.webp",
+   "image": "cards/luke/unique_1004_02.webp",
    "notes": "Mythic card: no epiphanies"
   },
   {
@@ -497,7 +497,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "85% Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_9.webp"
+   "image": "cards/luke/job_00404.webp"
   },
   {
    "id": "card-59",
@@ -514,7 +514,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "60% Damage.\nWeakness Attack: Increase Damage Amount by 100%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_10.webp"
+   "image": "cards/luke/job_00405.webp"
   },
   {
    "id": "card-60",
@@ -531,7 +531,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "60% Damage.\nIf the target has Shield, increase Damage Amount by 100%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_11.webp"
+   "image": "cards/luke/job_00406.webp"
   },
   {
    "id": "card-61",
@@ -548,7 +548,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "30% Damage.\n1 Mark.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_12.webp"
+   "image": "cards/luke/job_00407.webp"
   },
   {
    "id": "card-62",
@@ -565,7 +565,7 @@
    "hits": 1,
    "weaknessApplies": true,
    "text": "200% damage.\nGuaranteed Critical.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_9.webp"
+   "image": "cards/luke/job_00404.webp"
   }
  ],
  "potentials": [

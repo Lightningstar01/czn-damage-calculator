@@ -20,7 +20,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "+25% Weakness Damage Amount taken to all enemies for 1 turn(s).\nDraw 3 Attack Card(s) of this unit.\nApply Weakness Attack to those cards for 1 turn.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1230.webp"
+   "image": "cards/hilde/collapse_30113_01.webp"
   },
   {
    "id": "card-1231",
@@ -37,7 +37,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "60% Damage to all enemies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1231.webp"
+   "image": "cards/hilde/start_30113_01.webp"
   },
   {
    "id": "card-1232",
@@ -54,7 +54,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "100% Shield.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1232.webp"
+   "image": "cards/hilde/start_30113_02.webp"
   },
   {
    "id": "card-1233",
@@ -71,7 +71,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 3 Homing Arrow in Draw Pile.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1233.webp"
+   "image": "cards/hilde/unique_30113_01.webp"
   },
   {
    "id": "card-1234",
@@ -88,7 +88,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 4 Homing Arrow in Draw Pile, then Draw 1 of those cards.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1234.webp"
+   "image": "cards/hilde/unique_30113_01.webp"
   },
   {
    "id": "card-1235",
@@ -105,7 +105,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 3 Homing Arrow (Fracture) in Draw Pile.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1235.webp"
+   "image": "cards/hilde/unique_30113_01.webp"
   },
   {
    "id": "card-1236",
@@ -122,7 +122,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 1 Homing Arrow (Grand) in Draw Pile.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1236.webp"
+   "image": "cards/hilde/unique_30113_01.webp"
   },
   {
    "id": "card-1237",
@@ -139,7 +139,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 2 Homing Arrow in Draw Pile.\nWhen an enemy is defeated, create 2 Homing Arrow in Draw Pile (5 time(s) per turn).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1237.webp"
+   "image": "cards/hilde/unique_30113_01.webp"
   },
   {
    "id": "card-1238",
@@ -156,7 +156,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "At the start of the turn, create 3 Homing Arrow in Draw Pile.\nHoming Arrow cannot be a target of Turn Draw.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1238.webp"
+   "image": "cards/hilde/unique_30113_01.webp"
   },
   {
    "id": "card-1239",
@@ -173,7 +173,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "60% Damage and 2 Ionization to all enemies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1239.webp"
+   "image": "cards/hilde/unique_30113_02.webp"
   },
   {
    "id": "card-1240",
@@ -190,7 +190,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Damage and 2 Ionization to all enemies.\nAttunement: 2 Ionization to a random enemy.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1240.webp"
+   "image": "cards/hilde/unique_30113_02.webp"
   },
   {
    "id": "card-1241",
@@ -207,7 +207,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "3 Ionization to all enemies.\nDraw 1.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1241.webp"
+   "image": "cards/hilde/unique_30113_02.webp"
   },
   {
    "id": "card-1242",
@@ -224,7 +224,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Damage and 3 Ionization to all enemies.\nDefeat: 3 Fracture to all enemies (max 1 time).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1242.webp"
+   "image": "cards/hilde/unique_30113_02.webp"
   },
   {
    "id": "card-1243",
@@ -241,7 +241,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "180% Piercing Damage and 3 Ionization to all enemies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1243.webp",
+   "image": "cards/hilde/unique_30113_02.webp",
    "notes": "Piercing Damage: ignores enemy shields (not modeled), otherwise normal damage"
   },
   {
@@ -259,7 +259,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "120% Damage to all enemies.\nDraw 1 Attack Card(s) of this unit.\nStreak: Decrease Cost by 1.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1244.webp"
+   "image": "cards/hilde/unique_30113_02.webp"
   },
   {
    "id": "card-1245",
@@ -276,7 +276,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Draw 2 Attack Card(s) of this unit.\n+50% Damage Amount to those cards for 1 turn until used.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1245.webp"
+   "image": "cards/hilde/unique_30113_03.webp"
   },
   {
    "id": "card-1246",
@@ -293,7 +293,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Draw 2 Attack Card(s) of this unit +80% Damage Amount to those cards for 1 turn until used.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1246.webp"
+   "image": "cards/hilde/unique_30113_03.webp"
   },
   {
    "id": "card-1247",
@@ -310,7 +310,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Draw 2 For the next 3 Extra Attack(s) of this unit, 1 Fracture to all enemies.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1247.webp"
+   "image": "cards/hilde/unique_30113_03.webp"
   },
   {
    "id": "card-1248",
@@ -327,7 +327,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Move all cards in hand to Draw Pile, then Draw for each moved.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1248.webp"
+   "image": "cards/hilde/unique_30113_03.webp"
   },
   {
    "id": "card-1249",
@@ -344,7 +344,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Draw 2 Lead cards Decrease Cost of those cards by 1 for 1 turn until used.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1249.webp"
+   "image": "cards/hilde/unique_30113_03.webp"
   },
   {
    "id": "card-1250",
@@ -361,7 +361,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Increase Damage Amount of the next Attack Card of this unit by 30% for each card Drawn through an ability this turn (max 300%).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1250.webp"
+   "image": "cards/hilde/unique_30113_03.webp"
   },
   {
    "id": "card-1251",
@@ -378,7 +378,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "On Hit, 2 Zero In.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1251.webp"
+   "image": "cards/hilde/unique_30113_04.webp"
   },
   {
    "id": "card-1252",
@@ -395,7 +395,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "On Hit, 3 Zero In.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1252.webp"
+   "image": "cards/hilde/unique_30113_04.webp"
   },
   {
    "id": "card-1253",
@@ -412,7 +412,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Draw 2.\nOn Hit, 2 Zero In.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1253.webp"
+   "image": "cards/hilde/unique_30113_04.webp"
   },
   {
    "id": "card-1254",
@@ -429,7 +429,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "On Hit, 2 Zero In.\nWhen the Attunement effect is activated, 2 Zero In.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1254.webp"
+   "image": "cards/hilde/unique_30113_04.webp"
   },
   {
    "id": "card-1255",
@@ -446,7 +446,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When a harmful effect is applied through an ability, 5 Zero In.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1255.webp"
+   "image": "cards/hilde/unique_30113_04.webp"
   },
   {
    "id": "card-1256",
@@ -463,7 +463,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "At the start of the turn, 30 Zero In.\nUnable to use Attack Cards of this unit.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1256.webp"
+   "image": "cards/hilde/unique_30113_04.webp"
   },
   {
    "id": "card-1257",
@@ -480,7 +480,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "Draw 3 120% Damage to all enemies.\n+50% Damage Amount for each Attack Card Drawn through an ability this turn (max 8 cards).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1257.webp",
+   "image": "cards/hilde/unique_30113_05.webp",
    "notes": "Mythic card: no epiphanies"
   },
   {
@@ -498,7 +498,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "120% Extra Attack to the enemy with the lowest HP.\nDraw 1.\nAttunement: Activate this card.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1258.webp"
+   "image": "cards/hilde/unique_30113_06.webp"
   },
   {
    "id": "card-1259",
@@ -515,7 +515,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "50% Extra Attack to all enemies.\n1 Fracture.\nDraw 1.\nAttunement: Activate this card.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1259.webp"
+   "image": "cards/hilde/unique_30113_07.webp"
   },
   {
    "id": "card-1260",
@@ -532,7 +532,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "500% Extra Attack to the enemy with the highest HP.\nDraw 1.\nAttunement: Activate this card.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1260.webp"
+   "image": "cards/hilde/unique_30113_07.webp"
   }
  ],
  "potentials": [

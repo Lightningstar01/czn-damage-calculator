@@ -20,7 +20,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "250% Damage to all enemies.\nIncrease Damage of Commence the Hunt by+30%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_1.webp"
+   "image": "cards/hugo/collapse_1043_01.webp"
   },
   {
    "id": "card-485",
@@ -37,7 +37,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Damage.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_2.webp"
+   "image": "cards/hugo/start_1043_01.webp"
   },
   {
    "id": "card-486",
@@ -54,7 +54,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "100% Shield.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_3.webp"
+   "image": "cards/hugo/start_1043_02.webp"
   },
   {
    "id": "card-487",
@@ -71,7 +71,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When an Upgrade or Skill Card of another Combatant is used, 1 Commence the Hunt.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_4.webp"
+   "image": "cards/hugo/unique_1043_05.webp"
   },
   {
    "id": "card-488",
@@ -88,7 +88,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When an Upgrade or Skill Card of another Combatant is used, 1 Commence the Hunt.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_4.webp"
+   "image": "cards/hugo/unique_1043_05.webp"
   },
   {
    "id": "card-489",
@@ -105,7 +105,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When another combatant uses an Enhanced or Skill card, 1 Commence the Hunt.\n50% chance of gaining an additional 1 Commence the Hunt.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_4.webp"
+   "image": "cards/hugo/unique_1043_05.webp"
   },
   {
    "id": "card-490",
@@ -122,7 +122,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When another Combatant uses an Upgrade or Skill card, 1 Commence the Hunt.\nIf Commence the Hunt is triggered, 50% chance of a random ally performing a Coordinated Attack on the target",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_4.webp"
+   "image": "cards/hugo/unique_1043_05.webp"
   },
   {
    "id": "card-491",
@@ -139,7 +139,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Commence the Hunt equal to the number of Skill Cards in hand.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_4.webp"
+   "image": "cards/hugo/unique_1043_05.webp"
   },
   {
    "id": "card-492",
@@ -156,7 +156,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When using an Enhance or Skill Card, 1 Commence the Hunt.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_4.webp"
+   "image": "cards/hugo/unique_1043_05.webp"
   },
   {
    "id": "card-493",
@@ -173,7 +173,7 @@
    "hits": 3,
    "weaknessApplies": false,
    "text": "60% x 3 Damage to random enemies.\nCommence the Hunt for each target hit.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_5.webp"
+   "image": "cards/hugo/unique_1043_04.webp"
   },
   {
    "id": "card-494",
@@ -190,7 +190,7 @@
    "hits": 3,
    "weaknessApplies": false,
    "text": "90% x 3 Damage to random enemies.\nCommence the Hunt for each target hit.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_5.webp"
+   "image": "cards/hugo/unique_1043_04.webp"
   },
   {
    "id": "card-495",
@@ -207,7 +207,7 @@
    "hits": 3,
    "weaknessApplies": false,
    "text": "90% x 3 Damage.\n2 Commence the Hunt.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_5.webp"
+   "image": "cards/hugo/unique_1043_04.webp"
   },
   {
    "id": "card-496",
@@ -224,7 +224,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "250% Damage.\nWhen Damage is dealt, 100% chance of a random ally performing a Coordinated Attack on the target.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_5.webp"
+   "image": "cards/hugo/unique_1043_04.webp"
   },
   {
    "id": "card-497",
@@ -241,7 +241,7 @@
    "hits": 3,
    "weaknessApplies": false,
    "text": "90% Damage × 3 to random enemies.\nIf in a Commence the Hunt state, increase Damage Amount by 100%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_5.webp"
+   "image": "cards/hugo/unique_1043_04.webp"
   },
   {
    "id": "card-498",
@@ -258,7 +258,7 @@
    "hits": 2,
    "weaknessApplies": false,
    "text": "At the start of the turn, 60% x 2 Damage to random enemies.\nCommence the Hunt equal to the number of targets hit.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_5.webp"
+   "image": "cards/hugo/unique_1043_04.webp"
   },
   {
    "id": "card-499",
@@ -275,7 +275,7 @@
    "hits": 2,
    "weaknessApplies": false,
    "text": "80% x 2 Damage.\nIf in Commence the Hunt, Draw 1 Attack Card(s).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_6.webp"
+   "image": "cards/hugo/unique_1043_01.webp"
   },
   {
    "id": "card-500",
@@ -292,7 +292,7 @@
    "hits": 2,
    "weaknessApplies": false,
    "text": "120% x 2 Damage.\nIf in Commence the Hunt, Draw 1 Attack Card.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_6.webp"
+   "image": "cards/hugo/unique_1043_01.webp"
   },
   {
    "id": "card-501",
@@ -309,7 +309,7 @@
    "hits": 2,
    "weaknessApplies": false,
    "text": "80% Damage × 2.\nIf in a Commence the Hunt state, add 1 Hit(s).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_6.webp"
+   "image": "cards/hugo/unique_1043_01.webp"
   },
   {
    "id": "card-502",
@@ -326,7 +326,7 @@
    "hits": 2,
    "weaknessApplies": false,
    "text": "100% x 2 Damage.\nIf in Commence the Hunt, Draw 2.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_6.webp"
+   "image": "cards/hugo/unique_1043_01.webp"
   },
   {
    "id": "card-503",
@@ -343,7 +343,7 @@
    "hits": 3,
    "weaknessApplies": false,
    "text": "100% Damage × 3.\nIf in a Commence the Hunt state, increase Action Count of all enemies by 2.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_6.webp"
+   "image": "cards/hugo/unique_1043_01.webp"
   },
   {
    "id": "card-504",
@@ -360,7 +360,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "120% Damage.\nAdd 1 Hit for each Commence the Hunt.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_6.webp"
+   "image": "cards/hugo/unique_1043_01.webp"
   },
   {
    "id": "card-505",
@@ -377,7 +377,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "100% Shield.\n2 Commence the Hunt.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_7.webp"
+   "image": "cards/hugo/unique_1043_02.webp"
   },
   {
    "id": "card-506",
@@ -394,7 +394,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "150% Shield.\n3 Commence the Hunt.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_7.webp"
+   "image": "cards/hugo/unique_1043_02.webp"
   },
   {
    "id": "card-507",
@@ -411,7 +411,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "150% Shield.\nIf under Commence the Hunt +50% Shield.\n2 Commence the Hunt.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_7.webp"
+   "image": "cards/hugo/unique_1043_02.webp"
   },
   {
    "id": "card-508",
@@ -428,7 +428,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Upon gaining Commence the Hunt, Draw 1 Attack card(s) (1 per turn).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_7.webp"
+   "image": "cards/hugo/unique_1043_02.webp"
   },
   {
    "id": "card-509",
@@ -445,7 +445,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "2 Commence the Hunt.\nCombo: Add another 2 Commence the Hunt.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_7.webp"
+   "image": "cards/hugo/unique_1043_02.webp"
   },
   {
    "id": "card-510",
@@ -462,7 +462,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "2 Commence the Hunt.\nDraw 2 attack card(s).",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_7.webp"
+   "image": "cards/hugo/unique_1043_02.webp"
   },
   {
    "id": "card-511",
@@ -479,7 +479,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Increase Extra Attack Damage Amount of Commence the Hunt by 40%.",
-   "image": "https://cdn.prydwen.gg/images/chaos/cards/hugo_8.webp",
+   "image": "cards/hugo/unique_1043_03.webp",
    "notes": "Mythic card: no epiphanies"
   }
  ],
