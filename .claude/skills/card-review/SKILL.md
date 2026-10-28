@@ -22,10 +22,15 @@ see "Card text check" in CLAUDE.md. Worked examples: `src/data/characters/mei-li
 ## 2. Read everything
 
 - Every screenshot (Read tool). Usual set: the Cards overview (starting + epiphany cards, Ego skill), one detail page per
-  card (keyword glossary on the right, Related Cards = the cards it creates), and one Epiphany page per card (its 5 variants).
+  card (keyword glossary on the right, Related Cards = the cards it creates), one Epiphany page per card (its 5 variants),
+  and (from Mika on, 2026-10-28) the Potential screen and the Ego Manifestation screen.
 - `src/data/prydwen/<slug>.json` (cards, potentials, Manifest Ego) and `src/data/characters/<slug>.ts` if it exists.
 
 ## 3. Work out the owner's levels
+
+- Read them off the Potential screen when it's there: each node's badge is level / max, Ego bonus included (Mika's Basic
+  16/16 = 10 + 6, Unique 7/16 = Signature 1 + 6); a lit (yellow) node without a badge is still locked (Mika's 5-1). The
+  Ego Manifestation screen shows the unlocked levels. Then check them against the card %s below.
 
 - Basic level: a Basic card's in-game % / Prydwen's base (102% / 100% = level 1, 2% per level).
 - Signature level: same with a Unique card (134% / 120% = 1.12 = level 6).

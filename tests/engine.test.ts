@@ -971,11 +971,11 @@ describe('deck', () => {
 describe('Mika', () => {
   const mika = PRESETS.characters.find((c) => c.name === 'Mika')!
   const preset = (id: string) => mika.cards!.find((p) => p.id === id)!
-  // Owner's screenshots (2026-10-28): E5 (Surge grants Retain; Basic 10 + 6 = 132%), Signature 1 + 6 (100% -> 114%), 5-1 not unlocked
+  // Owner's screenshots (2026-10-28): E6 (Basic 10 + 6 = 132%), Signature 1 + 6 (100% -> 114%), 5-1 not unlocked
   const ownerBuild = () => {
     const cs = newCharacterSave()
     const [a] = cs.builds
-    Object.assign(a, { egoLevel: 5, basicLevel: 10, signatureLevel: 1 })
+    Object.assign(a, { egoLevel: 6, basicLevel: 10, signatureLevel: 1 })
     a.stats.attack = 100
     return { cs, a }
   }

@@ -156,7 +156,7 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
   - In-game card % = base % x (1 + 2% x level) (Settings: per level). Levels 0-10 per build
     (default 0; in-game "by 12%" = level 6). The Manifest Ego levels whose text says "+3 levels" (E5 for most,
     E3 for some, both E3 and E5 for 12 characters such as Mika; read from the import) each add 3 (max 13 or 16 = 32%;
-    Mika's Water Arrow 132% at Basic 10 and E5, owner's screenshots 2026-10-28).
+    Mika's Water Arrow 132% at Basic 10 and E6, owner's screenshots 2026-10-28).
   - Raises ATK- and DEF-scaling damage (User). Fixed damage: **Unconfirmed**, a Settings toggle
     (default off). In-game, Orlea's Annoying I shows its Fixed 40% unraised but its Heal raised (228% at Signature 7),
     which fits the default; card text marks Fixed damage %s as `{F40%}`.
@@ -226,7 +226,8 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
   - Potential 7 "+6% Critical Chance of Combatant" (ATK > 700 or DEF > 300) reaches all allies (User, 2026-10-28).
     E4 "increase Damage Amount of allies by 10%" while holding a Creation: multiplicative, allies, hint. Not counted:
     E6 Fixed damage (★ x 50%) when a Creation is used.
-- **Mika** (owner's screenshots, 2026-10-28; E5 = +6 card upgrade levels from E3 and E5, Basic 10 = x1.32, Signature 1 = x1.14):
+- **Mika** (owner's screenshots, 2026-10-28; E6 = +6 card upgrade levels from E3 and E5, Basic 10 = x1.32, Signature 1 = x1.14;
+  the Potential screen confirms it: Basic 16/16, Unique 7/16, 3-1 unlocked, 5-1 locked):
   every in-game % = Prydwen's base x upgrade (Whirlpool IV 300% -> 342%). A healer: no damage buffs.
   - Water Barrier Heal 172% = (100% + Potential 3-1's +30%) x 1.32: "+30% Healing" is +30% base heal. 5-1 "+5% Heal" is
     read the same way (**Unconfirmed**; not unlocked by the owner, 2026-10-28).
