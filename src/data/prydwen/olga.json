@@ -19,7 +19,8 @@
    "pct": 4.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "400% Damage to all enemies.\nFor each Fracture, Agony, and Scorched activated this turn, +50%, +20%, and +30% base Damage Amount, respectively (max 300%)."
+   "text": "400% Damage to all enemies.\nFor each Fracture, Agony, and Scorched activated this turn, +50%, +20%, and +30% base Damage Amount, respectively (max 300%).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1323.webp"
   },
   {
    "id": "card-1324",
@@ -35,7 +36,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage."
+   "text": "100% Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1324.webp"
   },
   {
    "id": "card-1325",
@@ -51,7 +53,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "100% Heal."
+   "text": "100% Heal.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1325.webp"
   },
   {
    "id": "card-1326",
@@ -67,7 +70,8 @@
    "pct": 0.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "80% Damage and 2 Fracture, then activate Fracture inflicted by this unit."
+   "text": "80% Damage and 2 Fracture, then activate Fracture inflicted by this unit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1326.webp"
   },
   {
    "id": "card-1327",
@@ -83,7 +87,8 @@
    "pct": 1.4,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "140% Damage and 3 Fracture, then activate Fracture inflicted by this unit."
+   "text": "140% Damage and 3 Fracture, then activate Fracture inflicted by this unit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1327.webp"
   },
   {
    "id": "card-1328",
@@ -99,7 +104,8 @@
    "pct": 0.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "80% Damage and 2 Fracture, then activate Fracture inflicted by allies."
+   "text": "80% Damage and 2 Fracture, then activate Fracture inflicted by allies.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1328.webp"
   },
   {
    "id": "card-1329",
@@ -115,7 +121,8 @@
    "pct": 0.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "80% Damage and 2 Fracture, then activate Fracture inflicted by this unit 2 times."
+   "text": "80% Damage and 2 Fracture, then activate Fracture inflicted by this unit 2 times.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1329.webp"
   },
   {
    "id": "card-1330",
@@ -131,7 +138,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage and 1 Fracture.\n1 Fracture for each type of harmful effect the target has (max 3).\nActivate Fracture inflicted by this unit."
+   "text": "100% Damage and 1 Fracture.\n1 Fracture for each type of harmful effect the target has (max 3).\nActivate Fracture inflicted by this unit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1330.webp"
   },
   {
    "id": "card-1331",
@@ -147,7 +155,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage and 2 Fracture, then activate Fracture inflicted by this unit.\nAdd 1 Fracture at the end of the turn (max 3)."
+   "text": "100% Damage and 2 Fracture, then activate Fracture inflicted by this unit.\nAdd 1 Fracture at the end of the turn (max 3).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1331.webp"
   },
   {
    "id": "card-1332",
@@ -163,7 +172,8 @@
    "pct": 0.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "80% Damage and 4 Agony, then activate Agony inflicted by this unit."
+   "text": "80% Damage and 4 Agony, then activate Agony inflicted by this unit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1332.webp"
   },
   {
    "id": "card-1333",
@@ -179,7 +189,8 @@
    "pct": 1.4,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "140% Damage and 6 Agony, then activate Agony inflicted by this unit."
+   "text": "140% Damage and 6 Agony, then activate Agony inflicted by this unit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1333.webp"
   },
   {
    "id": "card-1334",
@@ -195,7 +206,8 @@
    "pct": 0.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "80% Damage and 5 Agony, then activate Agony inflicted by allies."
+   "text": "80% Damage and 5 Agony, then activate Agony inflicted by allies.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1334.webp"
   },
   {
    "id": "card-1335",
@@ -211,7 +223,8 @@
    "pct": 0.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "80% Damage and 5 Agony, then activate Agony inflicted by this unit 2 times."
+   "text": "80% Damage and 5 Agony, then activate Agony inflicted by this unit 2 times.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1335.webp"
   },
   {
    "id": "card-1336",
@@ -227,7 +240,8 @@
    "pct": 0.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "80% Damage, 4 Agony, and 3 Scorched, then activate Agony inflicted by this unit and activate Scorched inflicted by allies."
+   "text": "80% Damage, 4 Agony, and 3 Scorched, then activate Agony inflicted by this unit and activate Scorched inflicted by allies.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1336.webp"
   },
   {
    "id": "card-1337",
@@ -243,7 +257,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage and 4 Agony, then activate Agony inflicted by this unit.\nAt the end of the turn, 1 additional Agony (max 4)."
+   "text": "100% Damage and 4 Agony, then activate Agony inflicted by this unit.\nAt the end of the turn, 1 additional Agony (max 4).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1337.webp"
   },
   {
    "id": "card-1338",
@@ -259,7 +274,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "1 Brand of Agony.\n4 Agony to the enemy with the highest HP."
+   "text": "1 Brand of Agony.\n4 Agony to the enemy with the highest HP.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1338.webp"
   },
   {
    "id": "card-1339",
@@ -275,7 +291,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "1 Brand of Agony.\n4 Agony to the enemy with the highest HP."
+   "text": "1 Brand of Agony.\n4 Agony to the enemy with the highest HP.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1339.webp"
   },
   {
    "id": "card-1340",
@@ -291,7 +308,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "1 Brand of Fracture.\n2 Fracture to the enemy with the highest HP."
+   "text": "1 Brand of Fracture.\n2 Fracture to the enemy with the highest HP.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1340.webp"
   },
   {
    "id": "card-1341",
@@ -307,7 +325,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "2 Brand of Fracture.\n2 Brand of Agony.\n3 Fracture and 6 Agony to the enemy with the highest HP."
+   "text": "2 Brand of Fracture.\n2 Brand of Agony.\n3 Fracture and 6 Agony to the enemy with the highest HP.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1341.webp"
   },
   {
    "id": "card-1342",
@@ -323,7 +342,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Move 1 Rift of Severance to hand and apply Retrieve."
+   "text": "Move 1 Rift of Severance to hand and apply Retrieve.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1342.webp"
   },
   {
    "id": "card-1343",
@@ -339,7 +359,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "2 Brand of Fracture.\n2 Brand of Agony.\nAt the start of the turn, 1 Brand of Fracture or 1 Brand of Agony."
+   "text": "2 Brand of Fracture.\n2 Brand of Agony.\nAt the start of the turn, 1 Brand of Fracture or 1 Brand of Agony.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1343.webp"
   },
   {
    "id": "card-1344",
@@ -355,7 +376,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "When Fracture or Agony is activated through a Targeting Card, 2 Fracture and 3 Agony to the target (3 times per turn)."
+   "text": "When Fracture or Agony is activated through a Targeting Card, 2 Fracture and 3 Agony to the target (3 times per turn).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1344.webp"
   },
   {
    "id": "card-1345",
@@ -371,7 +393,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "When Fracture or Agony is activated through a Targeting Card, 2 Fracture and 3 Agony to the target (3 times per turn)."
+   "text": "When Fracture or Agony is activated through a Targeting Card, 2 Fracture and 3 Agony to the target (3 times per turn).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1345.webp"
   },
   {
    "id": "card-1346",
@@ -387,7 +410,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "When Fracture or Agony is activated through a Targeting Card, 2 Fracture and 3 Agony to the target (4 times per turn)."
+   "text": "When Fracture or Agony is activated through a Targeting Card, 2 Fracture and 3 Agony to the target (4 times per turn).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1346.webp"
   },
   {
    "id": "card-1347",
@@ -403,7 +427,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "When Fracture or Agony is applied through a Targeting Card, 1 Fracture and 2 Agony to the target (7 times per turn)."
+   "text": "When Fracture or Agony is applied through a Targeting Card, 1 Fracture and 2 Agony to the target (7 times per turn).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1347.webp"
   },
   {
    "id": "card-1348",
@@ -419,7 +444,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "At the start of the turn, 3 Scorched to all enemies.\nAt the end of the turn, remove Scorched from all enemies, then apply Fracture for each Scorched removed to the enemy with the highest HP (max 7)."
+   "text": "At the start of the turn, 3 Scorched to all enemies.\nAt the end of the turn, remove Scorched from all enemies, then apply Fracture for each Scorched removed to the enemy with the highest HP (max 7).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1348.webp"
   },
   {
    "id": "card-1349",
@@ -435,7 +461,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "When a harmful effect is applied through an ability, increase Damage Amount by 1% for 1 turn (max 30%)."
+   "text": "When a harmful effect is applied through an ability, increase Damage Amount by 1% for 1 turn (max 30%).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1349.webp"
   },
   {
    "id": "card-1350",
@@ -452,6 +479,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "2 Shattering, 200% Damage, 2 Fracture, and 4 Agony.\nWhen this card is activated, change into Reckoning.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1350.webp",
    "notes": "Mythic card: no epiphanies"
   },
   {
@@ -469,6 +497,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "400% Damage.\n+20% base Damage Amount for each Rapacity.\nActivate Agony and Fracture inflicted by this unit\nWhen this card is activated, change into End of the Line.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1351.webp",
    "notes": "Mythic card: no epiphanies"
   }
  ],

@@ -19,7 +19,8 @@
    "pct": 2.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "250% Damage to all enemies, 2 Tenacity Damage."
+   "text": "250% Damage to all enemies, 2 Tenacity Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1352.webp"
   },
   {
    "id": "card-1353",
@@ -35,7 +36,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage."
+   "text": "100% Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1353.webp"
   },
   {
    "id": "card-1354",
@@ -51,7 +53,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "100% Shield."
+   "text": "100% Shield.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1354.webp"
   },
   {
    "id": "card-1355",
@@ -67,7 +70,8 @@
    "pct": 4.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "400% Damage, 2 Tenacity Damage.\nEfficiency: Gain 1 AP."
+   "text": "400% Damage, 2 Tenacity Damage.\nEfficiency: Gain 1 AP.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1355.webp"
   },
   {
    "id": "card-1356",
@@ -83,7 +87,8 @@
    "pct": 5.5,
    "hits": 1,
    "weaknessApplies": true,
-   "text": "550% Damage, 2 Tenacity Damage.\nEfficiency: Gain 1 AP."
+   "text": "550% Damage, 2 Tenacity Damage.\nEfficiency: Gain 1 AP.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1356.webp"
   },
   {
    "id": "card-1357",
@@ -99,7 +104,8 @@
    "pct": 4.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "450% Damage, 2 Tenacity Damage.\nRavage: Gain 2 AP."
+   "text": "450% Damage, 2 Tenacity Damage.\nRavage: Gain 2 AP.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1357.webp"
   },
   {
    "id": "card-1358",
@@ -115,7 +121,8 @@
    "pct": 5.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "500% Damage, 2 Tenacity Damage.\n+80% Damage Amount for each Lead card in All Piles."
+   "text": "500% Damage, 2 Tenacity Damage.\n+80% Damage Amount for each Lead card in All Piles.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1358.webp"
   },
   {
    "id": "card-1359",
@@ -131,7 +138,8 @@
    "pct": 4.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "400% Damage, Gain 1 AP.\nEfficiency: Draw 1 2-Cost or higher card, then Retain that card for 1 turn."
+   "text": "400% Damage, Gain 1 AP.\nEfficiency: Draw 1 2-Cost or higher card, then Retain that card for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1359.webp"
   },
   {
    "id": "card-1360",
@@ -147,7 +155,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "When a Basic Attack Card is activated, 100% Coordinated Attack and 1 Tenacity Damage to the target."
+   "text": "When a Basic Attack Card is activated, 100% Coordinated Attack and 1 Tenacity Damage to the target.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1360.webp"
   },
   {
    "id": "card-1361",
@@ -163,7 +172,8 @@
    "pct": 1.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "150% Damage, 1 Shockwave.\nEfficiency: 1 Tenacity Damage."
+   "text": "150% Damage, 1 Shockwave.\nEfficiency: 1 Tenacity Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1361.webp"
   },
   {
    "id": "card-1362",
@@ -179,7 +189,8 @@
    "pct": 2.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "220% Damage, 1 Shockwave.\nEfficiency: 2 Tenacity Damage."
+   "text": "220% Damage, 1 Shockwave.\nEfficiency: 2 Tenacity Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1362.webp"
   },
   {
    "id": "card-1363",
@@ -195,7 +206,8 @@
    "pct": 2.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "200% Damage to all enemies, 1 Shockwave.\nEfficiency: 1 Tenacity Damage."
+   "text": "200% Damage to all enemies, 1 Shockwave.\nEfficiency: 1 Tenacity Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1363.webp"
   },
   {
    "id": "card-1364",
@@ -211,7 +223,8 @@
    "pct": 1.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "150% Damage, 2 Tenacity Damage."
+   "text": "150% Damage, 2 Tenacity Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1364.webp"
   },
   {
    "id": "card-1365",
@@ -227,7 +240,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "3 Shockwave."
+   "text": "3 Shockwave.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1365.webp"
   },
   {
    "id": "card-1366",
@@ -243,7 +257,8 @@
    "pct": 2.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "200% Damage.\nEach Bullet card in hand has a 50% chance to have its Cost decreased by 1 for 1 turn or until activated."
+   "text": "200% Damage.\nEach Bullet card in hand has a 50% chance to have its Cost decreased by 1 for 1 turn or until activated.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1366.webp"
   },
   {
    "id": "card-1367",
@@ -259,7 +274,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "At the start of the next turn, Draw 2 Lead cards of this unit."
+   "text": "At the start of the next turn, Draw 2 Lead cards of this unit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1367.webp"
   },
   {
    "id": "card-1368",
@@ -275,7 +291,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "At the start of the next turn, Draw 2 Lead cards."
+   "text": "At the start of the next turn, Draw 2 Lead cards.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1368.webp"
   },
   {
    "id": "card-1369",
@@ -291,7 +308,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "At the start of the next turn, Draw 2 Lead cards of this unit, then decrease Cost of those cards by 1 for 1 turn or until activated."
+   "text": "At the start of the next turn, Draw 2 Lead cards of this unit, then decrease Cost of those cards by 1 for 1 turn or until activated.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1369.webp"
   },
   {
    "id": "card-1370",
@@ -307,7 +325,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "For each Lead card in hand at the end of the turn, Draw a Lead card next turn."
+   "text": "For each Lead card in hand at the end of the turn, Draw a Lead card next turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1370.webp"
   },
   {
    "id": "card-1371",
@@ -323,7 +342,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "At the start of the next turn, Draw 1 Lead card.\nOn Ravage, move to hand."
+   "text": "At the start of the next turn, Draw 1 Lead card.\nOn Ravage, move to hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1371.webp"
   },
   {
    "id": "card-1372",
@@ -339,7 +359,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "At the start of the next turn, Draw 5 cards of this unit, then Hand Lock for 1 turn."
+   "text": "At the start of the next turn, Draw 5 cards of this unit, then Hand Lock for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1372.webp"
   },
   {
    "id": "card-1373",
@@ -355,7 +376,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "For 1 turn, decrease Cost of the next card of this unit activated by 1.\nEfficiency: Draw 1 Lead Attack Card of this unit."
+   "text": "For 1 turn, decrease Cost of the next card of this unit activated by 1.\nEfficiency: Draw 1 Lead Attack Card of this unit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1373.webp"
   },
   {
    "id": "card-1374",
@@ -371,7 +393,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "For 1 turn, decrease Cost of the next card of this unit activated by 2.\nEfficiency: Draw 1 Lead Attack Card of this unit."
+   "text": "For 1 turn, decrease Cost of the next card of this unit activated by 2.\nEfficiency: Draw 1 Lead Attack Card of this unit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1374.webp"
   },
   {
    "id": "card-1375",
@@ -387,7 +410,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "For 1 turn, increase Damage Amount of next base 2-Cost or higher Attack Card of this unit activated by 50%.\nEfficiency: Apply 2x the effect."
+   "text": "For 1 turn, increase Damage Amount of next base 2-Cost or higher Attack Card of this unit activated by 50%.\nEfficiency: Apply 2x the effect.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1375.webp"
   },
   {
    "id": "card-1376",
@@ -403,7 +427,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "For 1 turn, decrease Cost of the next card of this unit activated by 1.\nRetain: Draw 1 Lead Attack Card of this unit."
+   "text": "For 1 turn, decrease Cost of the next card of this unit activated by 1.\nRetain: Draw 1 Lead Attack Card of this unit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1376.webp"
   },
   {
    "id": "card-1377",
@@ -419,7 +444,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "For 1 turn, increase Damage Amount of Attack Cards by 25% for each Attack Card of this unit in hand.\nEfficiency: For 1 turn, decrease Cost of Attack Cards of this unit in hand by 1."
+   "text": "For 1 turn, increase Damage Amount of Attack Cards by 25% for each Attack Card of this unit in hand.\nEfficiency: For 1 turn, decrease Cost of Attack Cards of this unit in hand by 1.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1377.webp"
   },
   {
    "id": "card-1378",
@@ -435,7 +461,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "For 1 turn, for each ally, decrease Cost of the next Lead card activated by that ally by 1."
+   "text": "For 1 turn, for each ally, decrease Cost of the next Lead card activated by that ally by 1.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1378.webp"
   },
   {
    "id": "card-1379",
@@ -452,6 +479,7 @@
    "hits": 1,
    "weaknessApplies": true,
    "text": "100% Damage * 4.\nDestroy: +100% Damage Amount.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1379.webp",
    "notes": "Mythic card: no epiphanies"
   }
  ],

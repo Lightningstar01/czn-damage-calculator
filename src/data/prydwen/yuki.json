@@ -19,7 +19,8 @@
    "pct": 3.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "300% Damage to all enemies.\nMove all Attack Cards in hand to the top of the draw pile.\n+50% for each card moved."
+   "text": "300% Damage to all enemies.\nMove all Attack Cards in hand to the top of the draw pile.\n+50% for each card moved.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_745.webp"
   },
   {
    "id": "card-746",
@@ -35,7 +36,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage."
+   "text": "100% Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_746.webp"
   },
   {
    "id": "card-747",
@@ -51,7 +53,8 @@
    "pct": 2.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "220% Damage."
+   "text": "220% Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_747.webp"
   },
   {
    "id": "card-748",
@@ -67,7 +70,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "100% Shield."
+   "text": "100% Shield.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_748.webp"
   },
   {
    "id": "card-750",
@@ -83,7 +87,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 1 Attack Card(s) of this unit.\nIncrease Damage Amount of those cards by 40% for 1 Turn."
+   "text": "Draw 1 Attack Card(s) of this unit.\nIncrease Damage Amount of those cards by 40% for 1 Turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_750.webp"
   },
   {
    "id": "card-751",
@@ -99,7 +104,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 1 Attack Card(s) of this unit.\nIncrease Damage Amount of those cards by 80% for 1 turn."
+   "text": "Draw 1 Attack Card(s) of this unit.\nIncrease Damage Amount of those cards by 80% for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_750.webp"
   },
   {
    "id": "card-752",
@@ -115,7 +121,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 1 Attack Card(s) of this unit.\nIncrease Damage Amount of Attack Cards of this unit by 30% for 1 turn."
+   "text": "Draw 1 Attack Card(s) of this unit.\nIncrease Damage Amount of Attack Cards of this unit by 30% for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_750.webp"
   },
   {
    "id": "card-753",
@@ -131,7 +138,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 2 Attack Card(s) of this unit.\nDecrease Damage Amount of those cards by 10% for 1 turn."
+   "text": "Draw 2 Attack Card(s) of this unit.\nDecrease Damage Amount of those cards by 10% for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_750.webp"
   },
   {
    "id": "card-754",
@@ -147,7 +155,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 1 Attack Card(s) of this unit.\nIncrease Damage Amount of those cards by 40% for 1 turn.\nInspiration: Draw 1 Attack Card(s) of this unit."
+   "text": "Draw 1 Attack Card(s) of this unit.\nIncrease Damage Amount of those cards by 40% for 1 turn.\nInspiration: Draw 1 Attack Card(s) of this unit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_750.webp"
   },
   {
    "id": "card-755",
@@ -163,7 +172,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 1 Attack Card(s) of this unit.\nAt the start of the next turn, Draw 2 Attack Card(s) of this unit."
+   "text": "Draw 1 Attack Card(s) of this unit.\nAt the start of the next turn, Draw 2 Attack Card(s) of this unit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_750.webp"
   },
   {
    "id": "card-756",
@@ -179,7 +189,8 @@
    "pct": 2.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "220% Damage to all enemies.\nInspiration: Decrease cost by 1."
+   "text": "220% Damage to all enemies.\nInspiration: Decrease cost by 1.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_756.webp"
   },
   {
    "id": "card-757",
@@ -195,7 +206,8 @@
    "pct": 3.3,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "330% Damage to all enemies.\nInspiration: Decrease Cost by 1."
+   "text": "330% Damage to all enemies.\nInspiration: Decrease Cost by 1.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_756.webp"
   },
   {
    "id": "card-758",
@@ -211,7 +223,8 @@
    "pct": 2.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "220% Damage to all enemies.\nInspiration: Decrease Cost by 2."
+   "text": "220% Damage to all enemies.\nInspiration: Decrease Cost by 2.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_756.webp"
   },
   {
    "id": "card-759",
@@ -227,7 +240,8 @@
    "pct": 2.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "220% Damage to all enemies.\nInspiration: +1 Hit."
+   "text": "220% Damage to all enemies.\nInspiration: +1 Hit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_756.webp"
   },
   {
    "id": "card-760",
@@ -243,7 +257,8 @@
    "pct": 3.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "350% Damage.\n+100% Damage Amount for each drawn card of this unit for 1 turn (max 5)."
+   "text": "350% Damage.\n+100% Damage Amount for each drawn card of this unit for 1 turn (max 5).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_756.webp"
   },
   {
    "id": "card-761",
@@ -259,7 +274,8 @@
    "pct": 3.6,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "360% Damage to all enemies.\nWhen used, decrease Cost by 1."
+   "text": "360% Damage to all enemies.\nWhen used, decrease Cost by 1.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_756.webp"
   },
   {
    "id": "card-762",
@@ -275,7 +291,8 @@
    "pct": 1.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "180% Damage.\nActivate Inspiration for 1 random card of this unit in hand."
+   "text": "180% Damage.\nActivate Inspiration for 1 random card of this unit in hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_762.webp"
   },
   {
    "id": "card-763",
@@ -291,7 +308,8 @@
    "pct": 2.4,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "240% Damage.\nChoose 1 card(s) of this unit in hand, activate Inspiration effect."
+   "text": "240% Damage.\nChoose 1 card(s) of this unit in hand, activate Inspiration effect.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_762.webp"
   },
   {
    "id": "card-764",
@@ -307,7 +325,8 @@
    "pct": 2.4,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "240% Damage.\nActivate Inspiration for 1 random card of this unit in hand."
+   "text": "240% Damage.\nActivate Inspiration for 1 random card of this unit in hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_762.webp"
   },
   {
    "id": "card-765",
@@ -323,7 +342,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "Activate Inspiration for all cards of this unit in hand.\nFor 1 turn, when using a card of this unit with an enabled Inspiration, 100% Damage to random enemies."
+   "text": "Activate Inspiration for all cards of this unit in hand.\nFor 1 turn, when using a card of this unit with an enabled Inspiration, 100% Damage to random enemies.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_762.webp"
   },
   {
    "id": "card-766",
@@ -339,7 +359,8 @@
    "pct": 1.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "180% Damage. Draw 1 cards that have Inspiration effect"
+   "text": "180% Damage. Draw 1 cards that have Inspiration effect",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_762.webp"
   },
   {
    "id": "card-767",
@@ -355,7 +376,8 @@
    "pct": 2.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "200% Damage.\nInspiration: Add 1 Hit."
+   "text": "200% Damage.\nInspiration: Add 1 Hit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_762.webp"
   },
   {
    "id": "card-768",
@@ -371,7 +393,8 @@
    "pct": 1.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "When using a card of this unit with an activated Inspiration, 120% Damage to all enemies."
+   "text": "When using a card of this unit with an activated Inspiration, 120% Damage to all enemies.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_768.webp"
   },
   {
    "id": "card-769",
@@ -387,7 +410,8 @@
    "pct": 1.6,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "When using a card of this unit with an activated Inspiration, 160% Damage to all enemies."
+   "text": "When using a card of this unit with an activated Inspiration, 160% Damage to all enemies.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_768.webp"
   },
   {
    "id": "card-770",
@@ -403,7 +427,8 @@
    "pct": 1.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "When using a card of this unit with an activated Inspiration, 120% Damage to all enemies."
+   "text": "When using a card of this unit with an activated Inspiration, 120% Damage to all enemies.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_768.webp"
   },
   {
    "id": "card-771",
@@ -419,7 +444,8 @@
    "pct": 1.2,
    "hits": 2,
    "weaknessApplies": false,
-   "text": "When using a card of this unit with an activated Inspiration, 120% x 2 Damage to a random enemy."
+   "text": "When using a card of this unit with an activated Inspiration, 120% x 2 Damage to a random enemy.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_768.webp"
   },
   {
    "id": "card-772",
@@ -435,7 +461,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Increase Damage Amount of Attack Cards of this unit that target all enemies by 50%."
+   "text": "Increase Damage Amount of Attack Cards of this unit that target all enemies by 50%.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_768.webp"
   },
   {
    "id": "card-773",
@@ -451,7 +478,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "At the start of the turn, activate Inspiration for 2 random card(s) of this unit in hand."
+   "text": "At the start of the turn, activate Inspiration for 2 random card(s) of this unit in hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_768.webp"
   },
   {
    "id": "card-774",
@@ -468,6 +496,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "180% Damage to all enemies.\nInspiration: add 1 Hit, decrease Damage Amount by 20%.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/yuki_774.webp",
    "notes": "Mythic card: no epiphanies"
   }
  ],

@@ -19,7 +19,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "8 Descent.\nFor 2 turn(s), at the start of the turn, 8 Descent.\nIncrease Damage Amount of the next Heavensfall by 100%."
+   "text": "8 Descent.\nFor 2 turn(s), at the start of the turn, 8 Descent.\nIncrease Damage Amount of the next Heavensfall by 100%.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1199.webp"
   },
   {
    "id": "card-1200",
@@ -35,7 +36,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage"
+   "text": "100% Damage",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1200.webp"
   },
   {
    "id": "card-1201",
@@ -51,7 +53,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "100% Shield"
+   "text": "100% Shield",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1201.webp"
   },
   {
    "id": "card-1202",
@@ -67,7 +70,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "When Drawing through an [Initiation/Unique] ability, 1 Descent.\nCreate 8 Inferno Rhapsody cards in Draw Pile."
+   "text": "When Drawing through an [Initiation/Unique] ability, 1 Descent.\nCreate 8 Inferno Rhapsody cards in Draw Pile.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1202.webp"
   },
   {
    "id": "card-1203",
@@ -83,7 +87,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "On Draw through an ability, 1 Descent.\nCreate 8 Inferno Rhapsody in Draw Pile\n+50% Damage Amount to those cards."
+   "text": "On Draw through an ability, 1 Descent.\nCreate 8 Inferno Rhapsody in Draw Pile\n+50% Damage Amount to those cards.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1203.webp"
   },
   {
    "id": "card-1204",
@@ -99,7 +104,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "On Draw through an ability, 1 Descent.\nCreate 8 Inferno Rhapsody in Draw Pile.\nAt the start of the turn, Draw 1 Inferno Rhapsody."
+   "text": "On Draw through an ability, 1 Descent.\nCreate 8 Inferno Rhapsody in Draw Pile.\nAt the start of the turn, Draw 1 Inferno Rhapsody.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1204.webp"
   },
   {
    "id": "card-1205",
@@ -115,7 +121,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "On Draw through an ability, 1 Descent.\nCreate 8 Inferno Rhapsody in Draw Pile.\nDraw 2."
+   "text": "On Draw through an ability, 1 Descent.\nCreate 8 Inferno Rhapsody in Draw Pile.\nDraw 2.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1205.webp"
   },
   {
    "id": "card-1206",
@@ -131,7 +138,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "On Draw through an ability, 1 Descent.\nCreate 7 Inferno Rhapsody in Draw Pile.\nWhen Flame Arts is activated, 100% Extra Attack on the target."
+   "text": "On Draw through an ability, 1 Descent.\nCreate 7 Inferno Rhapsody in Draw Pile.\nWhen Flame Arts is activated, 100% Extra Attack on the target.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1206.webp"
   },
   {
    "id": "card-1207",
@@ -147,7 +155,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "On Draw through an ability, 1 Descent.\nCreate 6 Inferno Rhapsody: Heaven in Draw Pile."
+   "text": "On Draw through an ability, 1 Descent.\nCreate 6 Inferno Rhapsody: Heaven in Draw Pile.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1207.webp"
   },
   {
    "id": "card-1208",
@@ -163,7 +172,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 2.\nOf those Drawn cards, Discard all 1-Cost or higher cards."
+   "text": "Draw 2.\nOf those Drawn cards, Discard all 1-Cost or higher cards.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1208.webp"
   },
   {
    "id": "card-1209",
@@ -179,7 +189,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 3.\nOf those Drawn cards, Discard all 1-Cost or higher cards."
+   "text": "Draw 3.\nOf those Drawn cards, Discard all 1-Cost or higher cards.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1209.webp"
   },
   {
    "id": "card-1210",
@@ -195,7 +206,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 2 0-Cost card(s) of this unit."
+   "text": "Draw 2 0-Cost card(s) of this unit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1210.webp"
   },
   {
    "id": "card-1211",
@@ -211,7 +223,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Activate 3 Inferno Rhapsody in Draw Pile on the target.\n2 Descent for each activated card."
+   "text": "Activate 3 Inferno Rhapsody in Draw Pile on the target.\n2 Descent for each activated card.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1211.webp"
   },
   {
    "id": "card-1212",
@@ -227,7 +240,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 1.\nWhen a 2-Cost or lower card of this unit is Drawn, activate that card and Draw 2."
+   "text": "Draw 1.\nWhen a 2-Cost or lower card of this unit is Drawn, activate that card and Draw 2.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1212.webp"
   },
   {
    "id": "card-1213",
@@ -243,7 +257,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 1 cards with a Cost of X.\nApply the X of that card as X+1 until used."
+   "text": "Draw 1 cards with a Cost of X.\nApply the X of that card as X+1 until used.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1213.webp"
   },
   {
    "id": "card-1214",
@@ -259,7 +274,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "1 Flame Arts.\nStreak: Draw 1 Inferno Rhapsody."
+   "text": "1 Flame Arts.\nStreak: Draw 1 Inferno Rhapsody.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1214.webp"
   },
   {
    "id": "card-1215",
@@ -275,7 +291,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "1 Flame Arts.\nStreak: Draw 2 Inferno Rhapsody."
+   "text": "1 Flame Arts.\nStreak: Draw 2 Inferno Rhapsody.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1215.webp"
   },
   {
    "id": "card-1216",
@@ -291,7 +308,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "2 Flame Arts.\nStreak: The next 2 times Flame Arts is activated, 2 Flame Arts."
+   "text": "2 Flame Arts.\nStreak: The next 2 times Flame Arts is activated, 2 Flame Arts.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1216.webp"
   },
   {
    "id": "card-1217",
@@ -307,7 +325,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "1 Flame Arts for each Inferno Rhapsody in Graveyard."
+   "text": "1 Flame Arts for each Inferno Rhapsody in Graveyard.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1217.webp"
   },
   {
    "id": "card-1218",
@@ -323,7 +342,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "2 Flame Arts. At the start of the turn, move to hand."
+   "text": "2 Flame Arts. At the start of the turn, move to hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1218.webp"
   },
   {
    "id": "card-1219",
@@ -339,7 +359,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "1 Flame Arts.\nStreak: Apply the next X as X+2."
+   "text": "1 Flame Arts.\nStreak: Apply the next X as X+2.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1219.webp"
   },
   {
    "id": "card-1220",
@@ -356,6 +377,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Damage x X+1.\nDraw X.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1220.webp",
    "notes": "Hits depend on X: set the hits on each play"
   },
   {
@@ -373,6 +395,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "150% Damage × X+1,\nDraw X.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1221.webp",
    "notes": "Hits depend on X: set the hits on each play"
   },
   {
@@ -390,6 +413,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "100% Damage × X+1.\nActivate Inferno Rhapsody in Graveyard on the target for each Hit Count.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1222.webp",
    "notes": "Hits depend on X: set the hits on each play"
   },
   {
@@ -407,6 +431,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "150% Damage × X+1.\nIncrease Damage Amount of the next Heavensfall by 50% for each Hit Count (max 500%).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1223.webp",
    "notes": "Hits depend on X: set the hits on each play"
   },
   {
@@ -423,7 +448,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw X, X Flame Arts × 2, X Descent."
+   "text": "Draw X, X Flame Arts × 2, X Descent.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1224.webp"
   },
   {
    "id": "card-1225",
@@ -439,7 +465,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Add 1 Hit(s) to Flame Arts."
+   "text": "Add 1 Hit(s) to Flame Arts.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1225.webp"
   },
   {
    "id": "card-1226",
@@ -456,6 +483,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Move Inferno Rhapsody cards to Hand for each Descent gained this turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1226.webp",
    "notes": "Mythic card: no epiphanies"
   },
   {
@@ -472,7 +500,8 @@
    "pct": 1.0,
    "hits": 3,
    "weaknessApplies": false,
-   "text": "100% Damage x 3"
+   "text": "100% Damage x 3",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1227.webp"
   },
   {
    "id": "card-1228",
@@ -488,7 +517,8 @@
    "pct": 0.7,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "70% Damage.\n1 Flame Arts.\nWhen Flame Arts is activated on this card, Draw 1."
+   "text": "70% Damage.\n1 Flame Arts.\nWhen Flame Arts is activated on this card, Draw 1.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1228.webp"
   },
   {
    "id": "card-1229",
@@ -504,7 +534,8 @@
    "pct": 1.1,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "110% Damage.\n1 Flame Arts.\nWhen Flame Arts is activated on this card, 3 Descent."
+   "text": "110% Damage.\n1 Flame Arts.\nWhen Flame Arts is activated on this card, 3 Descent.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1229.webp"
   }
  ],
  "potentials": [

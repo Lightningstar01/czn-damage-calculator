@@ -19,7 +19,8 @@
    "pct": 4.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "400% damage to all enemies.\nMove all Homing Laser L in Exhaust Pile to hand"
+   "text": "400% damage to all enemies.\nMove all Homing Laser L in Exhaust Pile to hand",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_823.webp"
   },
   {
    "id": "card-824",
@@ -35,7 +36,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "Deal 100% damage."
+   "text": "Deal 100% damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_824.webp"
   },
   {
    "id": "card-825",
@@ -51,7 +53,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "100% Shield."
+   "text": "100% Shield.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_825.webp"
   },
   {
    "id": "card-826",
@@ -67,7 +70,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% damage.\n2 Afterglow.\nOn Ravage, move from Graveyard to hand."
+   "text": "100% damage.\n2 Afterglow.\nOn Ravage, move from Graveyard to hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_826.webp"
   },
   {
    "id": "card-827",
@@ -83,7 +87,8 @@
    "pct": 1.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "150% Damage.\nOn Ravage, Move to hand.\nDestroy: Add 1 Hit(s)."
+   "text": "150% Damage.\nOn Ravage, Move to hand.\nDestroy: Add 1 Hit(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_826.webp"
   },
   {
    "id": "card-828",
@@ -99,7 +104,8 @@
    "pct": 1.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "150% Damage.\n3 Afterglow.\nOn Ravage, Move to hand."
+   "text": "150% Damage.\n3 Afterglow.\nOn Ravage, Move to hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_826.webp"
   },
   {
    "id": "card-829",
@@ -115,7 +121,8 @@
    "pct": 1.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "150% Damage.\n2 Afterglow.\nCreate 2 Homing Laser L in Discard Pile."
+   "text": "150% Damage.\n2 Afterglow.\nCreate 2 Homing Laser L in Discard Pile.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_826.webp"
   },
   {
    "id": "card-830",
@@ -131,7 +138,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage.\n1 Afterglow.\nOn Ravage or at the start of the turn, Move to hand."
+   "text": "100% Damage.\n1 Afterglow.\nOn Ravage or at the start of the turn, Move to hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_826.webp"
   },
   {
    "id": "card-831",
@@ -147,7 +155,8 @@
    "pct": 1.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "150% Damage.\n2 Afterglow.\nMove all Homing Laser L in Graveyard to hand."
+   "text": "150% Damage.\n2 Afterglow.\nMove all Homing Laser L in Graveyard to hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_826.webp"
   },
   {
    "id": "card-832",
@@ -163,7 +172,8 @@
    "pct": 1.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "120% damage.\n0.5 Tenacity Damage.\nIf the target was not Ravaged, activate 1 more time."
+   "text": "120% damage.\n0.5 Tenacity Damage.\nIf the target was not Ravaged, activate 1 more time.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_832.webp"
   },
   {
    "id": "card-833",
@@ -179,7 +189,8 @@
    "pct": 1.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "180% Damage.\n1 Tenacity Damage.\nIf the target has not been Ravaged, activate 1 more time."
+   "text": "180% Damage.\n1 Tenacity Damage.\nIf the target has not been Ravaged, activate 1 more time.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_832.webp"
   },
   {
    "id": "card-834",
@@ -195,7 +206,8 @@
    "pct": 1.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "180% Damage.\n+60% Damage Amount for each decreased Tenacity of the target (max 10)."
+   "text": "180% Damage.\n+60% Damage Amount for each decreased Tenacity of the target (max 10).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_832.webp"
   },
   {
    "id": "card-835",
@@ -211,7 +223,8 @@
    "pct": 1.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "120% Damage.\n2 Instinct Weakness.\n+60% Damage Amount to Homing Laser for 1 turn(s)."
+   "text": "120% Damage.\n2 Instinct Weakness.\n+60% Damage Amount to Homing Laser for 1 turn(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_832.webp"
   },
   {
    "id": "card-836",
@@ -227,7 +240,8 @@
    "pct": 1.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "120% Damage.\nCreate 3 Homing Laser L in Draw Pile."
+   "text": "120% Damage.\nCreate 3 Homing Laser L in Draw Pile.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_832.webp"
   },
   {
    "id": "card-837",
@@ -243,7 +257,8 @@
    "pct": 0.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "At the end of the turn, 50% Damage to a random enemy.\n+30% Damage Amount for each Homing Laser Moved to hand for 1 turn(s)."
+   "text": "At the end of the turn, 50% Damage to a random enemy.\n+30% Damage Amount for each Homing Laser Moved to hand for 1 turn(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_832.webp"
   },
   {
    "id": "card-838",
@@ -259,7 +274,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 2 Homing Laser L."
+   "text": "Create 2 Homing Laser L.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_838.webp"
   },
   {
    "id": "card-839",
@@ -275,7 +291,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 3 Homing Laser L."
+   "text": "Create 3 Homing Laser L.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_838.webp"
   },
   {
    "id": "card-840",
@@ -291,7 +308,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 2 Homing Laser L, increase Exhaust of those cards by 2."
+   "text": "Create 2 Homing Laser L, increase Exhaust of those cards by 2.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_838.webp"
   },
   {
    "id": "card-841",
@@ -307,7 +325,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 2 Homing Laser L.\nOn Ravage, create 2 Homing Laser L."
+   "text": "Create 2 Homing Laser L.\nOn Ravage, create 2 Homing Laser L.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_838.webp"
   },
   {
    "id": "card-842",
@@ -323,7 +342,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create X+1 Homing Laser L.\nApply Haste to those cards."
+   "text": "Create X+1 Homing Laser L.\nApply Haste to those cards.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_838.webp"
   },
   {
    "id": "card-843",
@@ -339,7 +359,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Select and create 1 Homing Laser with their own distinct Epiphanies."
+   "text": "Select and create 1 Homing Laser with their own distinct Epiphanies.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_838.webp"
   },
   {
    "id": "card-844",
@@ -355,7 +376,8 @@
    "pct": 1.2,
    "hits": 4,
    "weaknessApplies": false,
-   "text": "120% x 4 damage to random enemies.\n1 Tenacity Damage for each hit."
+   "text": "120% x 4 damage to random enemies.\n1 Tenacity Damage for each hit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_844.webp"
   },
   {
    "id": "card-845",
@@ -371,7 +393,8 @@
    "pct": 1.8,
    "hits": 4,
    "weaknessApplies": false,
-   "text": "180% Damage × 4 to random enemies.\n1 Tenacity Damage for each Hit.\nRavage: Decrease Cost by 1."
+   "text": "180% Damage × 4 to random enemies.\n1 Tenacity Damage for each Hit.\nRavage: Decrease Cost by 1.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_844.webp"
   },
   {
    "id": "card-846",
@@ -387,7 +410,8 @@
    "pct": 1.2,
    "hits": 4,
    "weaknessApplies": false,
-   "text": "120% Damage × 4 to random enemies.\n1 Tenacity Damage for each Hit.\nRetain: Add 1 Hit until use (max 5 times)."
+   "text": "120% Damage × 4 to random enemies.\n1 Tenacity Damage for each Hit.\nRetain: Add 1 Hit until use (max 5 times).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_844.webp"
   },
   {
    "id": "card-847",
@@ -403,7 +427,8 @@
    "pct": 1.2,
    "hits": 4,
    "weaknessApplies": false,
-   "text": "120% Damage × 4 to random enemies.\nCreate 1 Homing Laser L for each target Hit."
+   "text": "120% Damage × 4 to random enemies.\nCreate 1 Homing Laser L for each target Hit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_844.webp"
   },
   {
    "id": "card-848",
@@ -419,7 +444,8 @@
    "pct": 1.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "120% Damage to random enemies.\nAdd 1 Hit for each Homing Laser in hand."
+   "text": "120% Damage to random enemies.\nAdd 1 Hit for each Homing Laser in hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_844.webp"
   },
   {
    "id": "card-849",
@@ -435,7 +461,8 @@
    "pct": 1.2,
    "hits": 4,
    "weaknessApplies": true,
-   "text": "120% Damage × 4\nRavage: Activate 1 more time."
+   "text": "120% Damage × 4\nRavage: Activate 1 more time.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_844.webp"
   },
   {
    "id": "card-850",
@@ -452,6 +479,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "150% damage.\nActivate 3 Homing Laser in Draw Pile and Graveyard.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_850.webp",
    "notes": "Mythic card: no epiphanies"
   },
   {
@@ -468,7 +496,8 @@
    "pct": 0.6,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "60% damage.\n1 Afterglow.\nOn Ravage, move from Graveyard to hand."
+   "text": "60% damage.\n1 Afterglow.\nOn Ravage, move from Graveyard to hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/sereniel_826.webp"
   }
  ],
  "potentials": [

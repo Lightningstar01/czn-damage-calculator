@@ -19,7 +19,8 @@
    "pct": 2.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "1,200% Damage.\nWhen the next Equilux card is activated, inflict Fixed Damage equal to 30% of Damage dealt to target."
+   "text": "1,200% Damage.\nWhen the next Equilux card is activated, inflict Fixed Damage equal to 30% of Damage dealt to target.",
+   "image": "cards/rossweisse/card_1380.webp"
   },
   {
    "id": "card-1381",
@@ -35,7 +36,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage."
+   "text": "100% Damage.",
+   "image": "cards/rossweisse/card_1381.webp"
   },
   {
    "id": "card-1382",
@@ -51,7 +53,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "100% Shield."
+   "text": "100% Shield.",
+   "image": "cards/rossweisse/card_1382.webp"
   },
   {
    "id": "card-1383",
@@ -67,7 +70,8 @@
    "pct": 4.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "400% Damage.\nOn polarization, split into Shard:Light and Shard:Dark."
+   "text": "400% Damage.\nOn polarization, split into Shard:Light and Shard:Dark.",
+   "image": "cards/rossweisse/card_1383.webp"
   },
   {
    "id": "card-1384",
@@ -83,7 +87,8 @@
    "pct": 6.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "600% Damage.\nOn polarization, split into Shard:Light (Amped) and Shard:Dark (Amped.)"
+   "text": "600% Damage.\nOn polarization, split into Shard:Light (Amped) and Shard:Dark (Amped.)",
+   "image": "cards/rossweisse/card_1383.webp"
   },
   {
    "id": "card-1385",
@@ -99,7 +104,8 @@
    "pct": 6.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "600% Damage.\nOn polarization, split into Shard:Light (Cycle) and Shard:Dark (Cycle)."
+   "text": "600% Damage.\nOn polarization, split into Shard:Light (Cycle) and Shard:Dark (Cycle).",
+   "image": "cards/rossweisse/card_1383.webp"
   },
   {
    "id": "card-1386",
@@ -115,7 +121,8 @@
    "pct": 4.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "400% Damage.\n20% DMG-Based Shield.\nOn polarization, split into Shard:Light (Aegis) and Shard:Dark (Aegis)."
+   "text": "400% Damage.\n20% DMG-Based Shield.\nOn polarization, split into Shard:Light (Aegis) and Shard:Dark (Aegis).",
+   "image": "cards/rossweisse/card_1383.webp"
   },
   {
    "id": "card-1387",
@@ -131,7 +138,8 @@
    "pct": 6.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "600% Damage.\nOn polarization, split into Shard:Light (Blink) and Shard:Dark (Blink)."
+   "text": "600% Damage.\nOn polarization, split into Shard:Light (Blink) and Shard:Dark (Blink).",
+   "image": "cards/rossweisse/card_1383.webp"
   },
   {
    "id": "card-1388",
@@ -148,6 +156,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "400% Damage.\n+120% base Damage Amount for each X.\nOn polarization, split into Shard:Light (Unbound) and Shard:Dark (Unbound).",
+   "image": "cards/rossweisse/card_1383.webp",
    "notes": "Hits depend on X: set the hits on each play"
   },
   {
@@ -164,7 +173,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 3 Sword Tassel."
+   "text": "Create 3 Sword Tassel.",
+   "image": "cards/rossweisse/card_1389.webp"
   },
   {
    "id": "card-1390",
@@ -180,7 +190,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 3 Sword Tassel.\nActivate effect for 1 random Light or Dark card."
+   "text": "Create 3 Sword Tassel.\nActivate effect for 1 random Light or Dark card.",
+   "image": "cards/rossweisse/card_1389.webp"
   },
   {
    "id": "card-1391",
@@ -196,7 +207,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 3 Sword Tassel.\nDraw 1 card of this unit."
+   "text": "Create 3 Sword Tassel.\nDraw 1 card of this unit.",
+   "image": "cards/rossweisse/card_1389.webp"
   },
   {
    "id": "card-1392",
@@ -212,7 +224,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Apply Retrieve to all Light and Dark cards in hand."
+   "text": "Apply Retrieve to all Light and Dark cards in hand.",
+   "image": "cards/rossweisse/card_1389.webp"
   },
   {
    "id": "card-1393",
@@ -228,7 +241,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 3 Sword Tassel.\nWhen the next Equilux card is coalesced, apply Pulverize to that card."
+   "text": "Create 3 Sword Tassel.\nWhen the next Equilux card is coalesced, apply Pulverize to that card.",
+   "image": "cards/rossweisse/card_1389.webp"
   },
   {
    "id": "card-1394",
@@ -244,7 +258,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Activate effect for all Light and Dark cards in hand."
+   "text": "Activate effect for all Light and Dark cards in hand.",
+   "image": "cards/rossweisse/card_1389.webp"
   },
   {
    "id": "card-1395",
@@ -260,7 +275,8 @@
    "pct": 2.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "200% Damage.\nDiscard up to 1 card in hand, and if Discarded, 150% Damage."
+   "text": "200% Damage.\nDiscard up to 1 card in hand, and if Discarded, 150% Damage.",
+   "image": "cards/rossweisse/card_1395.webp"
   },
   {
    "id": "card-1396",
@@ -276,7 +292,8 @@
    "pct": 3.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "300% Damage.\nDiscard up to 2 cards in hand, then that amount Discarded x 200% Damage."
+   "text": "300% Damage.\nDiscard up to 2 cards in hand, then that amount Discarded x 200% Damage.",
+   "image": "cards/rossweisse/card_1395.webp"
   },
   {
    "id": "card-1397",
@@ -292,7 +309,8 @@
    "pct": 2.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "200% Damage.\nDiscard 1, and if that card is a Light or Dark card, proc then move to hand."
+   "text": "200% Damage.\nDiscard 1, and if that card is a Light or Dark card, proc then move to hand.",
+   "image": "cards/rossweisse/card_1395.webp"
   },
   {
    "id": "card-1398",
@@ -308,7 +326,8 @@
    "pct": 3.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "300% Damage.\nDiscard up to 1 card in hand.\nDecrease Cost of the next 2 Light or Dark cards by 2 until activated."
+   "text": "300% Damage.\nDiscard up to 1 card in hand.\nDecrease Cost of the next 2 Light or Dark cards by 2 until activated.",
+   "image": "cards/rossweisse/card_1395.webp"
   },
   {
    "id": "card-1399",
@@ -324,7 +343,8 @@
    "pct": 3.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "300% Damage.\nWhen a Bind card is stacked this turn, +50% base Damage Amount (max 500%)."
+   "text": "300% Damage.\nWhen a Bind card is stacked this turn, +50% base Damage Amount (max 500%).",
+   "image": "cards/rossweisse/card_1395.webp"
   },
   {
    "id": "card-1400",
@@ -340,7 +360,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Increase Damage Amount of this unit by 15% for each Justice card in hand for 1 turn (max 75%)."
+   "text": "Increase Damage Amount of this unit by 15% for each Justice card in hand for 1 turn (max 75%).",
+   "image": "cards/rossweisse/card_1395.webp"
   },
   {
    "id": "card-1401",
@@ -356,7 +377,8 @@
    "pct": 2.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "200% Damage.\n4 Brand of the Cycle."
+   "text": "200% Damage.\n4 Brand of the Cycle.",
+   "image": "cards/rossweisse/card_1401.webp"
   },
   {
    "id": "card-1402",
@@ -372,7 +394,8 @@
    "pct": 3.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "300% Damage.\n6 Brand of the Cycle."
+   "text": "300% Damage.\n6 Brand of the Cycle.",
+   "image": "cards/rossweisse/card_1401.webp"
   },
   {
    "id": "card-1403",
@@ -388,7 +411,8 @@
    "pct": 3.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "300% Damage.\n2 Brand of the Cycle.\nPurity: Create 2 Sword Tassel."
+   "text": "300% Damage.\n2 Brand of the Cycle.\nPurity: Create 2 Sword Tassel.",
+   "image": "cards/rossweisse/card_1401.webp"
   },
   {
    "id": "card-1404",
@@ -404,7 +428,8 @@
    "pct": 2.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "200% Damage.\n4 Brand of the Cycle.\nDraw 1 card of this unit, then decrease Cost of those cards by 1 for 1 turn."
+   "text": "200% Damage.\n4 Brand of the Cycle.\nDraw 1 card of this unit, then decrease Cost of those cards by 1 for 1 turn.",
+   "image": "cards/rossweisse/card_1401.webp"
   },
   {
    "id": "card-1405",
@@ -420,7 +445,8 @@
    "pct": 3.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "300% Damage.\n1 Brand of the Cycle for each Justice card in hand.\nPurity: Decrease Cost by 1."
+   "text": "300% Damage.\n1 Brand of the Cycle for each Justice card in hand.\nPurity: Decrease Cost by 1.",
+   "image": "cards/rossweisse/card_1401.webp"
   },
   {
    "id": "card-1406",
@@ -436,7 +462,8 @@
    "pct": 5.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "500% Damage.\n4 Brand of the Cycle.\nOn Shield Break through this card, proc 1 more time (1 time per turn)."
+   "text": "500% Damage.\n4 Brand of the Cycle.\nOn Shield Break through this card, proc 1 more time (1 time per turn).",
+   "image": "cards/rossweisse/card_1401.webp"
   },
   {
    "id": "card-1407",
@@ -453,6 +480,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Draw 2.\n1 Kyrken's Aegis.",
+   "image": "cards/rossweisse/card_1407.webp",
    "notes": "Mythic card: no epiphanies"
   },
   {
@@ -469,7 +497,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "When coalesced into the Equilux card, for each stack, +80% base Damage Amount to the Equilux card for 1 turn."
+   "text": "When coalesced into the Equilux card, for each stack, +80% base Damage Amount to the Equilux card for 1 turn.",
+   "image": "cards/rossweisse/card_1408.webp"
   },
   {
    "id": "card-1409",
@@ -485,7 +514,8 @@
    "pct": 1.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "120% Damage to a random enemy.\nCreate 1 Sword Tassel.\nWhen 1 card of this unit is activated, activate effect (2 times per turn)."
+   "text": "120% Damage to a random enemy.\nCreate 1 Sword Tassel.\nWhen 1 card of this unit is activated, activate effect (2 times per turn).",
+   "image": "cards/rossweisse/card_1409.webp"
   },
   {
    "id": "card-1410",
@@ -501,7 +531,8 @@
    "pct": 1.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "120% Damage to a random enemy.\nCreate 1 Sword Tassel.\nWhen a card is Discarded through an ability, activate effect (2 times per turn)."
+   "text": "120% Damage to a random enemy.\nCreate 1 Sword Tassel.\nWhen a card is Discarded through an ability, activate effect (2 times per turn).",
+   "image": "cards/rossweisse/card_1409.webp"
   },
   {
    "id": "card-1411",
@@ -517,7 +548,8 @@
    "pct": 2.4,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "240% Damage to a random enemy.\nCreate 1 Sword Tassel.\nWhen attacked, activate effect (1 time per turn)."
+   "text": "240% Damage to a random enemy.\nCreate 1 Sword Tassel.\nWhen attacked, activate effect (1 time per turn).",
+   "image": "cards/rossweisse/card_1409.webp"
   },
   {
    "id": "card-1412",
@@ -533,7 +565,8 @@
    "pct": 2.4,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "240% Damage.\nCreate 1 Sword Tassel.\nDiscard 1 random Status Ailment or Curse Card in hand."
+   "text": "240% Damage.\nCreate 1 Sword Tassel.\nDiscard 1 random Status Ailment or Curse Card in hand.",
+   "image": "cards/rossweisse/card_1409.webp"
   },
   {
    "id": "card-1413",
@@ -549,7 +582,8 @@
    "pct": 1.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "120% Damage to a random enemy.\nCreate 1 Sword Tassel.\nWhen AP is gained through an ability, activate effect (2 times per turn)."
+   "text": "120% Damage to a random enemy.\nCreate 1 Sword Tassel.\nWhen AP is gained through an ability, activate effect (2 times per turn).",
+   "image": "cards/rossweisse/card_1409.webp"
   },
   {
    "id": "card-1414",
@@ -565,7 +599,8 @@
    "pct": 1.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "120% Damage to a random enemy.\nCreate 1 Sword Tassel.\nWhen 2 cards of other Combatants are activated, activate effect (2 times per turn)."
+   "text": "120% Damage to a random enemy.\nCreate 1 Sword Tassel.\nWhen 2 cards of other Combatants are activated, activate effect (2 times per turn).",
+   "image": "cards/rossweisse/card_1414.webp"
   },
   {
    "id": "card-1415",
@@ -581,7 +616,8 @@
    "pct": 1.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "120% Damage to a random enemy.\nCreate 1 Sword Tassel.\nOn Draw through an ability, activate effect (2 times per turn)."
+   "text": "120% Damage to a random enemy.\nCreate 1 Sword Tassel.\nOn Draw through an ability, activate effect (2 times per turn).",
+   "image": "cards/rossweisse/card_1414.webp"
   },
   {
    "id": "card-1416",
@@ -597,7 +633,8 @@
    "pct": 2.4,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "240% Damage to a random enemy.\nCreate 1 Sword Tassel.\nWhen Shield is gained through an ability, activate effect (1 time per turn)."
+   "text": "240% Damage to a random enemy.\nCreate 1 Sword Tassel.\nWhen Shield is gained through an ability, activate effect (1 time per turn).",
+   "image": "cards/rossweisse/card_1414.webp"
   },
   {
    "id": "card-1417",
@@ -613,7 +650,8 @@
    "pct": 2.4,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "240% Damage.\nCreate 1 Sword Tassel.\nDiscard 1 card of a random different Combatant in hand."
+   "text": "240% Damage.\nCreate 1 Sword Tassel.\nDiscard 1 card of a random different Combatant in hand.",
+   "image": "cards/rossweisse/card_1414.webp"
   },
   {
    "id": "card-1418",
@@ -629,7 +667,8 @@
    "pct": 1.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "120% Damage to a random enemy.\nCreate 1 Sword Tassel.\nWhen a 1-Cost or higher card is activated, activate effect (2 times per turn)."
+   "text": "120% Damage to a random enemy.\nCreate 1 Sword Tassel.\nWhen a 1-Cost or higher card is activated, activate effect (2 times per turn).",
+   "image": "cards/rossweisse/card_1414.webp"
   }
  ],
  "potentials": [

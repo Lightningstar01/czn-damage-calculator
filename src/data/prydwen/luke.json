@@ -19,7 +19,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "+450% Damage.\nFor each card in hand +25% Damage Amount."
+   "text": "+450% Damage.\nFor each card in hand +25% Damage Amount.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_8.webp"
   },
   {
    "id": "card-31",
@@ -35,7 +36,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage."
+   "text": "100% Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_1.webp"
   },
   {
    "id": "card-32",
@@ -51,7 +53,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "100% Shield."
+   "text": "100% Shield.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_2.webp"
   },
   {
    "id": "card-33",
@@ -67,7 +70,8 @@
    "pct": 0.5,
    "hits": 2,
    "weaknessApplies": false,
-   "text": "50% Damage x 2.\nFor each Critical Hit create a Handgun Bullet.\n+50% Critical Chance."
+   "text": "50% Damage x 2.\nFor each Critical Hit create a Handgun Bullet.\n+50% Critical Chance.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_3.webp"
   },
   {
    "id": "card-34",
@@ -83,7 +87,8 @@
    "pct": 0.75,
    "hits": 2,
    "weaknessApplies": false,
-   "text": "75% Damage x 2.\nFor each Critical Hit create a Handgun Bullet.\n+50% Critical Chance."
+   "text": "75% Damage x 2.\nFor each Critical Hit create a Handgun Bullet.\n+50% Critical Chance.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_3.webp"
   },
   {
    "id": "card-35",
@@ -99,7 +104,8 @@
    "pct": 0.3,
    "hits": 3,
    "weaknessApplies": false,
-   "text": "30% Damage x 3.\nFor each Critical Hit create a Handgun Bullet.\n+50% Critical Chance."
+   "text": "30% Damage x 3.\nFor each Critical Hit create a Handgun Bullet.\n+50% Critical Chance.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_3.webp"
   },
   {
    "id": "card-36",
@@ -115,7 +121,8 @@
    "pct": 3.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "300% Damage.\nFor each Critical Hit, create Handgun Bullet.\nGuaranteed Critical."
+   "text": "300% Damage.\nFor each Critical Hit, create Handgun Bullet.\nGuaranteed Critical.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_3.webp"
   },
   {
    "id": "card-37",
@@ -131,7 +138,8 @@
    "pct": 1.0,
    "hits": 3,
    "weaknessApplies": false,
-   "text": "100% Damage x 3.\n+50% Critical Chance."
+   "text": "100% Damage x 3.\n+50% Critical Chance.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_3.webp"
   },
   {
    "id": "card-38",
@@ -147,7 +155,8 @@
    "pct": 1.0,
    "hits": 2,
    "weaknessApplies": false,
-   "text": "100% Damage x 2.\nFor each Critical Hit, Draw.\n+70% Critical Chance."
+   "text": "100% Damage x 2.\nFor each Critical Hit, Draw.\n+70% Critical Chance.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_3.webp"
   },
   {
    "id": "card-39",
@@ -163,7 +172,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 3 Handgun Bullet Card(s)."
+   "text": "Create 3 Handgun Bullet Card(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_4.webp"
   },
   {
    "id": "card-40",
@@ -179,7 +189,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 3 Handgun Bullet Card(s).\n+30% Critical Chance of that card."
+   "text": "Create 3 Handgun Bullet Card(s).\n+30% Critical Chance of that card.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_4.webp"
   },
   {
    "id": "card-41",
@@ -195,7 +206,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 3 Handgun Bullet Card(s)."
+   "text": "Create 3 Handgun Bullet Card(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_4.webp"
   },
   {
    "id": "card-42",
@@ -211,7 +223,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 3 Handgun Bullet Card(s).\nAt the start of the next turn, create 2 Handgun Bullet Card(s)."
+   "text": "Create 3 Handgun Bullet Card(s).\nAt the start of the next turn, create 2 Handgun Bullet Card(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_4.webp"
   },
   {
    "id": "card-43",
@@ -227,7 +240,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "At the start of the turn, create 1 Handgun Bullet Card(s)."
+   "text": "At the start of the turn, create 1 Handgun Bullet Card(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_4.webp"
   },
   {
    "id": "card-44",
@@ -243,7 +257,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 5 Handgun Bullet Card(s)."
+   "text": "Create 5 Handgun Bullet Card(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_4.webp"
   },
   {
    "id": "card-45",
@@ -259,7 +274,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "100% Shield.\nNext Bullet Card used +120% Damage Amount."
+   "text": "100% Shield.\nNext Bullet Card used +120% Damage Amount.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_5.webp"
   },
   {
    "id": "card-46",
@@ -275,7 +291,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "150% Shield.\nNext Bullet Card used +170% Damage Amount."
+   "text": "150% Shield.\nNext Bullet Card used +170% Damage Amount.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_5.webp"
   },
   {
    "id": "card-47",
@@ -291,7 +308,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "100% Shield.\nNext 2 Bullet Cards used +120% Damage Amount."
+   "text": "100% Shield.\nNext 2 Bullet Cards used +120% Damage Amount.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_5.webp"
   },
   {
    "id": "card-48",
@@ -307,7 +325,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "100% Shield.\nFor 1 turn, Bullet Card Damage Amount +70%."
+   "text": "100% Shield.\nFor 1 turn, Bullet Card Damage Amount +70%.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_5.webp"
   },
   {
    "id": "card-49",
@@ -323,7 +342,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "100% Shield.\n+100% Damage Amount of the next Attack Card used."
+   "text": "100% Shield.\n+100% Damage Amount of the next Attack Card used.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_5.webp"
   },
   {
    "id": "card-50",
@@ -339,7 +359,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "+30% Handgun Bullet Card Damage."
+   "text": "+30% Handgun Bullet Card Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_5.webp"
   },
   {
    "id": "card-51",
@@ -355,7 +376,8 @@
    "pct": 0.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "50% Damage.\nFor each Bullet Card used this turn, 1 extra Hit."
+   "text": "50% Damage.\nFor each Bullet Card used this turn, 1 extra Hit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_6.webp"
   },
   {
    "id": "card-52",
@@ -371,7 +393,8 @@
    "pct": 0.75,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "75% Damage.\nFor each Bullet Card used this turn, 1 extra Hit."
+   "text": "75% Damage.\nFor each Bullet Card used this turn, 1 extra Hit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_6.webp"
   },
   {
    "id": "card-53",
@@ -387,7 +410,8 @@
    "pct": 0.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "50% Damage.\nFor each Attack Card used this turn, 1 extra Hit."
+   "text": "50% Damage.\nFor each Attack Card used this turn, 1 extra Hit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_6.webp"
   },
   {
    "id": "card-54",
@@ -403,7 +427,8 @@
    "pct": 0.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "50% Damage.\n+1 hit per Bullet card used this turn. Weakness Attack: +50% Damage."
+   "text": "50% Damage.\n+1 hit per Bullet card used this turn. Weakness Attack: +50% Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_6.webp"
   },
   {
    "id": "card-55",
@@ -419,7 +444,8 @@
    "pct": 0.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "50% Damage.\n50% Shield.\nFor each Bullet Card used this turn, 1 extra Hit and add +50% Shield."
+   "text": "50% Damage.\n50% Shield.\nFor each Bullet Card used this turn, 1 extra Hit and add +50% Shield.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_6.webp"
   },
   {
    "id": "card-56",
@@ -435,7 +461,8 @@
    "pct": 0.5,
    "hits": 5,
    "weaknessApplies": false,
-   "text": "50% Damage x 5.\nWhen Bullets are used, decrease Cost by 1 for 1 turn."
+   "text": "50% Damage x 5.\nWhen Bullets are used, decrease Cost by 1 for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_6.webp"
   },
   {
    "id": "card-57",
@@ -452,6 +479,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "300% Damage.\nAfter using 5 Handgun Bullet card time(s), remove Unusable.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_7.webp",
    "notes": "Mythic card: no epiphanies"
   },
   {
@@ -468,7 +496,8 @@
    "pct": 0.85,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "85% Damage."
+   "text": "85% Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_9.webp"
   },
   {
    "id": "card-59",
@@ -484,7 +513,8 @@
    "pct": 0.6,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "60% Damage.\nWeakness Attack: Increase Damage Amount by 100%."
+   "text": "60% Damage.\nWeakness Attack: Increase Damage Amount by 100%.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_10.webp"
   },
   {
    "id": "card-60",
@@ -500,7 +530,8 @@
    "pct": 0.6,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "60% Damage.\nIf the target has Shield, increase Damage Amount by 100%."
+   "text": "60% Damage.\nIf the target has Shield, increase Damage Amount by 100%.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_11.webp"
   },
   {
    "id": "card-61",
@@ -516,7 +547,8 @@
    "pct": 0.3,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "30% Damage.\n1 Mark."
+   "text": "30% Damage.\n1 Mark.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_12.webp"
   },
   {
    "id": "card-62",
@@ -532,7 +564,8 @@
    "pct": 2.0,
    "hits": 1,
    "weaknessApplies": true,
-   "text": "200% damage.\nGuaranteed Critical."
+   "text": "200% damage.\nGuaranteed Critical.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/luke_9.webp"
   }
  ],
  "potentials": [

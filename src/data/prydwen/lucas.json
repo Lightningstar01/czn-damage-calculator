@@ -19,7 +19,8 @@
    "pct": 2.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "Draw 2.\n250% Damage to all enemies."
+   "text": "Draw 2.\n250% Damage to all enemies.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_1.webp"
   },
   {
    "id": "card-276",
@@ -35,7 +36,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage."
+   "text": "100% Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_2.webp"
   },
   {
    "id": "card-277",
@@ -51,7 +53,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "100% Shield."
+   "text": "100% Shield.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_3.webp"
   },
   {
    "id": "card-278",
@@ -67,7 +70,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "At the start of the turn, create 1 Launcher Bullet."
+   "text": "At the start of the turn, create 1 Launcher Bullet.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_4.webp"
   },
   {
    "id": "card-279",
@@ -83,7 +87,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "At the start of the turn, create 1 Launcher Bullet."
+   "text": "At the start of the turn, create 1 Launcher Bullet.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_4.webp"
   },
   {
    "id": "card-280",
@@ -99,7 +104,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "At the start of the turn, create 2 Launcher Bullet."
+   "text": "At the start of the turn, create 2 Launcher Bullet.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_4.webp"
   },
   {
    "id": "card-281",
@@ -115,7 +121,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "At the start of the turn, create 1 Launcher Bullet.\nWith a 50% chance, decrease Cost of those cards by 1 for 1 turn."
+   "text": "At the start of the turn, create 1 Launcher Bullet.\nWith a 50% chance, decrease Cost of those cards by 1 for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_4.webp"
   },
   {
    "id": "card-282",
@@ -131,7 +138,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "At the start of the turn, create 1 Launcher Bullet.\n50% chance to Draw 1."
+   "text": "At the start of the turn, create 1 Launcher Bullet.\n50% chance to Draw 1.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_4.webp"
   },
   {
    "id": "card-283",
@@ -147,7 +155,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 5 Launcher Bullet."
+   "text": "Create 5 Launcher Bullet.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_4.webp"
   },
   {
    "id": "card-284",
@@ -163,7 +172,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage.\nFor 1 turn, +40% Bullet card Damage."
+   "text": "100% Damage.\nFor 1 turn, +40% Bullet card Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_5.webp"
   },
   {
    "id": "card-285",
@@ -179,7 +189,8 @@
    "pct": 2.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "200% Damage.\nFor 1 turn, +40% Bullet card Damage."
+   "text": "200% Damage.\nFor 1 turn, +40% Bullet card Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_5.webp"
   },
   {
    "id": "card-286",
@@ -195,7 +206,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "For 2 turns, +40% Bullet card Damage."
+   "text": "For 2 turns, +40% Bullet card Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_5.webp"
   },
   {
    "id": "card-287",
@@ -211,7 +223,8 @@
    "pct": 1.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "150% Damage.\n+60% Damage per Bullet card in hand"
+   "text": "150% Damage.\n+60% Damage per Bullet card in hand",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_5.webp"
   },
   {
    "id": "card-288",
@@ -227,7 +240,8 @@
    "pct": 1.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "150% Damage.\n+120% Damage of the next Bullet card."
+   "text": "150% Damage.\n+120% Damage of the next Bullet card.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_5.webp"
   },
   {
    "id": "card-289",
@@ -243,7 +257,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage.\nFor 1 turn(s), when using Bullet cards, 50% Fixed Damage to a random enemy."
+   "text": "100% Damage.\nFor 1 turn(s), when using Bullet cards, 50% Fixed Damage to a random enemy.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_5.webp"
   },
   {
    "id": "card-290",
@@ -259,7 +274,8 @@
    "pct": 1.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "180% Damage to all enemies.\nDraw 1.\nDiscard 1."
+   "text": "180% Damage to all enemies.\nDraw 1.\nDiscard 1.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_6.webp"
   },
   {
    "id": "card-291",
@@ -275,7 +291,8 @@
    "pct": 1.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "180% Damage to all enemies.\nDraw 1.\nDiscard 2. Create Launcher Bullet equal to the number discarded."
+   "text": "180% Damage to all enemies.\nDraw 1.\nDiscard 2. Create Launcher Bullet equal to the number discarded.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_6.webp"
   },
   {
    "id": "card-292",
@@ -291,7 +308,8 @@
    "pct": 3.15,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "315% Damage to all enemies.\nDraw 1.\nDiscard 1."
+   "text": "315% Damage to all enemies.\nDraw 1.\nDiscard 1.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_6.webp"
   },
   {
    "id": "card-293",
@@ -307,7 +325,8 @@
    "pct": 2.7,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "270% Damage to all enemies.\nIf Critical Hit, 150% Damage to all enemies."
+   "text": "270% Damage to all enemies.\nIf Critical Hit, 150% Damage to all enemies.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_6.webp"
   },
   {
    "id": "card-294",
@@ -323,7 +342,8 @@
    "pct": 2.7,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "Exhaust up to 2 Bullet(s) in hand.\n270% Damage to all enemies.\nIncrease Damage Amount by 50% for each Exhausted card."
+   "text": "Exhaust up to 2 Bullet(s) in hand.\n270% Damage to all enemies.\nIncrease Damage Amount by 50% for each Exhausted card.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_6.webp"
   },
   {
    "id": "card-295",
@@ -339,7 +359,8 @@
    "pct": 2.7,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "270% Damage to all enemies.\nCreate Launcher Bullet equal to number of targets hit."
+   "text": "270% Damage to all enemies.\nCreate Launcher Bullet equal to number of targets hit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_6.webp"
   },
   {
    "id": "card-296",
@@ -355,7 +376,8 @@
    "pct": 1.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "120% Damage to all enemies.\n2 Weaken.\nIf the target has Shield, +50% Damage."
+   "text": "120% Damage to all enemies.\n2 Weaken.\nIf the target has Shield, +50% Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_7.webp"
   },
   {
    "id": "card-297",
@@ -371,7 +393,8 @@
    "pct": 1.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "180% Damage to all enemies.\n2 Weaken.\nIf the target has Shield, +75% Damage."
+   "text": "180% Damage to all enemies.\n2 Weaken.\nIf the target has Shield, +75% Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_7.webp"
   },
   {
    "id": "card-298",
@@ -387,7 +410,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "For 1 turn, when hitting a target with Shield, +50% Damage."
+   "text": "For 1 turn, when hitting a target with Shield, +50% Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_7.webp"
   },
   {
    "id": "card-299",
@@ -403,7 +427,8 @@
    "pct": 1.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "180% Damage to all enemies.\n2 Passion Weakness."
+   "text": "180% Damage to all enemies.\n2 Passion Weakness.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_7.webp"
   },
   {
    "id": "card-300",
@@ -419,7 +444,8 @@
    "pct": 1.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "180% Damage to all enemies.\n2 Mark.\nIf the target has Shield, +50% Damage."
+   "text": "180% Damage to all enemies.\n2 Mark.\nIf the target has Shield, +50% Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_7.webp"
   },
   {
    "id": "card-301",
@@ -435,7 +461,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "When hitting a target that has Shield, increase Damage Amount by 30%."
+   "text": "When hitting a target that has Shield, increase Damage Amount by 30%.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_7.webp"
   },
   {
    "id": "card-302",
@@ -452,6 +479,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When Bullet cards are Exhausted, 40 Fixed Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_8.webp",
    "notes": "Mythic card: no epiphanies"
   },
   {
@@ -468,7 +496,8 @@
    "pct": 1.4,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "140% Damage.\n70% Damage to another enemy.\nIf the target has Shield, +30% Damage Amount."
+   "text": "140% Damage.\n70% Damage to another enemy.\nIf the target has Shield, +30% Damage Amount.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_9.webp"
   },
   {
    "id": "card-304",
@@ -484,7 +513,8 @@
    "pct": 1.4,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "140% Damage.\n70% Damage to another enemy.\n1 Weaken to all enemies."
+   "text": "140% Damage.\n70% Damage to another enemy.\n1 Weaken to all enemies.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_10.webp"
   },
   {
    "id": "card-305",
@@ -500,7 +530,8 @@
    "pct": 1.4,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "140% Damage.\n70% Damage to another enemy.\n1 Impair to all enemies."
+   "text": "140% Damage.\n70% Damage to another enemy.\n1 Impair to all enemies.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_11.webp"
   },
   {
    "id": "card-306",
@@ -516,7 +547,8 @@
    "pct": 1.4,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "140% Damage.\n70% Damage to another enemy.\n+1 Action Count to all enemies."
+   "text": "140% Damage.\n70% Damage to another enemy.\n+1 Action Count to all enemies.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_12.webp"
   },
   {
    "id": "card-307",
@@ -532,7 +564,8 @@
    "pct": 1.4,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "140% Damage.\n70% Damage to another enemy.\n1 Agony to all enemies."
+   "text": "140% Damage.\n70% Damage to another enemy.\n1 Agony to all enemies.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/lucas_13.webp"
   }
  ],
  "potentials": [

@@ -11,9 +11,14 @@ Prydwen has no card list page, but every character page embeds the full card lis
 server data). Each character's own page adds their Potential and Manifest Ego (dupes) text, so
 one page per character is fetched (--cache keeps the pages, to re-run without downloading). Card text keeps Prydwen's wording, including the "+"
 that marks additive buffs (owner's rule, docs/FORMULA.md).
+
+Each card's `image` is its art on Prydwen's CDN (200x300 webp, art only: the site draws the frame). --art <slug> copies that
+character's art into public/cards/<slug>/ and points `image` there instead; characters whose folder exists keep being copied.
+Epiphanies share their base card's art, so identical pictures are saved once.
 """
 import argparse
 import datetime
+import hashlib
 import html
 import json
 import re
@@ -22,8 +27,37 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "src" / "data" / "prydwen"
+ART = ROOT / "public" / "cards"
 URL = "https://www.prydwen.gg/chaos-zero-nightmare/characters/{slug}"
 ROMAN = r"(?:I|II|III|IV|V)"
+
+
+def download(url):
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
+    with urllib.request.urlopen(req, timeout=60) as r:
+        return r.read()
+
+
+def copy_art(slug, entries):
+    """Save the character's card art in public/cards/<slug>/ (one file per distinct picture) and point `image` there."""
+    folder = ART / slug
+    folder.mkdir(parents=True, exist_ok=True)
+    saved, kept = {}, set()
+    for e in entries:
+        if not e.get("image"):
+            continue
+        data = download(e["image"])
+        digest = hashlib.sha256(data).hexdigest()
+        if digest not in saved:
+            name = e["image"].rsplit("/", 1)[1]
+            (folder / name).write_bytes(data)
+            saved[digest] = name
+            kept.add(name)
+        e["image"] = f"cards/{slug}/{saved[digest]}"
+    for old in folder.iterdir():
+        if old.name not in kept:
+            old.unlink()
+    return len(kept)
 
 
 def fetch(slug, cache=None):
@@ -169,12 +203,14 @@ def card_entry(c, base, is_basic, has_epiphanies):
         "weaknessApplies": "Weakness Attack" in tags,
         "text": text,
     }
+    if c.get("image"):
+        entry["image"] = c["image"]
     if notes:
         entry["notes"] = ". ".join(notes)
     return entry
 
 
-def build(cache=None):
+def build(cache=None, art=()):
     characters, cards = find_lists(rsc_rows(fetch("mei-lin", cache)))
     OUT.mkdir(parents=True, exist_ok=True)
     written = set()
@@ -195,6 +231,7 @@ def build(cache=None):
             for c in own
         ]
         page = fetch(ch["slug"], cache)
+        pictures = copy_art(ch["slug"], entries) if ch["slug"] in art or (ART / ch["slug"]).is_dir() else 0
         ego = kit_section(page, "Manifest Ego", "level")
         for e in ego:
             e["level"] = int(e["level"].lstrip("E"))
@@ -211,7 +248,8 @@ def build(cache=None):
         path = OUT / f"{ch['slug']}.json"
         path.write_text(json.dumps(doc, indent=1, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
         written.add(path.name)
-        print(f"{ch['name']:12} {len(entries):3} cards, {len(doc['potentials'])} potentials, {len(ego)} ego levels")
+        print(f"{ch['name']:12} {len(entries):3} cards, {len(doc['potentials'])} potentials, {len(ego)} ego levels"
+              + (f", {pictures} pictures copied" if pictures else ""))
     for old in OUT.glob("*.json"):
         if old.name not in written and old.name != "_meta.json":
             old.unlink()
@@ -223,5 +261,7 @@ def build(cache=None):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--cache", help="folder for the downloaded pages: reused if there, saved if not")
+    ap.add_argument("--art", action="append", default=[], metavar="SLUG",
+                    help="copy this character's card art into public/cards/<slug>/ (repeatable)")
     args = ap.parse_args()
-    build(args.cache)
+    build(args.cache, set(args.art))

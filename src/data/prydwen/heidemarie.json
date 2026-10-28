@@ -19,7 +19,8 @@
    "pct": 4.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "400% Damage.\n+80% Damage Amount for each card Discarded this battle (max 20 cards)."
+   "text": "400% Damage.\n+80% Damage Amount for each card Discarded this battle (max 20 cards).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1064.webp"
   },
   {
    "id": "card-1065",
@@ -35,7 +36,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage."
+   "text": "100% Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1065.webp"
   },
   {
    "id": "card-1066",
@@ -51,7 +53,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "100% Shield."
+   "text": "100% Shield.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1066.webp"
   },
   {
    "id": "card-1067",
@@ -67,7 +70,8 @@
    "pct": 0.8,
    "hits": 2,
    "weaknessApplies": false,
-   "text": "80% Damage x 2.\nAttunement: Create 1 Effulgent Blade."
+   "text": "80% Damage x 2.\nAttunement: Create 1 Effulgent Blade.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1067.webp"
   },
   {
    "id": "card-1068",
@@ -83,7 +87,8 @@
    "pct": 0.8,
    "hits": 2,
    "weaknessApplies": false,
-   "text": "80% Damage x 2.\nAttunement: Create 2 Effulgent Blade."
+   "text": "80% Damage x 2.\nAttunement: Create 2 Effulgent Blade.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1067.webp"
   },
   {
    "id": "card-1069",
@@ -99,7 +104,8 @@
    "pct": 1.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "180% Damage.\nAdd 1 Hit for each Effulgent Blade in hand.\nAttunement: Create 1 Effulgent Blade."
+   "text": "180% Damage.\nAdd 1 Hit for each Effulgent Blade in hand.\nAttunement: Create 1 Effulgent Blade.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1067.webp"
   },
   {
    "id": "card-1070",
@@ -115,7 +121,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Activate 5 Effulgent Blade in Graveyard against the target as an Extra Attack."
+   "text": "Activate 5 Effulgent Blade in Graveyard against the target as an Extra Attack.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1067.webp"
   },
   {
    "id": "card-1071",
@@ -131,7 +138,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 2 Effulgent Blade, then apply Retrieve to those cards."
+   "text": "Create 2 Effulgent Blade, then apply Retrieve to those cards.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1067.webp"
   },
   {
    "id": "card-1072",
@@ -147,7 +155,8 @@
    "pct": 5.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "500% Damage to all enemies.\nIf Effulgent Release is in hand, Exhaust it, and +100% Damage Amount to this card for each Effulgent Blade in Graveyard."
+   "text": "500% Damage to all enemies.\nIf Effulgent Release is in hand, Exhaust it, and +100% Damage Amount to this card for each Effulgent Blade in Graveyard.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1067.webp"
   },
   {
    "id": "card-1073",
@@ -163,7 +172,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 3.\nApply Linked those cards for this turn."
+   "text": "Draw 3.\nApply Linked those cards for this turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1073.webp"
   },
   {
    "id": "card-1074",
@@ -179,7 +189,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 3.\nApply Linked those cards for this turn."
+   "text": "Draw 3.\nApply Linked those cards for this turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1073.webp"
   },
   {
    "id": "card-1075",
@@ -195,7 +206,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 3.\nApply Linked to 1-Cost or lower cards in hand for this turn."
+   "text": "Draw 3.\nApply Linked to 1-Cost or lower cards in hand for this turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1073.webp"
   },
   {
    "id": "card-1076",
@@ -211,7 +223,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 1.\nApply Linked to Quietus cards in hand for this turn."
+   "text": "Draw 1.\nApply Linked to Quietus cards in hand for this turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1073.webp"
   },
   {
    "id": "card-1077",
@@ -227,7 +240,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Select 1 card from either Draw Pile or Discard Pile, then apply Linked to that card and move to hand."
+   "text": "Select 1 card from either Draw Pile or Discard Pile, then apply Linked to that card and move to hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1073.webp"
   },
   {
    "id": "card-1078",
@@ -243,7 +257,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 2 Attack Cards of this unit.\nApply Linked to all Attack Cards in hand for this turn."
+   "text": "Draw 2 Attack Cards of this unit.\nApply Linked to all Attack Cards in hand for this turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1073.webp"
   },
   {
    "id": "card-1079",
@@ -259,7 +274,8 @@
    "pct": 1.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "120% Damage. +120% Damage Amount for each Linked card in hand."
+   "text": "120% Damage. +120% Damage Amount for each Linked card in hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1079.webp"
   },
   {
    "id": "card-1080",
@@ -275,7 +291,8 @@
    "pct": 1.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "180% Damage.\n+180% Damage Amount for each Linked card in hand."
+   "text": "180% Damage.\n+180% Damage Amount for each Linked card in hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1079.webp"
   },
   {
    "id": "card-1081",
@@ -291,7 +308,8 @@
    "pct": 3.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "300% Damage.\nIf 3 or more Linked cards are in hand, triple the Damage."
+   "text": "300% Damage.\nIf 3 or more Linked cards are in hand, triple the Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1079.webp"
   },
   {
    "id": "card-1082",
@@ -307,7 +325,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage.\nIf this card is in hand or Graveyard, +80% Damage Amount to Linked cards."
+   "text": "100% Damage.\nIf this card is in hand or Graveyard, +80% Damage Amount to Linked cards.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1079.webp"
   },
   {
    "id": "card-1083",
@@ -323,7 +342,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Activate all Linked cards in hand without Discarding them."
+   "text": "Activate all Linked cards in hand without Discarding them.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1079.webp"
   },
   {
    "id": "card-1084",
@@ -339,7 +359,8 @@
    "pct": 3.5,
    "hits": 2,
    "weaknessApplies": false,
-   "text": "When used manually, 350% Damage x 2.\nWhen this card is Discarded, 300% Damage to all enemies."
+   "text": "When used manually, 350% Damage x 2.\nWhen this card is Discarded, 300% Damage to all enemies.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1079.webp"
   },
   {
    "id": "card-1085",
@@ -355,7 +376,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 2 Effulgent Blade.\n+50% Damage Amount to Effulgent Blade for 1 turn."
+   "text": "Create 2 Effulgent Blade.\n+50% Damage Amount to Effulgent Blade for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1085.webp"
   },
   {
    "id": "card-1086",
@@ -371,7 +393,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 2 Effulgent Blade.\n+70% Damage Amount to Effulgent Blade for 1 turn."
+   "text": "Create 2 Effulgent Blade.\n+70% Damage Amount to Effulgent Blade for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1085.webp"
   },
   {
    "id": "card-1087",
@@ -387,7 +410,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 2 Effulgent Blade.\n+200% Damage Amount to the next 2 Effulgent Blade."
+   "text": "Create 2 Effulgent Blade.\n+200% Damage Amount to the next 2 Effulgent Blade.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1085.webp"
   },
   {
    "id": "card-1088",
@@ -403,7 +427,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create Effulgent Blade for each Linked card in hand."
+   "text": "Create Effulgent Blade for each Linked card in hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1085.webp"
   },
   {
    "id": "card-1089",
@@ -419,7 +444,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 6 Effulgent Blade in Discard Pile."
+   "text": "Create 6 Effulgent Blade in Discard Pile.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1085.webp"
   },
   {
    "id": "card-1090",
@@ -435,7 +461,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "At the start of the turn, create 2 Effulgent Blade.\n+50% Damage Amount to Effulgent Blade."
+   "text": "At the start of the turn, create 2 Effulgent Blade.\n+50% Damage Amount to Effulgent Blade.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1085.webp"
   },
   {
    "id": "card-1091",
@@ -452,6 +479,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "When moved to Graveyard, 1 Effulgent Light.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1091.webp",
    "notes": "Mythic card: no epiphanies"
   },
   {
@@ -468,7 +496,8 @@
    "pct": 1.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "120% Damage.\nWhen this card is Discarded, 120% Extra Damage to a random enemy.\nThis card does not move to Draw Pile on Shuffle."
+   "text": "120% Damage.\nWhen this card is Discarded, 120% Extra Damage to a random enemy.\nThis card does not move to Draw Pile on Shuffle.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1092.webp"
   },
   {
    "id": "card-1093",
@@ -484,7 +513,8 @@
    "pct": 5.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "500% Damage.\nExhaust all Effulgent Blade in Graveyard, then +100% Damage Amount for each Exhausted.\nAt the end of the turn, change this card into Effulgent Compression."
+   "text": "500% Damage.\nExhaust all Effulgent Blade in Graveyard, then +100% Damage Amount for each Exhausted.\nAt the end of the turn, change this card into Effulgent Compression.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/heidemarie_1093.webp"
   }
  ],
  "potentials": [

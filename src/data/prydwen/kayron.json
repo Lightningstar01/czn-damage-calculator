@@ -19,7 +19,8 @@
    "pct": 2.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "200% Damage to all enemies.\nExhaust all Futility in hand.\n+80% Damage for each."
+   "text": "200% Damage to all enemies.\nExhaust all Futility in hand.\n+80% Damage for each.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_1.webp"
   },
   {
    "id": "card-188",
@@ -35,7 +36,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage."
+   "text": "100% Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_2.webp"
   },
   {
    "id": "card-189",
@@ -51,7 +53,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Heal 100%."
+   "text": "Heal 100%.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_3.webp"
   },
   {
    "id": "card-190",
@@ -67,7 +70,8 @@
    "pct": 3.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "320% Damage.\nCreate 2 Futility Card(s)."
+   "text": "320% Damage.\nCreate 2 Futility Card(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_4.webp"
   },
   {
    "id": "card-191",
@@ -83,7 +87,8 @@
    "pct": 4.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "480% Damage.\nCreate 3 Futility Card(s)."
+   "text": "480% Damage.\nCreate 3 Futility Card(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_4.webp"
   },
   {
    "id": "card-192",
@@ -99,7 +104,8 @@
    "pct": 2.4,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "240% Damage.\nCreate 2 Futility Card(s). +20% Damage Amount for each Exhausted Futility."
+   "text": "240% Damage.\nCreate 2 Futility Card(s). +20% Damage Amount for each Exhausted Futility.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_4.webp"
   },
   {
    "id": "card-193",
@@ -115,7 +121,8 @@
    "pct": 3.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "320% Damage.\nCreate 2 Futility Card(s). Apply Ephemeral on that card."
+   "text": "320% Damage.\nCreate 2 Futility Card(s). Apply Ephemeral on that card.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_4.webp"
   },
   {
    "id": "card-194",
@@ -132,6 +139,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "150% Damage.\n+150% Damage Amount for each X.\nCreate X+1 Futility Card(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_4.webp",
    "notes": "Hits depend on X: set the hits on each play"
   },
   {
@@ -148,7 +156,8 @@
    "pct": 1.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "150% Damage.\nCreate 2 Futility Card(s).\n+30% Damage Amount for each Futility created during this battle."
+   "text": "150% Damage.\nCreate 2 Futility Card(s).\n+30% Damage Amount for each Futility created during this battle.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_4.webp"
   },
   {
    "id": "card-196",
@@ -164,7 +173,8 @@
    "pct": 4.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "400% Damage to all enemies.\nWhen a card is Exhausted, decrease Cost of this card by 1 for 1 turn."
+   "text": "400% Damage to all enemies.\nWhen a card is Exhausted, decrease Cost of this card by 1 for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_5.webp"
   },
   {
    "id": "card-197",
@@ -180,7 +190,8 @@
    "pct": 6.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "600% Damage to all enemies.\nWhen a card is Exhausted, decrease Cost of this card by 1 for 1 turn."
+   "text": "600% Damage to all enemies.\nWhen a card is Exhausted, decrease Cost of this card by 1 for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_5.webp"
   },
   {
    "id": "card-198",
@@ -196,7 +207,8 @@
    "pct": 4.0,
    "hits": 2,
    "weaknessApplies": false,
-   "text": "400% Damage x 2 to a random enemy.\nWhen a card is Exhausted, decrease Cost of this card by 1 for 1 turn."
+   "text": "400% Damage x 2 to a random enemy.\nWhen a card is Exhausted, decrease Cost of this card by 1 for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_5.webp"
   },
   {
    "id": "card-199",
@@ -212,7 +224,8 @@
    "pct": 6.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "600% Damage to all enemies.\nDecrease Cost for each Exhausted Futility."
+   "text": "600% Damage to all enemies.\nDecrease Cost for each Exhausted Futility.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_5.webp"
   },
   {
    "id": "card-200",
@@ -228,7 +241,8 @@
    "pct": 3.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "300% Damage to all enemies.\n+40% Damage Amount for each Exhausted card this turn."
+   "text": "300% Damage to all enemies.\n+40% Damage Amount for each Exhausted card this turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_5.webp"
   },
   {
    "id": "card-201",
@@ -244,7 +258,8 @@
    "pct": 4.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "400% Damage to all enemies.\nIf any card was Exhausted this turn, 3 Agony to all enemies."
+   "text": "400% Damage to all enemies.\nIf any card was Exhausted this turn, 3 Agony to all enemies.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_5.webp"
   },
   {
    "id": "card-202",
@@ -260,7 +275,8 @@
    "pct": 2.4,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "240% Damage.\n+40% Damage Amount for each Exhausted Futility."
+   "text": "240% Damage.\n+40% Damage Amount for each Exhausted Futility.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_6.webp"
   },
   {
    "id": "card-203",
@@ -276,7 +292,8 @@
    "pct": 3.6,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "360% Damage.\nActivate 2 Futility card(s) from hand."
+   "text": "360% Damage.\nActivate 2 Futility card(s) from hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_6.webp"
   },
   {
    "id": "card-204",
@@ -292,7 +309,8 @@
    "pct": 3.6,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "360% Damage.\n+60% Damage Amount for Exhausted Futility."
+   "text": "360% Damage.\n+60% Damage Amount for Exhausted Futility.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_6.webp"
   },
   {
    "id": "card-205",
@@ -308,7 +326,8 @@
    "pct": 0.6,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "60% Damage to a random enemy.\nAdd1 hit for each Exhausted Futility (Max 5 times)."
+   "text": "60% Damage to a random enemy.\nAdd1 hit for each Exhausted Futility (Max 5 times).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_6.webp"
   },
   {
    "id": "card-206",
@@ -324,7 +343,8 @@
    "pct": 3.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "300% Damage.\nAdd 1 Hit for each 5 Exhausted Futility (max 2 times)."
+   "text": "300% Damage.\nAdd 1 Hit for each 5 Exhausted Futility (max 2 times).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_6.webp"
   },
   {
    "id": "card-207",
@@ -340,7 +360,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "When Futility is Exhausted, 100% Fixed Damage to a random enemy."
+   "text": "When Futility is Exhausted, 100% Fixed Damage to a random enemy.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_6.webp"
   },
   {
    "id": "card-208",
@@ -356,7 +377,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "When Futility is created, change those cards into 1-Cost Attack Cards with 100% Damage and Heal effects."
+   "text": "When Futility is created, change those cards into 1-Cost Attack Cards with 100% Damage and Heal effects.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_7.webp"
   },
   {
    "id": "card-209",
@@ -372,7 +394,8 @@
    "pct": 1.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "When Futility is created, change those cards into 1-Cost Attack Cards with 150% Damage and Heal effects."
+   "text": "When Futility is created, change those cards into 1-Cost Attack Cards with 150% Damage and Heal effects.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_7.webp"
   },
   {
    "id": "card-210",
@@ -388,7 +411,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "When Futility is created, change those cards into 1-Cost Attack Cards with 100% Damage and Heal effects."
+   "text": "When Futility is created, change those cards into 1-Cost Attack Cards with 100% Damage and Heal effects.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_7.webp"
   },
   {
    "id": "card-211",
@@ -404,7 +428,8 @@
    "pct": 2.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "When Futility is created, change those cards into 1-Cost Attack Cards with 200% Damage."
+   "text": "When Futility is created, change those cards into 1-Cost Attack Cards with 200% Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_7.webp"
   },
   {
    "id": "card-212",
@@ -420,7 +445,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Exhaust all Futility, Status Ailment, and Curse Cards in hand. Draw for each."
+   "text": "Exhaust all Futility, Status Ailment, and Curse Cards in hand. Draw for each.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_7.webp"
   },
   {
    "id": "card-213",
@@ -436,7 +462,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "When 2 Futility Cards are Exhausted, 2 Agony to all enemies"
+   "text": "When 2 Futility Cards are Exhausted, 2 Agony to all enemies",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_7.webp"
   },
   {
    "id": "card-214",
@@ -453,6 +480,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "240% Damage.\nCreate 3 Futility Cards. +40% Damage Amount for each.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_8.webp",
    "notes": "Mythic card: no epiphanies"
   },
   {
@@ -469,7 +497,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": ""
+   "text": "",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_9.webp"
   },
   {
    "id": "card-216",
@@ -485,7 +514,8 @@
    "pct": 0.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "80% damage. Heal 80%."
+   "text": "80% damage. Heal 80%.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/kayron_9.webp"
   }
  ],
  "potentials": [

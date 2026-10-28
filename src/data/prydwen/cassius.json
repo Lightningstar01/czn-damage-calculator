@@ -19,7 +19,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 2 Quest Card(s).\nDecrease Morale of all enemies by 3 for 1 turn."
+   "text": "Create 2 Quest Card(s).\nDecrease Morale of all enemies by 3 for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_1.webp"
   },
   {
    "id": "card-573",
@@ -35,7 +36,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage."
+   "text": "100% Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_2.webp"
   },
   {
    "id": "card-574",
@@ -51,7 +53,8 @@
    "pct": 2.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "220% Damage."
+   "text": "220% Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_13.webp"
   },
   {
    "id": "card-575",
@@ -67,7 +70,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Heal 100%."
+   "text": "Heal 100%.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_3.webp"
   },
   {
    "id": "card-576",
@@ -83,7 +87,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Start a random 1 out of 4 Quests."
+   "text": "Start a random 1 out of 4 Quests.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_4.webp"
   },
   {
    "id": "card-577",
@@ -99,7 +104,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Start a random 1 out of 4 Quests."
+   "text": "Start a random 1 out of 4 Quests.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_4.webp"
   },
   {
    "id": "card-578",
@@ -115,7 +121,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Start a random 1 out of 4 Quests.\nCreate Quest Card, remove Ephemeral, apply Retain."
+   "text": "Start a random 1 out of 4 Quests.\nCreate Quest Card, remove Ephemeral, apply Retain.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_4.webp"
   },
   {
    "id": "card-579",
@@ -131,7 +138,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Start a random 1 out of 4 Quests.\nWhen the Quest is completed, create a stronger Quest Card."
+   "text": "Start a random 1 out of 4 Quests.\nWhen the Quest is completed, create a stronger Quest Card.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_4.webp"
   },
   {
    "id": "card-580",
@@ -147,7 +155,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Choose 1 out of 4 Quests to start."
+   "text": "Choose 1 out of 4 Quests to start.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_4.webp"
   },
   {
    "id": "card-581",
@@ -163,7 +172,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Start a random 1 out of 4 Quests.\nWhen the Quest is completed, replace it with another random Quest."
+   "text": "Start a random 1 out of 4 Quests.\nWhen the Quest is completed, replace it with another random Quest.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_4.webp"
   },
   {
    "id": "card-582",
@@ -179,7 +189,8 @@
    "pct": 1.6,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "160% Damage.\nDraw 1."
+   "text": "160% Damage.\nDraw 1.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_5.webp"
   },
   {
    "id": "card-583",
@@ -195,7 +206,8 @@
    "pct": 2.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "200% Damage.\nCreate 1 Quest Card(s)."
+   "text": "200% Damage.\nCreate 1 Quest Card(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_5.webp"
   },
   {
    "id": "card-584",
@@ -211,7 +223,8 @@
    "pct": 1.6,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "160% Damage.\nDraw 1."
+   "text": "160% Damage.\nDraw 1.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_5.webp"
   },
   {
    "id": "card-585",
@@ -227,7 +240,8 @@
    "pct": 1.6,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "160% Damage to all enemies.\nDraw for each target hit."
+   "text": "160% Damage to all enemies.\nDraw for each target hit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_5.webp"
   },
   {
    "id": "card-586",
@@ -243,7 +257,8 @@
    "pct": 2.4,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "240% Damage.\nDraw 2.\nDiscard 2."
+   "text": "240% Damage.\nDraw 2.\nDiscard 2.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_5.webp"
   },
   {
    "id": "card-587",
@@ -259,7 +274,8 @@
    "pct": 0.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "Draw 1.\n80% Damage to all enemies equal to that card's cost."
+   "text": "Draw 1.\n80% Damage to all enemies equal to that card's cost.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_5.webp"
   },
   {
    "id": "card-588",
@@ -275,7 +291,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Discard all cards in hand.\nDraw for each."
+   "text": "Discard all cards in hand.\nDraw for each.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_6.webp"
   },
   {
    "id": "card-589",
@@ -291,7 +308,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Discard all cards in hand.\nDraw for each."
+   "text": "Discard all cards in hand.\nDraw for each.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_6.webp"
   },
   {
    "id": "card-590",
@@ -307,7 +325,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Discard any number of cards from hand.\nDraw same number of cards."
+   "text": "Discard any number of cards from hand.\nDraw same number of cards.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_6.webp"
   },
   {
    "id": "card-591",
@@ -323,7 +342,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Move all cards from hand and Discard to Draw Pile, then Draw 5."
+   "text": "Move all cards from hand and Discard to Draw Pile, then Draw 5.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_6.webp"
   },
   {
    "id": "card-592",
@@ -339,7 +359,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Choose up to 5 cards from Discard Pile to place on top of Draw Pile."
+   "text": "Choose up to 5 cards from Discard Pile to place on top of Draw Pile.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_6.webp"
   },
   {
    "id": "card-593",
@@ -355,7 +376,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 3.\nIf the total Cost of those cards is 4 or less, Discard them all."
+   "text": "Draw 3.\nIf the total Cost of those cards is 4 or less, Discard them all.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_6.webp"
   },
   {
    "id": "card-594",
@@ -371,7 +393,8 @@
    "pct": 2.4,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "240% Damage.\nReduce 1 Morale for 1 turn.\nDecrease cost by the number of completed Quests."
+   "text": "240% Damage.\nReduce 1 Morale for 1 turn.\nDecrease cost by the number of completed Quests.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_7.webp"
   },
   {
    "id": "card-595",
@@ -387,7 +410,8 @@
    "pct": 3.6,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "360% Damage.\nReduce 1 Morale for 1 turn.\nDecrease Cost by the number of completed Quests."
+   "text": "360% Damage.\nReduce 1 Morale for 1 turn.\nDecrease Cost by the number of completed Quests.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_7.webp"
   },
   {
    "id": "card-596",
@@ -403,7 +427,8 @@
    "pct": 3.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "300% Damage to all enemies.\nReduce 1 Morale for 1 turn.\nDecrease Cost by the number of completed Quests."
+   "text": "300% Damage to all enemies.\nReduce 1 Morale for 1 turn.\nDecrease Cost by the number of completed Quests.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_7.webp"
   },
   {
    "id": "card-597",
@@ -419,7 +444,8 @@
    "pct": 0.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "80% Damage.\n+80% Damage Amount for each completed Quest (max 5 times)."
+   "text": "80% Damage.\n+80% Damage Amount for each completed Quest (max 5 times).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_7.webp"
   },
   {
    "id": "card-598",
@@ -435,7 +461,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "When using Quest Card, Heal 100%, 100 Fixed Damage to a random enemy."
+   "text": "When using Quest Card, Heal 100%, 100 Fixed Damage to a random enemy.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_7.webp"
   },
   {
    "id": "card-599",
@@ -451,7 +478,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "At the start of the turn create 1 empowered Quest card."
+   "text": "At the start of the turn create 1 empowered Quest card.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_7.webp"
   },
   {
    "id": "card-600",
@@ -468,6 +496,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Choose 1 card(s) from Draw Pile to Draw.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_8.webp",
    "notes": "Mythic card: no epiphanies"
   },
   {
@@ -484,7 +513,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "When using 3 cards with cost 0, create Triple 0."
+   "text": "When using 3 cards with cost 0, create Triple 0.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_9.webp"
   },
   {
    "id": "card-602",
@@ -500,7 +530,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "When using 3 cards with cost 1, create Triple 1."
+   "text": "When using 3 cards with cost 1, create Triple 1.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_10.webp"
   },
   {
    "id": "card-603",
@@ -516,7 +547,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "When using cards costing 0, 1, and 2 each, create Straight."
+   "text": "When using cards costing 0, 1, and 2 each, create Straight.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_11.webp"
   },
   {
    "id": "card-604",
@@ -532,7 +564,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "When each combatant uses a card, create Full House."
+   "text": "When each combatant uses a card, create Full House.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_12.webp"
   },
   {
    "id": "card-605",
@@ -548,7 +581,8 @@
    "pct": 2.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "200% Damage.\n+40% Damage Amount for each Attack Card used this turn (max 4 times)"
+   "text": "200% Damage.\n+40% Damage Amount for each Attack Card used this turn (max 4 times)",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_9.webp"
   },
   {
    "id": "card-606",
@@ -564,7 +598,8 @@
    "pct": 1.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "Draw 1, 150% Damage, Heal 150%."
+   "text": "Draw 1, 150% Damage, Heal 150%.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_10.webp"
   },
   {
    "id": "card-607",
@@ -580,7 +615,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 1.\n2 Morale, Resolve, Fortitude for 1 turn."
+   "text": "Draw 1.\n2 Morale, Resolve, Fortitude for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_11.webp"
   },
   {
    "id": "card-608",
@@ -596,7 +632,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 1.\nDecrease Stress of a random ally by 2."
+   "text": "Draw 1.\nDecrease Stress of a random ally by 2.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_12.webp"
   },
   {
    "id": "card-880",
@@ -612,7 +649,8 @@
    "pct": 2.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "250% Damage.\n+40% Damage Amount for each Attack Card used this turn (max 4 times)"
+   "text": "250% Damage.\n+40% Damage Amount for each Attack Card used this turn (max 4 times)",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_9.webp"
   },
   {
    "id": "card-881",
@@ -628,7 +666,8 @@
    "pct": 2.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "Draw 1, 200% Damage, Heal 200%."
+   "text": "Draw 1, 200% Damage, Heal 200%.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_10.webp"
   },
   {
    "id": "card-882",
@@ -644,7 +683,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 1.\n3 Morale, Resolve, Fortitude for 1 turn."
+   "text": "Draw 1.\n3 Morale, Resolve, Fortitude for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_11.webp"
   },
   {
    "id": "card-883",
@@ -660,7 +700,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 1.\nDecrease Stress of a random ally by 3."
+   "text": "Draw 1.\nDecrease Stress of a random ally by 3.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/cassius_12.webp"
   }
  ],
  "potentials": [

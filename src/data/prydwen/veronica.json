@@ -20,6 +20,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "250% Piercing Damage to all enemies.\nGain Maximum Reload.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_1.webp",
    "notes": "Piercing Damage: ignores enemy shields (not modeled), otherwise normal damage"
   },
   {
@@ -36,7 +37,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage."
+   "text": "100% Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_2.webp"
   },
   {
    "id": "card-424",
@@ -52,7 +54,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "100% Shield."
+   "text": "100% Shield.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_3.webp"
   },
   {
    "id": "card-425",
@@ -68,7 +71,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 1 Ballista card(s).\nAt the start of the turn, create 1 Ballista card(s)."
+   "text": "Create 1 Ballista card(s).\nAt the start of the turn, create 1 Ballista card(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_4.webp"
   },
   {
    "id": "card-426",
@@ -84,7 +88,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 1 Ballista card(s).\nAt the start of the turn, create 1 Ballista card(s) with a 50% chance to additionally create 1 more."
+   "text": "Create 1 Ballista card(s).\nAt the start of the turn, create 1 Ballista card(s) with a 50% chance to additionally create 1 more.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_4.webp"
   },
   {
    "id": "card-427",
@@ -100,7 +105,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 1 Piercing Ballista card(s).\nAt the start of the turn, create 1 Piercing Ballista card(s)."
+   "text": "Create 1 Piercing Ballista card(s).\nAt the start of the turn, create 1 Piercing Ballista card(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_4.webp"
   },
   {
    "id": "card-428",
@@ -116,7 +122,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 1 Enhanced Ballista card(s).\nAt the start of the turn, create 1 Enhanced Ballista card(s)."
+   "text": "Create 1 Enhanced Ballista card(s).\nAt the start of the turn, create 1 Enhanced Ballista card(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_4.webp"
   },
   {
    "id": "card-429",
@@ -132,7 +139,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 1 Giant Ballista card(s).\nAt the start of the turn, create 1 Giant Ballista card(s)."
+   "text": "Create 1 Giant Ballista card(s).\nAt the start of the turn, create 1 Giant Ballista card(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_4.webp"
   },
   {
    "id": "card-430",
@@ -148,7 +156,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 1 Shelling Ballista card(s).\nAt the start of the turn, create 1 Shelling Ballista card(s)."
+   "text": "Create 1 Shelling Ballista card(s).\nAt the start of the turn, create 1 Shelling Ballista card(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_4.webp"
   },
   {
    "id": "card-431",
@@ -164,7 +173,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "100% Shield.\nDraw 2 card(s) from other combatant."
+   "text": "100% Shield.\nDraw 2 card(s) from other combatant.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_5.webp"
   },
   {
    "id": "card-432",
@@ -180,7 +190,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 2 other Combatant's card(s)."
+   "text": "Draw 2 other Combatant's card(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_5.webp"
   },
   {
    "id": "card-433",
@@ -196,7 +207,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 2 other combatant card(s).\nIf that card is a Skill Card, 1 Reload."
+   "text": "Draw 2 other combatant card(s).\nIf that card is a Skill Card, 1 Reload.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_5.webp"
   },
   {
    "id": "card-434",
@@ -212,7 +224,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "150% Shield.\nDraw 2 card(s) of other Combatants.\nDecrease Cost of 1 of those cards by 1 for 1 turn."
+   "text": "150% Shield.\nDraw 2 card(s) of other Combatants.\nDecrease Cost of 1 of those cards by 1 for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_5.webp"
   },
   {
    "id": "card-435",
@@ -228,7 +241,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "150% Shield.\n1 Reload equal to number of other combatant Skill Cards in hand."
+   "text": "150% Shield.\n1 Reload equal to number of other combatant Skill Cards in hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_5.webp"
   },
   {
    "id": "card-436",
@@ -244,7 +258,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "150% Shield.\nDiscard all other combatant cards in hand.\n1 Reload equal to that number."
+   "text": "150% Shield.\nDiscard all other combatant cards in hand.\n1 Reload equal to that number.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_5.webp"
   },
   {
    "id": "card-437",
@@ -260,7 +275,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "When another combatant uses Skill Card, 1 Reload."
+   "text": "When another combatant uses Skill Card, 1 Reload.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_6.webp"
   },
   {
    "id": "card-438",
@@ -276,7 +292,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "When using a Skill Card, 1 Reload."
+   "text": "When using a Skill Card, 1 Reload.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_6.webp"
   },
   {
    "id": "card-439",
@@ -292,7 +309,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "When another combatant uses Skill Card, 1 Reload.\nIf 3 are used, at the start of the next turn, create 1 Micro Ballista card(s)."
+   "text": "When another combatant uses Skill Card, 1 Reload.\nIf 3 are used, at the start of the next turn, create 1 Micro Ballista card(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_6.webp"
   },
   {
    "id": "card-440",
@@ -308,7 +326,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "For 1 turn(s), when a card is used, 1 Reload"
+   "text": "For 1 turn(s), when a card is used, 1 Reload",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_6.webp"
   },
   {
    "id": "card-441",
@@ -324,7 +343,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "When another combatant uses a Skill Card, 1 Reload.\n50% Chance to gain additional 1 Reload."
+   "text": "When another combatant uses a Skill Card, 1 Reload.\n50% Chance to gain additional 1 Reload.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_6.webp"
   },
   {
    "id": "card-442",
@@ -340,7 +360,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Reload 2."
+   "text": "Reload 2.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_6.webp"
   },
   {
    "id": "card-443",
@@ -356,7 +377,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Choose 1 Ballista card in hand, +100% Damage Amount until activated. Draw 1."
+   "text": "Choose 1 Ballista card in hand, +100% Damage Amount until activated. Draw 1.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_7.webp"
   },
   {
    "id": "card-444",
@@ -372,7 +394,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Choose 1 Ballista card in hand, +150% Damage Amount until activated. Draw 2."
+   "text": "Choose 1 Ballista card in hand, +150% Damage Amount until activated. Draw 2.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_7.webp"
   },
   {
    "id": "card-445",
@@ -388,7 +411,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Skill Draw 1.\nIncrease Damage Amount of Ballista by 30% for 1 turn."
+   "text": "Skill Draw 1.\nIncrease Damage Amount of Ballista by 30% for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_7.webp"
   },
   {
    "id": "card-446",
@@ -404,7 +428,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 2.\nWhen drawing a Skill card, create 1 Ballista."
+   "text": "Draw 2.\nWhen drawing a Skill card, create 1 Ballista.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_7.webp"
   },
   {
    "id": "card-447",
@@ -420,7 +445,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "+250% Damage amount of 1 random Ballista Card in hand.\nExhaust after activation."
+   "text": "+250% Damage amount of 1 random Ballista Card in hand.\nExhaust after activation.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_7.webp"
   },
   {
    "id": "card-448",
@@ -436,7 +462,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Select and Exhaust 1 Ballista in hand.\nCreate 2 Ballista, decrease Damage Amount of those cards by 25% until activated."
+   "text": "Select and Exhaust 1 Ballista in hand.\nCreate 2 Ballista, decrease Damage Amount of those cards by 25% until activated.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_7.webp"
   },
   {
    "id": "card-449",
@@ -453,6 +480,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Increase max stack of Reload by 1.\n2 Reload.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_8.webp",
    "notes": "Mythic card: no epiphanies"
   },
   {
@@ -469,7 +497,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "At the end of the turn, 150% Extra Attack to a random enemy."
+   "text": "At the end of the turn, 150% Extra Attack to a random enemy.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_9.webp"
   },
   {
    "id": "card-451",
@@ -486,6 +515,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "At the end of the turn, 200% Piercing Damage to a random enemy.\nIf the target has Shield, +50% Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_10.webp",
    "notes": "Piercing Damage: ignores enemy shields (not modeled), otherwise normal damage"
   },
   {
@@ -502,7 +532,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "At the end of the turn, 200% Extra Attack to a random enemy, +30% Critical Chance."
+   "text": "At the end of the turn, 200% Extra Attack to a random enemy, +30% Critical Chance.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_11.webp"
   },
   {
    "id": "card-453",
@@ -518,7 +549,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "At the end of the turn, 150% Extra Attack to all enemies."
+   "text": "At the end of the turn, 150% Extra Attack to all enemies.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_12.webp"
   },
   {
    "id": "card-454",
@@ -534,7 +566,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "At the end of the turn, 100% × 2 Extra Attack to random enemies."
+   "text": "At the end of the turn, 100% × 2 Extra Attack to random enemies.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_13.webp"
   },
   {
    "id": "card-455",
@@ -550,7 +583,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "At the end of the turn, 40% Extra Attack to a random enemy."
+   "text": "At the end of the turn, 40% Extra Attack to a random enemy.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/veronica_14.webp"
   }
  ],
  "potentials": [

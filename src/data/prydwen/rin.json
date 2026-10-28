@@ -19,7 +19,8 @@
    "pct": 4.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "400% Damage. 6 Vulnerable."
+   "text": "400% Damage. 6 Vulnerable.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_1.webp"
   },
   {
    "id": "card-159",
@@ -35,7 +36,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage."
+   "text": "100% Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_2.webp"
   },
   {
    "id": "card-160",
@@ -51,7 +53,8 @@
    "pct": 2.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "220% Damage."
+   "text": "220% Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_3.webp"
   },
   {
    "id": "card-161",
@@ -67,7 +70,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "100% Shield."
+   "text": "100% Shield.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_4.webp"
   },
   {
    "id": "card-162",
@@ -83,7 +87,8 @@
    "pct": 1.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "120% Damage.\nObtain Dark Mist Stance.\nDark Mist Stance: Increase Damage Amount by 100%."
+   "text": "120% Damage.\nObtain Dark Mist Stance.\nDark Mist Stance: Increase Damage Amount by 100%.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_5.webp"
   },
   {
    "id": "card-163",
@@ -99,7 +104,8 @@
    "pct": 1.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "180% Damage.\nObtain Dark Mist Stance.\nDark Mist Stance: Increase Damage Amount by 100%."
+   "text": "180% Damage.\nObtain Dark Mist Stance.\nDark Mist Stance: Increase Damage Amount by 100%.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_5.webp"
   },
   {
    "id": "card-164",
@@ -115,7 +121,8 @@
    "pct": 1.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "180% Damage.\nObtain Dark Mist Stance.\nDark Mist Stance: +1 Hit(s)."
+   "text": "180% Damage.\nObtain Dark Mist Stance.\nDark Mist Stance: +1 Hit(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_5.webp"
   },
   {
    "id": "card-165",
@@ -131,7 +138,8 @@
    "pct": 4.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "450% Damage.\nDark Mist Stance: This card can be used."
+   "text": "450% Damage.\nDark Mist Stance: This card can be used.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_5.webp"
   },
   {
    "id": "card-166",
@@ -147,7 +155,8 @@
    "pct": 1.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "150% Damage.\nObtain Dark Mist Stance.\nDark Mist Stance: Increase Damage Amount by 30% for each card in hand."
+   "text": "150% Damage.\nObtain Dark Mist Stance.\nDark Mist Stance: Increase Damage Amount by 30% for each card in hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_5.webp"
   },
   {
    "id": "card-167",
@@ -163,7 +172,8 @@
    "pct": 3.6,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "360% Damage.\nObtain Dark Mist Stance.\nDark Mist Stance: Increase Damage Amount by 100%."
+   "text": "360% Damage.\nObtain Dark Mist Stance.\nDark Mist Stance: Increase Damage Amount by 100%.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_5.webp"
   },
   {
    "id": "card-168",
@@ -179,7 +189,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 1 card(s).\nGain Dark Mist Stance."
+   "text": "Draw 1 card(s).\nGain Dark Mist Stance.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_6.webp"
   },
   {
    "id": "card-169",
@@ -195,7 +206,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "100% Shield.\nDraw 2 card(s).\nGain Dark Mist Stance."
+   "text": "100% Shield.\nDraw 2 card(s).\nGain Dark Mist Stance.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_6.webp"
   },
   {
    "id": "card-170",
@@ -211,7 +223,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 1 card(s) of this unit.\nDecrease Cost of those cards by 1 for 1 turn.\nGain Dark Mist Stance."
+   "text": "Draw 1 card(s) of this unit.\nDecrease Cost of those cards by 1 for 1 turn.\nGain Dark Mist Stance.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_6.webp"
   },
   {
    "id": "card-171",
@@ -227,7 +240,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 1 card of this unit.\n+50% Damage Amount to that card for 1 turn.\nGain Dark Mist Stance."
+   "text": "Draw 1 card of this unit.\n+50% Damage Amount to that card for 1 turn.\nGain Dark Mist Stance.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_6.webp"
   },
   {
    "id": "card-172",
@@ -243,7 +257,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Move Dark Mist Secret Art: Annihilation and Dark Mist Secret Art: Black Dance from Draw Pile or Graveyard to hand."
+   "text": "Move Dark Mist Secret Art: Annihilation and Dark Mist Secret Art: Black Dance from Draw Pile or Graveyard to hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_6.webp"
   },
   {
    "id": "card-173",
@@ -259,7 +274,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "At the start of the turn, if in Dark Mist Stance, Draw 1 card(s)."
+   "text": "At the start of the turn, if in Dark Mist Stance, Draw 1 card(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_6.webp"
   },
   {
    "id": "card-174",
@@ -275,7 +291,8 @@
    "pct": 2.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "200% Damage.\nDark Mist Stance: Add 1 Hit(s)."
+   "text": "200% Damage.\nDark Mist Stance: Add 1 Hit(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_7.webp"
   },
   {
    "id": "card-175",
@@ -291,7 +308,8 @@
    "pct": 3.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "300% Damage.\nDark Mist Stance: Add 1 Hit(s)."
+   "text": "300% Damage.\nDark Mist Stance: Add 1 Hit(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_7.webp"
   },
   {
    "id": "card-176",
@@ -307,7 +325,8 @@
    "pct": 1.0,
    "hits": 2,
    "weaknessApplies": false,
-   "text": "100% Damage x 2.\nDark Mist Stance: +2 Hit(s)."
+   "text": "100% Damage x 2.\nDark Mist Stance: +2 Hit(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_7.webp"
   },
   {
    "id": "card-177",
@@ -323,7 +342,8 @@
    "pct": 1.5,
    "hits": 2,
    "weaknessApplies": false,
-   "text": "150% Damage x 2.\nDark Mist Stance: +100% Critical Damage."
+   "text": "150% Damage x 2.\nDark Mist Stance: +100% Critical Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_7.webp"
   },
   {
    "id": "card-178",
@@ -339,7 +359,8 @@
    "pct": 3.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "300% Damage.\nDark Mist Stance: Increase Damage Amount by 100%."
+   "text": "300% Damage.\nDark Mist Stance: Increase Damage Amount by 100%.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_7.webp"
   },
   {
    "id": "card-179",
@@ -355,7 +376,8 @@
    "pct": 2.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "200% Damage.\nDark Mist Stance: Decrease Cost of all cards of this unit in hand by 1 for 1 turn."
+   "text": "200% Damage.\nDark Mist Stance: Decrease Cost of all cards of this unit in hand by 1 for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_7.webp"
   },
   {
    "id": "card-180",
@@ -371,7 +393,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Retain Dark Mist Stance for 1 turn.\nDark Mist Stance: +40% Damage Amount to Attack Cards of this unit for 1 turn."
+   "text": "Retain Dark Mist Stance for 1 turn.\nDark Mist Stance: +40% Damage Amount to Attack Cards of this unit for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_8.webp"
   },
   {
    "id": "card-181",
@@ -387,7 +410,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Retain Dark Mist Stance for 1 turn.\nDark Mist Stance: +80% Damage Amount to Attack Cards of this unit for 1 turn."
+   "text": "Retain Dark Mist Stance for 1 turn.\nDark Mist Stance: +80% Damage Amount to Attack Cards of this unit for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_8.webp"
   },
   {
    "id": "card-182",
@@ -403,7 +427,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Retain Dark Mist Stance for 1 turn.\nDark Mist Stance: Draw 2 cards of this unit"
+   "text": "Retain Dark Mist Stance for 1 turn.\nDark Mist Stance: Draw 2 cards of this unit",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_8.webp"
   },
   {
    "id": "card-183",
@@ -419,7 +444,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "For 1 turn, Retain Dark Mist Stance.\nCreate 1 Dark Mist Secret Art: Annihilation Card(s) and apply Ephemeral to that Card."
+   "text": "For 1 turn, Retain Dark Mist Stance.\nCreate 1 Dark Mist Secret Art: Annihilation Card(s) and apply Ephemeral to that Card.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_8.webp"
   },
   {
    "id": "card-184",
@@ -435,7 +461,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "At the start of the turn, obtain Dark Mist Stance."
+   "text": "At the start of the turn, obtain Dark Mist Stance.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_8.webp"
   },
   {
    "id": "card-185",
@@ -451,7 +478,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "If in Dark Mist Stance state, increase Damage Amount of Attack Cards of this unit by 50%."
+   "text": "If in Dark Mist Stance state, increase Damage Amount of Attack Cards of this unit by 50%.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_8.webp"
   },
   {
    "id": "card-186",
@@ -468,6 +496,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "120% Damage.\nDark Mist Stance: +1 Hit(s) per Skill card in hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/rin_9.webp",
    "notes": "Mythic card: no epiphanies"
   }
  ],

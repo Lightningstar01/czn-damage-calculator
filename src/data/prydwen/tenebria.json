@@ -19,7 +19,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "For the next 7 Rhythm Cards activated, increase Damage Amount of Rhythm Cards by 7%.\nIf activated 7 times, add 1 Hit to the next 7 Rhythm Cards activated."
+   "text": "For the next 7 Rhythm Cards activated, increase Damage Amount of Rhythm Cards by 7%.\nIf activated 7 times, add 1 Hit to the next 7 Rhythm Cards activated.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1159.webp"
   },
   {
    "id": "card-1160",
@@ -35,7 +36,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage."
+   "text": "100% Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1160.webp"
   },
   {
    "id": "card-1161",
@@ -51,7 +53,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Heal 100%."
+   "text": "Heal 100%.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1161.webp"
   },
   {
    "id": "card-1162",
@@ -67,7 +70,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Exhaust all Basic Attack Cards.\nCreate and give each ally 2 of their own Rhythm in Draw Pile.\nApply Haste to Rhythm cards of this unit."
+   "text": "Exhaust all Basic Attack Cards.\nCreate and give each ally 2 of their own Rhythm in Draw Pile.\nApply Haste to Rhythm cards of this unit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1162.webp"
   },
   {
    "id": "card-1163",
@@ -83,7 +87,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Exhaust all Basic Attack Cards.\nCreate and give each ally 2 of their own Rhythm: Crescendo in Draw Pile.\nApply Haste to Rhythm cards of this unit."
+   "text": "Exhaust all Basic Attack Cards.\nCreate and give each ally 2 of their own Rhythm: Crescendo in Draw Pile.\nApply Haste to Rhythm cards of this unit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1163.webp"
   },
   {
    "id": "card-1164",
@@ -99,7 +104,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Exhaust all Basic Attack Cards.\nCreate and give each ally 2 of their own Rhythm: Staccato in Draw Pile.\nApply Haste to Rhythm cards of this unit."
+   "text": "Exhaust all Basic Attack Cards.\nCreate and give each ally 2 of their own Rhythm: Staccato in Draw Pile.\nApply Haste to Rhythm cards of this unit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1164.webp"
   },
   {
    "id": "card-1165",
@@ -115,7 +121,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Exhaust all Basic Attack Cards.\nCreate and give each ally 2 of their own Rhythm: Fortissimo in Draw Pile.\nApply Haste to Rhythm cards of this unit."
+   "text": "Exhaust all Basic Attack Cards.\nCreate and give each ally 2 of their own Rhythm: Fortissimo in Draw Pile.\nApply Haste to Rhythm cards of this unit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1165.webp"
   },
   {
    "id": "card-1166",
@@ -131,7 +138,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Exhaust all Basic Attack Cards.\nCreate and give each ally 2 of their own Rhythm: Fermata in Draw Pile."
+   "text": "Exhaust all Basic Attack Cards.\nCreate and give each ally 2 of their own Rhythm: Fermata in Draw Pile.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1166.webp"
   },
   {
    "id": "card-1167",
@@ -147,7 +155,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Exhaust all Basic Attack Cards.\nCreate 1 of each Rhythm: Arpeggio in Draw Pile."
+   "text": "Exhaust all Basic Attack Cards.\nCreate 1 of each Rhythm: Arpeggio in Draw Pile.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1167.webp"
   },
   {
    "id": "card-1168",
@@ -163,7 +172,8 @@
    "pct": 1.4,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "140% Damage.\nMove 1 Rhythm Card to hand.\nDecrease Cost of that card by 2 until activated."
+   "text": "140% Damage.\nMove 1 Rhythm Card to hand.\nDecrease Cost of that card by 2 until activated.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1168.webp"
   },
   {
    "id": "card-1169",
@@ -179,7 +189,8 @@
    "pct": 2.1,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "210% Damage.\nMove 2 Rhythm card(s) to hand.\nDecrease Cost of 1 of those cards by 2 until activated."
+   "text": "210% Damage.\nMove 2 Rhythm card(s) to hand.\nDecrease Cost of 1 of those cards by 2 until activated.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1169.webp"
   },
   {
    "id": "card-1170",
@@ -195,7 +206,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "When 3 Rhythm cards are activated in a turn, create 1 Spotlight with Exhaust and decrease Cost of those cards by 1 (1 time per turn)."
+   "text": "When 3 Rhythm cards are activated in a turn, create 1 Spotlight with Exhaust and decrease Cost of those cards by 1 (1 time per turn).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1170.webp"
   },
   {
    "id": "card-1171",
@@ -211,7 +223,8 @@
    "pct": 3.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "350% Damage.\nSelect and move up to 2 Rhythm cards to hand, then activate those cards"
+   "text": "350% Damage.\nSelect and move up to 2 Rhythm cards to hand, then activate those cards",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1171.webp"
   },
   {
    "id": "card-1172",
@@ -227,7 +240,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Select up to 3 Rhythm cards from among Draw Pile or Graveyard and move those cards to the top of Draw Pile.\nDraw 1 of those cards."
+   "text": "Select up to 3 Rhythm cards from among Draw Pile or Graveyard and move those cards to the top of Draw Pile.\nDraw 1 of those cards.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1172.webp"
   },
   {
    "id": "card-1173",
@@ -243,7 +257,8 @@
    "pct": 1.4,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "140% Damage.\nDraw 2 of those cards.\nDiscard all non-Rhythm cards."
+   "text": "140% Damage.\nDraw 2 of those cards.\nDiscard all non-Rhythm cards.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1173.webp"
   },
   {
    "id": "card-1174",
@@ -259,7 +274,8 @@
    "pct": 2.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "200% damage.\nIf in hand, also treat as a Rhythm card.\nAttunement: Draw 1 Rhythm card."
+   "text": "200% damage.\nIf in hand, also treat as a Rhythm card.\nAttunement: Draw 1 Rhythm card.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1174.webp"
   },
   {
    "id": "card-1175",
@@ -275,7 +291,8 @@
    "pct": 2.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "250% Damage.\nIf in hand, treat as a Rhythm card.\nAttunement: Draw 2 Rhythm card(s)."
+   "text": "250% Damage.\nIf in hand, treat as a Rhythm card.\nAttunement: Draw 2 Rhythm card(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1175.webp"
   },
   {
    "id": "card-1176",
@@ -291,7 +308,8 @@
    "pct": 2.4,
    "hits": 2,
    "weaknessApplies": false,
-   "text": "240% Damage × 2.\nIf in Draw Pile or in hand, activate this card when a Rhythm card is activated."
+   "text": "240% Damage × 2.\nIf in Draw Pile or in hand, activate this card when a Rhythm card is activated.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1176.webp"
   },
   {
    "id": "card-1177",
@@ -307,7 +325,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 2 Rhythm card(s).\nIf in Draw Pile, activate this card when a Rhythm card is activated."
+   "text": "Draw 2 Rhythm card(s).\nIf in Draw Pile, activate this card when a Rhythm card is activated.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1177.webp"
   },
   {
    "id": "card-1178",
@@ -323,7 +342,8 @@
    "pct": 1.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "120% Damage.\nWhen a Rhythm card is activated, add 1 Hit to this card (max 5)."
+   "text": "120% Damage.\nWhen a Rhythm card is activated, add 1 Hit to this card (max 5).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1178.webp"
   },
   {
    "id": "card-1179",
@@ -339,7 +359,8 @@
    "pct": 7.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "700% Damage.\nIf in hand, treat as a Rhythm card. When a Rhythm card is activated, decrease Cost of this card by 1 until this card is activated."
+   "text": "700% Damage.\nIf in hand, treat as a Rhythm card. When a Rhythm card is activated, decrease Cost of this card by 1 until this card is activated.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1179.webp"
   },
   {
    "id": "card-1180",
@@ -355,7 +376,8 @@
    "pct": 1.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "120% Damage.\nIf the last card activated was a Rhythm card, activate that card."
+   "text": "120% Damage.\nIf the last card activated was a Rhythm card, activate that card.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1180.webp"
   },
   {
    "id": "card-1181",
@@ -371,7 +393,8 @@
    "pct": 1.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "120% Damage.\nIf the last card activated was a Rhythm card, activate that card 2 times"
+   "text": "120% Damage.\nIf the last card activated was a Rhythm card, activate that card 2 times",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1181.webp"
   },
   {
    "id": "card-1182",
@@ -387,7 +410,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "For every 2 Rhythm cards activated, 100% Damage to the enemy with the lowest HP (15 times per turn)."
+   "text": "For every 2 Rhythm cards activated, 100% Damage to the enemy with the lowest HP (15 times per turn).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1182.webp"
   },
   {
    "id": "card-1183",
@@ -403,7 +427,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "For the next 3 Rhythm card(s) activated, decrease Cost by 1 and add 1 Hit."
+   "text": "For the next 3 Rhythm card(s) activated, decrease Cost by 1 and add 1 Hit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1183.webp"
   },
   {
    "id": "card-1184",
@@ -419,7 +444,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Activate all Rhythm cards in Graveyard."
+   "text": "Activate all Rhythm cards in Graveyard.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1184.webp"
   },
   {
    "id": "card-1185",
@@ -435,7 +461,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 1.\nIf that card was a Rhythm card, increase Damage Amount by 100% until activated for 1 turn and repeat 1 more time (max 2 times)."
+   "text": "Draw 1.\nIf that card was a Rhythm card, increase Damage Amount by 100% until activated for 1 turn and repeat 1 more time (max 2 times).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1185.webp"
   },
   {
    "id": "card-1186",
@@ -452,6 +479,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "1 Performance Buzz.\nIf a Rhythm card was activated or moved to hand, increase Performance Buzz of this card by 1 until activated (max 9 times).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1186.webp",
    "notes": "Mythic card: no epiphanies"
   },
   {
@@ -468,7 +496,8 @@
    "pct": 0.6,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "60% Damage.\n+30% Damage Amount for each Rhythm activated in hand."
+   "text": "60% Damage.\n+30% Damage Amount for each Rhythm activated in hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1187.webp"
   },
   {
    "id": "card-1188",
@@ -484,7 +513,8 @@
    "pct": 1.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "180% Damage.\n+40% Damage Amount for each Rhythm in Graveyard; for 1 turn, decrease Cost of the next Rhythm card activated by 1."
+   "text": "180% Damage.\n+40% Damage Amount for each Rhythm in Graveyard; for 1 turn, decrease Cost of the next Rhythm card activated by 1.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1188.webp"
   },
   {
    "id": "card-1189",
@@ -500,7 +530,8 @@
    "pct": 0.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "80% Damage.\n+50% Damage Amount for each Rhythm; if the last card activated was a Rhythm card, increase Cost by 1."
+   "text": "80% Damage.\n+50% Damage Amount for each Rhythm; if the last card activated was a Rhythm card, increase Cost by 1.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1189.webp"
   },
   {
    "id": "card-1190",
@@ -516,7 +547,8 @@
    "pct": 0.9,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "90% Damage.\n+55% Damage Amount for each Linked Rhythm before activation; when 3 or more cards are Linked, add 1 Hit."
+   "text": "90% Damage.\n+55% Damage Amount for each Linked Rhythm before activation; when 3 or more cards are Linked, add 1 Hit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1190.webp"
   },
   {
    "id": "card-1191",
@@ -532,7 +564,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Select 1 of 4 Rhythm cards, change all Rhythm cards into the selected card for 1 turn, and draw 2 of them."
+   "text": "Select 1 of 4 Rhythm cards, change all Rhythm cards into the selected card for 1 turn, and draw 2 of them.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1191.webp"
   },
   {
    "id": "card-1192",
@@ -548,7 +581,8 @@
    "pct": 0.15,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "15% Damage for each Rhythm.\nDraw 1 of the lowest-Cost Rhythm cards and decrease Cost by 1 until activated."
+   "text": "15% Damage for each Rhythm.\nDraw 1 of the lowest-Cost Rhythm cards and decrease Cost by 1 until activated.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1192.webp"
   },
   {
    "id": "card-1193",
@@ -564,7 +598,8 @@
    "pct": 0.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "20% Damage for each Rhythm.\nDraw 2 of the lowest-Cost Rhythm cards and decrease Cost by 1 until activated."
+   "text": "20% Damage for each Rhythm.\nDraw 2 of the lowest-Cost Rhythm cards and decrease Cost by 1 until activated.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1193.webp"
   },
   {
    "id": "card-1194",
@@ -580,7 +615,8 @@
    "pct": 0.4,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "40% Damage for each Rhythm.\nActivate 1 of the highest-Cost Rhythm cards in hand."
+   "text": "40% Damage for each Rhythm.\nActivate 1 of the highest-Cost Rhythm cards in hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1194.webp"
   },
   {
    "id": "card-1195",
@@ -596,7 +632,8 @@
    "pct": 0.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "50% Damage for each Rhythm.\nActivate 1 Rhythm card(s) with the highest Cost from among Draw Pile or Discard Pile."
+   "text": "50% Damage for each Rhythm.\nActivate 1 Rhythm card(s) with the highest Cost from among Draw Pile or Discard Pile.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1195.webp"
   },
   {
    "id": "card-1196",
@@ -612,7 +649,8 @@
    "pct": 0.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "80% Damage for each Rhythm.\nDecrease Cost of this card by 1 for each Rhythm card in Graveyard."
+   "text": "80% Damage for each Rhythm.\nDecrease Cost of this card by 1 for each Rhythm card in Graveyard.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1196.webp"
   },
   {
    "id": "card-1197",
@@ -628,7 +666,8 @@
    "pct": 0.9,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "90% Damage for each Rhythm.\nDecrease Cost of this card by 1 for each Rhythm card activated this turn."
+   "text": "90% Damage for each Rhythm.\nDecrease Cost of this card by 1 for each Rhythm card activated this turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1197.webp"
   },
   {
    "id": "card-1198",
@@ -644,7 +683,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "2 Ego Points."
+   "text": "2 Ego Points.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/card_1198.webp"
   }
  ],
  "potentials": [

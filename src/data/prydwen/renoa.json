@@ -19,7 +19,8 @@
    "pct": 3.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "Move all Dirge Bullet from Draw Pile and Graveyard to hand.\n300% damage."
+   "text": "Move all Dirge Bullet from Draw Pile and Graveyard to hand.\n300% damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_ego.webp"
   },
   {
    "id": "card-2",
@@ -35,7 +36,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage."
+   "text": "100% Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_1.webp"
   },
   {
    "id": "card-3",
@@ -51,7 +53,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "100% Shield."
+   "text": "100% Shield.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_2.webp"
   },
   {
    "id": "card-4",
@@ -67,7 +70,8 @@
    "pct": 1.4,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "140% Damage.\nCreate 1 Dirge Bullet card(s)."
+   "text": "140% Damage.\nCreate 1 Dirge Bullet card(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_3.webp"
   },
   {
    "id": "card-5",
@@ -83,7 +87,8 @@
    "pct": 1.4,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "140% Damage.\nCreate 2 Dirge Bullets card(s)."
+   "text": "140% Damage.\nCreate 2 Dirge Bullets card(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_3.webp"
   },
   {
    "id": "card-6",
@@ -99,7 +104,8 @@
    "pct": 1.4,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "140% Damage.\nCreate 1 Dirge Bullet card(s), Create 2 card(s) in Discard Pile."
+   "text": "140% Damage.\nCreate 1 Dirge Bullet card(s), Create 2 card(s) in Discard Pile.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_3.webp"
   },
   {
    "id": "card-7",
@@ -115,7 +121,8 @@
    "pct": 1.4,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "140% Damage.\nCreate 1 Dirge Bullet card(s), Discard 2 Dirge Bullet from Draw Pile, ."
+   "text": "140% Damage.\nCreate 1 Dirge Bullet card(s), Discard 2 Dirge Bullet from Draw Pile, .",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_3.webp"
   },
   {
    "id": "card-8",
@@ -131,7 +138,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 3 Dirge Bullet card(s)."
+   "text": "Create 3 Dirge Bullet card(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_3.webp"
   },
   {
    "id": "card-9",
@@ -147,7 +155,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 1 Dirge Bullet card(s).\nAt the start of turn, create 1 Dirge Bullet card(s)."
+   "text": "Create 1 Dirge Bullet card(s).\nAt the start of turn, create 1 Dirge Bullet card(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_3.webp"
   },
   {
    "id": "card-10",
@@ -163,7 +172,8 @@
    "pct": 2.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "220% Damage.\nIf Dirge Bullet is in hand, discard 1 and +100% Damage Amount."
+   "text": "220% Damage.\nIf Dirge Bullet is in hand, discard 1 and +100% Damage Amount.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_4.webp"
   },
   {
    "id": "card-11",
@@ -179,7 +189,8 @@
    "pct": 3.3,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "330% Damage.\nIf Dirge Bullet is in hand, discard 1 card and +150% Damage Amount."
+   "text": "330% Damage.\nIf Dirge Bullet is in hand, discard 1 card and +150% Damage Amount.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_4.webp"
   },
   {
    "id": "card-12",
@@ -195,7 +206,8 @@
    "pct": 2.7,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "270% Damage.\nIf Dirge Bullet is in Draw Pile, discard 1 card and +120% Damage Amount."
+   "text": "270% Damage.\nIf Dirge Bullet is in Draw Pile, discard 1 card and +120% Damage Amount.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_4.webp"
   },
   {
    "id": "card-13",
@@ -211,7 +223,8 @@
    "pct": 2.7,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "270% Damage.\nIf Dirge Bullet is in Graveyard, Exhaust 1 and add 1 Hit(s)."
+   "text": "270% Damage.\nIf Dirge Bullet is in Graveyard, Exhaust 1 and add 1 Hit(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_4.webp"
   },
   {
    "id": "card-14",
@@ -227,7 +240,8 @@
    "pct": 1.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "180% Damage.\nWhen moved to Discard Pile, 250% Extra Attack to a random enemy."
+   "text": "180% Damage.\nWhen moved to Discard Pile, 250% Extra Attack to a random enemy.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_4.webp"
   },
   {
    "id": "card-15",
@@ -243,7 +257,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "At the end of the turn, 200% Extra Attack to the enemy with lowest HP."
+   "text": "At the end of the turn, 200% Extra Attack to the enemy with lowest HP.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_4.webp"
   },
   {
    "id": "card-16",
@@ -259,7 +274,8 @@
    "pct": 0.6,
    "hits": 3,
    "weaknessApplies": false,
-   "text": "60% x 3 Damage.\n+20% Damage Amount for each Dirge Bullet in hand."
+   "text": "60% x 3 Damage.\n+20% Damage Amount for each Dirge Bullet in hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_5.webp"
   },
   {
    "id": "card-17",
@@ -275,7 +291,8 @@
    "pct": 0.9,
    "hits": 3,
    "weaknessApplies": false,
-   "text": "90% x 3 Damage.\n+30% Damage Amount for each Dirge Bullet in hand."
+   "text": "90% x 3 Damage.\n+30% Damage Amount for each Dirge Bullet in hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_5.webp"
   },
   {
    "id": "card-18",
@@ -291,7 +308,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Move up to 3 Dirge Bullet card(s) from Draw Pile and Graveyard to hand."
+   "text": "Move up to 3 Dirge Bullet card(s) from Draw Pile and Graveyard to hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_5.webp"
   },
   {
    "id": "card-19",
@@ -307,7 +325,8 @@
    "pct": 0.6,
    "hits": 3,
    "weaknessApplies": false,
-   "text": "60% x 3 Damage.\n1 Mark to the target for each Dirge Bullet in hand."
+   "text": "60% x 3 Damage.\n1 Mark to the target for each Dirge Bullet in hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_5.webp"
   },
   {
    "id": "card-20",
@@ -323,7 +342,8 @@
    "pct": 0.6,
    "hits": 3,
    "weaknessApplies": false,
-   "text": "60% Damage x 3.\nIncrease Damage Amount of Dirge Bullet's Extra Attack by 100% for 1 turn."
+   "text": "60% Damage x 3.\nIncrease Damage Amount of Dirge Bullet's Extra Attack by 100% for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_5.webp"
   },
   {
    "id": "card-21",
@@ -339,7 +359,8 @@
    "pct": 0.6,
    "hits": 3,
    "weaknessApplies": false,
-   "text": "60% Damage x 3.\nExhaust all Dirge Bullet in the Graveyard, increase Damage Amount by 50% for each."
+   "text": "60% Damage x 3.\nExhaust all Dirge Bullet in the Graveyard, increase Damage Amount by 50% for each.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_5.webp"
   },
   {
    "id": "card-22",
@@ -355,7 +376,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Discard up to 2 card(s) from hand.\nCreate Dirge Bullet for each."
+   "text": "Discard up to 2 card(s) from hand.\nCreate Dirge Bullet for each.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_6.webp"
   },
   {
    "id": "card-23",
@@ -371,7 +393,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Discard up to 3 card(s) from hand.\nCreate Dirge Bullet for each."
+   "text": "Discard up to 3 card(s) from hand.\nCreate Dirge Bullet for each.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_6.webp"
   },
   {
    "id": "card-24",
@@ -387,7 +410,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Discard all other Combatant cards from hand.\nCreate 2 Dirge Bullet for each."
+   "text": "Discard all other Combatant cards from hand.\nCreate 2 Dirge Bullet for each.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_6.webp"
   },
   {
    "id": "card-25",
@@ -403,7 +427,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Discard up to 2 card(s) from hand.\nFor each Discarded Card with Cost 1, +40% Damage Amount of next card."
+   "text": "Discard up to 2 card(s) from hand.\nFor each Discarded Card with Cost 1, +40% Damage Amount of next card.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_6.webp"
   },
   {
    "id": "card-26",
@@ -419,7 +444,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 2.\nIf Dirge Bullet is in hand, Draw 1 additional card(s)."
+   "text": "Draw 2.\nIf Dirge Bullet is in hand, Draw 1 additional card(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_6.webp"
   },
   {
    "id": "card-27",
@@ -435,7 +461,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Grant Retrieve to all Dirge Bullet in hand."
+   "text": "Grant Retrieve to all Dirge Bullet in hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_6.webp"
   },
   {
    "id": "card-28",
@@ -452,6 +479,7 @@
    "hits": 1,
    "weaknessApplies": false,
    "text": "300% Damage (+0%).\nDiscard all Dirge Bullets and +50% Damage Amount for each.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_7.webp",
    "notes": "Mythic card: no epiphanies"
   },
   {
@@ -468,7 +496,8 @@
    "pct": 1.6,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "160% damage.\nWhen moved to Discard, 120% Extra Attack on a random enemy."
+   "text": "160% damage.\nWhen moved to Discard, 120% Extra Attack on a random enemy.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_8.webp"
   },
   {
    "id": "card-666",
@@ -484,7 +513,8 @@
    "pct": 2.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "200% damage.\nWhen moved to Discard, 160% x 2 Extra Attack to a random enemy."
+   "text": "200% damage.\nWhen moved to Discard, 160% x 2 Extra Attack to a random enemy.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/ronoa_8.webp"
   }
  ],
  "potentials": [

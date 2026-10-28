@@ -19,7 +19,8 @@
    "pct": 3.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "350% Damage to all enemies"
+   "text": "350% Damage to all enemies",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_1.webp"
   },
   {
    "id": "card-513",
@@ -35,7 +36,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage."
+   "text": "100% Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_2.webp"
   },
   {
    "id": "card-514",
@@ -51,7 +53,8 @@
    "pct": 2.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "220% Damage."
+   "text": "220% Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_3.webp"
   },
   {
    "id": "card-515",
@@ -67,7 +70,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "100% Shield."
+   "text": "100% Shield.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_4.webp"
   },
   {
    "id": "card-516",
@@ -83,7 +87,8 @@
    "pct": 1.6,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "160% Damage.\nRetain: Add 1 Hit(s) for 1 turn."
+   "text": "160% Damage.\nRetain: Add 1 Hit(s) for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_5.webp"
   },
   {
    "id": "card-517",
@@ -99,7 +104,8 @@
    "pct": 2.1,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "210% Damage.\nRetain: Add 1 Hit(s) for 1 turn."
+   "text": "210% Damage.\nRetain: Add 1 Hit(s) for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_5.webp"
   },
   {
    "id": "card-518",
@@ -115,7 +121,8 @@
    "pct": 2.6,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "260% Damage.\nRetain: Change cost to 0."
+   "text": "260% Damage.\nRetain: Change cost to 0.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_5.webp"
   },
   {
    "id": "card-519",
@@ -131,7 +138,8 @@
    "pct": 1.1,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "110% Damage.\nRetain: Add 2 Hit(s) for 1 turn."
+   "text": "110% Damage.\nRetain: Add 2 Hit(s) for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_5.webp"
   },
   {
    "id": "card-520",
@@ -147,7 +155,8 @@
    "pct": 1.8,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "180% Damage.\nRetain: +80% Damage amount."
+   "text": "180% Damage.\nRetain: +80% Damage amount.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_5.webp"
   },
   {
    "id": "card-521",
@@ -163,7 +172,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "When Retain owned cards, 150% Extra Attack to random enemies."
+   "text": "When Retain owned cards, 150% Extra Attack to random enemies.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_5.webp"
   },
   {
    "id": "card-522",
@@ -179,7 +189,8 @@
    "pct": 2.7,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "270% Damage.\nRetain: Damage +135%."
+   "text": "270% Damage.\nRetain: Damage +135%.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_6.webp"
   },
   {
    "id": "card-523",
@@ -195,7 +206,8 @@
    "pct": 3.6,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "360% Damage.\nRetain: Damage +180%."
+   "text": "360% Damage.\nRetain: Damage +180%.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_6.webp"
   },
   {
    "id": "card-524",
@@ -211,7 +223,8 @@
    "pct": 2.7,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "270% Damage.\nCombo: +135% Damage amount."
+   "text": "270% Damage.\nCombo: +135% Damage amount.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_6.webp"
   },
   {
    "id": "card-525",
@@ -227,7 +240,8 @@
    "pct": 5.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "500% Damage.\nRetain: Decrease Cost by 1 until used."
+   "text": "500% Damage.\nRetain: Decrease Cost by 1 until used.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_6.webp"
   },
   {
    "id": "card-526",
@@ -243,7 +257,8 @@
    "pct": 3.6,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "360% Damage.\nRetain: +240% Damage (Max 1 time)."
+   "text": "360% Damage.\nRetain: +240% Damage (Max 1 time).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_6.webp"
   },
   {
    "id": "card-527",
@@ -259,7 +274,8 @@
    "pct": 1.4,
    "hits": 2,
    "weaknessApplies": false,
-   "text": "140% Damage × 2.\nRetain: +80% Damage amount."
+   "text": "140% Damage × 2.\nRetain: +80% Damage amount.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_6.webp"
   },
   {
    "id": "card-528",
@@ -275,7 +291,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 3."
+   "text": "Draw 3.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_7.webp"
   },
   {
    "id": "card-529",
@@ -291,7 +308,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 3.\n1 Morale."
+   "text": "Draw 3.\n1 Morale.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_7.webp"
   },
   {
    "id": "card-530",
@@ -307,7 +325,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 3.\nDecrease Cost of 1 random card of this unit in hand by 1."
+   "text": "Draw 3.\nDecrease Cost of 1 random card of this unit in hand by 1.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_7.webp"
   },
   {
    "id": "card-531",
@@ -323,7 +342,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 3.\nAt the start of the next turn, Draw 2."
+   "text": "Draw 3.\nAt the start of the next turn, Draw 2.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_7.webp"
   },
   {
    "id": "card-532",
@@ -339,7 +359,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 1.\nActivate Retain effect on all cards in hand."
+   "text": "Draw 1.\nActivate Retain effect on all cards in hand.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_7.webp"
   },
   {
    "id": "card-533",
@@ -355,7 +376,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 3."
+   "text": "Draw 3.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_7.webp"
   },
   {
    "id": "card-534",
@@ -371,7 +393,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "100% Shield.\n+80% Damage of next Attack Card used."
+   "text": "100% Shield.\n+80% Damage of next Attack Card used.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_8.webp"
   },
   {
    "id": "card-535",
@@ -387,7 +410,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "150% Shield.\n+120% Damage of next Attack Card used."
+   "text": "150% Shield.\n+120% Damage of next Attack Card used.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_8.webp"
   },
   {
    "id": "card-536",
@@ -403,7 +427,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "For 1 turn, +80% Attack Card Damage."
+   "text": "For 1 turn, +80% Attack Card Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_8.webp"
   },
   {
    "id": "card-537",
@@ -419,7 +444,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "+160% Attack Damage of next own card used."
+   "text": "+160% Attack Damage of next own card used.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_8.webp"
   },
   {
    "id": "card-538",
@@ -435,7 +461,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "150% Shield.\n+80% Damage of the next Attack card."
+   "text": "150% Shield.\n+80% Damage of the next Attack card.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_8.webp"
   },
   {
    "id": "card-539",
@@ -451,7 +478,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Increases Damage Amount of Attacks Cards of this unit by 30%."
+   "text": "Increases Damage Amount of Attacks Cards of this unit by 30%.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_8.webp"
   },
   {
    "id": "card-540",
@@ -468,6 +496,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Create 1 Opening Found or Charged Shot card, apply Exhaust to that card, decrease Cost by 1 until used.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_9.webp",
    "notes": "Mythic card: no epiphanies"
   },
   {
@@ -484,7 +513,8 @@
    "pct": 1.2,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "120% Damage.\nRetain: Add 1 Hit(s) for 1 turn."
+   "text": "120% Damage.\nRetain: Add 1 Hit(s) for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_5.webp"
   },
   {
    "id": "card-542",
@@ -500,7 +530,8 @@
    "pct": 2.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "200% Damage.\nRetain: Damage +80%."
+   "text": "200% Damage.\nRetain: Damage +80%.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/beryl_6.webp"
   }
  ],
  "potentials": [

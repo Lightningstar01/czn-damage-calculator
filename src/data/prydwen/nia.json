@@ -19,7 +19,8 @@
    "pct": 2.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "200% Damage to all enemies.\n3 Decibel.\nDiscard all cards from the Draw Pile."
+   "text": "200% Damage to all enemies.\n3 Decibel.\nDiscard all cards from the Draw Pile.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_1.webp"
   },
   {
    "id": "card-610",
@@ -35,7 +36,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage"
+   "text": "100% Damage",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_2.webp"
   },
   {
    "id": "card-611",
@@ -51,7 +53,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Heal 100%."
+   "text": "Heal 100%.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_3.webp"
   },
   {
    "id": "card-612",
@@ -67,7 +70,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "2 Decibel.\nActivate the top 1 card(s) of the Draw Pile."
+   "text": "2 Decibel.\nActivate the top 1 card(s) of the Draw Pile.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_4.webp"
   },
   {
    "id": "card-613",
@@ -83,7 +87,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "2 Decibel.\nCheck the top 3 cards of the Draw Pile.\nChoose one to activate."
+   "text": "2 Decibel.\nCheck the top 3 cards of the Draw Pile.\nChoose one to activate.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_4.webp"
   },
   {
    "id": "card-614",
@@ -99,7 +104,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "2 Decibel.\nActivate the top 1 card(s) of the Draw Pile.\nDecibel equal to that card’s Cost."
+   "text": "2 Decibel.\nActivate the top 1 card(s) of the Draw Pile.\nDecibel equal to that card’s Cost.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_4.webp"
   },
   {
    "id": "card-615",
@@ -115,7 +121,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "2 Decibel.\nThe Combatant who owns the top card of the Draw Pile performs 120% Extra Attack to a random enemy, then activates that card."
+   "text": "2 Decibel.\nThe Combatant who owns the top card of the Draw Pile performs 120% Extra Attack to a random enemy, then activates that card.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_4.webp"
   },
   {
    "id": "card-616",
@@ -131,7 +138,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "3 Decibel.\nDiscard the top 3 card(s) of the Draw Pile."
+   "text": "3 Decibel.\nDiscard the top 3 card(s) of the Draw Pile.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_4.webp"
   },
   {
    "id": "card-617",
@@ -147,7 +155,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Activate the top 1 card(s) of the Draw Pile.\nIf in a Decibel state, decrease Decibel by 1, activate 1 more card(s)."
+   "text": "Activate the top 1 card(s) of the Draw Pile.\nIf in a Decibel state, decrease Decibel by 1, activate 1 more card(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_4.webp"
   },
   {
    "id": "card-618",
@@ -163,7 +172,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Discard 1 card(s) with highest Cost.\nThe Combatant who owns that card performs 150% Extra Attack to a random enemy."
+   "text": "Discard 1 card(s) with highest Cost.\nThe Combatant who owns that card performs 150% Extra Attack to a random enemy.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_5.webp"
   },
   {
    "id": "card-619",
@@ -179,7 +189,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Discard 1 random card(s).\nThe owner of those cards performs 250% Extra Attack to a random enemy."
+   "text": "Discard 1 random card(s).\nThe owner of those cards performs 250% Extra Attack to a random enemy.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_5.webp"
   },
   {
    "id": "card-620",
@@ -195,7 +206,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Discard 1.\nThe owner of those cards deals 200% Extra Attack to a random enemy."
+   "text": "Discard 1.\nThe owner of those cards deals 200% Extra Attack to a random enemy.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_5.webp"
   },
   {
    "id": "card-621",
@@ -211,7 +223,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Heal 150%.\nActivate 1 card(s) with the lowest-cost"
+   "text": "Heal 150%.\nActivate 1 card(s) with the lowest-cost",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_5.webp"
   },
   {
    "id": "card-622",
@@ -227,7 +240,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "At the start of the turn, Discard 1.\nThe Combatant who owns the card(s) performs 150% Extra Attack to a random enemy."
+   "text": "At the start of the turn, Discard 1.\nThe Combatant who owns the card(s) performs 150% Extra Attack to a random enemy.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_5.webp"
   },
   {
    "id": "card-623",
@@ -243,7 +257,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Discard all highest Cost cards.\nThe Combatant who owns the card(s) performs 100% Extra Attack to a random enemy."
+   "text": "Discard all highest Cost cards.\nThe Combatant who owns the card(s) performs 100% Extra Attack to a random enemy.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_5.webp"
   },
   {
    "id": "card-624",
@@ -259,7 +274,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Heal 120%.\nWhen a card is discarded, Heal 100%, 1 Decibel and 2 Elasticity for 1 turn."
+   "text": "Heal 120%.\nWhen a card is discarded, Heal 100%, 1 Decibel and 2 Elasticity for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_7.webp"
   },
   {
    "id": "card-625",
@@ -275,7 +291,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Heal 200%, 2 Decibel, 4 Elasticity, Activate even when Discarded"
+   "text": "Heal 200%, 2 Decibel, 4 Elasticity, Activate even when Discarded",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_7.webp"
   },
   {
    "id": "card-626",
@@ -291,7 +308,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Heal 150%.\nWhen a card in hand is discarded, Heal 100%, and 1 Decibel for 1 turn."
+   "text": "Heal 150%.\nWhen a card in hand is discarded, Heal 100%, and 1 Decibel for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_7.webp"
   },
   {
    "id": "card-627",
@@ -307,7 +325,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "When a card in hand is discarded, the Combatant who owns the card performs 100% Extra Attack to a random enemy for 1 turn."
+   "text": "When a card in hand is discarded, the Combatant who owns the card performs 100% Extra Attack to a random enemy for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_7.webp"
   },
   {
    "id": "card-628",
@@ -323,7 +342,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Heal 200%, 2 Decibel.\nThe next Decibel effect activates 1 more time(s)."
+   "text": "Heal 200%, 2 Decibel.\nThe next Decibel effect activates 1 more time(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_7.webp"
   },
   {
    "id": "card-629",
@@ -339,7 +359,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "When a card is discarded, 1 Decibel, 2 Elasticity."
+   "text": "When a card is discarded, 1 Decibel, 2 Elasticity.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_7.webp"
   },
   {
    "id": "card-630",
@@ -355,7 +376,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 1.\nDiscard 1.\nMove discarded card that is effected to top of the Draw Pile."
+   "text": "Draw 1.\nDiscard 1.\nMove discarded card that is effected to top of the Draw Pile.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_8.webp"
   },
   {
    "id": "card-631",
@@ -371,7 +393,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 2.\nDiscard 2.\nMove discarded card that is effected to top of the Draw Pile."
+   "text": "Draw 2.\nDiscard 2.\nMove discarded card that is effected to top of the Draw Pile.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_8.webp"
   },
   {
    "id": "card-632",
@@ -387,7 +410,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 1.\nDiscard up to 1 card(s).\nIf discarded, create 1 Adagio card(s) with Exhaust."
+   "text": "Draw 1.\nDiscard up to 1 card(s).\nIf discarded, create 1 Adagio card(s) with Exhaust.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_8.webp"
   },
   {
    "id": "card-633",
@@ -403,7 +427,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 1.\n1 Decibel equal to that card’s Cost.\nDiscard 1.\nHeal 100% equal to that card’s Cost."
+   "text": "Draw 1.\n1 Decibel equal to that card’s Cost.\nDiscard 1.\nHeal 100% equal to that card’s Cost.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_8.webp"
   },
   {
    "id": "card-634",
@@ -419,7 +444,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Discard the top 2 card(s) of Draw Pile.\nDraw 2.\nDecrease Cost by 1 for each Decibel held."
+   "text": "Discard the top 2 card(s) of Draw Pile.\nDraw 2.\nDecrease Cost by 1 for each Decibel held.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_8.webp"
   },
   {
    "id": "card-635",
@@ -435,7 +461,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Discard 1.\nDraw 2 card(s) of the Combatant who owns the card."
+   "text": "Discard 1.\nDraw 2 card(s) of the Combatant who owns the card.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_8.webp"
   },
   {
    "id": "card-636",
@@ -452,6 +479,7 @@
    "hits": 0,
    "weaknessApplies": false,
    "text": "Check 3 random cards from the Draw Pile.\nChoose one to Draw, Discard the rest.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/nia_6.webp",
    "notes": "Mythic card: no epiphanies"
   }
  ],

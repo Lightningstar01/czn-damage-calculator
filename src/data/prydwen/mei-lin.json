@@ -19,7 +19,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Next 4 own Basic Attack Card(s), 1 extra Hit(s)."
+   "text": "Next 4 own Basic Attack Card(s), 1 extra Hit(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_1.webp"
   },
   {
    "id": "card-338",
@@ -35,7 +36,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage."
+   "text": "100% Damage.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_2.webp"
   },
   {
    "id": "card-339",
@@ -51,7 +53,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "100% Shield."
+   "text": "100% Shield.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_3.webp"
   },
   {
    "id": "card-340",
@@ -67,7 +70,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Increases Damage Amount of Attack Cards of this unit by 20%.\nWhen an Attack Card is used, 1 Passion Weakness to the target."
+   "text": "Increases Damage Amount of Attack Cards of this unit by 20%.\nWhen an Attack Card is used, 1 Passion Weakness to the target.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_4.webp"
   },
   {
    "id": "card-341",
@@ -83,7 +87,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Increases Damage Amount of Attack Cards of this unit by 30%.\nWhen an Attack Card is used, 1 Passion Weakness to the target."
+   "text": "Increases Damage Amount of Attack Cards of this unit by 30%.\nWhen an Attack Card is used, 1 Passion Weakness to the target.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_4.webp"
   },
   {
    "id": "card-342",
@@ -99,7 +104,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Increase Damage Amount of Attack Cards of this unit by 20%.\nWhen using an Attack Card, 1 Tenacity Damage to the target."
+   "text": "Increase Damage Amount of Attack Cards of this unit by 20%.\nWhen using an Attack Card, 1 Tenacity Damage to the target.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_4.webp"
   },
   {
    "id": "card-343",
@@ -115,7 +121,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Increase Damage Amount of Attack Cards of this unit by 20%.\nWhen using an Attack Card, 1 Ember and 1 Passion Weakness to the target."
+   "text": "Increase Damage Amount of Attack Cards of this unit by 20%.\nWhen using an Attack Card, 1 Ember and 1 Passion Weakness to the target.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_4.webp"
   },
   {
    "id": "card-344",
@@ -131,7 +138,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Increase Critical Chance of this unit by 30%.\nOn Critical Hit, 1 Tenacity Damage, 1 Ember."
+   "text": "Increase Critical Chance of this unit by 30%.\nOn Critical Hit, 1 Tenacity Damage, 1 Ember.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_4.webp"
   },
   {
    "id": "card-345",
@@ -147,7 +155,8 @@
    "pct": 3.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "Upon Ravage, 300% Damage to the target."
+   "text": "Upon Ravage, 300% Damage to the target.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_4.webp"
   },
   {
    "id": "card-346",
@@ -163,7 +172,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage.\n2 Ember.\nCombo: Add 1 hit(s)."
+   "text": "100% Damage.\n2 Ember.\nCombo: Add 1 hit(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_5.webp"
   },
   {
    "id": "card-347",
@@ -179,7 +189,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage.\n2 Ember.\nCombo: Add 2 hit(s)."
+   "text": "100% Damage.\n2 Ember.\nCombo: Add 2 hit(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_5.webp"
   },
   {
    "id": "card-348",
@@ -195,7 +206,8 @@
    "pct": 1.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "150% Damage.\n3 Ember.\nCombo: Add 1 hit(s)."
+   "text": "150% Damage.\n3 Ember.\nCombo: Add 1 hit(s).",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_5.webp"
   },
   {
    "id": "card-349",
@@ -211,7 +223,8 @@
    "pct": 2.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "200% Damage.\nNext Passion Card used, 1 extra Hit."
+   "text": "200% Damage.\nNext Passion Card used, 1 extra Hit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_5.webp"
   },
   {
    "id": "card-350",
@@ -227,7 +240,8 @@
    "pct": 1.0,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "100% Damage.\nNext own Basic Attack Card used, 2 extra Hits."
+   "text": "100% Damage.\nNext own Basic Attack Card used, 2 extra Hits.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_5.webp"
   },
   {
    "id": "card-351",
@@ -243,7 +257,8 @@
    "pct": 1.5,
    "hits": 1,
    "weaknessApplies": false,
-   "text": "150% Damage.\nFor 1 turn, each Passion Card used, 1 extra Hit."
+   "text": "150% Damage.\nFor 1 turn, each Passion Card used, 1 extra Hit.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_5.webp"
   },
   {
    "id": "card-352",
@@ -259,7 +274,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 2 Basic Card(s) of this unit.\nDecrease Cost of those cards by 1 for 1 turn."
+   "text": "Draw 2 Basic Card(s) of this unit.\nDecrease Cost of those cards by 1 for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_6.webp"
   },
   {
    "id": "card-353",
@@ -275,7 +291,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 2 Basic Card(s) of this unit, decrease Cost by 1, increase Damage and Shield Gain Amounts of those cards by 50% for 1 turn."
+   "text": "Draw 2 Basic Card(s) of this unit, decrease Cost by 1, increase Damage and Shield Gain Amounts of those cards by 50% for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_6.webp"
   },
   {
    "id": "card-354",
@@ -291,7 +308,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Move 2 Basic Card(s) of this unit to hand.\nDecrease Cost of those cards by 1 for 1 turn."
+   "text": "Move 2 Basic Card(s) of this unit to hand.\nDecrease Cost of those cards by 1 for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_6.webp"
   },
   {
    "id": "card-355",
@@ -307,7 +325,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Draw 2 own Basic Card(s).\nChoose up to 2 card(s) in hand to Exhaust. For each card,2 Morale, 2 Resolve for 1 turn."
+   "text": "Draw 2 own Basic Card(s).\nChoose up to 2 card(s) in hand to Exhaust. For each card,2 Morale, 2 Resolve for 1 turn.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_6.webp"
   },
   {
    "id": "card-356",
@@ -323,7 +342,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Create 2 Strike card(s).\nDecrease Cost of those cards by 1."
+   "text": "Create 2 Strike card(s).\nDecrease Cost of those cards by 1.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_6.webp"
   },
   {
    "id": "card-357",
@@ -339,7 +359,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "Increase Damage Amount of Basic Cards of this unit by 100%."
+   "text": "Increase Damage Amount of Basic Cards of this unit by 100%.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_6.webp"
   },
   {
    "id": "card-358",
@@ -355,7 +376,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "For 1 turn, when using an own card +20% own Damage Amount."
+   "text": "For 1 turn, when using an own card +20% own Damage Amount.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_7.webp"
   },
   {
    "id": "card-359",
@@ -371,7 +393,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "For 1 turn, when using a Passion Card +20% own Damage Amount."
+   "text": "For 1 turn, when using a Passion Card +20% own Damage Amount.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_7.webp"
   },
   {
    "id": "card-360",
@@ -387,7 +410,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "For 1 turn, when using an own card +30% own Damage Amount."
+   "text": "For 1 turn, when using an own card +30% own Damage Amount.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_7.webp"
   },
   {
    "id": "card-361",
@@ -403,7 +427,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "For 1 turn, when using an own card +20% own Damage Amount."
+   "text": "For 1 turn, when using an own card +20% own Damage Amount.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_7.webp"
   },
   {
    "id": "card-362",
@@ -419,7 +444,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "For 1 turn, when using an own card, 1 Ember on a random enemy."
+   "text": "For 1 turn, when using an own card, 1 Ember on a random enemy.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_7.webp"
   },
   {
    "id": "card-363",
@@ -435,7 +461,8 @@
    "pct": 0,
    "hits": 0,
    "weaknessApplies": false,
-   "text": "For 1 turn, when using an own card, +50% own Basic Card Damage Amount."
+   "text": "For 1 turn, when using an own card, +50% own Basic Card Damage Amount.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_7.webp"
   },
   {
    "id": "card-364",
@@ -452,6 +479,7 @@
    "hits": 1,
    "weaknessApplies": true,
    "text": "300% Damage.\nDestroy: Retain Embers.",
+   "image": "https://cdn.prydwen.gg/images/chaos/cards/mei_8.webp",
    "notes": "Mythic card: no epiphanies"
   }
  ],
