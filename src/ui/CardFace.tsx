@@ -1,5 +1,5 @@
-// A card drawn like the game's: art (Prydwen's picture), cost, name, type, and the card text with the build's numbers.
-import { useMemo, useState, type ReactNode } from 'react'
+// A card drawn like the game's: art, cost, name, type, and the card text with the build's numbers over the art.
+import { useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { PRESETS } from '../data/presets'
 import { activeBuffs, findCharacter } from '../engine/buffs'
 import { shownPct } from '../engine/calc'
@@ -39,35 +39,88 @@ export function customText(c: Card): string {
 const costLabel = (cost: number | null | undefined, tags = '') =>
   cost != null ? String(cost) : /\bX-cost\b/.test(tags) ? 'X' : ''
 
-/** size 'tile' (grid, text in small print), 'mini' (art and name only) or 'big' (popup). note: a grey line under the text.
- * Tapping calls onClick. */
+/** The type line, as in the game: Basic Attack / Basic Skill for basic cards, Ego Skill for Ego skills. */
+function typeLabel(type: string | undefined, tags: string): string {
+  const list = tags.split(',').map((t) => t.trim())
+  if (list.includes('Ego Skill')) return 'Ego Skill'
+  return list.includes('Basic') ? `Basic ${type}` : type ?? ''
+}
+
+const TYPE_ICON: Record<string, string> = { Attack: '⚔', Skill: '△', Upgrade: 'ϟ' }
+
+// Numbers cyan and [tags] gold, like the game's card text (owner, 2026-10-27)
+const TOKEN = /(\[[^\]\n]*\])|(\d+(?:\.\d+)?)/g
+function richText(text: string): ReactNode[] {
+  const out: ReactNode[] = []
+  let last = 0
+  for (const m of text.matchAll(TOKEN)) {
+    if (m.index > last) out.push(text.slice(last, m.index))
+    out.push(<span key={m.index} className={m[1] ? 'cf-tag' : 'cf-num'}>{m[0]}</span>)
+    last = m.index + m[0].length
+  }
+  out.push(text.slice(last))
+  return out
+}
+
+/** Shrinks the text (CSS --fit) until it fits its box, like the game's cards. */
+function useFitText(text: string | undefined) {
+  const box = useRef<HTMLDivElement>(null)
+  useLayoutEffect(() => {
+    const el = box.current
+    const inner = el?.firstElementChild as HTMLElement | null
+    if (!el || !inner) return
+    const fit = () => {
+      let scale = 1
+      el.style.setProperty('--fit', '1')
+      while (scale > 0.45 && inner.offsetHeight > el.clientHeight) {
+        scale -= 0.05
+        el.style.setProperty('--fit', String(scale))
+      }
+    }
+    fit()
+    const watch = new ResizeObserver(fit)
+    watch.observe(el)
+    return () => watch.disconnect()
+  }, [text])
+  return box
+}
+
+/** Drawn like the in-game card: art filling the card, the element's strip on the left, cost / name / type at the top and the
+ * text over the art at the bottom. size 'tile' (grid), 'mini' (no text) or 'big' (popup); every size scales with its width.
+ * note: a grey caption under the card. Tapping calls onClick. */
 export function CardFace({ preset, card, text, note, size = 'tile', badges, onClick, label }: {
   preset?: CardPreset; card?: Card; text?: string; note?: string; size?: 'tile' | 'mini' | 'big'; badges?: ReactNode; onClick?: () => void
   label?: string
 }) {
   const [broken, setBroken] = useState(false)
+  const shown = size === 'mini' ? undefined : text
+  const fitBox = useFitText(shown)
   const name = preset?.name ?? card?.name ?? ''
   const type = preset?.cardType ?? card?.cardType
-  const element = preset?.element ?? card?.element
-  const cost = costLabel(preset ? preset.cost : card?.cost, preset?.tags ?? card?.tags)
+  const tags = preset?.tags ?? card?.tags ?? ''
+  const element = (preset?.element ?? card?.element ?? '').toLowerCase()
+  const cost = costLabel(preset ? preset.cost : card?.cost, tags)
   const rarity = (preset?.rarity ?? 'custom').toLowerCase()
   const body = (
     <>
-      <div className="cf-art">
+      <div className={`cf-card cf-el-${element}`}>
         {preset?.image && !broken
-          ? <img src={artUrl(preset.image)} alt="" loading="lazy" onError={() => setBroken(true)} />
-          : <div className={`cf-noart el-${(element ?? '').toLowerCase()}`} />}
-        {cost && <span className="cf-cost">{cost}</span>}
-        {badges && <span className="cf-badges">{badges}</span>}
-        <span className="cf-name">{name}</span>
-      </div>
-      {size !== 'mini' && (
-        <div className="cf-body">
-          <div className="cf-type">{[type, element].filter(Boolean).join(' · ')}</div>
-          {text && <div className="cf-text card-text">{text}</div>}
-          {note && <div className="cf-note">{note}</div>}
+          ? <img className="cf-img" src={artUrl(preset.image)} alt="" loading="lazy" onError={() => setBroken(true)} />
+          : <div className="cf-img cf-noart" />}
+        <span className="cf-strip" />
+        <div className="cf-head">
+          <span className="cf-cost">{cost}</span>
+          <span className="cf-title">
+            <span className="cf-name">{name}</span>
+            {size !== 'mini' && type && (
+              <span className="cf-type"><span className={`cf-icon cf-icon-${type.toLowerCase()}`}>{TYPE_ICON[type]}</span>{typeLabel(type, tags)}</span>
+            )}
+          </span>
         </div>
-      )}
+        {badges && <span className="cf-badges">{badges}</span>}
+        {shown && <div className="cf-textbox" ref={fitBox}><div className="cf-text card-text">{richText(shown)}</div></div>}
+      </div>
+      {note && <div className="cf-note">{note}</div>}
     </>
   )
   const cls = `card-face cf-${size} cf-r-${rarity}`
