@@ -31,9 +31,9 @@ export function parseBuffValue(text: string): number {
 }
 
 /** A preset buff's value for the build: its own value (0 below minAttack), plus its attackBonus when the stats-screen Attack
- * (or Defense, with thresholdStat) is above the threshold (once, or for every `every` above it up to `max`). */
+ * (or Defense / Health, with thresholdStat) is above the threshold (once, or for every `every` above it up to `max`). */
 export function presetBuffValue(e: BuffEffect, build: Pick<Build, 'stats'>): { value: number; bonus: boolean } {
-  const atk = e.thresholdStat === 'Defense' ? build.stats.defense : build.stats.attack
+  const atk = e.thresholdStat === 'Defense' ? build.stats.defense : e.thresholdStat === 'Health' ? build.stats.health : build.stats.attack
   if (e.minAttack !== undefined && atk < e.minAttack) return { value: 0, bonus: false }
   const ab = e.attackBonus
   const bonus = !!ab && (ab.orEqual ? atk >= ab.above : atk > ab.above)

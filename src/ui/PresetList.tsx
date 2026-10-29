@@ -15,7 +15,7 @@ function effectPills(e: Effect, onStatsScreen: boolean, build: Build): Pill[] {
       ...(e.hint ? [{ text: e.hint, group: 'const' as const }] : []),
       ...(onStatsScreen ? [{ text: 'on the stats screen: not added', group: 'const' as const }] : [])]
   }
-  // attackBonus / minAttack: the value already follows the stats-screen Attack (or Defense)
+  // attackBonus / minAttack: the value already follows the stats-screen Attack (or Defense / Health)
   const v = presetBuffValue(e, build)
   const ab = e.attackBonus
   const stat = e.thresholdStat ?? 'Attack'
