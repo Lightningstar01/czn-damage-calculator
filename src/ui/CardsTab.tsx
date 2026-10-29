@@ -80,7 +80,9 @@ function toTiles(items: DeckItem[], isCustom: (i: DeckItem) => boolean): Tile[] 
   return out
 }
 
-const createdNote = (by?: string) => by === 'Auto' ? 'Comes with every deck' : by ? `Created by ${by}` : undefined
+const isEgoCard = (by?: string) => !!by && /^E\d$/.test(by)
+const createdNote = (by?: string) => by === 'Auto' ? 'Comes with every deck'
+  : isEgoCard(by) ? `Comes with Manifest Ego ${by!.slice(1)}` : by ? `Created by ${by}` : undefined
 
 /** The build's deck: the character's cards, each teammate's (they only bring buffs), then custom cards from older saves. */
 function DeckSection() {
@@ -251,7 +253,7 @@ function AddCardsSection() {
           <div className="sheet-card"><CardFace size="big" preset={adding} text={text(adding)} /></div>
           {!!adding.creates?.length && (
             <p className="muted">Comes with: {deckItems(owner.ch, [{ id: 'new', preset: adding.id }])
-              .filter((i) => i.createdBy && i.createdBy !== 'Auto').map((i) => i.card.name).join(', ')}</p>
+              .filter((i) => i.createdBy && i.createdBy !== 'Auto' && !isEgoCard(i.createdBy)).map((i) => i.card.name).join(', ')}</p>
           )}
           <div className="btn-row">
             <button className="btn primary" onClick={() => add(adding)}>Add{owner.teammate ? ` to ${owner.name}'s cards` : ''}</button>

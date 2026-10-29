@@ -10,7 +10,7 @@ export interface DeckItem {
   preset?: CardPreset
   /** The picked DeckCard's id (a teammate's: its index in Teammate.cards); missing for cards that come with others. */
   entry?: string
-  /** For cards that come with others: the card that creates it, or 'Auto' for the Ego skill. */
+  /** For cards that come with others: the card that creates it, 'Auto' for the Ego skill, 'E6' for a Manifest Ego card. */
   createdBy?: string
 }
 
@@ -43,8 +43,9 @@ export function presetCard(p: CardPreset, element: Element, id: string, nodeOn: 
   }
 }
 
-/** The cards of a deck in order: the Ego skill first, then each picked card followed by the cards it creates (once each). */
-export function deckItems(ch: CharacterPreset | undefined, picked: DeckCard[], nodeOn: NodeOn = allNodesOn): DeckItem[] {
+/** The cards of a deck in order: the Ego skill and the Manifest Ego cards unlocked at egoLevel first, then each picked card
+ * followed by the cards it creates (once each). */
+export function deckItems(ch: CharacterPreset | undefined, picked: DeckCard[], nodeOn: NodeOn = allNodesOn, egoLevel = 0): DeckItem[] {
   const all = ch?.cards ?? []
   const byId = new Map(all.map((p) => [p.id, p]))
   const element = ch?.element ?? ELEMENTS[0]
@@ -63,6 +64,7 @@ export function deckItems(ch: CharacterPreset | undefined, picked: DeckCard[], n
     bringCreated(p)
   }
   for (const p of all) if (p.category === 'Ego Skill') bring(p, 'Auto')
+  for (const p of all) if (p.egoLevel !== undefined && egoLevel >= p.egoLevel) bring(p, `E${p.egoLevel}`)
   for (const d of picked) {
     if (d.custom) {
       // A custom card copied from a preset keeps the preset's effects
@@ -77,14 +79,14 @@ export function deckItems(ch: CharacterPreset | undefined, picked: DeckCard[], n
   return out
 }
 
-/** The build's deck; nodeTags follow the build's Potential nodes. */
-export function buildDeck(ch: CharacterPreset | undefined, build: Pick<Build, 'deck' | 'potentialNodes'>): DeckItem[] {
-  return deckItems(ch, build.deck ?? [], buildNodeOn(build))
+/** The build's deck; nodeTags follow the build's Potential nodes, Manifest Ego cards its Ego level. */
+export function buildDeck(ch: CharacterPreset | undefined, build: Pick<Build, 'deck' | 'potentialNodes' | 'egoLevel'>): DeckItem[] {
+  return deckItems(ch, build.deck ?? [], buildNodeOn(build), build.egoLevel ?? 0)
 }
 
 /** A teammate's deck: their picked cards (entry = index in Teammate.cards), Ego skill and created cards. */
 export function teammateDeck(ch: CharacterPreset | undefined, t: Teammate): DeckItem[] {
-  return deckItems(ch, (t.cards ?? []).map((preset, i) => ({ id: String(i), preset })))
+  return deckItems(ch, (t.cards ?? []).map((preset, i) => ({ id: String(i), preset })), allNodesOn, t.egoLevel ?? 0)
 }
 
 /** The distinct card presets of a deck (a card picked twice counts once), in deck order. */

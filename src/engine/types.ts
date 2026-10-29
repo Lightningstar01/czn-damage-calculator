@@ -170,6 +170,8 @@ export interface CardPreset {
   perCount?: string
   /** Ids of the cards it creates (shards, Sword Tassel): they join the deck with it (src/engine/deck.ts). */
   creates?: string[]
+  /** A Manifest Ego effect that deals damage (Narja's E6): joins the deck by itself from this Ego level, like the Ego skill. */
+  egoLevel?: number
   /** Overrides the card upgrade potential picked from its category (null: none). */
   upgrade?: PotentialUpgrade | null
   /** Tags a Potential node adds while it's on (build.potentialNodes): { '3-1': 'Blessing' } (Adelheid's Basic cards). */

@@ -44,7 +44,8 @@ owner asks (there is no git remote yet).
     slugs or card ids and duplicate effect ids.
   - Deck per build (`build.deck`, `src/engine/deck.ts`): `{id, preset}` entries resolved live from the presets
     (old non-preset cards keep `{id, custom}`). The Ego skill and the cards a picked card `creates`
-    (`creates: [...]` in `characters/<slug>.ts`, e.g. Rossweisse's shards) join automatically with id `auto:<presetId>`;
+    (`creates: [...]` in `characters/<slug>.ts`, e.g. Rossweisse's shards) join automatically with id `auto:<presetId>`,
+    and so do cards with `egoLevel` from that Manifest Ego level (Ego effects that deal damage: Narja's E6, Rossweisse's E2);
     nobody adds them by hand. A deck card's preset effects count while it's in the deck. Teammates' decks
     (`Teammate.cards`) only add buffs. Cards are picked on the Cards tab as pictures (`src/ui/CardFace.tsx`).
   - Card art (owner, 2026-10-27: copy it, best quality): the import copies every character's art into
@@ -76,7 +77,7 @@ owner asks (there is no git remote yet).
   `upgrade: null` turns off its potential upgrade (Mei Lin's Jewel V). Tokens nest: `Heal {P3-1:{70%}|{100%}}`.
   A node that adds a keyword also adds the tag: `nodeTags: { '3-1': 'Blessing' }` (only while the node is on; teammates: on).
   `{F40%}` is a Fixed damage % (raised only with the potentialFixed setting).
-  Done: Mei Lin, Rossweisse, Tiphera, Orlea, Mika, Rei, Tenebria, Adelheid. The step-by-step process is the `card-review` skill (.claude/skills/card-review).
+  Done: Mei Lin, Rossweisse, Tiphera, Orlea, Mika, Rei, Tenebria, Adelheid, Narja. The step-by-step process is the `card-review` skill (.claude/skills/card-review).
 - Card upgrade potentials: build `basicLevel` / `signatureLevel`, card `upgrade`
   (Basic / Signature; `pct` is then the base %), `potentialFactor()` in calc.ts; the Manifest Ego
   levels that add +3 (E3 and/or E5; some characters have both) are parsed from the import (`potentialEgo` in merge.ts). See docs/FORMULA.md 2c.
@@ -139,7 +140,7 @@ Crit       = Damage x Crit DMG (stat is the total multiplier); Expected = Damage
 - Open mechanics questions are listed in docs/FORMULA.md section 4.
 - Card text check: the owner is saving in-game card screenshots to `card-screenshots/<slug>/` (git-ignored);
   compare them with the cards and confirm corrections with the owner (`card-review` skill). Mei Lin, Rossweisse (2026-10-27),
-  Tiphera, Orlea, Mika, Rei, Tenebria, Adelheid (2026-10-28) done; next: every other character the owner has, as they send them; Luke, Kayron, Olga and Fei
+  Tiphera, Orlea, Mika, Rei, Tenebria, Adelheid, Narja (2026-10-28) done; next: every other character the owner has, as they send them; Luke, Kayron, Olga and Fei
   last (the owner doesn't have them yet).
 - Idea for later (owner, 2026-10-27): animated card art. cznmetadecks has the game's animated unique cards as video
   (`https://cdn.czndecksmeta.com/card/cards_animated/<artId>.mp4`, 900x770, ~1 MB each, ~200 MB in all): skipped for size.

@@ -154,7 +154,7 @@ export default {
     // the Signature upgrade or "Attack Card" buffs; as a Skill with no upgrade it gets only the "this unit" buffs. Owner has E2 to test.
     {
       id: 'blade-afterimage', base: 'Blade Afterimage', name: 'Blade Afterimage', category: 'Generated Card', cardType: 'Skill',
-      cost: null, element: 'Justice', tags: 'Ego effect', scaling: 'ATK', pct: 1.2, hits: 1, weaknessApplies: false, upgrade: null,
+      cost: null, element: 'Justice', tags: 'Ego effect', scaling: 'ATK', pct: 1.2, hits: 1, weaknessApplies: false, upgrade: null, egoLevel: 2,
       text: 'E2: When a Light or Dark card of this unit is activated, {120%} Damage to a random enemy, create 1 Sword Tassel, '
         + 'then decrease Blade Afterimage by 1 (4 at the start of the turn, max 8 stacks)',
       notes: 'Add one play per Light or Dark card activated (up to 4 per turn). Unconfirmed: whether it counts as an Extra Attack',
