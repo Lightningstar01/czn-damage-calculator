@@ -111,7 +111,7 @@ export default {
     // E6 Liberated Memory (in game): "At the start of the turn, gain 4 Voracity and 2 Predation. At the end of the turn, 50%
     // Defense-Based Damage to random enemies and Heal 1% Health × Predation count decreased this turn" (Prydwen: no start-of-turn
     // gain; "for each Predation decreased" read as damage too). Damage from an effect, not a card: no Attack Card buffs and no
-    // card upgrade (Unconfirmed; the owner is below E6).
+    // card upgrade (owner, 2026-10-28).
     {
       id: 'liberated-memory', base: 'Liberated Memory', name: 'Liberated Memory', category: 'Generated Card', cardType: 'Skill',
       cost: null, element: 'Instinct', tags: 'Ego effect', scaling: 'DEF', pct: 0.5, hits: 1, weaknessApplies: false, upgrade: null,

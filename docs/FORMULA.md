@@ -306,7 +306,7 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
   - Manifest Ego in-game wording: E4 "+40% Damage Amount to Predation" (Prydwen: +30%); E6 "At the start of the turn, gain 4
     Voracity and 2 Predation. At the end of the turn, 50% Defense-Based Damage to random enemies and Heal 1% Health x Predation
     count decreased this turn" (Prydwen lacks the start-of-turn gain). E6's damage is its own card, Liberated Memory, that joins
-    the deck from E6 (User, 2026-10-28; `CardPreset.egoLevel`). Unconfirmed: that it gets no Attack Card buffs and no upgrade.
+    the deck from E6 (User, 2026-10-28; `CardPreset.egoLevel`). It gets no Attack Card buffs and no card upgrade (User, 2026-10-28).
   - Bottomless Hunger IV "For 1 turn, +100% Defense-Based Damage" and Domain of Voracity II "For 2 turn(s), +100%
     Defense-Based Damage taken by the target": additive on Defense-Based cards, set per play; Domain II's only for the plays
     after it (User, 2026-10-28).
