@@ -9,14 +9,15 @@
 import { describe, expect, it } from 'vitest'
 import { computeBuild, shownPct, type BuildResult } from '../src/engine/calc'
 import { renderCardText } from '../src/engine/cardText'
-import { AUTO, buildDeck, changeEpiphany, prunePlays } from '../src/engine/deck'
+import { AUTO, buildDeck, changeEpiphany, prunePlays, pruneTeamPlays } from '../src/engine/deck'
+import { withLinkedTeam } from '../src/engine/team'
 import { activeBuffs, buffMatches, buffType, fragmentPiecesUsed, parseBuffValue, parseStatValue, presetBuffValue } from '../src/engine/buffs'
 import { ADDITIONS, IMPORTED, PRESETS } from '../src/data/presets'
 import { checkAdditions } from '../src/data/merge'
 import { DEFAULT_SETTINGS } from '../src/data/settings'
 import { produce } from 'immer'
-import { cardFromPreset, duplicateBuild, newBuff, newBuild, newCard, newCharacterSave, migrate, defaultSave, SAVE_VERSION } from '../src/store/save'
-import type { Build, Card, CharacterSave, Presets, RotationPlay } from '../src/engine/types'
+import { cardFromPreset, duplicateBuild, newBuff, newBuild, newCard, newCharacterSave, newTeammate, migrate, defaultSave, SAVE_VERSION } from '../src/store/save'
+import { NO_BUILD, type Build, type Card, type CharacterSave, type Presets, type RotationPlay } from '../src/engine/types'
 import fixture from './fixtures/workbook.json'
 
 const presets: Presets = {
@@ -1441,5 +1442,153 @@ describe('Nia', () => {
     expect(r.plays[2].nonCrit).toBeCloseTo((1.5 + 4 * 0.05) * 100 * 0.35)
     // Decibel's bonus reaches only the shuffle Extra Attack
     expect(r.plays[3].nonCrit).toBeCloseTo(2 * 100 * 0.35)
+  })
+})
+
+describe('Selena', () => {
+  const selena = PRESETS.characters.find((c) => c.name === 'Selena')!
+  const preset = (id: string) => selena.cards!.find((p) => p.id === id)!
+  // Owner's screenshots (2026-10-28): E6, Basic and Unique 6/16 (0 + 6 from E3 and E5: x1.12), 3-1, 5-1 and 7 locked
+  const ownerBuild = () => {
+    const cs = newCharacterSave()
+    const [a] = cs.builds
+    Object.assign(a, { egoLevel: 6 })
+    a.stats.attack = 100
+    for (const id of ['p5-1-fire', 'p7-passion', 'p7-passion-bonus']) a.presetSwitches[`Selena|${id}`] = false
+    return { cs, a }
+  }
+
+  it("card text matches the owner's in-game screenshots", () => {
+    const { cs, a } = ownerBuild()
+    const text = (id: string) => {
+      const p = preset(id)
+      const c = cardFromPreset(p, 'Passion')
+      const buffs = activeBuffs(PRESETS, 'Selena', cs, a, settings)
+      return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: () => true, pct: (base, fixed) => shownPct(base, c, a, selena, buffs, settings, fixed) })
+    }
+    expect(text('card-394')).toBe('350% Damage\n4 Mark')
+    expect(text('card-395')).toBe('112% Damage')
+    expect(text('card-396')).toBe('112% Shield')
+    expect(text('card-403')).toBe('168% Damage\nAttunement: 1 Mark to a random enemy')
+    expect(text('card-404')).toBe('112% Damage\nAttunement: 300% Damage to a random enemy')
+    expect(text('card-406')).toBe('168% Shield\n2 Mark to all enemies')
+    expect(text('card-409')).toBe('134% Damage to all enemies, 1 Passion Weakness')
+    expect(text('card-416')).toBe('252% Shield\n3 Tenacity Damage')
+    expect(text('card-417')).toContain('168% Damage')
+    expect(text('card-421')).toBe('[Unique / Initiation]\n+80% Mark Damage')
+  })
+
+  it('Mark: every Attack Card play with Mark adds her 100% Extra Attack (+80% Sniper, +20% E2) and E6 30% of 100%', () => {
+    const { cs, a } = ownerBuild()
+    a.deck.push({ id: 'ef', preset: 'card-395' }, { id: 'sd', preset: 'card-421' }, { id: 'hps', preset: 'card-400' }, { id: 'sk', preset: 'card-397' })
+    a.rotation = [{ cardId: 'ef', stacks: { Mark: 2 } }, { cardId: 'ef' }, { cardId: 'ef', stacks: { Mark: 1, 'High-Power Scope III': 1 } },
+      { cardId: 'sk', stacks: { Mark: 1 } }, { cardId: 'auto:card-394', stacks: { Mark: 1 } }]
+    const r = computeBuild(PRESETS, 'Selena', cs, a, settings)
+    const own = 1.12 * 100 * 0.35
+    expect(r.plays[0].triggered.map((t) => t.card.name)).toEqual(['Mark', 'Mark (E6 Extra Attack)'])
+    expect(r.plays[0].triggered[0].nonCrit).toBeCloseTo((1 + 0.8 + 0.2) * 35)
+    expect(r.plays[0].triggered[1].nonCrit).toBeCloseTo(0.3 * 35)
+    expect(r.plays[0].nonCrit).toBeCloseTo(own + 2 * 35 + 0.3 * 35)
+    expect(r.plays[1].triggered).toEqual([])
+    // High-Power Scope III: +50% Mark Damage on that turn's plays
+    expect(r.plays[2].triggered[0].nonCrit).toBeCloseTo(2.5 * 35)
+    // A Skill card doesn't activate Mark; the Ego skill (a Skill) neither
+    expect(r.plays[3].triggered).toEqual([])
+    expect(r.plays[4].triggered).toEqual([])
+    expect(r.plays[4].nonCrit).toBeCloseTo((3 + 0.5) * 35)
+  })
+
+  it('Coordinated Attacks: Drone Bombing V on Passion Attack Cards, IV on Weakness Attacks; Target Spotted I Attunement play', () => {
+    const { cs, a } = ownerBuild()
+    a.egoLevel = 0
+    a.deck.push({ id: 'ef', preset: 'card-395' }, { id: 'db5', preset: 'card-414' }, { id: 'db', preset: 'card-409' },
+      { id: 'db4', preset: 'card-413' }, { id: 'ts1', preset: 'card-404' })
+    a.rotation = [{ cardId: 'ef' }, { cardId: 'ef', stacks: { 'Drone Bombing IV': 1 } },
+      { cardId: 'ef', stacks: { 'Drone Bombing IV': 1, 'Passion Weakness': 1 } }, { cardId: 'auto:ts-attunement' }]
+    const r = computeBuild(PRESETS, 'Selena', cs, a, settings)
+    expect(r.plays[0].triggered.map((t) => [t.card.name, t.nonCrit])).toEqual([['Coordinated Attack (Drone Bombing V)', 0.5 * 35]])
+    expect(r.plays[1].triggered).toHaveLength(1)
+    // Passion Weakness makes Passion hits Weakness Attacks (x1.25, the Coordinated Attacks too); that sets off Drone Bombing IV
+    expect(r.plays[2].nonCrit).toBeCloseTo(1.25 * 35 + 0.5 * 1.25 * 35 + 1.25 * 35)
+    // An effect's damage: no card upgrade, and it sets off no Attack Card trigger
+    expect(r.plays[3].nonCrit).toBeCloseTo(3 * 35)
+    expect(r.plays[3].triggered).toEqual([])
+  })
+})
+
+describe('Team damage (owner, 2026-10-28)', () => {
+  const meiLinSave = () => {
+    const cs = newCharacterSave()
+    Object.assign(cs.builds[0], { egoLevel: 2 })
+    cs.builds[0].stats.attack = 200
+    return cs
+  }
+  const selenaWithMeiLin = () => {
+    const cs = newCharacterSave()
+    const [a] = cs.builds
+    Object.assign(a, { egoLevel: 6 })
+    a.stats.attack = 100
+    for (const id of ['p5-1-fire', 'p7-passion', 'p7-passion-bonus']) a.presetSwitches[`Selena|${id}`] = false
+    a.deck.push({ id: 'ef', preset: 'card-395' }, { id: 'hps4', preset: 'card-401' })
+    a.team = [{ ...newTeammate(), character: 'Mei Lin', cards: ['card-338'] }]
+    return { cs, a }
+  }
+
+  it("a linked teammate's play deals their own build's damage; Selena's Mark and High-Power Scope IV follow it", () => {
+    const { cs, a } = selenaWithMeiLin()
+    const ml = meiLinSave()
+    a.rotation = [{ cardId: 'ef', stacks: { 'High-Power Scope IV': 1 } }, { cardId: 'card-338', by: 0, stacks: { Mark: 1, 'High-Power Scope IV': 1 } }]
+    const r = computeBuild(PRESETS, 'Selena', cs, a, settings, { 'Mei Lin': ml })
+    // Mei Lin's Strike as Mei Lin's own build computes it
+    const alone = produce(ml, (d) => { d.builds[0].deck = [{ id: 's', preset: 'card-338' }]; d.builds[0].rotation = [{ cardId: 's' }] })
+    const strike = computeBuild(PRESETS, 'Mei Lin', alone, alone.builds[0], settings).plays[0]
+    expect(r.plays[1].by).toBe('Mei Lin')
+    expect(r.plays[1].hits[0].nonCrit).toBeCloseTo(strike.hits[0].nonCrit)
+    expect(r.plays[1].hits[0].stat.value).toBe(200)
+    // High-Power Scope IV only on another combatant's Attack Card
+    expect(r.plays[0].triggered).toEqual([])
+    expect(r.plays[1].triggered.map((t) => [t.by, t.card.name])).toEqual([['Selena', 'Mark'], ['Selena', 'Mark (E6 Extra Attack)'], ['Selena', 'Coordinated Attack']])
+    expect(r.plays[1].triggered[0].nonCrit).toBeCloseTo((1 + 0.2) * 35)
+    expect(r.byCharacter.map((c) => c.name)).toEqual(['Selena', 'Mei Lin'])
+    expect(r.byCharacter[1].nonCrit).toBeCloseTo(strike.nonCrit)
+    expect(r.byCharacter[0].nonCrit + r.byCharacter[1].nonCrit).toBeCloseTo(r.nonCrit)
+    // The slot's Manifest Ego, partner and sets come from the linked build
+    expect(withLinkedTeam(a, { 'Mei Lin': ml }).team[0].egoLevel).toBe(2)
+  })
+
+  it('an unlinked teammate deals no damage of their own, but their Attack Cards still set off Mark', () => {
+    const { cs, a } = selenaWithMeiLin()
+    a.team[0].build = NO_BUILD
+    a.rotation = [{ cardId: 'card-338', by: 0, stacks: { Mark: 1 } }]
+    const r = computeBuild(PRESETS, 'Selena', cs, a, settings, { 'Mei Lin': meiLinSave() })
+    expect(r.plays[0].noBuild).toBe(true)
+    expect(r.plays[0].hits).toEqual([])
+    expect(r.plays[0].nonCrit).toBeCloseTo(1.2 * 35 + 0.3 * 35)
+  })
+
+  it("Selena as the teammate: her Mark hits use her own saved build on the main character's Attack Cards", () => {
+    const ml = meiLinSave()
+    const [b] = ml.builds
+    b.deck = [{ id: 's', preset: 'card-338' }]
+    b.team = [{ ...newTeammate(), character: 'Selena', cards: ['card-421'] }]
+    b.rotation = [{ cardId: 's', stacks: { Mark: 1 } }]
+    const sel = newCharacterSave()
+    Object.assign(sel.builds[0], { egoLevel: 1 })
+    sel.builds[0].stats.attack = 300
+    const r = computeBuild(PRESETS, 'Mei Lin', ml, b, settings, { Selena: sel })
+    expect(r.plays[0].triggered.map((t) => t.card.name)).toEqual(['Mark'])
+    // 100% + Sniper's Domain +80% (E2 not unlocked) + Selena's 7 (+4% Passion, twice: its switches are on), with Selena's 300 Attack
+    expect(r.plays[0].triggered[0].nonCrit).toBeCloseTo((1 + 0.8 + 0.08) * 300 * 0.35)
+  })
+
+  it('removing a teammate card drops its plays; emptying the slot drops all of theirs', () => {
+    const { a } = selenaWithMeiLin()
+    a.rotation = [{ cardId: 'ef' }, { cardId: 'card-338', by: 0 }]
+    const meiLin = PRESETS.characters.find((c) => c.name === 'Mei Lin')
+    pruneTeamPlays(meiLin, a, 0)
+    expect(a.rotation).toHaveLength(2)
+    a.team[0].cards = []
+    pruneTeamPlays(meiLin, a, 0)
+    expect(a.rotation).toEqual([{ cardId: 'ef' }])
   })
 })

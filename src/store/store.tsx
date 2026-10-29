@@ -3,7 +3,8 @@ import { produce } from 'immer'
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { PRESETS } from '../data/presets'
 import { computeBuild, type BuildResult } from '../engine/calc'
-import type { Build, CharacterSave, SaveData } from '../engine/types'
+import { linkedBuild, type Linked } from '../engine/team'
+import type { Build, CharacterSave, SaveData, Teammate } from '../engine/types'
 import { loadSave, newCharacterSave, storeSave } from './save'
 
 interface Store {
@@ -43,16 +44,23 @@ export interface CharacterCtx {
   updateBuild: (recipe: (b: Build) => void) => void
 }
 
+/** The saved build a teammate slot of the open build is linked to (engine/team.ts), if any. */
+export function useLinked(t: Teammate | undefined): Linked | undefined {
+  const { data } = useStore()
+  return linkedBuild(data.characters, t)
+}
+
 /** The open character, its active build, and every build's results. Null until a character is picked. */
 export function useCharacter(): CharacterCtx | null {
   const { data, update } = useStore()
   const name = data.activeCharacter
   const cs = data.characters[name]
+  // Every character's saves: teammates linked to their saved builds deal damage with them
   const results = useMemo(() => {
     const m = new Map<string, BuildResult>()
-    if (cs) for (const b of cs.builds) m.set(b.id, computeBuild(PRESETS, name, cs, b, data.settings))
+    if (cs) for (const b of cs.builds) m.set(b.id, computeBuild(PRESETS, name, cs, b, data.settings, data.characters))
     return m
-  }, [cs, name, data.settings])
+  }, [cs, name, data.settings, data.characters])
   const updateCs = useCallback((recipe: (cs: CharacterSave) => void) => update((d) => recipe(d.characters[name])), [update, name])
   const buildId = cs?.activeBuild
   const updateBuild = useCallback((recipe: (b: Build) => void) => update((d) => {

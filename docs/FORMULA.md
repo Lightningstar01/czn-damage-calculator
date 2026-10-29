@@ -349,6 +349,33 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
     aren't counted.
   - E2 Rhythm Boost (in game): "+5% Damage Amount (max 4 stacks)": additive, Nia's damage only (User, 2026-10-28), stacks per
     play. E6: 4 Rhythm Boost at battle start (set the stacks). Not counted: heals, Elasticity, draws, discards, Cost changes.
+- **Selena** (owner's screenshots, 2026-10-28; Ego 6, Basic and Unique cards x1.12 (E3 + E5 +6); 3-1, 5-1 and 7 locked, so
+  their switches are on until turned off on the Buffs tab): Engagement Fire 112%, Target Spotted 168%, Drone Bombing 134%.
+  - Prydwen corrections: the Ego skill Final Shot shows 350% Damage and 4 Mark at E4 (Prydwen 300%, 3 Mark; E4 "+50% Damage
+    Amount to Final Shot, and increase Mark by 1"); Target Spotted I's Attunement is 300% (Prydwen 200%), shown unraised.
+  - Mark (in game): "When an Attack Card is activated, inflict 100% Extra Attack, ... and decrease Mark by 1". Modeled as a
+    **trigger**: on every Attack Card play, anyone's, while the play's Mark (set per play) is above 0, Selena's 100% Extra Attack
+    is added to the play (User, 2026-10-28: automatic per play). Mark Damage buffs (Sniper's Domain +80%, E2 +20%, High-Power
+    Scope III +50% for 1 turn) are additive and boost only Mark hits. E6's "30% chance to inflict 100% Extra Attack" counts as
+    30% of the hit (expected value) and gets no Mark buffs (User, 2026-10-28).
+  - Coordinated Attacks (High-Power Scope IV on other Combatants' Attack Cards, Drone Bombing IV on Weakness Attacks, Drone
+    Bombing V 50% on Passion Attack Cards, Target Spotted V 200% on Ravage) are Selena's Extra Attacks (User, 2026-10-28).
+    High-Power Scope IV / Drone Bombing IV are switched on per play (their 1 turn); Target Spotted V and I's Attunement are
+    plays of their own (one per Ravage / draw).
+  - **Unconfirmed**: Mark, Coordinated and Attunement hits are effects, not cards: Attack / Skill card buffs don't match them
+    (`notACard`) and card upgrades don't raise them. Passion Weakness (Drone Bombing I / II) is a per-play enemy debuff that
+    makes every Passion hit a Weakness Attack (x Weakness DMG), Selena's Coordinated Attacks included. Target Spotted V's hit
+    counts the target as Ravaged. Not counted: 5-1's and 7's extra +5% / +4% needing Additional / Bonus Damage (7's bonus is a
+    switch with a hint), Tenacity damage, 3-1's Piercing, Shields, draws.
+- **Team damage** (User, 2026-10-28), website only: Selena is played beside another DPS, so teammates can deal damage too.
+  - Each teammate slot links one of that character's saved builds (missing = their active build; "None" = buffs only, as before).
+    A linked slot takes its Manifest Ego, partner and sets from that build.
+  - The attack list mixes everyone's plays: a teammate's picked cards can be played (`by` = the slot). Their plays are computed as
+    that teammate's own build would (their stats, own buffs, their deck = the slot's cards), with this build's character and the
+    other slot as their team; switches for the others' effects come from this build. An unlinked teammate's play deals no
+    damage but still sets off triggers (Mark).
+  - Triggers belong to whoever owns the effect (Selena as main or as teammate) and are computed with that owner's build.
+    Results shows each character's expected damage and share.
 - **Manifest Ego in-game wording** (owner's screenshots, 2026-10-28; Prydwen's can be outdated): Mei Lin E1 / E4,
   Rossweisse E2 / E4 / E6, Tiphera E4 (max 2 stacks, removed at the end of the turn) and Orlea E4 match what is modeled.
 - **Team snapshot** (User, 2026-10-26), website only. Replaces the rotation buffs counted along
@@ -359,8 +386,8 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
     enemy effects (character and Ego, partner incl. the partner's Ego skill, fragment sets, picked
     cards). Teammates' equipment goes in My stat boosts / My buffs with a "From" label.
   - **Snapshot**: every switched-on buff counts on every hit of every play, including the card that
-    applies it. "Damage taken" debuffs on the enemy (e.g. Adelheid's Truth) are additive. Only the
-    main character's damage is calculated.
+    applies it. "Damage taken" debuffs on the enemy (e.g. Adelheid's Truth) are additive. Teammates' damage
+    counts only for their plays in the attack list (Team damage, 2026-10-28).
   - Each build has its own ordered **attack list** (the card library is shared; a list can be copied
     from another build). Per play: hits, Vulnerable on/off, Weakness debuff on/off, and the stacks of
     each per-play buff (`counter`), all off / 0 by default. A counter buff's switch is on/off only;

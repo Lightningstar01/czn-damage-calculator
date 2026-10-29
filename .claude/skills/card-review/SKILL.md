@@ -77,6 +77,8 @@ Copy the shape of the worked examples. Rules:
 - Card % "for each Cost of this card" = `perCost: true` (Tiphera's C&D V); "for each <thing>" = `perCount: '<Thing>'`
   (Orlea's Annoying: 'Cards in hand'); both give a setting per play.
 - `creates: [ids]` on every card that creates others (shards, Archetypes...), so they join the deck.
+- Damage set off by other plays (Selena's Mark, Coordinated Attacks) = `triggers` with an `extraCards` hit marked `notACard`
+  (see `selena.ts`); it's computed with its owner's build, so it works when that character is a teammate.
 - Damage buffs: card buffs via `cardBuff()` in that card's `effects`; character, potential and Ego buffs in `effects`.
   - "+X%" = Additive, "by X%" (no "+") = Multiplicative; "+X% base Damage Amount" = `type: 'Base %'`;
     "final Damage Amount" = `type: 'Final'`; scaling the card's own % (potential-like, doubled...) = `type: 'Card %'`.

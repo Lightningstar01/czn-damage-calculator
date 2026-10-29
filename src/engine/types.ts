@@ -100,6 +100,26 @@ export interface BuffEffect {
 
 export type Effect = StatEffect | BuffEffect
 
+/** Damage that a play sets off (owner, 2026-10-28): Selena's Mark ("When an Attack Card is activated, inflict 100% Extra Attack"), her
+ * Coordinated Attacks. The added hit is the trigger owner's (their build's stats and buffs), whoever played the card. */
+export interface Trigger {
+  /** Card preset id of the hit it adds (one of the owner's cards, usually an extraCards entry with notACard). */
+  card: string
+  /** Which played cards set it off: "Applies to" words matched against the played card ('Attack', 'Passion & Attack'). */
+  on: string
+  /** Only plays by another combatant ("an Attack Card of another Combatant"). */
+  others?: boolean
+  /** Only plays that hit a Weakness (the card applies weakness, or a Weakness Attack buff matches it). */
+  weakness?: boolean
+  /** Per-play counter that must be above 0 on the play ('Mark' on the target, or a 'for 1 turn' effect): set on each play. */
+  counter?: string
+  maxStacks?: number
+  /** Chance to happen: its damage counts x this (expected value, owner 2026-10-28). */
+  chance?: number
+  /** Manifest Ego level (1-6) that unlocks it. */
+  egoLevel?: number
+}
+
 export interface CharacterPreset {
   name: string
   /** Prydwen's slug, also the file name in src/data/prydwen and src/data/characters. */
@@ -118,6 +138,8 @@ export interface CharacterPreset {
   /** The Manifest Ego levels that raise the Basic / Signature Card Upgrade potentials, and by how many levels each (from their
    * text; some characters have two, E3 and E5). */
   potentialEgo?: { level: number; levels: number }[]
+  /** Damage the character's keywords set off on any team member's play (Selena's Mark). */
+  triggers?: Trigger[]
 }
 
 /** A Potential node ('3-1') or a Manifest Ego level (dupes, 1-6), as Prydwen lists them. Reference text. */
@@ -183,6 +205,10 @@ export interface CardPreset {
   /** Fixed damage on the next play of a matching card ('Equilux'), as a share of that play's damage (Rossweisse's Ego skill);
    * `ego` raises the share from that Manifest Ego level. */
   followUp?: { appliesTo: string; share: number; ego?: { level: number; share: number } }
+  /** Damage this card sets off on later plays while it's in the deck (Selena's High-Power Scope IV Coordinated Attack). */
+  triggers?: Trigger[]
+  /** See Card.notACard. */
+  notACard?: boolean
 }
 
 export interface PartnerPreset {
@@ -229,6 +255,8 @@ export interface CharacterAdditions {
   notes?: string
   /** The character's own stat boosts and buffs. */
   effects?: Effect[]
+  /** See CharacterPreset.triggers. */
+  triggers?: Trigger[]
   /** Per card id: fields to override (in-game name, tags, %, hits, text...), notes (added after the imported ones, or
    * instead of them with replaceNotes) and effects. */
   cards?: Record<string, Partial<Omit<CardPreset, 'id' | 'base'>> & { replaceNotes?: boolean }>
@@ -303,7 +331,7 @@ export interface Build {
   team: Teammate[]
   /** The main character's cards picked on the Cards tab (the Ego skill and created cards come with them: src/engine/deck.ts). */
   deck: DeckCard[]
-  /** This build's attack list: the main character's plays, in order. */
+  /** This build's attack list: the team's plays, in order (the main character's, and teammates' with RotationPlay.by). */
   rotation: RotationPlay[]
 }
 
@@ -319,7 +347,8 @@ export interface DeckCard {
 /** The other two team slots. */
 export const TEAM_SIZE = 2
 
-/** A teammate in a build: a buff source only (their damage isn't counted). */
+/** A teammate in a build. Linked to one of their saved builds (by default their active one), their Ego, partner and sets come from
+ * it and their plays in the attack list deal damage with it (owner, 2026-10-28); not linked, they're a buff source only. */
 export interface Teammate {
   /** Character name ('' = empty slot). */
   character: string
@@ -330,7 +359,12 @@ export interface Teammate {
   /** Card preset ids picked for their deck (Cards tab; copies allowed): those cards' team effects count, with their Ego skill and
    * created cards. */
   cards: string[]
+  /** Id of the teammate character's saved build to use; missing = their active build; NO_BUILD = none (the fields above). */
+  build?: string
 }
+
+/** Teammate.build: not linked to a saved build. */
+export const NO_BUILD = 'none'
 
 /** The owner's own stat boost (equipment etc.), shared by the character's builds with a switch per build. */
 export interface UserBoost {
@@ -390,6 +424,9 @@ export interface Card {
   /** "X% for each <thing>" (Orlea's Annoying: 'Cards in hand'): pct is per thing; each play sets the count in its stacks
    * under this name (default 1). */
   perCount?: string
+  /** Damage from an effect, not a card being played (Mark, Coordinated Attacks, Attunement damage): the card type words (Attack /
+   * Skill / Upgrade) don't match it, so Attack Card buffs and Attack Card triggers skip it. */
+  notACard?: boolean
 }
 
 /** Labels for UserBoost.from / UserBuff.from. */
@@ -399,6 +436,8 @@ export const FROM_OPTIONS = ['', 'Teammate 1', 'Teammate 2'] as const
  * itself says which target debuffs are up and how many per-play stacks each counter has. */
 export interface RotationPlay {
   cardId: string
+  /** Teammate slot (0-based) whose card this is; missing = the build's character. cardId is then a card of teammateDeck. */
+  by?: number
   /** Overrides the card's hits for this play (Combo, extra-hit effects). */
   hits?: number
   /** Overrides the card's Cost for this play (cards whose damage is per Cost, e.g. Creation and Destruction V). */

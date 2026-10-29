@@ -221,6 +221,9 @@ h2 { font-size: 1.05rem; margin: 0; display: flex; align-items: center; gap: 6px
 .totals .muted { margin: 0; font-size: 0.75rem; }
 .final-stats { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 10px; font-size: 0.85rem; color: var(--muted); }
 .final-stats b { color: var(--text); font-variant-numeric: tabular-nums; }
+.by-character { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 4px; font-size: 0.9rem; }
+.by-character li { display: flex; justify-content: space-between; gap: 8px; }
+.by-character b { font-variant-numeric: tabular-nums; }
 
 .legend { list-style: none; padding: 0; margin: 0 0 8px; display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 0.75rem; color: var(--muted); }
 .legend li { display: flex; align-items: center; gap: 4px; }
@@ -231,6 +234,9 @@ h2 { font-size: 1.05rem; margin: 0; display: flex; align-items: center; gap: 6px
 .play:first-child { border-top: none; }
 .play-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
 .play-name { font-weight: 600; flex: 1; min-width: 0; }
+.play-name .tag, .row-title .tag { margin-left: 6px; vertical-align: middle; }
+.triggered { margin-top: 4px; }
+.triggered > .link { text-align: left; }
 .play-nums { font-variant-numeric: tabular-nums; white-space: nowrap; display: flex; flex-direction: column; align-items: flex-end; line-height: 1.15; }
 .play-nums-label { font-size: 0.72rem; color: var(--muted); }
 .hits li { margin-top: 8px; padding-left: 10px; border-left: 3px solid var(--border); }

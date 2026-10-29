@@ -1,5 +1,6 @@
 // Which stat boosts and buffs are active for a build, and which buffs match a card.
 import { buildDeck, deckPresets, teammateDeck } from './deck'
+import { CARD_TYPES } from './types'
 import type {
   BuffEffect, BuffType, Build, Card, CardPreset, CharacterPreset, CharacterSave, Condition, Effect, FragmentSetPreset, HitScope, PartnerPreset,
   Presets, Settings, StatEffect, StatName, Switch,
@@ -255,7 +256,9 @@ const norm = (s: string) => s.replace(/\s/g, '').toLowerCase()
  * Defense-Based (DEF cards), 'N-cost', 'N+ cost' or 'N+ hits'. */
 function termMatches(term: string, card: Card, tags: string[]): boolean {
   if (term === 'all' || term === norm(card.name) || tags.includes(term)) return true
-  if (term === norm(card.cardType ?? '') || term === norm(card.element ?? '')) return true
+  if (term === norm(card.element ?? '')) return true
+  // An effect's hit (Mark, Coordinated Attack) isn't a card being played: it has no card type
+  if (CARD_TYPES.some((t) => term === norm(t))) return !card.notACard && term === norm(card.cardType ?? '')
   if (card.kind !== 'Normal' && term === norm(card.kind)) return true
   if (term === 'defense-based') return card.scaling === 'DEF'
   const cost = /^(\d+)-cost$/.exec(term)

@@ -39,7 +39,7 @@ export function presetCard(p: CardPreset, element: Element, id: string, nodeOn: 
     id, name: p.name, cardType: p.cardType, element: p.element ?? element, cost: p.cost ?? null, tags: presetTags(p, nodeOn),
     scaling: p.scaling ?? 'ATK', kind: p.kind ?? 'Normal', pct: p.pct, hits: p.hits, weaknessApplies: !!p.weaknessApplies,
     targetRavaged: !!p.targetRavaged, upgrade: cardUpgrade(p), preset: p.id, ...(p.perCost ? { perCost: true } : {}),
-    ...(p.perCount ? { perCount: p.perCount } : {}),
+    ...(p.perCount ? { perCount: p.perCount } : {}), ...(p.notACard ? { notACard: true } : {}),
   }
 }
 
@@ -84,9 +84,11 @@ export function buildDeck(ch: CharacterPreset | undefined, build: Pick<Build, 'd
   return deckItems(ch, build.deck ?? [], buildNodeOn(build), build.egoLevel ?? 0)
 }
 
-/** A teammate's deck: their picked cards (entry = index in Teammate.cards), Ego skill and created cards. */
-export function teammateDeck(ch: CharacterPreset | undefined, t: Teammate): DeckItem[] {
-  return deckItems(ch, (t.cards ?? []).map((preset, i) => ({ id: String(i), preset })), allNodesOn, t.egoLevel ?? 0)
+/** A teammate's deck: their picked cards (entry = index in Teammate.cards; card id = the preset id, so attack list plays keep
+ * pointing at it when another card is removed), Ego skill and created cards. nodeOn: their linked build's Potential nodes. */
+export function teammateDeck(ch: CharacterPreset | undefined, t: Teammate, nodeOn: NodeOn = allNodesOn): DeckItem[] {
+  return deckItems(ch, (t.cards ?? []).map((preset, i) => ({ id: String(i), preset })), nodeOn, t.egoLevel ?? 0)
+    .map((i) => i.entry !== undefined && i.preset ? { ...i, card: { ...i.card, id: i.preset.id } } : i)
 }
 
 /** The distinct card presets of a deck (a card picked twice counts once), in deck order. */
@@ -94,10 +96,17 @@ export function deckPresets(items: DeckItem[]): CardPreset[] {
   return [...new Map(items.filter((i) => i.preset).map((i) => [i.preset!.id, i.preset!])).values()]
 }
 
-/** Drop attack list plays whose card left the deck (removed, or no longer created by anything). */
+/** Drop the main character's attack list plays whose card left the deck (removed, or no longer created by anything). */
 export function prunePlays(ch: CharacterPreset | undefined, build: Build): void {
   const ids = new Set(buildDeck(ch, build).map((i) => i.card.id))
-  build.rotation = (build.rotation ?? []).filter((p) => ids.has(p.cardId))
+  build.rotation = (build.rotation ?? []).filter((p) => p.by !== undefined || ids.has(p.cardId))
+}
+
+/** Drop a teammate slot's plays whose card left their deck (all of them when the slot is empty). */
+export function pruneTeamPlays(ch: CharacterPreset | undefined, build: Build, slot: number): void {
+  const t = build.team?.[slot]
+  const ids = new Set(t?.character ? teammateDeck(ch, t).map((i) => i.card.id) : [])
+  build.rotation = (build.rotation ?? []).filter((p) => p.by !== slot || ids.has(p.cardId))
 }
 
 /** Give a picked card another epiphany. Its plays follow (same entry id); plays of the cards the old version created move to the

@@ -6,11 +6,11 @@ import { CSS } from '@dnd-kit/utilities'
 import { useState } from 'react'
 import { PRESETS } from '../data/presets'
 import { playCard, playCount } from '../engine/calc'
-import { activeBuffs, activeCounters, findCharacter } from '../engine/buffs'
-import { buildDeck, changeEpiphany, deckItems, prunePlays, teammateDeck, type DeckItem } from '../engine/deck'
+import { findCharacter } from '../engine/buffs'
+import { buildDeck, changeEpiphany, deckItems, prunePlays, pruneTeamPlays, teammateDeck, type DeckItem } from '../engine/deck'
 import { TEAM_SIZE, type Card, type CardPreset, type CharacterPreset, type RotationPlay, type Teammate } from '../engine/types'
 import { newId } from '../store/save'
-import { useCharacter, useStore } from '../store/store'
+import { useCharacter, useLinked, useStore } from '../store/store'
 import { CardFace, customText, useCardText } from './CardFace'
 import { pct } from './format'
 import { Section, SelectField, Sheet, Stepper, Toggle } from './inputs'
@@ -80,11 +80,14 @@ function toTiles(items: DeckItem[], isCustom: (i: DeckItem) => boolean): Tile[] 
   return out
 }
 
+/** A new play of a card; slot: a teammate's card. */
+const playOf = (cardId: string, slot?: number): RotationPlay => slot === undefined ? { cardId } : { cardId, by: slot }
+
 const isEgoCard = (by?: string) => !!by && /^E\d$/.test(by)
 const createdNote = (by?: string) => by === 'Auto' ? 'Comes with every deck'
   : isEgoCard(by) ? `Comes with Manifest Ego ${by!.slice(1)}` : by ? `Created by ${by}` : undefined
 
-/** The build's deck: the character's cards, each teammate's (they only bring buffs), then custom cards from older saves. */
+/** The build's deck: the character's cards, each teammate's, then custom cards from older saves. */
 function DeckSection() {
   const { cs, build, updateBuild } = useCharacter()!
   const owners = useOwners()
@@ -100,7 +103,7 @@ function DeckSection() {
   ].filter((g) => g.items.length)
   return (
     <Section title={`${build.name} deck`}
-      help="The cards this build brings, picked under Add cards. The Ego skill comes with every deck, and the cards a card creates (like Rossweisse's shards) come with that card. Their buffs show on the Buffs tab. Teammates' cards only bring their buffs for allies and the enemy. Tap a card to play it, change its epiphany or remove it. Each build has its own deck.">
+      help="The cards this build brings, picked under Add cards. The Ego skill comes with every deck, and the cards a card creates (like Rossweisse's shards) come with that card. Their buffs show on the Buffs tab. Teammates' cards bring their buffs for allies and the enemy, and deal damage when played if the teammate is linked to a saved build (Setup › Team). Tap a card to play it, change its epiphany or remove it. Each build has its own deck.">
       {others.length > 0 && (
         <SelectField label="Copy the deck from" value=""
           options={[{ value: '', label: 'Pick a build…' }, ...others.map((b) => ({ value: b.id, label: `${b.name} (${b.deck?.length ?? 0} cards)` }))]}
@@ -120,9 +123,10 @@ function DeckSection() {
 
 function DeckGroup({ owner, tiles, onOpen }: { owner: Owner; tiles: Tile[]; onOpen: (t: Tile) => void }) {
   const text = useCardText(owner.teammate)
+  const linked = useLinked(owner.teammate)
   return (
     <>
-      <h3 className="deck-owner">{owner.name}{owner.teammate && <span className="tag">buffs only</span>}</h3>
+      <h3 className="deck-owner">{owner.name}{owner.teammate && <span className="tag">{linked ? linked.build.name : 'buffs only'}</span>}</h3>
       <div className="card-grid">
         {tiles.map((t) => (
           <CardFace key={t.item.card.id} preset={t.item.preset} card={t.item.card} note={createdNote(t.item.createdBy)}
@@ -146,19 +150,29 @@ function DeckCardSheet({ owner, tile, onClose }: { owner: Owner; tile: Tile; onC
   const entry = tile.entries[tile.entries.length - 1]
   const versions = p && entry ? versionsOf(owner.ch, p) : []
   const isMain = !owner.teammate
-  const plays = (build.rotation ?? []).filter((x) => x.cardId === item.card.id).length
+  const linked = useLinked(owner.teammate)
+  const plays = (build.rotation ?? []).filter((x) => x.cardId === item.card.id && x.by === owner.slot).length
+  const goes = plays ? `Its ${plays} play${plays === 1 ? '' : 's'} in the attack list go too.` : ''
   const remove = () => {
     if (isMain) {
-      if (plays && !confirm(`Remove ${item.card.name}? Its ${plays} play${plays === 1 ? '' : 's'} in the attack list go too.`)) return
+      if (plays && !confirm(`Remove ${item.card.name}? ${goes}`)) return
       updateBuild((b) => { b.deck = b.deck.filter((d) => d.id !== entry); prunePlays(findCharacter(PRESETS, owner.name), b) })
     } else {
-      updateBuild((b) => { b.team[owner.slot!].cards.splice(Number(entry), 1) })
+      // The last copy takes its plays along
+      if (plays && tile.entries.length === 1 && !confirm(`Remove ${item.card.name}? ${goes}`)) return
+      updateBuild((b) => { b.team[owner.slot!].cards.splice(Number(entry), 1); pruneTeamPlays(owner.ch, b, owner.slot!) })
     }
     onClose()
   }
   const change = (to: CardPreset) => {
     if (isMain) updateBuild((b) => changeEpiphany(owner.ch, b, entry, to.id))
-    else updateBuild((b) => { b.team[owner.slot!].cards[Number(entry)] = to.id })
+    else updateBuild((b) => {
+      // Plays follow the card when no other copy keeps the old version
+      const old = b.team[owner.slot!].cards[Number(entry)]
+      b.team[owner.slot!].cards[Number(entry)] = to.id
+      if (!b.team[owner.slot!].cards.includes(old)) for (const x of b.rotation) if (x.by === owner.slot && x.cardId === old) x.cardId = to.id
+      pruneTeamPlays(owner.ch, b, owner.slot!)
+    })
     onClose()
   }
   return (
@@ -167,13 +181,15 @@ function DeckCardSheet({ owner, tile, onClose }: { owner: Owner; tile: Tile; onC
         <CardFace size="big" preset={item.preset} card={item.card} text={p ? text(p) : customText(item.card)} note={createdNote(item.createdBy)} />
       </div>
       {tile.entries.length > 1 && <p className="muted">{tile.entries.length} copies in the deck: Change epiphany and Remove act on one of them.</p>}
-      {!isMain && <p className="muted">{owner.name}'s card: its buffs for allies and the enemy count; their damage isn't counted.</p>}
+      {!isMain && (
+        <p className="muted">{owner.name}'s card: its buffs for allies and the enemy count; {linked
+          ? `its plays deal damage with ${owner.name}'s build ${linked.build.name}.`
+          : `its plays set off this team's effects (Mark...) but deal no damage of their own until ${owner.name} has a saved build (Setup › Team).`}</p>
+      )}
       <div className="btn-row">
-        {isMain && (
-          <button className="btn primary" onClick={() => { updateBuild((b) => { b.rotation.push({ cardId: item.card.id }) }); setPlayed(played + 1) }}>
-            + Play
-          </button>
-        )}
+        <button className="btn primary" onClick={() => { updateBuild((b) => { b.rotation.push(playOf(item.card.id, owner.slot)) }); setPlayed(played + 1) }}>
+          + Play
+        </button>
         {versions.length > 1 && <button className="btn" aria-expanded={changing} onClick={() => setChanging(!changing)}>Change epiphany</button>}
         {entry && <button className="btn danger" onClick={remove}>Remove</button>}
       </div>
@@ -246,7 +262,7 @@ function AddCardsSection() {
           ))}
         </div>
       )}
-      {owner.teammate && <p className="muted">{owner.name}'s cards only bring their buffs for allies and the enemy.</p>}
+      {owner.teammate && <p className="muted">{owner.name}'s cards bring their buffs for allies and the enemy; played in the attack list, they deal damage with {owner.name}'s saved build (Setup › Team).</p>}
       <p className="muted small">Card art: Chaos Zero Nightmare, via cznmetadecks.com and Prydwen.gg.</p>
       {adding && (
         <Sheet title={`Add ${adding.name}?`} onClose={() => setAdding(null)}>
@@ -265,22 +281,31 @@ function AddCardsSection() {
   )
 }
 
-/** The attack list's "+ Play": the deck's cards as small pictures; each tap adds a play at the end. */
+/** The attack list's "+ Play": the team's deck cards as small pictures, per character; each tap adds a play at the end. */
 function PlayPicker({ onClose }: { onClose: () => void }) {
-  const { name, build, updateBuild } = useCharacter()!
+  const { build, updateBuild } = useCharacter()!
+  const owners = useOwners()
   // Copies of a card show once
-  const items = buildDeck(findCharacter(PRESETS, name), build)
-    .filter((i, n, all) => !i.card.preset || all.findIndex((x) => x.card.preset === i.card.preset) === n)
+  const once = (items: DeckItem[]) => items.filter((i, n, all) => !i.card.preset || all.findIndex((x) => x.card.preset === i.card.preset) === n)
+  const groups = [
+    { owner: owners[0], items: once(buildDeck(owners[0].ch, build)) },
+    ...owners.slice(1).filter((o) => o.teammate).map((o) => ({ owner: o, items: once(teammateDeck(o.ch, o.teammate!)) })),
+  ].filter((g) => g.items.length)
   const [added, setAdded] = useState<string[]>([])
   return (
     <Sheet title="Add plays" onClose={onClose}>
-      {!items.length && <p className="muted">The deck is empty: add cards under Add cards first.</p>}
-      <div className="card-grid mini">
-        {items.map((i) => (
-          <CardFace key={i.card.id} size="mini" preset={i.preset} card={i.card} label={`Play ${i.card.name}`}
-            onClick={() => { updateBuild((b) => { b.rotation.push({ cardId: i.card.id }) }); setAdded([...added, i.card.name]) }} />
-        ))}
-      </div>
+      {!groups.length && <p className="muted">The deck is empty: add cards under Add cards first.</p>}
+      {groups.map((g) => (
+        <div key={g.owner.key}>
+          {groups.length > 1 && <h3 className="deck-owner">{g.owner.name}</h3>}
+          <div className="card-grid mini">
+            {g.items.map((i) => (
+              <CardFace key={i.card.id} size="mini" preset={i.preset} card={i.card} label={`Play ${g.owner.name}'s ${i.card.name}`}
+                onClick={() => { updateBuild((b) => { b.rotation.push(playOf(i.card.id, g.owner.slot)) }); setAdded([...added, i.card.name]) }} />
+            ))}
+          </div>
+        </div>
+      ))}
       {added.length > 0 && <p className="muted">Added: {added.join(', ')}</p>}
       <div className="btn-row"><button className="btn primary" onClick={onClose}>Done</button></div>
     </Sheet>
@@ -289,14 +314,17 @@ function PlayPicker({ onClose }: { onClose: () => void }) {
 
 /** The active build's attack list. Entries need unique ids for drag and drop. */
 function RotationSection() {
-  const { name, cs, build, updateBuild } = useCharacter()!
+  const { cs, build, results, updateBuild } = useCharacter()!
   const { data: { settings } } = useStore()
   const [open, setOpen] = useState<number | null>(null)
   const [picking, setPicking] = useState(false)
-  const ch = findCharacter(PRESETS, name)
-  const cards = new Map(buildDeck(ch, build).map((i) => [i.card.id, i.card]))
+  const owners = useOwners()
+  // Cards by owner: the build's character (key 'main') and each teammate slot
+  const decks = new Map(owners.map((o) => [o.slot, new Map((o.slot === undefined ? buildDeck(o.ch, build)
+    : o.teammate ? teammateDeck(o.ch, o.teammate) : []).map((i) => [i.card.id, i.card]))]))
   const rotation = build.rotation ?? []
-  const counters = activeCounters(activeBuffs(PRESETS, name, cs, build, settings))
+  const counterOptions = results.get(build.id)?.counterOptions ?? []
+  const teamPlays = rotation.some((p) => p.by !== undefined)
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
     useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 6 } }),
@@ -311,7 +339,7 @@ function RotationSection() {
   }
   const others = cs.builds.filter((b) => b.id !== build.id)
   return (
-    <Section title={`${build.name} attack list`} help={`The main character's plays for this build (each build has its own list). Every buff that's on counts on every play (snapshot). Tap a play to set its hits (Combo, extra-hit effects), whether Vulnerable (×${1 + settings.vulnerable}) or the Weakness debuff (×${1 - settings.weaknessDebuff}) is up, and the stacks of per-play buffs (Ember, Spirit of the Aromata...). Drag ⠿ to reorder.`}
+    <Section title={`${build.name} attack list`} help={`The team's plays for this build, in order (each build has its own list): this character's cards and the teammates' (their damage uses their saved build, picked on Setup › Team). Every buff that's on counts on every play (snapshot). Tap a play to set its hits (Combo, extra-hit effects), whether Vulnerable (×${1 + settings.vulnerable}) or the Weakness debuff (×${1 - settings.weaknessDebuff}) is up, and the stacks of per-play effects (Ember, Mark on the target...). Drag ⠿ to reorder.`}
       actions={(
         <span className="btn-row tight">
           {rotation.length > 0 && <button className="btn small" onClick={() => { if (confirm(`Clear ${build.name}'s attack list?`)) updateBuild((b) => { b.rotation = [] }) }}>Clear</button>}
@@ -336,10 +364,11 @@ function RotationSection() {
         <SortableContext items={ids} strategy={verticalListSortingStrategy}>
           <ol className="rows rotation">
             {rotation.map((play, i) => {
-              const base = cards.get(play.cardId)
+              const base = decks.get(play.by)?.get(play.cardId)
               return (
                 <RotationItem key={ids[i]} id={ids[i]} index={i} play={play} card={base && playCard(base, play)} baseHits={base?.hits} baseCost={base?.cost}
-                  counters={counters} open={open === i} onToggle={() => setOpen(open === i ? null : i)}
+                  by={teamPlays ? owners.find((o) => o.slot === play.by)?.name : undefined}
+                  counters={counterOptions[i] ?? []} open={open === i} onToggle={() => setOpen(open === i ? null : i)}
                   onChange={(fn) => updateBuild((b) => fn(b.rotation[i]))}
                   onRemove={() => { updateBuild((b) => { b.rotation.splice(i, 1) }); setOpen(null) }} />
               )
@@ -357,9 +386,10 @@ function playFlags(play: RotationPlay): string {
   return [...(play.vulnerable ? ['Vulnerable'] : []), ...(play.weaknessDebuff ? ['Weakness debuff'] : []), ...stacks].join(' · ')
 }
 
-/** baseHits: the card's own hits. counters: the per-play stacks the switched-on buffs read. */
-function RotationItem({ id, index, play, card, baseHits, baseCost, counters, open, onToggle, onChange, onRemove }: {
-  id: string; index: number; play: RotationPlay; card?: Card; baseHits?: number; baseCost?: number | null
+/** baseHits: the card's own hits. counters: the per-play stacks the switched-on buffs and the team's triggers read. by: who plays it
+ * (shown once the list has teammates' plays). */
+function RotationItem({ id, index, play, card, baseHits, baseCost, by, counters, open, onToggle, onChange, onRemove }: {
+  id: string; index: number; play: RotationPlay; card?: Card; baseHits?: number; baseCost?: number | null; by?: string
   counters: { name: string; max: number | null }[]
   open: boolean; onToggle: () => void; onChange: (fn: (p: RotationPlay) => void) => void; onRemove: () => void
 }) {
@@ -371,7 +401,7 @@ function RotationItem({ id, index, play, card, baseHits, baseCost, counters, ope
       <div className="row-line">
         <button className="drag" aria-label={`Move play ${index + 1}`} {...attributes} {...listeners}>⠿</button>
         <button className="row-main link" onClick={onToggle} aria-expanded={open}>
-          <div className="row-title"><span className="play-no">{index + 1}</span> {card?.name || 'Unnamed card'}</div>
+          <div className="row-title"><span className="play-no">{index + 1}</span> {card?.name || 'Unnamed card'}{by && <span className="tag">{by}</span>}</div>
           <div className="row-sub">{card ? cardSummary(card) : 'Card is not in the deck'}</div>
           {play.hits !== undefined && <div className="row-note">Hits set for this play (card: {baseHits})</div>}
           {card?.perCost && <div className="row-note">Damage × Cost {card.cost}{play.cost !== undefined ? ` (card: ${baseCost})` : ''}</div>}

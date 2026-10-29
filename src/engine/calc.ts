@@ -1,7 +1,8 @@
 // The damage formula (docs/FORMULA.md). Pure functions: inputs in, numbers and their sources out.
-import { buildDeck } from './deck'
+import { buildDeck, buildNodeOn, deckPresets, presetCard, teammateDeck, type DeckItem } from './deck'
 import { activeBuffs, activeCounters, activeStats, buffMatches, cardBuffs, findCharacter, type ActiveBuff, type ActiveStat, type Source } from './buffs'
-import type { Build, Card, CharacterPreset, CharacterSave, PotentialUpgrade, Presets, RotationPlay, Settings, StatName } from './types'
+import { teammateView, withLinkedTeam, type Saves } from './team'
+import type { Build, Card, CharacterPreset, CharacterSave, PotentialUpgrade, Presets, RotationPlay, Settings, StatName, Trigger } from './types'
 
 export interface Stat {
   value: number
@@ -76,6 +77,26 @@ export interface Play {
   weaknessDebuff: boolean
   /** Fixed damage an earlier card (Rossweisse's Ego skill) adds to this play: a share of its damage, included in the totals. */
   followUp?: FollowUp
+  /** Teammate slot and name for a teammate's play; missing = the build's character. */
+  slot?: number
+  by?: string
+  /** A teammate's play without a linked saved build: no damage of its own (its triggers still count). */
+  noBuild?: boolean
+  /** Hits this play set off (Selena's Mark...), included in the totals. */
+  triggered: Triggered[]
+  nonCrit: number
+  crit: number
+  expected: number
+}
+
+/** A trigger's hit on a play: the trigger owner's damage (x chance), included in the play's totals. */
+export interface Triggered {
+  card: Card
+  /** Whose hit it is (the trigger's owner). */
+  by: string
+  chance: number
+  /** Its hits at full value (the totals below are x chance). */
+  hits: Hit[]
   nonCrit: number
   crit: number
   expected: number
@@ -90,12 +111,19 @@ export interface FollowUp {
   expected: number
 }
 
-export interface BuildResult {
-  stats: FinalStats
-  plays: Play[]
+export interface Totals {
   nonCrit: number
   crit: number
   expected: number
+}
+
+export interface BuildResult extends Totals {
+  stats: FinalStats
+  plays: Play[]
+  /** Each team member's damage (own plays, follow-ups and the hits their triggers add), the build's character first. */
+  byCharacter: (Totals & { name: string })[]
+  /** Per attack list play (same index): the per-play counters it can set (its player's counter buffs and the team's triggers). */
+  counterOptions: { name: string; max: number | null }[][]
 }
 
 function sumStat(stats: ActiveStat[], name: StatName): Stat {
@@ -175,50 +203,152 @@ export function playCard(card: Card, play: RotationPlay): Card {
   return played
 }
 
-/** Damage of every hit of every play in the build's attack list. */
-export function computeBuild(presets: Presets, charName: string, cs: CharacterSave, build: Build, settings: Settings): BuildResult {
-  const stats = finalStats(presets, charName, cs, build, settings)
-  const buffs = activeBuffs(presets, charName, cs, build, settings)
-  const fixedBuffs = buffs.filter((b) => !b.counter)
-  const counterBuffs = buffs.filter((b) => b.counter)
-  const counterCaps = activeCounters(buffs)
+/** One team member as they deal damage: their build's final stats and buffs (none for a teammate without a linked build). */
+interface Member {
+  name: string
+  ch: CharacterPreset | undefined
+  /** Their cards by attack list card id. */
+  cards: Map<string, Card>
+  dmg?: {
+    build: Build
+    stats: FinalStats
+    fixedBuffs: ActiveBuff[]
+    counterBuffs: ActiveBuff[]
+    caps: { name: string; max: number | null }[]
+  }
+}
+
+function member(presets: Presets, name: string, cards: Card[], dmg?: { cs: CharacterSave; build: Build }, settings?: Settings): Member {
+  const ch = findCharacter(presets, name)
+  const m: Member = { name, ch, cards: new Map(cards.map((c) => [c.id, c])) }
+  if (dmg && settings) {
+    const buffs = activeBuffs(presets, name, dmg.cs, dmg.build, settings)
+    m.dmg = {
+      build: dmg.build, stats: finalStats(presets, name, dmg.cs, dmg.build, settings),
+      fixedBuffs: buffs.filter((b) => !b.counter), counterBuffs: buffs.filter((b) => b.counter), caps: activeCounters(buffs),
+    }
+  }
+  return m
+}
+
+/** A team member's triggers that are on: their character's (from its Manifest Ego level) and their deck cards'. */
+function memberTriggers(ch: CharacterPreset | undefined, ego: number, deck: DeckItem[]): Trigger[] {
+  return [...(ch?.triggers ?? []), ...deckPresets(deck).flatMap((p) => p.triggers ?? [])].filter((t) => (t.egoLevel ?? 0) <= ego)
+}
+
+const capped = (play: RotationPlay, name: string, max: number | null | undefined) =>
+  Math.min(Math.max(0, play.stacks?.[name] ?? 0), max ?? Infinity)
+
+/** Damage of every hit of every play in the build's attack list: the build's character's plays and (with `saves`, for teammates
+ * linked to a saved build) their teammates', plus the hits the team's triggers add. */
+export function computeBuild(presets: Presets, charName: string, cs: CharacterSave, build: Build, settings: Settings,
+  saves: Saves = {}): BuildResult {
+  const team = withLinkedTeam(build, saves)
   const ch = findCharacter(presets, charName)
-  const cards = new Map(buildDeck(ch, build).map((i) => [i.card.id, i.card]))
-  const plays: Play[] = []
+  const mainDeck = buildDeck(ch, team)
+  const main = member(presets, charName, mainDeck.map((i) => i.card), { cs, build: team }, settings)
+  const members: (Member | undefined)[] = []
+  const triggers: { t: Trigger; owner: Member; slot?: number }[] =
+    memberTriggers(ch, team.egoLevel ?? 0, mainDeck).map((t) => ({ t, owner: main }))
+  ;(team.team ?? []).forEach((t, slot) => {
+    if (!t.character || t.character === charName) return
+    const tch = findCharacter(presets, t.character)
+    const view = teammateView(charName, team, slot, saves)
+    const deck = teammateDeck(tch, t, view ? buildNodeOn(view.build) : undefined)
+    members[slot] = member(presets, t.character, deck.map((i) => i.card), view, settings)
+    for (const tr of memberTriggers(tch, t.egoLevel ?? 0, deck)) triggers.push({ t: tr, owner: members[slot]!, slot })
+  })
+  // A play can set the triggers' counters, and those of their owners' buffs (which reach the hits they add)
+  const triggerCaps = mergeCaps(triggers.filter((x) => x.t.counter).map((x) => ({ name: x.t.counter!, max: x.t.maxStacks ?? null })),
+    [...new Set(triggers.map((x) => x.owner))].flatMap((o) => o.dmg?.caps ?? []))
+
   let k = 0
-  let pending: { from: string; appliesTo: string; share: number } | null = null
+  // The hits of one card played by m, with the play's debuffs and counter stacks
+  const cardHits = (m: Member, card: Card, play: RotationPlay) => {
+    const d = m.dmg!
+    const counters = d.caps.map(({ name, max }) => ({ name, stacks: capped(play, name, max) }))
+    const live: ActiveBuff[] = d.counterBuffs.map((b) => ({ ...b, stacks: counters.find((c) => c.name === b.counter)?.stacks ?? 0 }))
+    const cb = cardBuffs([...d.fixedBuffs, ...live], card)
+    const upgradable = !(card.scaling === 'Fixed' && !settings.potentialFixed)
+    const potential = upgradable ? potentialFactor(card.upgrade, d.build, m.ch, settings) : null
+    const hits: Hit[] = []
+    for (let h = 1; h <= Math.max(0, Math.floor(card.hits)); h++) hits.push(computeHit(card, h, ++k, cb, potential, d.stats, d.build, play, settings))
+    return { hits, counters, cb, ...totals(hits) }
+  }
+
+  const plays: Play[] = []
+  const counterOptions: BuildResult['counterOptions'] = []
+  const pending = new Map<Member, { from: string; appliesTo: string; share: number }>()
+  const byMember = new Map<Member, Totals>()
+  const credit = (m: Member, t: Totals) => {
+    const sum = byMember.get(m) ?? { nonCrit: 0, crit: 0, expected: 0 }
+    byMember.set(m, { nonCrit: sum.nonCrit + t.nonCrit, crit: sum.crit + t.crit, expected: sum.expected + t.expected })
+  }
   // Snapshot (owner, 2026-10-26): every switched-on buff counts on every hit; each play sets its own debuffs and counter stacks
-  ;(build.rotation ?? []).forEach((play, index) => {
-    const base = cards.get(play.cardId)
-    if (!base) return
+  ;(team.rotation ?? []).forEach((play, index) => {
+    const m = play.by === undefined ? main : members[play.by]
+    const base = m?.cards.get(play.cardId)
+    counterOptions[index] = mergeCaps(m?.dmg?.caps ?? [], triggerCaps)
+    if (!m || !base) return
     // A per-play hit count also counts for '2+ hits' buffs, so it's buffed as its own card
     const card = playCard(base, play)
-    const hitCount = Math.max(0, Math.floor(card.hits))
-    const counters = counterCaps.map(({ name, max }) => ({ name, stacks: Math.min(Math.max(0, play.stacks?.[name] ?? 0), max ?? Infinity) }))
-    const live: ActiveBuff[] = counterBuffs.map((b) => ({ ...b, stacks: counters.find((c) => c.name === b.counter)?.stacks ?? 0 }))
-    const cb = cardBuffs([...fixedBuffs, ...live], card)
-    const upgradable = !(card.scaling === 'Fixed' && !settings.potentialFixed)
-    const potential = upgradable ? potentialFactor(card.upgrade, build, ch, settings) : null
-    const hits: Hit[] = []
-    for (let h = 1; h <= hitCount; h++) hits.push(computeHit(card, h, ++k, cb, potential, stats, build, play, settings))
-    const sum = (f: (x: Hit) => number) => hits.reduce((a, x) => a + f(x), 0)
-    const own = { nonCrit: sum((x) => x.nonCrit), crit: sum((x) => x.crit), expected: sum((x) => x.expected) }
-    // Fixed damage set up by an earlier play: a share of this play's damage (crit or not), on the next matching card
+    const own = m.dmg ? cardHits(m, card, play) : { hits: [], counters: [], cb: undefined, nonCrit: 0, crit: 0, expected: 0 }
+    // Fixed damage set up by an earlier play of the same character: a share of this play's damage (crit or not), on the next matching card
     let followUp: FollowUp | undefined
-    if (pending && buffMatches({ appliesTo: pending.appliesTo, condition: 'Always' }, card)) {
-      const { from, share } = pending
-      followUp = { from, share, nonCrit: own.nonCrit * share, crit: own.crit * share, expected: own.expected * share }
-      pending = null
+    const p = pending.get(m)
+    if (p && buffMatches({ appliesTo: p.appliesTo, condition: 'Always' }, card)) {
+      followUp = { from: p.from, share: p.share, nonCrit: own.nonCrit * p.share, crit: own.crit * p.share, expected: own.expected * p.share }
+      pending.delete(m)
     }
-    const fu = ch?.cards?.find((p) => p.id === base.preset)?.followUp
-    if (fu) pending = { from: card.name, appliesTo: fu.appliesTo, share: fu.ego && (build.egoLevel ?? 0) >= fu.ego.level ? fu.ego.share : fu.share }
-    plays.push({ card, index, hits, counters: counters.filter((c) => c.stacks > 0),
-      vulnerable: !!play.vulnerable, weaknessDebuff: !!play.weaknessDebuff, followUp,
-      nonCrit: own.nonCrit + (followUp?.nonCrit ?? 0), crit: own.crit + (followUp?.crit ?? 0),
-      expected: own.expected + (followUp?.expected ?? 0) })
+    const fu = m.ch?.cards?.find((x) => x.id === base.preset)?.followUp
+    const ego = m.dmg?.build.egoLevel ?? (play.by === undefined ? team.egoLevel : team.team[play.by]?.egoLevel) ?? 0
+    if (fu) pending.set(m, { from: card.name, appliesTo: fu.appliesTo, share: fu.ego && ego >= fu.ego.level ? fu.ego.share : fu.share })
+    credit(m, { nonCrit: own.nonCrit + (followUp?.nonCrit ?? 0), crit: own.crit + (followUp?.crit ?? 0), expected: own.expected + (followUp?.expected ?? 0) })
+
+    // Hits the team's triggers add (Selena's Mark): the trigger owner's, with this play's counters and Vulnerable
+    const triggered: Triggered[] = []
+    for (const { t, owner, slot } of triggers) {
+      if (!owner.dmg || (t.others && slot === play.by)) continue
+      if (t.counter && capped(play, t.counter, t.maxStacks) <= 0) continue
+      if (!buffMatches({ appliesTo: t.on, condition: 'Always' }, card)) continue
+      if (t.weakness && !card.weaknessApplies && !own.cb?.weaknessAttack.length) continue
+      const tp = owner.ch?.cards?.find((x) => x.id === t.card)
+      if (!tp) continue
+      const tcard = presetCard(tp, owner.ch!.element, `trigger:${tp.id}`, buildNodeOn(owner.dmg.build))
+      const r = cardHits(owner, tcard, { cardId: tcard.id, vulnerable: play.vulnerable, stacks: play.stacks })
+      const chance = t.chance ?? 1
+      const hit = { nonCrit: r.nonCrit * chance, crit: r.crit * chance, expected: r.expected * chance }
+      triggered.push({ card: tcard, by: owner.name, chance, hits: r.hits, ...hit })
+      credit(owner, hit)
+    }
+    const trig = totals(triggered)
+    plays.push({ card, index, hits: own.hits, counters: own.counters.filter((c) => c.stacks > 0),
+      vulnerable: !!play.vulnerable, weaknessDebuff: !!play.weaknessDebuff, followUp, triggered,
+      ...(play.by !== undefined ? { slot: play.by, by: m.name, ...(m.dmg ? {} : { noBuild: true }) } : {}),
+      nonCrit: own.nonCrit + (followUp?.nonCrit ?? 0) + trig.nonCrit, crit: own.crit + (followUp?.crit ?? 0) + trig.crit,
+      expected: own.expected + (followUp?.expected ?? 0) + trig.expected })
   })
-  const sum = (f: (x: Play) => number) => plays.reduce((a, x) => a + f(x), 0)
-  return { stats, plays, nonCrit: sum((x) => x.nonCrit), crit: sum((x) => x.crit), expected: sum((x) => x.expected) }
+  const byCharacter = [main, ...members.filter((x): x is Member => !!x)]
+    .filter((x) => x === main || byMember.has(x))
+    .map((x) => ({ name: x.name, ...(byMember.get(x) ?? { nonCrit: 0, crit: 0, expected: 0 }) }))
+  return { stats: main.dmg!.stats, plays, byCharacter, counterOptions, ...totals(plays) }
+}
+
+function totals(xs: Totals[]): Totals {
+  return {
+    nonCrit: xs.reduce((a, x) => a + x.nonCrit, 0), crit: xs.reduce((a, x) => a + x.crit, 0),
+    expected: xs.reduce((a, x) => a + x.expected, 0),
+  }
+}
+
+/** Counters from two lists, once each (the smaller max wins). */
+function mergeCaps(a: { name: string; max: number | null }[], b: { name: string; max: number | null }[]) {
+  const out = new Map<string, number | null>()
+  for (const { name, max } of [...a, ...b]) {
+    const prev = out.get(name)
+    out.set(name, prev === undefined ? max : prev === null ? max : max === null ? prev : Math.min(prev, max))
+  }
+  return [...out].map(([name, max]) => ({ name, max }))
 }
 
 function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof cardBuffs>, potential: Factor | null,

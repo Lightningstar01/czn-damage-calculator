@@ -3,7 +3,9 @@ import { useState } from 'react'
 import { PRESETS } from '../data/presets'
 import { findCharacter, findFragmentSet, findPartner, fragmentPiecesUsed, hasTeam } from '../engine/buffs'
 import { unlockedPotentialEgo } from '../engine/calc'
-import { CATEGORIES, FRAGMENT_SET_PICKS, MAX_EGO_LEVEL, MAX_POTENTIAL_LEVEL, FRAGMENT_SLOTS, STATS, TEAM_SIZE, type ScreenStats, type StatName, type Teammate } from '../engine/types'
+import { pruneTeamPlays } from '../engine/deck'
+import { linkedBuild } from '../engine/team'
+import { CATEGORIES, FRAGMENT_SET_PICKS, MAX_EGO_LEVEL, MAX_POTENTIAL_LEVEL, FRAGMENT_SLOTS, NO_BUILD, STATS, TEAM_SIZE, type ScreenStats, type StatName, type Teammate } from '../engine/types'
 import { duplicateBuild, newBoost, newTeammate } from '../store/save'
 import { FromField } from './FromField'
 import { useCharacter, useStore } from '../store/store'
@@ -218,9 +220,11 @@ function FragmentSection() {
 
 const egoOptions = Array.from({ length: MAX_EGO_LEVEL + 1 }, (_, i) => ({ value: String(i), label: i === 0 ? 'E0 (none)' : `E${i}` }))
 
-/** The build's 2 teammates: buff sources only. Their ally buffs and enemy debuffs show on the Buffs tab. */
+/** The build's 2 teammates. Linked to one of their saved builds, they deal damage in the attack list; their ally buffs and enemy
+ * debuffs show on the Buffs tab. */
 function TeamSection() {
   const { name, build, updateBuild } = useCharacter()!
+  const { data } = useStore()
   const slots = Array.from({ length: TEAM_SIZE }, (_, i) => build.team?.[i])
   const upd = (i: number, fn: (t: Teammate) => void) => updateBuild((b) => {
     b.team ??= []
@@ -228,18 +232,38 @@ function TeamSection() {
     fn(b.team[i])
   })
   return (
-    <Section title="Team" help="The build's other two characters. Only their effects that reach allies or the enemy count (marked in the presets): their character and Manifest Ego effects, partner (its Ego skill too), fragment sets and their cards in the build's deck (Cards tab). Their damage isn't counted. Their equipment: add it under My stat boosts / My buffs with From set to the teammate.">
+    <Section title="Team" help="The build's other two characters. Pick one of their saved builds (open the character from the top menu to make one): its Manifest Ego, partner and sets are used, and their cards in the attack list deal damage with its stats and buffs. Only their effects that reach allies or the enemy count for this character (marked in the presets): character and Manifest Ego effects, partner (its Ego skill too), fragment sets and their cards picked on the Cards tab. Their equipment for this character: add it under My stat boosts / My buffs with From set to the teammate.">
       {slots.map((t, i) => {
         const others = slots.filter((x, j) => j !== i && x?.character).map((x) => x!.character)
         const chars = PRESETS.characters.filter((c) => c.name !== name && !others.includes(c.name))
+        const saved = t?.character ? data.characters[t.character]?.builds ?? [] : []
+        const linked = linkedBuild(data.characters, t)
         return (
           <div key={i} className="team-slot">
             <div className="grid2">
               <SelectField label={`Teammate ${i + 1}`} value={t?.character ?? ''}
                 options={[{ value: '', label: 'None' }, ...chars.map((c) => ({ value: c.name, label: c.name }))]}
-                onChange={(v) => upd(i, (x) => { x.character = v; x.cards = [] })} />
-              {t?.character && <TeammateFields t={t} onChange={(fn) => upd(i, fn)} />}
+                onChange={(v) => updateBuild((b) => {
+                  b.team ??= []
+                  while (b.team.length <= i) b.team.push(newTeammate())
+                  Object.assign(b.team[i], { character: v, cards: [] })
+                  delete b.team[i].build
+                  pruneTeamPlays(undefined, b, i)
+                })} />
+              {t?.character && (
+                <SelectField label="Their build" value={linked ? linked.build.id : NO_BUILD}
+                  help={saved.length ? 'Their damage and buffs use this build.' : `${t.character} has no saved build yet: only their buffs count, from the fields below.`}
+                  options={[...saved.map((b) => ({ value: b.id, label: b.name })), { value: NO_BUILD, label: 'None (buffs only)' }]}
+                  onChange={(v) => upd(i, (x) => { x.build = v })} />
+              )}
+              {t?.character && !linked && <TeammateFields t={t} onChange={(fn) => upd(i, fn)} />}
             </div>
+            {linked && (
+              <p className="muted">
+                {[`E${linked.build.egoLevel ?? 0}`, linked.build.partner || 'no partner', ...(linked.build.fragments ?? []).filter(Boolean)].join(' · ')}
+                {' '}(from {t!.character}'s build; change them there)
+              </p>
+            )}
             {t?.character && <p className="muted">{t.character}'s cards: Cards tab › Add cards ({t.cards.length} picked).</p>}
           </div>
         )

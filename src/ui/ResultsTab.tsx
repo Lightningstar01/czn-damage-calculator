@@ -1,6 +1,6 @@
 // Results for the active build: totals, final stats, then each play with its formula strip.
 import { useState } from 'react'
-import type { Play } from '../engine/calc'
+import type { Play, Triggered } from '../engine/calc'
 import { useCharacter } from '../store/store'
 import { num, pct } from './format'
 import { FormulaStrip, LEGEND } from './FormulaStrip'
@@ -20,6 +20,16 @@ export function ResultsTab() {
           <div className="main"><span className="muted">Expected</span><strong>{num(r.expected)}</strong></div>
           <div><span className="muted">All-crit</span><strong>{num(r.crit)}</strong></div>
         </div>
+        {r.byCharacter.length > 1 && (
+          <ul className="by-character">
+            {r.byCharacter.map((c) => (
+              <li key={c.name}>
+                <span>{c.name}</span>
+                <span><b>{num(c.expected)}</b> <span className="muted small">expected · {r.expected ? pct(c.expected / r.expected, 0) : '0%'}</span></span>
+              </li>
+            ))}
+          </ul>
+        )}
         <div className="final-stats">
           <span>ATK <b>{num(s.atk.value, 1)}</b></span>
           <span>DEF <b>{num(s.def.value, 1)}</b></span>
@@ -30,7 +40,7 @@ export function ResultsTab() {
           {s.dotDmg.value !== 0 && <span>DoT <b>+{pct(s.dotDmg.value)}</b></span>}
         </div>
       </Section>
-      <Section title="Attack list" help="One row per play of this build's attack list. Every buff that's on counts (snapshot); the play's Vulnerable, Weakness debuff and per-play stacks (Ember, Spirit of the Aromata...) show under the card. The formula shows hit 1; tap “hits” to see every hit (first-hit buffs can change them). Tap any chip to see where it comes from."
+      <Section title="Attack list" help="One row per play of this build's attack list, the teammates' too (with their saved build's stats and buffs). Every buff that's on counts (snapshot); the play's Vulnerable, Weakness debuff and per-play stacks (Ember, Mark...) show under the card, and the hits it sets off (Mark, Coordinated Attacks) under its formula, included in its total. The formula shows hit 1; tap “hits” to see every hit (first-hit buffs can change them). Tap any chip to see where it comes from."
         actions={r.plays.length > 0 && (
           <button className="btn small" onClick={() => setKey(!key)} aria-expanded={key}>{key ? 'Hide colors' : 'Colors'}</button>
         )}>
@@ -48,6 +58,19 @@ export function ResultsTab() {
   )
 }
 
+/** A hit the play set off (Selena's Mark...): its total, tap for its formula. */
+function TriggeredRow({ t }: { t: Triggered }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <div className="triggered">
+      <button className="link small" onClick={() => setOpen(!open)} aria-expanded={open}>
+        + {t.by}'s {t.card.name}{t.chance !== 1 ? ` (${pct(t.chance, 0)} chance)` : ''}: <b>{num(t.expected)}</b> expected
+      </button>
+      {open && t.hits[0] && <FormulaStrip hit={t.hits[0]} card={t.card} />}
+    </div>
+  )
+}
+
 function PlayRow({ play }: { play: Play }) {
   const [open, setOpen] = useState(false)
   const { card, hits } = play
@@ -56,7 +79,7 @@ function PlayRow({ play }: { play: Play }) {
     <li className="play">
       <div className="play-head">
         <span className="play-no">{play.index + 1}</span>
-        <span className="play-name">{card.name || 'Unnamed card'}</span>
+        <span className="play-name">{card.name || 'Unnamed card'}{play.by && <span className="tag">{play.by}</span>}</span>
         <span className="play-nums">
           <strong>{num(play.expected)}</strong>
           <span className="play-nums-label">expected · {num(play.nonCrit)} non-crit</span>
@@ -68,7 +91,9 @@ function PlayRow({ play }: { play: Play }) {
             ...play.counters.map((c) => `${c.name} ${c.stacks}`)].join(' · ')}
         </div>
       )}
+      {play.noBuild && <div className="muted small">{play.by} has no saved build linked (Setup › Team): no damage of their own.</div>}
       {hits.length > 0 && <FormulaStrip hit={hits[0]} card={card} />}
+      {play.triggered.map((t, i) => <TriggeredRow key={i} t={t} />)}
       {play.followUp && (
         <div className="muted small">
           + {play.followUp.from}: Fixed {pct(play.followUp.share)} of this play's damage = <b>{num(play.followUp.expected)}</b> expected

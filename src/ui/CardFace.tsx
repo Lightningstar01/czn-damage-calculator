@@ -6,7 +6,7 @@ import { shownPct } from '../engine/calc'
 import { renderCardText } from '../engine/cardText'
 import { buildNodeOn, presetCard } from '../engine/deck'
 import { ELEMENTS, type Card, type CardPreset, type Teammate } from '../engine/types'
-import { useCharacter, useStore } from '../store/store'
+import { useCharacter, useLinked, useStore } from '../store/store'
 import { pct } from './format'
 
 /** The picture's URL: art copied by the import is served from the site (public/cards); a full URL is used as is. */
@@ -15,13 +15,15 @@ function artUrl(image: string): string {
 }
 
 /** A card's text for the active build: its card upgrade potentials, Manifest Ego level and Potential nodes (Setup tab).
- * A teammate's cards: their Ego level, base % (their potentials aren't entered). */
+ * A teammate's cards: those of their linked saved build, else their Ego level and base %. */
 export function useCardText(teammate?: Teammate): (p: CardPreset) => string {
-  const { name, cs, build } = useCharacter()!
+  const main = useCharacter()!
+  const linked = useLinked(teammate)
   const { data: { settings } } = useStore()
+  const { name, cs, build } = linked ? { name: teammate!.character, ...linked } : main
   const ch = findCharacter(PRESETS, teammate?.character ?? name)
   const buffs = useMemo(() => activeBuffs(PRESETS, name, cs, build, settings), [name, cs, build, settings])
-  return (p) => teammate
+  return (p) => teammate && !linked
     ? renderCardText(p.text, { egoLevel: teammate.egoLevel ?? 0, nodeOn: () => true, pct: (base) => base })
     : renderCardText(p.text, {
       egoLevel: build.egoLevel ?? 0,

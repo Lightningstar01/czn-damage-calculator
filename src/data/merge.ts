@@ -31,6 +31,7 @@ export function mergeCharacter(imported: ImportedCharacter, additions: Character
     potentials: imported.potentials,
     manifestEgo: imported.manifestEgo,
     potentialEgo: potentialEgo(imported),
+    ...(additions.triggers ? { triggers: additions.triggers } : {}),
   }
 }
 
@@ -55,7 +56,9 @@ export function checkAdditions(imported: Record<string, ImportedCharacter>, addi
     const ids = new Set([...ch.cards.map((c) => c.id), ...extra.map((c) => c.id)])
     for (const [id, c] of [...Object.entries(add.cards ?? {}), ...extra.map((c) => [c.id, c] as const)]) {
       for (const made of c.creates ?? []) if (!ids.has(made)) problems.push(`characters/${slug}.ts: card '${id}' creates unknown card '${made}'`)
+      for (const t of c.triggers ?? []) if (!ids.has(t.card)) problems.push(`characters/${slug}.ts: card '${id}' triggers unknown card '${t.card}'`)
     }
+    for (const t of add.triggers ?? []) if (!ids.has(t.card)) problems.push(`characters/${slug}.ts: a trigger adds unknown card '${t.card}'`)
     const dupes = (owner: string, effects: { id: string }[] = []) => {
       const seen = new Set<string>()
       for (const e of effects) {

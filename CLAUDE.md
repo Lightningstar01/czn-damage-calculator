@@ -77,7 +77,7 @@ owner asks (there is no git remote yet).
   `upgrade: null` turns off its potential upgrade (Mei Lin's Jewel V). Tokens nest: `Heal {P3-1:{70%}|{100%}}`.
   A node that adds a keyword also adds the tag: `nodeTags: { '3-1': 'Blessing' }` (only while the node is on; teammates: on).
   `{F40%}` is a Fixed damage % (raised only with the potentialFixed setting).
-  Done: Mei Lin, Rossweisse, Tiphera, Orlea, Mika, Rei, Tenebria, Adelheid, Narja, Cassius, Nia. The step-by-step process is the `card-review` skill (.claude/skills/card-review).
+  Done: Mei Lin, Rossweisse, Tiphera, Orlea, Mika, Rei, Tenebria, Adelheid, Narja, Cassius, Nia, Selena. The step-by-step process is the `card-review` skill (.claude/skills/card-review).
 - Card upgrade potentials: build `basicLevel` / `signatureLevel`, card `upgrade`
   (Basic / Signature; `pct` is then the base %), `potentialFactor()` in calc.ts; the Manifest Ego
   levels that add +3 (E3 and/or E5; some characters have both) are parsed from the import (`potentialEgo` in merge.ts). See docs/FORMULA.md 2c.
@@ -86,6 +86,14 @@ owner asks (there is no git remote yet).
   allies / enemy; teammates give only allies/enemy effects, with switches keyed
   `"Teammate>Owner|effectId"` (`teamKey`). Every switched-on buff counts on every hit (snapshot).
   My boosts/buffs have a label-only `from` field (teammate equipment).
+  Team damage (owner, 2026-10-28; `src/engine/team.ts`): a slot links a saved build of that character (`Teammate.build`;
+  missing = their active build, `NO_BUILD` = buffs only); `withLinkedTeam` takes the slot's Ego/partner/sets from it.
+  A play with `by` (slot index) is that teammate's card, computed by `teammateView` as their own build would
+  (teammate deck ids = preset ids). `computeBuild(..., saves)` gets every character's save; `byCharacter` splits the totals.
+- Triggers (`triggers` on a character or card; Selena's Mark, Coordinated Attacks): a play matching `on` adds the trigger
+  card's hit, computed with the owner's build (`others`: only other combatants' plays; `weakness`: Weakness Attacks only;
+  `counter`: needs that per-play stack; `chance`: expected value; `egoLevel`). Shown under the play as `triggered`.
+  `notACard` cards (effect hits) don't match card-type words (Attack / Skill / Upgrade) and set off no triggers.
 - Attack list (per build, `build.rotation`): each play has optional hits, `cost` (only for `perCost` cards: "X% for
   each Cost of this card", damage = % x Cost), `vulnerable`, a count for `perCount` cards ("X% for each card in
   hand", kept in `stacks` under the card's `perCount` name, default 1; a `counter` of the same name reads that number: Tenebria's Rhythms),
@@ -140,11 +148,11 @@ Crit       = Damage x Crit DMG (stat is the total multiplier); Expected = Damage
 - Open mechanics questions are listed in docs/FORMULA.md section 4.
 - Card text check: the owner is saving in-game card screenshots to `card-screenshots/<slug>/` (git-ignored);
   compare them with the cards and confirm corrections with the owner (`card-review` skill). Mei Lin, Rossweisse (2026-10-27),
-  Tiphera, Orlea, Mika, Rei, Tenebria, Adelheid, Narja, Cassius, Nia (2026-10-28) done; next: every other character the owner has, as they send them; Luke, Kayron, Olga and Fei
+  Tiphera, Orlea, Mika, Rei, Tenebria, Adelheid, Narja, Cassius, Nia, Selena (2026-10-28) done; next: every other character the owner has, as they send them; Luke, Kayron, Olga and Fei
   last (the owner doesn't have them yet).
 - Idea for later (owner, 2026-10-27): animated card art. cznmetadecks has the game's animated unique cards as video
   (`https://cdn.czndecksmeta.com/card/cards_animated/<artId>.mp4`, 900x770, ~1 MB each, ~200 MB in all): skipped for size.
-- `creates` links: Rossweisse, Tenebria, Adelheid, Cassius, Nia so far; add each character's during the alphabetical review (until then their created
+- `creates` links: Rossweisse, Tenebria, Adelheid, Cassius, Nia, Selena so far; add each character's during the alphabetical review (until then their created
   cards can't be added).
 - Cards tab "Other": neutral and seasonal cards later (Prydwen has 31 Neutral cards).
 - Presets: all 38 characters and their cards are imported. Reviewing every character alphabetically
