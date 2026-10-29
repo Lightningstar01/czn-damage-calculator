@@ -407,7 +407,8 @@ function RotationItem({ id, index, play, card, baseHits, baseCost, counters, ope
           <div className="toggle-field"><span>Weakness debuff</span>
             <Toggle label="Weakness debuff" checked={!!play.weaknessDebuff} onChange={(v) => onChange((p) => { if (v) p.weaknessDebuff = true; else delete p.weaknessDebuff })} />
           </div>
-          {counters.map((c) => (
+          {/* A counter named like the card's per-count setting (Tenebria's Rhythms) is that same number: shown once, above */}
+          {counters.filter((c) => c.name !== card.perCount).map((c) => (
             <div key={c.name} className="toggle-field"><span>{c.name}</span>
               <Stepper label={`Play ${index + 1} ${c.name} stacks`} value={play.stacks?.[c.name] ?? 0} max={c.max ?? undefined}
                 onChange={(n) => onChange((p) => {
