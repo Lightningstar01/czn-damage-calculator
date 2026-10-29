@@ -290,8 +290,8 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
     Protect Us V's 60% on the drawn Blessing cards, E2 Bliss of Dreams 3% per stack (max 10) on allies, E6 8% (max 5).
     Additive: Friends I's +20% per Blessing card in All Piles (max 15) on Doggie.
   - Gather Around and Fairy's Protection carry the Blessing tag (Potential 3-1 adds it), also with 3-1 switched off
-    (Unconfirmed: tags can't follow a node yet). Happy Ending's E3 "+200% Shield Gain Amount" isn't shown in its text
-    (in-game number at E3 not seen).
+    (Unconfirmed: tags can't follow a node yet). At E3 Happy Ending shows 500% Shield and the Fixed Heal limit 50%
+    (User, 2026-10-28).
   - Not counted: Blessing's Fixed Shield, Shields, Heals, Counterattack (Friends IV), Action Count (Truth V).
 - **Manifest Ego in-game wording** (owner's screenshots, 2026-10-28; Prydwen's can be outdated): Mei Lin E1 / E4,
   Rossweisse E2 / E4 / E6, Tiphera E4 (max 2 stacks, removed at the end of the turn) and Orlea E4 match what is modeled.
