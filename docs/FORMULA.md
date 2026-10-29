@@ -273,6 +273,26 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
     Fermata's 4 Rhythm cards are Rhythm, Crescendo, Staccato and Fortissimo (its Related Cards screen).
   - Not counted: allies' own Rhythm cards (Music, Start! gives each ally 2) and 5-1's buff on them, E2's Ego Skill damage,
     procs (add them as plays), extra hits (Everyone's Idol at 7, Encore III, Call & Response IV, Fortissimo: set per play).
+- **Adelheid** (owner's screenshots, 2026-10-28; Ego 0, Potential screen Basic 5/10, Common 1/10, Unique 7/10; 3-1 unlocked,
+  5-1 and 7 locked): Basic cards x1.10 (Gather Around 110%), Unique cards x1.14 (Truth Behind A Story 200% -> 228%), and the
+  Doggie / Teddy cards too (Doggie 60% -> 68%, Doggie (Morphed) 90% -> 103%, Teddy (Morphed) 300% -> 342% Shield).
+  - Prydwen corrections: Doggie (Pack) is "+50% ... for each Doggie in hand before activation" (Prydwen: "Doggie Linked");
+    Once Upon A Time III is "Discard 1" (Prydwen: "1 random card from Draw Pile"); Friends from Fairy Tales I counts
+    "Blessing card in All Piles" (Prydwen: "in possession"); E2 gives Bliss of Dreams "at the start of battle ... for each
+    Blessing card in Deck" (Prydwen: "start of the turn ... in possession").
+  - Truth Behind A Story / I "+100% Damage Amount taken by the target for 1 turn": an additive debuff on the target for the
+    cards played after it, not its own hit (User, 2026-10-28).
+  - Truth Behind A Story III's "Doggie and Teddy" reaches Doggie, Doggie (Pack) and Doggie (Morphed) (User, 2026-10-28).
+  - Fairy's Protection showed 121% Shield: a partner's effect, 110% without it (User, 2026-10-28).
+  - Potential 7 reads the stats-screen Defense (`thresholdStat: 'Defense'`): +5% additive on Void cards above 300 Defense,
+    +2% per 10 above 300, max +10% more (User, 2026-10-28: add Defense thresholds), like Rossweisse's 7.
+  - Multiplicative: Truth IV's 30% per Blessing card in hand, Doggie (Pack)'s 50% per Doggie in hand, Truth III's 100%,
+    Protect Us V's 60% on the drawn Blessing cards, E2 Bliss of Dreams 3% per stack (max 10) on allies, E6 8% (max 5).
+    Additive: Friends I's +20% per Blessing card in All Piles (max 15) on Doggie.
+  - Gather Around and Fairy's Protection carry the Blessing tag (Potential 3-1 adds it), also with 3-1 switched off
+    (Unconfirmed: tags can't follow a node yet). Happy Ending's E3 "+200% Shield Gain Amount" isn't shown in its text
+    (in-game number at E3 not seen).
+  - Not counted: Blessing's Fixed Shield, Shields, Heals, Counterattack (Friends IV), Action Count (Truth V).
 - **Manifest Ego in-game wording** (owner's screenshots, 2026-10-28; Prydwen's can be outdated): Mei Lin E1 / E4,
   Rossweisse E2 / E4 / E6, Tiphera E4 (max 2 stacks, removed at the end of the turn) and Orlea E4 match what is modeled.
 - **Team snapshot** (User, 2026-10-26), website only. Replaces the rotation buffs counted along

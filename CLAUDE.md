@@ -75,7 +75,7 @@ owner asks (there is no git remote yet).
   `{P3-1:...}` Potential node (switch on Setup > Potentials, `build.potentialNodes`, missing = on). A card's
   `upgrade: null` turns off its potential upgrade (Mei Lin's Jewel V). Tokens nest: `Heal {P3-1:{70%}|{100%}}`.
   `{F40%}` is a Fixed damage % (raised only with the potentialFixed setting).
-  Done: Mei Lin, Rossweisse, Tiphera, Orlea, Mika, Rei, Tenebria. The step-by-step process is the `card-review` skill (.claude/skills/card-review).
+  Done: Mei Lin, Rossweisse, Tiphera, Orlea, Mika, Rei, Tenebria, Adelheid. The step-by-step process is the `card-review` skill (.claude/skills/card-review).
 - Card upgrade potentials: build `basicLevel` / `signatureLevel`, card `upgrade`
   (Basic / Signature; `pct` is then the base %), `potentialFactor()` in calc.ts; the Manifest Ego
   levels that add +3 (E3 and/or E5; some characters have both) are parsed from the import (`potentialEgo` in merge.ts). See docs/FORMULA.md 2c.
@@ -90,7 +90,8 @@ owner asks (there is no git remote yet).
   `weaknessDebuff` and `stacks` per counter name; buffs with `counter` read the play's stacks
   (capped at max stacks). Buff type `Card %` raises a card's base % like a potential (only on cards
   with an upgrade); `Base %` ("+X% base Damage Amount") adds to the shown card %; `Final` ("final Damage
-  Amount") is its own multiplier. Effects: `egoBelow` (off from that Ego level), `minAttack`, `attackBonus.every`.
+  Amount") is its own multiplier. Effects: `egoBelow` (off from that Ego level), `minAttack`, `attackBonus.every`
+  (`thresholdStat: 'Defense'` makes both read the stats-screen Defense: Adelheid's 7).
   A card's `followUp` adds Fixed damage (a share of the next matching play's damage), e.g. Rossweisse's Ego skill.
 - Saves are per character: builds (partner, Manifest Ego level, card upgrade levels, 3 fragment set
   picks, stats, team, deck, attack list...), boosts and buffs.
@@ -137,14 +138,14 @@ Crit       = Damage x Crit DMG (stat is the total multiplier); Expected = Damage
 - Open mechanics questions are listed in docs/FORMULA.md section 4.
 - Card text check: the owner is saving in-game card screenshots to `card-screenshots/<slug>/` (git-ignored);
   compare them with the cards and confirm corrections with the owner (`card-review` skill). Mei Lin, Rossweisse (2026-10-27),
-  Tiphera, Orlea, Mika, Rei, Tenebria (2026-10-28) done; next: every other character the owner has, as they send them; Luke, Kayron, Olga and Fei
+  Tiphera, Orlea, Mika, Rei, Tenebria, Adelheid (2026-10-28) done; next: every other character the owner has, as they send them; Luke, Kayron, Olga and Fei
   last (the owner doesn't have them yet).
 - Idea for later (owner, 2026-10-27): animated card art. cznmetadecks has the game's animated unique cards as video
   (`https://cdn.czndecksmeta.com/card/cards_animated/<artId>.mp4`, 900x770, ~1 MB each, ~200 MB in all): skipped for size.
-- `creates` links: Rossweisse only; add each character's during the alphabetical review (until then their created
+- `creates` links: Rossweisse, Tenebria, Adelheid so far; add each character's during the alphabetical review (until then their created
   cards can't be added).
 - Cards tab "Other": neutral and seasonal cards later (Prydwen has 31 Neutral cards).
 - Presets: all 38 characters and their cards are imported. Reviewing every character alphabetically
   with the owner (cards, buffs with self/allies/enemy targets, Manifest Ego, potentials; Prydwen +
-  the owner's in-game check); next: Adelheid, then on (re-check Mei Lin at M).
+  the owner's in-game check); Adelheid done (2026-10-28); next: Amir, then on (re-check Mei Lin at M).
   Partners: only Marianne so far, entered by the owner.

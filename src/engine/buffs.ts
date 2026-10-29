@@ -31,9 +31,9 @@ export function parseBuffValue(text: string): number {
 }
 
 /** A preset buff's value for the build: its own value (0 below minAttack), plus its attackBonus when the stats-screen Attack
- * is above the threshold (once, or for every `every` Attack above it up to `max`). */
+ * (or Defense, with thresholdStat) is above the threshold (once, or for every `every` above it up to `max`). */
 export function presetBuffValue(e: BuffEffect, build: Pick<Build, 'stats'>): { value: number; bonus: boolean } {
-  const atk = build.stats.attack
+  const atk = e.thresholdStat === 'Defense' ? build.stats.defense : build.stats.attack
   if (e.minAttack !== undefined && atk < e.minAttack) return { value: 0, bonus: false }
   const ab = e.attackBonus
   const bonus = !!ab && (ab.orEqual ? atk >= ab.above : atk > ab.above)
@@ -222,7 +222,7 @@ export function activeBuffs(presets: Presets, charName: string, cs: CharacterSav
     if (s.effect.kind !== 'Buff' || s.stacks <= 0) continue
     const e = s.effect as BuffEffect
     const v = presetBuffValue(e, build)
-    out.push({ label: `${stateLabel(s)}: ${e.name}${v.bonus ? ` (Attack ${e.attackBonus!.orEqual ? `${e.attackBonus!.above}+` : `above ${e.attackBonus!.above}`})` : ''}`,
+    out.push({ label: `${stateLabel(s)}: ${e.name}${v.bonus ? ` (${e.thresholdStat ?? 'Attack'} ${e.attackBonus!.orEqual ? `${e.attackBonus!.above}+` : `above ${e.attackBonus!.above}`})` : ''}`,
       type: buffType(e.value, e.type), value: v.value,
       stacks: e.counter ? 0 : e.maxStacks ? Math.min(s.stacks, e.maxStacks) : s.stacks,
       appliesTo: e.appliesTo, hitScope: e.hitScope, condition: e.condition,

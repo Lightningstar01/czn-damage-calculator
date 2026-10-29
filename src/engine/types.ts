@@ -91,6 +91,8 @@ export interface BuffEffect {
   attackBonus?: { above: number; value: string; orEqual?: boolean; every?: number; max?: string }
   /** Stats-screen Attack the buff needs: it's worth 0 below it (Rossweisse 7: 'If Attack is 600 or higher'). */
   minAttack?: number
+  /** 'Defense': minAttack and attackBonus read the stats-screen Defense instead (Adelheid 7: 'If Defense is greater than 300'). */
+  thresholdStat?: 'Defense'
   /** See StatEffect.hint. */
   hint?: string
 }
