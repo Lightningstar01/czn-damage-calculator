@@ -5,6 +5,8 @@
 // 2026-10-28). Coordinated Attacks are Selena's Extra Attacks too (owner, 2026-10-28). Mark Damage buffs (Sniper's Domain, E2,
 // High-Power Scope III) boost only Mark hits, not E6's chance Extra Attack, which counts at 30% (expected value; owner, 2026-10-28).
 // Target Spotted I's Attunement 300% (Prydwen 200%) is its own unraised play (owner, 2026-10-28).
+// Effect hits (Mark, Coordinated, Attunement) get no Attack / Skill card buffs; Passion Weakness makes Coordinated Attacks Weakness
+// Attacks too; Target Spotted V hits a Ravaged target (owner, 2026-10-28).
 import type { CardPreset, CharacterAdditions } from '../../engine/types'
 import { cardBuff } from '../helpers'
 

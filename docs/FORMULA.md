@@ -362,11 +362,12 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
     Bombing V 50% on Passion Attack Cards, Target Spotted V 200% on Ravage) are Selena's Extra Attacks (User, 2026-10-28).
     High-Power Scope IV / Drone Bombing IV are switched on per play (their 1 turn); Target Spotted V and I's Attunement are
     plays of their own (one per Ravage / draw).
-  - **Unconfirmed**: Mark, Coordinated and Attunement hits are effects, not cards: Attack / Skill card buffs don't match them
-    (`notACard`) and card upgrades don't raise them. Passion Weakness (Drone Bombing I / II) is a per-play enemy debuff that
-    makes every Passion hit a Weakness Attack (x Weakness DMG), Selena's Coordinated Attacks included. Target Spotted V's hit
-    counts the target as Ravaged. Not counted: 5-1's and 7's extra +5% / +4% needing Additional / Bonus Damage (7's bonus is a
-    switch with a hint), Tenacity damage, 3-1's Piercing, Shields, draws.
+  - Mark, Coordinated and Attunement hits are effects, not cards: Attack / Skill card buffs don't match them (`notACard`)
+    and card upgrades don't raise them (User, 2026-10-28). Passion Weakness (Drone Bombing I / II) is a per-play enemy debuff
+    that makes every Passion hit a Weakness Attack (x Weakness DMG), Selena's Coordinated Attacks included (User, 2026-10-28).
+    Target Spotted V's hit counts the target as Ravaged (User, 2026-10-28).
+  - Not counted: 5-1's and 7's extra +5% / +4% needing Additional / Bonus Damage (7's bonus is a switch with a hint),
+    Tenacity damage, 3-1's Piercing, Shields, draws.
 - **Team damage** (User, 2026-10-28), website only: Selena is played beside another DPS, so teammates can deal damage too.
   - Each teammate slot links one of that character's saved builds (missing = their active build; "None" = buffs only, as before).
     A linked slot takes its Manifest Ego, partner and sets from that build.
