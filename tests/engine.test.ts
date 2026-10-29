@@ -1190,6 +1190,9 @@ describe('Adelheid', () => {
     expect(text('card-1156')).toContain('228% Defense-Based Damage\nIncrease Damage Amount by 50% for each Doggie in hand')
     expect(text('card-1157')).toContain('103% Defense-Based Damage × 4')
     expect(text('card-1158')).toContain('342% Shield\n3 Damage Reduction')
+    // At E3 (owner, 2026-10-28)
+    expect(renderCardText(preset('card-1126').text, { egoLevel: 3, nodeOn: () => true, pct: (b) => b }))
+      .toBe('500% Shield\nFixed Heal equal to Shield in possession\n(cannot exceed 50% of max HP)')
   })
 
   it("Truth's debuff counts on the plays after it; Truth III and Doggies in hand raise Doggie (Pack)", () => {

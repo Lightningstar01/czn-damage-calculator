@@ -36,8 +36,8 @@ export default {
   ],
   // Card text: the in-game wording (owner's screenshots, 2026-10-28), with tokens for the build's numbers (engine/cardText.ts)
   cards: {
-    // Ego skill: Shield and Heal only. E3 "+200% Shield Gain Amount" isn't in the shown % (in-game value at E3 not seen)
-    'card-1126': { text: '300% Shield\nFixed Heal equal to Shield in possession\n(cannot exceed {E3:50%|30%} of max HP)' },
+    // Ego skill: Shield and Heal only. E3 "+200% Shield Gain Amount": 500% in game (owner, 2026-10-28)
+    'card-1126': { text: '{E3:500%|300%} Shield\nFixed Heal equal to Shield in possession\n(cannot exceed {E3:50%|30%} of max HP)' },
     'card-1127': { tags: 'Basic, Basic Attack, Blessing', text: '{P3-1:[Blessing]}\n{100%} Defense-Based Damage' },
     'card-1128': { tags: 'Basic, Basic Skill, Blessing', text: '{P3-1:[Blessing]}\n{100%} Shield' },
 
