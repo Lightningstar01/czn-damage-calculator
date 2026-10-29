@@ -11,9 +11,10 @@ see "Card text check" in CLAUDE.md. Worked examples: `src/data/characters/mei-li
 
 ## 1. Collect the screenshots
 
-- They land in `~/Videos/Captures` as `Chaos Zero Nightmare <date> <time>.png` (2560x1440). Game Bar names a file after the
-  window that had focus, so a game screenshot can be named after VS Code or Chrome: read any new file from the batch before
-  setting it aside (Rei's Cards overview and Mei Lin's E1 were named "orlea.ts - ... Visual Studio Code").
+- They land in `~/Videos/Captures` as `<window title> <date> <time>.png` (2560x1440). The title is usually
+  `Chaos Zero Nightmare`, but Game Bar lags behind the focused window, so a game screenshot can carry the name of VS Code,
+  Chrome or another window (owner, 2026-10-28). Ignore the names: every new .png in the batch is a game screenshot (they're
+  renamed on moving anyway). Read them all; delete duplicates, ask about anything that isn't the game.
   `ls -lt ~/Videos/Captures`: take only the new batch (the folder is emptied after each character, so it's usually all of them).
 - Move them, oldest first, to `card-screenshots/<slug>/01.png, 02.png...` (git-ignored; slug as in `src/data/prydwen/`):
   ```bash
