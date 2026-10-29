@@ -341,7 +341,7 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
   - Extra Attack %s on cards (Mute Accent 150/250/200/150/100%, G Chord III 120%, Soul Riff III 100%) and triggered heals (Soul
     Riff II, Adagio III: 100%) aren't raised by the Unique upgrade in game (`upgrade: null` on the damage cards).
   - Extra Attacks "by the Combatant who owns that card" count as Nia's own Extra Attack plays, added when the card is Nia's
-    (User, 2026-10-28). Unconfirmed: whether Attack Card buffs reach them (they come from Skill / Upgrade cards: they don't here).
+    (User, 2026-10-28). Attack Card buffs don't boost Extra Attacks (User, 2026-10-28); here they come from Skill / Upgrade cards.
   - Decibel keyword (in game): "On Shuffle, 50% Extra Attack by allies to a random enemy, and on activation, remove Decibel. Heal
     50% × Decibel count, and +50% Damage Amount × Decibel count to Extra Attacks (max 5 stacks)": each ally does a 50% Extra
     Attack on Shuffle; the +50% × Decibel only boosts those shuffle Extra Attacks, then Decibel is removed (User, 2026-10-28).
