@@ -22,10 +22,21 @@ export function cardUpgrade(p: CardPreset): PotentialUpgrade | undefined {
   return 'Signature'
 }
 
+/** Whether a Potential node is on: missing switches count as on (teammates have none). */
+export type NodeOn = (node: string) => boolean
+export const allNodesOn: NodeOn = () => true
+export const buildNodeOn = (build: Pick<Build, 'potentialNodes'>): NodeOn => (node) => build.potentialNodes?.[node] !== false
+
+/** The preset's tags plus the ones its switched-on Potential nodes add (nodeTags). */
+export function presetTags(p: CardPreset, nodeOn: NodeOn = allNodesOn): string {
+  const added = Object.entries(p.nodeTags ?? {}).filter(([node]) => nodeOn(node)).map(([, tags]) => tags)
+  return [p.tags ?? '', ...added].filter(Boolean).join(', ')
+}
+
 /** The card a preset plays as; element: the character's (unless the preset sets its own). */
-export function presetCard(p: CardPreset, element: Element, id: string): Card {
+export function presetCard(p: CardPreset, element: Element, id: string, nodeOn: NodeOn = allNodesOn): Card {
   return {
-    id, name: p.name, cardType: p.cardType, element: p.element ?? element, cost: p.cost ?? null, tags: p.tags ?? '',
+    id, name: p.name, cardType: p.cardType, element: p.element ?? element, cost: p.cost ?? null, tags: presetTags(p, nodeOn),
     scaling: p.scaling ?? 'ATK', kind: p.kind ?? 'Normal', pct: p.pct, hits: p.hits, weaknessApplies: !!p.weaknessApplies,
     targetRavaged: !!p.targetRavaged, upgrade: cardUpgrade(p), preset: p.id, ...(p.perCost ? { perCost: true } : {}),
     ...(p.perCount ? { perCount: p.perCount } : {}),
@@ -33,7 +44,7 @@ export function presetCard(p: CardPreset, element: Element, id: string): Card {
 }
 
 /** The cards of a deck in order: the Ego skill first, then each picked card followed by the cards it creates (once each). */
-export function deckItems(ch: CharacterPreset | undefined, picked: DeckCard[]): DeckItem[] {
+export function deckItems(ch: CharacterPreset | undefined, picked: DeckCard[], nodeOn: NodeOn = allNodesOn): DeckItem[] {
   const all = ch?.cards ?? []
   const byId = new Map(all.map((p) => [p.id, p]))
   const element = ch?.element ?? ELEMENTS[0]
@@ -48,7 +59,7 @@ export function deckItems(ch: CharacterPreset | undefined, picked: DeckCard[]): 
   const bring = (p: CardPreset, by: string) => {
     if (brought.has(p.id)) return
     brought.add(p.id)
-    out.push({ card: presetCard(p, element, AUTO + p.id), preset: p, createdBy: by })
+    out.push({ card: presetCard(p, element, AUTO + p.id, nodeOn), preset: p, createdBy: by })
     bringCreated(p)
   }
   for (const p of all) if (p.category === 'Ego Skill') bring(p, 'Auto')
@@ -60,15 +71,15 @@ export function deckItems(ch: CharacterPreset | undefined, picked: DeckCard[]): 
     }
     const p = d.preset ? byId.get(d.preset) : undefined
     if (!p) continue
-    out.push({ card: presetCard(p, element, d.id), preset: p, entry: d.id })
+    out.push({ card: presetCard(p, element, d.id, nodeOn), preset: p, entry: d.id })
     bringCreated(p)
   }
   return out
 }
 
-/** The build's deck. */
-export function buildDeck(ch: CharacterPreset | undefined, build: Pick<Build, 'deck'>): DeckItem[] {
-  return deckItems(ch, build.deck ?? [])
+/** The build's deck; nodeTags follow the build's Potential nodes. */
+export function buildDeck(ch: CharacterPreset | undefined, build: Pick<Build, 'deck' | 'potentialNodes'>): DeckItem[] {
+  return deckItems(ch, build.deck ?? [], buildNodeOn(build))
 }
 
 /** A teammate's deck: their picked cards (entry = index in Teammate.cards), Ego skill and created cards. */

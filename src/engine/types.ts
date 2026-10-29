@@ -172,6 +172,8 @@ export interface CardPreset {
   creates?: string[]
   /** Overrides the card upgrade potential picked from its category (null: none). */
   upgrade?: PotentialUpgrade | null
+  /** Tags a Potential node adds while it's on (build.potentialNodes): { '3-1': 'Blessing' } (Adelheid's Basic cards). */
+  nodeTags?: Record<string, string>
   notes?: string
   /** Stat boosts / buffs the card gives while it's in the library (switch per build, default on). */
   effects?: Effect[]
@@ -290,7 +292,7 @@ export interface Build {
   /** Basic / Signature Card Upgrade potential levels, 0-10 (Manifest Ego levels are added on top). */
   basicLevel: number
   signatureLevel: number
-  /** Potential node ('3-1') -> unlocked, for nodes that change card text. Missing = on. */
+  /** Potential node ('3-1') -> unlocked, for nodes that change card text or tags (CardPreset.nodeTags). Missing = on. */
   potentialNodes?: Record<string, boolean>
   /** Preset effect key (presetKey / teamKey) -> switch. Missing = on (default stacks). */
   presetSwitches: Record<string, Switch>

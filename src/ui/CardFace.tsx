@@ -4,7 +4,7 @@ import { PRESETS } from '../data/presets'
 import { activeBuffs, findCharacter } from '../engine/buffs'
 import { shownPct } from '../engine/calc'
 import { renderCardText } from '../engine/cardText'
-import { presetCard } from '../engine/deck'
+import { buildNodeOn, presetCard } from '../engine/deck'
 import { ELEMENTS, type Card, type CardPreset, type Teammate } from '../engine/types'
 import { useCharacter, useStore } from '../store/store'
 import { pct } from './format'
@@ -25,8 +25,8 @@ export function useCardText(teammate?: Teammate): (p: CardPreset) => string {
     ? renderCardText(p.text, { egoLevel: teammate.egoLevel ?? 0, nodeOn: () => true, pct: (base) => base })
     : renderCardText(p.text, {
       egoLevel: build.egoLevel ?? 0,
-      nodeOn: (node) => build.potentialNodes?.[node] !== false,
-      pct: (base, fixed) => shownPct(base, presetCard(p, ch?.element ?? ELEMENTS[0], p.id), build, ch, buffs, settings, fixed),
+      nodeOn: buildNodeOn(build),
+      pct: (base, fixed) => shownPct(base, presetCard(p, ch?.element ?? ELEMENTS[0], p.id, buildNodeOn(build)), build, ch, buffs, settings, fixed),
     })
 }
 

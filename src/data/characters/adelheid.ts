@@ -4,7 +4,7 @@
 // own hit (owner, 2026-10-28). Truth Behind A Story III's "Doggie and Teddy" reaches every Doggie card: Doggie, Doggie (Pack),
 // Doggie (Morphed) (owner, 2026-10-28). The Doggie and Teddy cards are raised by the Signature level (in game: Doggie 68% at 7).
 // Fairy's Protection's 121% Shield in the owner's screenshot is a partner's effect (owner, 2026-10-28): not in the text.
-// Gather Around and Fairy's Protection carry the Blessing tag: Potential 3-1 adds it (most builds have it).
+// Potential 3-1 adds the Blessing tag to Gather Around and Fairy's Protection (nodeTags: only while 3-1 is on).
 import type { CharacterAdditions } from '../../engine/types'
 import { cardBuff } from '../helpers'
 
@@ -38,8 +38,8 @@ export default {
   cards: {
     // Ego skill: Shield and Heal only. E3 "+200% Shield Gain Amount": 500% in game (owner, 2026-10-28)
     'card-1126': { text: '{E3:500%|300%} Shield\nFixed Heal equal to Shield in possession\n(cannot exceed {E3:50%|30%} of max HP)' },
-    'card-1127': { tags: 'Basic, Basic Attack, Blessing', text: '{P3-1:[Blessing]}\n{100%} Defense-Based Damage' },
-    'card-1128': { tags: 'Basic, Basic Skill, Blessing', text: '{P3-1:[Blessing]}\n{100%} Shield' },
+    'card-1127': { nodeTags: { '3-1': 'Blessing' }, text: '{P3-1:[Blessing]}\n{100%} Defense-Based Damage' },
+    'card-1128': { nodeTags: { '3-1': 'Blessing' }, text: '{P3-1:[Blessing]}\n{100%} Shield' },
 
     // Once Upon A Time, I–V
     'card-1129': { text: '[Exhaust 2]\nApply Blessing to 2 random card(s) in Draw Pile, then Draw 1 of those cards' },

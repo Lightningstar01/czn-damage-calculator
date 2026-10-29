@@ -74,6 +74,7 @@ owner asks (there is no git remote yet).
   raised by the card's potential and Card % buffs (`shownPct` in calc.ts), `{E1:...}` / `{E3:6|4}` Manifest Ego,
   `{P3-1:...}` Potential node (switch on Setup > Potentials, `build.potentialNodes`, missing = on). A card's
   `upgrade: null` turns off its potential upgrade (Mei Lin's Jewel V). Tokens nest: `Heal {P3-1:{70%}|{100%}}`.
+  A node that adds a keyword also adds the tag: `nodeTags: { '3-1': 'Blessing' }` (only while the node is on; teammates: on).
   `{F40%}` is a Fixed damage % (raised only with the potentialFixed setting).
   Done: Mei Lin, Rossweisse, Tiphera, Orlea, Mika, Rei, Tenebria, Adelheid. The step-by-step process is the `card-review` skill (.claude/skills/card-review).
 - Card upgrade potentials: build `basicLevel` / `signatureLevel`, card `upgrade`

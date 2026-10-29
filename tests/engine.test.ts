@@ -1209,6 +1209,20 @@ describe('Adelheid', () => {
     expect(r.plays[1].nonCrit).toBeCloseTo((2.28 * 3 + 1) * stat * 0.35)
   })
 
+  it('Potential 3-1 adds the Blessing tag to Gather Around only while it is on (Protect Us V reaches it)', () => {
+    for (const on of [true, false]) {
+      const { cs, a } = ownerBuild()
+      if (!on) a.potentialNodes = { '3-1': false }
+      const protect = card('card-1140')
+      a.deck.push({ id: 'g', preset: 'card-1127' })
+      addCards(cs, protect)
+      a.rotation = [{ cardId: 'g', stacks: { 'Protect Us V': 1 } }]
+      expect(buildDeck(adel, a).find((i) => i.card.id === 'g')!.card.tags).toBe(on ? 'Basic, Basic Attack, Blessing' : 'Basic, Basic Attack')
+      const r = computeBuild(PRESETS, 'Adelheid', cs, a, settings)
+      expect(r.plays[0].nonCrit).toBeCloseTo(1.1 * (on ? 1.6 : 1) * stat * 0.35)
+    }
+  })
+
   it('Bliss of Dreams: 3% per stack (max 10) from E2, 8% (max 5) from E6', () => {
     for (const [ego, value] of [[2, 0.3], [6, 0.4]]) {
       const { cs, a } = ownerBuild(ego)
