@@ -251,6 +251,9 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
     (User, 2026-10-28).
   - Not counted: Predator's Blade Morale (set it on the Buffs tab), Strike of Darkness III's extra hits (set per play),
     Strike of Darkness V's procs (add them as plays).
+- **Manifest Ego in-game wording** (owner's screenshots, 2026-10-28; Prydwen's can be outdated): Mei Lin E4, Rossweisse
+  E2 / E4 / E6, Tiphera E4 (max 2 stacks, removed at the end of the turn) and Orlea E4 match what is modeled.
+  Mei Lin E1 is not checked yet.
 - **Team snapshot** (User, 2026-10-26), website only. Replaces the rotation buffs counted along
   the rotation (2026-10-25):
   - Each build has a team of up to 2 teammates (character, Manifest Ego level, partner, 3 fragment

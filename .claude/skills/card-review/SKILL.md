@@ -19,6 +19,14 @@ see "Card text check" in CLAUDE.md. Worked examples: `src/data/characters/mei-li
   ```
   If the folder holds files from before the owner's message, or the count looks wrong, ask before moving.
 
+## 1b. Ego Manifestation wording (owner, 2026-10-28)
+
+Prydwen's Manifest Ego texts are outdated (Rei's E6 is "+20% Damage Amount to allies' Attack Cards" in game, Prydwen
+"increased by 20%"). Before the owner takes a character's screenshots, or right after reading them, tell them which Ego levels
+to screenshot (Ego Manifestation screen, tap a level; the text may scroll, so ask for the rest if it's cut off). Only the levels
+that can change damage and aren't shown elsewhere: skip E3 / E5 "+3 card upgrade levels" (the card %s confirm them), levels
+that change a card's text (the card shows them), and heal / stress / draw levels. Save them as `card-screenshots/<slug>/ego-<N>.png`.
+
 ## 2. Read everything
 
 - Every screenshot (Read tool). Usual set: the Cards overview (starting + epiphany cards, Ego skill), one detail page per
