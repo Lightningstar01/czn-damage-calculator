@@ -166,9 +166,9 @@ export default {
       text: '[Linked / Retain]\n{90%} Damage\n+55% base Damage Amount for each Linked Rhythm before activation\nWhen 3 or more cards are Linked, add 1 Hit',
       effects: perRhythm('+55%', 'Rhythm: Fortissimo', 'Linked Rhythms'),
     },
-    // Which 4 Rhythm cards Fermata offers isn't shown: all of them join the deck
+    // Fermata's 4 Rhythm cards (its Related Cards screen): Rhythm, Crescendo, Staccato, Fortissimo
     [fermata]: {
-      creates: ['card-1187', crescendo, staccato, fortissimo, ...arpeggios], tags: 'Basic, Basic Skill, Rhythm Card, Haste',
+      creates: ['card-1187', crescendo, staccato, fortissimo], tags: 'Basic, Basic Skill, Rhythm Card, Haste',
       text: '[Haste]\nSelect 1 of 4 Rhythm cards\nChange all Rhythm cards into the selected card for 1 turn and Draw 2 of them',
     },
     [arpeggios[0]]: arpeggio(0, 'Draw 1 of the lowest-Cost Rhythm cards and decrease Cost by 1 until activated'),

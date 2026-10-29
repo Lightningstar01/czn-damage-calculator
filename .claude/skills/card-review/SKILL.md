@@ -40,7 +40,7 @@ that change a card's text (the card shows them), and heal / stress / draw levels
 ## 3. Work out the owner's levels
 
 - Read them off the Potential screen when it's there: each node's badge is level / max, Ego bonus included (Mika's Basic
-  16/16 = 10 + 6, Unique 7/16 = Signature 1 + 6); a lit (yellow) node without a badge is still locked (Mika's 5-1). The
+  16/16 = 10 + 6, Unique 7/16 = Signature 1 + 6); a node without a badge is unlocked when dark, still locked when lit (bright yellow; Mika's 5-1, Tenebria's 5-2). The
   Ego Manifestation screen shows the unlocked levels. Then check them against the card %s below.
 
 - Basic level: a Basic card's in-game % / Prydwen's base (102% / 100% = level 1, 2% per level).

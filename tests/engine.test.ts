@@ -1087,7 +1087,7 @@ describe('Rei', () => {
 describe('Tenebria', () => {
   const ten = PRESETS.characters.find((c) => c.name === 'Tenebria')!
   const preset = (id: string) => ten.cards!.find((p) => p.id === id)!
-  // Owner's screenshots (2026-10-28): E1, Basic 10 (x1.20, Rhythm cards too), Signature 6 (x1.12), 3-1 unlocked
+  // Owner's screenshots (2026-10-28): E1, Basic 10 (x1.20, Rhythm cards too), Signature 6 (x1.12), 3-1, 5-1 and 7 unlocked
   const ownerBuild = () => {
     const cs = newCharacterSave()
     const [a] = cs.builds

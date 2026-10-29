@@ -269,8 +269,8 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
   - Everyone's Idol (7%, E3 11%), Encore V's +100% on a drawn Rhythm card, 5-1 (+10%) and E4's at-max +10% are multiplicative on
     Rhythm cards; E4 Everyone's Cheer is 1% per stack (max 20) on all of Tenebria's cards; E6 All Eyes On You is a 40% debuff
     on the target for Rhythm cards. Potential 7 is read as Rossweisse's (+5% additive on Passion cards from 600 Attack).
-    Unconfirmed: whether 5-1 and 7 are unlocked (no badge on the Potential screen); which 4 Rhythm cards Fermata offers
-    (all of them join the deck).
+    5-1 and 7 are unlocked: on the Potential screen an unlocked node is dark, a lit one (5-2) is still locked (User, 2026-10-28).
+    Fermata's 4 Rhythm cards are Rhythm, Crescendo, Staccato and Fortissimo (its Related Cards screen).
   - Not counted: allies' own Rhythm cards (Music, Start! gives each ally 2) and 5-1's buff on them, E2's Ego Skill damage,
     procs (add them as plays), extra hits (Everyone's Idol at 7, Encore III, Call & Response IV, Fortissimo: set per play).
 - **Manifest Ego in-game wording** (owner's screenshots, 2026-10-28; Prydwen's can be outdated): Mei Lin E1 / E4,
