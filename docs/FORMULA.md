@@ -332,6 +332,23 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
   - Decrease Morale (Dice Trick, Death Trick, E4, E6) is on enemies ("-20% Damage amount per Morale"): their damage, not ours.
     Not counted: Morale from Straight and Potential 7 (add it on the Buffs tab), Heals, draws, Cost changes. E1 (Joker: Discard
     Pile) and E4 (Death Trick: 5) are in the card text; E2 (heal, in game) and E6 (Morale decrease) deal no damage.
+- **Nia** (owner's screenshots, 2026-10-28; Ego 6, Potential screen Basic, Common and Unique 7/16 (E3 + E5 +6 included), Health
+  1/5, Attack 1/5; 3-1 and 7 unlocked, 5-1 locked): Basic and Unique cards x1.14 (Stroke 114%, Amp Therapy Heal 114%, Soul Riff
+  Heal 171%, Mute Accent III Heal 171%, Soul Riff I / IV Heal 228%). Rock and Roll shows 5 Decibel (3 + E4).
+  - Prydwen corrections: "Soul Rip" is "Soul Riff" in game; Soul Riff's base Heal is 150% (Prydwen 120%) and it has no Heal on
+    discard; Elasticity is max 5 stacks in game (Prydwen 2). "Activate" is "Proc" in game. Nia's Curiosity costs 0 in game (E1),
+    kept at Prydwen's base 1.
+  - Extra Attack %s on cards (Mute Accent 150/250/200/150/100%, G Chord III 120%, Soul Riff III 100%) and triggered heals (Soul
+    Riff II, Adagio III: 100%) aren't raised by the Unique upgrade in game (`upgrade: null` on the damage cards).
+  - Extra Attacks "by the Combatant who owns that card" count as Nia's own Extra Attack plays, added when the card is Nia's
+    (User, 2026-10-28). Unconfirmed: whether Attack Card buffs reach them (they come from Skill / Upgrade cards: they don't here).
+  - Decibel keyword (in game): "On Shuffle, 50% Extra Attack by allies to a random enemy, and on activation, remove Decibel. Heal
+    50% × Decibel count, and +50% Damage Amount × Decibel count to Extra Attacks (max 5 stacks)": each ally does a 50% Extra
+    Attack on Shuffle; the +50% × Decibel only boosts those shuffle Extra Attacks, then Decibel is removed (User, 2026-10-28).
+    Modeled as Nia's "Decibel (Shuffle)" card (comes with the Ego skill), Decibel count per play. Teammates' shuffle attacks
+    aren't counted.
+  - E2 Rhythm Boost (in game): "+5% Damage Amount (max 4 stacks)": additive, Nia's damage only (User, 2026-10-28), stacks per
+    play. E6: 4 Rhythm Boost at battle start (set the stacks). Not counted: heals, Elasticity, draws, discards, Cost changes.
 - **Manifest Ego in-game wording** (owner's screenshots, 2026-10-28; Prydwen's can be outdated): Mei Lin E1 / E4,
   Rossweisse E2 / E4 / E6, Tiphera E4 (max 2 stacks, removed at the end of the turn) and Orlea E4 match what is modeled.
 - **Team snapshot** (User, 2026-10-26), website only. Replaces the rotation buffs counted along
