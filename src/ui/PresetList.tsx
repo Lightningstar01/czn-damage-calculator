@@ -19,14 +19,15 @@ function effectPills(e: Effect, onStatsScreen: boolean, build: Build): Pill[] {
   const v = presetBuffValue(e, build)
   const ab = e.attackBonus
   const stat = e.thresholdStat ?? 'Attack'
+  const at = (n: number) => stat === 'Critical Chance' ? pct(n) : n
   const byAttack = !!ab || e.minAttack !== undefined
   const shown = byAttack ? `${e.value.trim().startsWith('+') ? '+' : ''}${pct(v.value)}` : e.value
   const bonus: Pill[] = [
     ...(e.minAttack !== undefined ? [{ group: 'const' as const, text: `needs ${e.minAttack} ${stat}` }] : []),
     ...(ab ? [{ group: 'const' as const, text: ab.every
       ? `${ab.value} per ${ab.every} ${stat} above ${ab.above}${ab.max ? ` (max ${ab.max})` : ''}`
-      : v.bonus ? `${stat} ${ab.orEqual ? `${ab.above}+` : `above ${ab.above}`}`
-      : `${ab.value} more ${ab.orEqual ? 'from' : 'above'} ${ab.above} ${stat}` }] : []),
+      : v.bonus ? `${stat} ${ab.orEqual ? `${at(ab.above)}+` : `above ${at(ab.above)}`}`
+      : `${ab.value} more ${ab.orEqual ? 'from' : 'above'} ${at(ab.above)} ${stat}` }] : []),
   ]
   return [buffPill(shown, e.type ?? buffType(e.value)), ...conditionPills(e), ...bonus]
 }

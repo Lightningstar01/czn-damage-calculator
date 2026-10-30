@@ -38,7 +38,7 @@ export default {
     { kind: 'Buff', id: 'brand', name: 'Brand of the Cycle', category: 'Character', value: '20%', appliesTo: 'ALL',
       hitScope: 'All hits', condition: 'Always', maxStacks: 1, counter: 'Brand of the Cycle (on target)' },
     // Potentials not on the stats screen. 5-1 is part of the in-game card % (like Mei Lin's 5-1).
-    { kind: 'Buff', id: 'p5-1-slash', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card %', value: '+5%',
+    { kind: 'Buff', id: 'p5-1-slash', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
       appliesTo: 'Sword Slash', hitScope: 'All hits', condition: 'Always', attackBonus: { above: 500, value: '+5%', orEqual: true } },
     // 7: "If Rossweisse's Attack is 600 or higher, +5% Justice Attribute Damage Amount, and for every 20 Attack exceeding 600,
     // add an additional +2% to the modifier (additional +10% max)"

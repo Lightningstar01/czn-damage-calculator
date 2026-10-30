@@ -30,7 +30,7 @@ export default {
     // 5-1 (Prydwen): "+5% Damage for Selena's Engagement Fire. If Selena's Additional Damage is greater than 15%, an additional +5% to
     // that value": raises the card %, like Rei's 5-1 (not unlocked by the owner: Engagement Fire 112% = 100% x 1.12). The extra +5%
     // needs a stat the engine doesn't read: not counted
-    { kind: 'Buff', id: 'p5-1-fire', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card %', value: '+5%',
+    { kind: 'Buff', id: 'p5-1-fire', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
       appliesTo: 'Engagement Fire', hitScope: 'All hits', condition: 'Always' },
     // 7 (Prydwen): "+4% Passion Attribute Damage. If Selena's Bonus Damage exceeds 30%, an additional +4%": as Tenebria's 7
     { kind: 'Buff', id: 'p7-passion', name: 'Unique Stat Upgrade', category: 'Potential', value: '+4%', appliesTo: 'Passion',

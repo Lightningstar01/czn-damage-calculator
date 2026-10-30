@@ -30,8 +30,10 @@ export interface Hit {
   /** 1-based hit number across the build's whole attack list. */
   globalHit: number
   hitNo: number
-  /** The card's %: the base when a potential upgrade applies, otherwise as shown in-game. */
+  /** The card's %: the base (with Card + buffs) when a potential upgrade applies, otherwise as shown in-game. */
   cardPct: number
+  /** Card + buffs in cardPct. */
+  cardAdd: Source[]
   /** Basic / Signature Card Upgrade potential (card % x this); null for cards without one. */
   potential: Factor | null
   /** Base % buffs, added to the card % after the potential (null: none). */
@@ -179,7 +181,7 @@ export function potentialFactor(upgrade: PotentialUpgrade | undefined, build: Bu
   return { value: 1 + level * settings.potentialPerLevel, sources }
 }
 
-/** The % the game shows on a card for a base % (1 = 100%): raised by the card's potential and the Card % buffs that match it.
+/** The % the game shows on a card for a base % (1 = 100%): raised by the Card + buffs, the card's potential and the Card % buffs that match it.
  * fixed: a Fixed damage % (raised only with the potentialFixed setting; a Fixed card's Heal is raised, Orlea's Annoying I). */
 export function shownPct(base: number, card: Card, build: Build, ch: CharacterPreset | undefined, buffs: ActiveBuff[],
   settings: Settings, fixed = false): number {
@@ -188,16 +190,21 @@ export function shownPct(base: number, card: Card, build: Build, ch: CharacterPr
   if (!potential) return base
   const cb = cardBuffs(buffs.filter((b) => !b.counter), card)
   const cardPct = [...cb.cardPct.all.sources, ...cb.cardPct.first.sources].reduce((a, s) => a + s.value, 0)
-  return base * potential.value * (1 + cardPct)
+  const cardAdd = [...cb.cardAdd.all.sources, ...cb.cardAdd.first.sources].reduce((a, s) => a + s.value, 0)
+  return (base + cardAdd) * potential.value * (1 + cardPct)
 }
 
 /** A per-count card's count on this play (Card.perCount; kept in the play's stacks, default 1). */
 export const playCount = (name: string, play: RotationPlay) => play.stacks?.[name] ?? 1
 
+/** The card's hits on this play before the play's own hit count: with the hits its counter adds (Card.counterHits). */
+export const playBaseHits = (card: Card, play: RotationPlay) =>
+  card.hits + (card.counterHits && (play.stacks?.[card.counterHits.counter] ?? 0) > 0 ? card.counterHits.hits : 0)
+
 /** The card as played: the play's own hit count and Cost, if set, replace the card's. A per-Cost card's % is its % x the Cost;
  * a per-count card's, its % x the play's count. */
 export function playCard(card: Card, play: RotationPlay): Card {
-  const played = { ...card, hits: play.hits ?? card.hits, cost: play.cost ?? card.cost }
+  const played = { ...card, hits: play.hits ?? playBaseHits(card, play), cost: play.cost ?? card.cost }
   if (card.perCost) played.pct = card.pct * (played.cost ?? 1)
   if (card.perCount) played.pct = card.pct * playCount(card.perCount, play)
   return played
@@ -315,6 +322,7 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
       const tp = owner.ch?.cards?.find((x) => x.id === t.card)
       if (!tp) continue
       const tcard = presetCard(tp, owner.ch!.element, `trigger:${tp.id}`, buildNodeOn(owner.dmg.build))
+      if (t.perStack) tcard.hits *= capped(play, t.counter!, t.maxStacks)
       const r = cardHits(owner, tcard, { cardId: tcard.id, vulnerable: play.vulnerable, stacks: play.stacks })
       const chance = t.chance ?? 1
       const hit = { nonCrit: r.nonCrit * chance, crit: r.crit * chance, expected: r.expected * chance }
@@ -364,9 +372,11 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
   }
   const both = (b: { all: { sources: Source[] }; first: { sources: Source[] } }) => [...b.all.sources, ...(first ? b.first.sources : [])]
   const total = (sources: Source[]) => sources.reduce((a, s) => a + s.value, 0)
+  const cardAdd = potential ? both(cb.cardAdd) : []
+  const cardPct = card.pct + total(cardAdd)
   const baseSources = both(cb.basePct)
   const basePct: Factor | null = baseSources.length ? { value: total(baseSources), sources: baseSources } : null
-  const pct = card.pct * (potential?.value ?? 1) + (basePct?.value ?? 0)
+  const pct = cardPct * (potential?.value ?? 1) + (basePct?.value ?? 0)
   const finalSources = both(cb.final)
   const final: Factor | null = finalSources.length ? { value: 1 + total(finalSources), sources: finalSources } : null
   const multSources = [...cb.multiplicative.all.sources, ...(first ? cb.multiplicative.first.sources : [])]
@@ -440,7 +450,7 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
     expected = nonCrit * (1 + critRate * (critDmg - 1))
   }
   return {
-    globalHit: k, hitNo, cardPct: card.pct, potential, basePct, multFactor: { value: multValue, sources: multSources }, additive,
+    globalHit: k, hitNo, cardPct, cardAdd, potential, basePct, multFactor: { value: multValue, sources: multSources }, additive,
     weakness, vulnerable, enemyDr, weaknessDebuff, ravaged, inHand, cardMult, stat,
     constant: card.scaling === 'Fixed' ? settings.fixedAtkCoef : settings.atkConstant,
     elemDmg, mechDmg, enemyDef, final, critDmg, critRate, critDmgSources, critRateSources, nonCrit, crit, expected,

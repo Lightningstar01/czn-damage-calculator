@@ -35,11 +35,12 @@ export function presetTags(p: CardPreset, nodeOn: NodeOn = allNodesOn): string {
 
 /** The card a preset plays as; element: the character's (unless the preset sets its own). */
 export function presetCard(p: CardPreset, element: Element, id: string, nodeOn: NodeOn = allNodesOn): Card {
+  const changed = Object.entries(p.nodeCard ?? {}).filter(([node]) => nodeOn(node)).map(([, fields]) => fields)
   return {
     id, name: p.name, cardType: p.cardType, element: p.element ?? element, cost: p.cost ?? null, tags: presetTags(p, nodeOn),
-    scaling: p.scaling ?? 'ATK', kind: p.kind ?? 'Normal', pct: p.pct, hits: p.hits, weaknessApplies: !!p.weaknessApplies,
+    scaling: p.scaling ?? 'ATK', kind: p.kind ?? 'Normal', pct: p.pct, hits: p.hits, ...Object.assign({}, ...changed), weaknessApplies: !!p.weaknessApplies,
     targetRavaged: !!p.targetRavaged, upgrade: cardUpgrade(p), preset: p.id, ...(p.perCost ? { perCost: true } : {}),
-    ...(p.perCount ? { perCount: p.perCount } : {}), ...(p.notACard ? { notACard: true } : {}),
+    ...(p.perCount ? { perCount: p.perCount } : {}), ...(p.counterHits ? { counterHits: p.counterHits } : {}), ...(p.notACard ? { notACard: true } : {}),
   }
 }
 

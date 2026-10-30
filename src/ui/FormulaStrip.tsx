@@ -58,6 +58,7 @@ function chipsFor(hit: Hit, card: Card): { inner: Chip[]; outer: Chip[] } {
     ] }
   }
   const inner: Chip[] = [{ key: 'card', op: '', group: 'card', label: card.name || 'Card', value: pct(hit.cardPct, 2),
+    ...(hit.cardAdd.length ? { sources: hit.cardAdd } : {}),
     note: hit.potential ? 'Base damage % of the card (without potentials).' : 'Damage % as shown on the card in-game.' }]
   if (hit.potential) inner.push(potentialChip(hit.potential, `In-game card %: ${pct(hit.cardPct * hit.potential.value, 2)}.`))
   if (hit.basePct) {

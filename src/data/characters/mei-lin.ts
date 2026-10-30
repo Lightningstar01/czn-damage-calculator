@@ -32,7 +32,7 @@ export default {
     // Potentials not on the stats screen (Potential 3-1, +1 Ember per Strike, goes in the Ember stacks per play)
     // Potential 5-1 "+5% Mei Lin's Strike Damage. If Mei Lin's Attack is above 500, an additional +5%." Part of the in-game
     // card % (owner's 132% check), so it only counts on cards entered at base %. The extra +5% follows the stats-screen Attack.
-    { kind: 'Buff', id: 'p5-1-strike', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card %', value: '+5%',
+    { kind: 'Buff', id: 'p5-1-strike', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
       appliesTo: 'Strike', hitScope: 'All hits', condition: 'Always', attackBonus: { above: 500, value: '+5%' } },
     // Manifest Ego (dupes): on from the build's level
     { kind: 'Buff', id: 'e1-crit', name: 'E1 Sleeping Memory', category: 'Ego Manifestation', type: 'Crit Chance',

@@ -78,8 +78,10 @@ email, and check that binary files such as spreadsheets carry no author name bef
   `{P3-1:...}` Potential node (switch on Setup > Potentials, `build.potentialNodes`, missing = on). A card's
   `upgrade: null` turns off its potential upgrade (Mei Lin's Jewel V). Tokens nest: `Heal {P3-1:{70%}|{100%}}`.
   A node that adds a keyword also adds the tag: `nodeTags: { '3-1': 'Blessing' }` (only while the node is on; teammates: on).
-  `{F40%}` is a Fixed damage % (raised only with the potentialFixed setting).
-  Done: Mei Lin, Rossweisse, Tiphera, Orlea, Mika, Rei, Tenebria, Adelheid, Narja, Cassius, Nia, Selena. The step-by-step process is the `card-review` skill (.claude/skills/card-review).
+  A node that changes a card's numbers: `nodeCard: { '3-1': { pct: 0.7, hits: 2 } }` (Chizuru's Moonslash).
+  `{F40%}` is a Fixed damage % (raised only with the potentialFixed setting). `{120%@id}` is another card preset's base %, raised by that
+  card's buffs (the Extra Attack on Renoa's Dirge Bullet).
+  Done: Mei Lin, Rossweisse, Tiphera, Orlea, Mika, Rei, Tenebria, Adelheid, Narja, Cassius, Nia, Selena, Chizuru, Yuki, Haru, Renoa. The step-by-step process is the `card-review` skill (.claude/skills/card-review).
 - Card upgrade potentials: build `basicLevel` / `signatureLevel`, card `upgrade`
   (Basic / Signature; `pct` is then the base %), `potentialFactor()` in calc.ts; the Manifest Ego
   levels that add +3 (E3 and/or E5; some characters have both) are parsed from the import (`potentialEgo` in merge.ts). See docs/FORMULA.md 2c.
@@ -94,16 +96,18 @@ email, and check that binary files such as spreadsheets carry no author name bef
   (teammate deck ids = preset ids). `computeBuild(..., saves)` gets every character's save; `byCharacter` splits the totals.
 - Triggers (`triggers` on a character or card; Selena's Mark, Coordinated Attacks): a play matching `on` adds the trigger
   card's hit, computed with the owner's build (`others`: only other combatants' plays; `weakness`: Weakness Attacks only;
-  `counter`: needs that per-play stack; `chance`: expected value; `egoLevel`). Shown under the play as `triggered`.
+  `counter`: needs that per-play stack; `perStack`: one hit per stack (Renoa's Dirge Bullets discarded); `chance`: expected value; `egoLevel`). Shown under the play as `triggered`.
   `notACard` cards (effect hits) don't match card-type words (Attack / Skill / Upgrade) and set off no triggers.
 - Attack list (per build, `build.rotation`): each play has optional hits, `cost` (only for `perCost` cards: "X% for
   each Cost of this card", damage = % x Cost), `vulnerable`, a count for `perCount` cards ("X% for each card in
-  hand", kept in `stacks` under the card's `perCount` name, default 1; a `counter` of the same name reads that number: Tenebria's Rhythms),
+  hand", kept in `stacks` under the card's `perCount` name, default 1; a `counter` of the same name reads that number: Tenebria's Rhythms;
+  a card's `counterHits` adds hits while a counter is above 0: Yuki's Inspiration),
   `weaknessDebuff` and `stacks` per counter name; buffs with `counter` read the play's stacks
   (capped at max stacks). Buff type `Card %` raises a card's base % like a potential (only on cards
-  with an upgrade); `Base %` ("+X% base Damage Amount") adds to the shown card %; `Final` ("final Damage
+  with an upgrade: "Double all effects"); `Card +` (a Potential node's "+X%", owner 2026-10-30) adds to the base % before the upgrade
+  (Shadow 110% = (80% + 15%) x 1.16); `Base %` ("+X% base Damage Amount") adds to the shown card %; `Final` ("final Damage
   Amount") is its own multiplier. Effects: `egoBelow` (off from that Ego level), `minAttack`, `attackBonus.every`
-  (`thresholdStat: 'Defense'` / `'Health'` makes both read that stats-screen stat: Adelheid's 7, Cassius's 5-1).
+  (`thresholdStat: 'Defense'` / `'Health'` / `'Critical Chance'` makes both read that stats-screen stat: Adelheid's 7, Cassius's 5-1, Renoa's 7).
   A card's `followUp` adds Fixed damage (a share of the next matching play's damage), e.g. Rossweisse's Ego skill.
 - Saves are per character: builds (partner, Manifest Ego level, card upgrade levels, 3 fragment set
   picks, stats, team, deck, attack list...), boosts and buffs.
@@ -152,11 +156,11 @@ Crit       = Damage x Crit DMG (stat is the total multiplier); Expected = Damage
 - Open mechanics questions are listed in docs/FORMULA.md section 4.
 - Card text check: the owner is saving in-game card screenshots to `card-screenshots/<slug>/` (git-ignored);
   compare them with the cards and confirm corrections with the owner (`card-review` skill). Mei Lin, Rossweisse (2026-10-27),
-  Tiphera, Orlea, Mika, Rei, Tenebria, Adelheid, Narja, Cassius, Nia, Selena (2026-10-28) done; next: every other character the owner has, as they send them; Luke, Kayron, Olga and Fei
+  Tiphera, Orlea, Mika, Rei, Tenebria, Adelheid, Narja, Cassius, Nia, Selena (2026-10-28), Chizuru, Yuki, Haru, Renoa (2026-10-30) done; next: every other character the owner has, as they send them; Luke, Kayron, Olga and Fei
   last (the owner doesn't have them yet).
 - Idea for later (owner, 2026-10-27): animated card art. cznmetadecks has the game's animated unique cards as video
   (`https://cdn.czndecksmeta.com/card/cards_animated/<artId>.mp4`, 900x770, ~1 MB each, ~200 MB in all): skipped for size.
-- `creates` links: Rossweisse, Tenebria, Adelheid, Cassius, Nia, Selena so far; add each character's during the alphabetical review (until then their created
+- `creates` links: Rossweisse, Tenebria, Adelheid, Cassius, Nia, Selena, Chizuru, Renoa so far; add each character's during the alphabetical review (until then their created
   cards can't be added).
 - Cards tab "Other": neutral and seasonal cards later (Prydwen has 31 Neutral cards).
 - Presets: all 38 characters and their cards are imported. Reviewing every character alphabetically

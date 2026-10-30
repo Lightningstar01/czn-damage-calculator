@@ -56,7 +56,7 @@ function MyBuffsSection() {
   const deck = buildDeck(findCharacter(PRESETS, name), build).map((i) => i.card)
   const targets = ['ALL', ...new Set(deck.flatMap((c) => [c.name, ...c.tags.split(',').map((t) => t.trim())]))].filter(Boolean)
   return (
-    <Section title="My buffs" help="Buffs from memory fragments, equipment, other characters, etc. Type the text as shown in-game: '+30%' is additive, '30%' (no +) is multiplicative, 'Weakness Attack' makes Weakness DMG apply. For crit bonuses that only some cards get, pick Crit Chance / Crit DMG as the type. Card % raises a card's base % like a potential (only on cards with a potential upgrade, entered at base %). Base % ('+X% base Damage Amount') is added to the card % after the potential. Final ('final Damage Amount') is its own multiplier."
+    <Section title="My buffs" help="Buffs from memory fragments, equipment, other characters, etc. Type the text as shown in-game: '+30%' is additive, '30%' (no +) is multiplicative, 'Weakness Attack' makes Weakness DMG apply. For crit bonuses that only some cards get, pick Crit Chance / Crit DMG as the type. Card % raises a card's base % like a potential (only on cards with a potential upgrade, entered at base %). Card + adds to a card's base % before the potential, as Potential nodes do. Base % ('+X% base Damage Amount') is added to the card % after the potential. Final ('final Damage Amount') is its own multiplier."
       actions={<button className="btn small" onClick={() => {
         const b = newBuff(build.id)
         updateCs((c) => { c.buffs.push(b) })

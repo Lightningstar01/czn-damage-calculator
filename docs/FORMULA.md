@@ -165,8 +165,12 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
     edited ones kept their in-game % with no upgrade.
   - Potential nodes that raise one card's damage (Mei Lin 5-1: "+5% Strike Damage", +5% more above
     500 Attack) are part of the in-game card % (User: Strike shows 132% at Basic Card Upgrade 10 =
-    100% x 1.2 x 1.1). They are buffs of type **Card %**: card % = base x (1 + upgrade levels x 2%)
-    x (1 + sum of Card % buffs), only on cards with an upgrade (entered at base %).
+    (100% + 10%) x 1.2). They are buffs of type **Card +**: card % = (base + sum of Card + buffs) x (1 + upgrade levels x 2%),
+    only on cards with an upgrade (entered at base %). Measured on Chizuru's cards (not 100% base, 2026-10-30): Shadow of the Moon
+    110% = (80% + 15%) x 1.16; multiplying (80% x 1.16 x 1.15 = 107%) doesn't fit. All earlier checks were on 100% cards, where
+    both give the same number. Moving every "+X%" node to Card +: User, 2026-10-30. It changes only Rei's 7 on Predator's Blade
+    (250%) and Cassius's 5-1 on Wild Card (220%), both locked for the owner, so **Unconfirmed on those two cards**.
+    Effects that scale the card's own % ("Double all effects", Tiphera) stay type **Card %**: x (1 + sum of Card % buffs).
     The "above 500 Attack" part is one buff with the node (owner, 2026-10-27): it adds the extra +5% by
     itself when the stats-screen Attack is above 500 (`attackBonus`).
   - **Rossweisse** (owner's screenshots, 2026-10-27; E1, Basic 1, Signature 10): every in-game % = Prydwen's
@@ -368,6 +372,75 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
     Target Spotted V's hit counts the target as Ravaged (User, 2026-10-28).
   - Not counted: 5-1's and 7's extra +5% / +4% needing Additional / Bonus Damage (7's bonus is a switch with a hint),
     Tenacity damage, 3-1's Piercing, Shields, draws.
+- **Renoa** (owner's screenshots, 2026-10-30; E0, Basic 5/10, Unique 8/10, Common 1/10, Critical Chance 53.6%; 3-1 and 7 unlocked, 5-1 and
+  5-2 locked, so 5-1's switch is on until turned off on the Buffs tab): Basic cards x1.1, Unique cards x1.16.
+  - Potentials are Card +, measured on the cards: Dirge Bullet 238% = (160% + 40% + 5%) x 1.16, its Extra Attack 168% = (120% + 20% + 5%)
+    x 1.16. 3-1 (in game): "+40% Damage Amount to Dirge Bullet, +20% Damage Amount to Extra Attacks" (Prydwen calls it Basic Card
+    Proficiency, the game Signature Card Proficiency). The +20% does not show on Instant Judgment IV's Extra Attack (290% = 250% x 1.16)
+    or Instant Judgment V's (200%), so it's modeled on Dirge Bullet's Extra Attack only.
+  - Dirge Bullet: Finale (in game): 238% = (200% + 5%) x 1.16 and 191% × 2 = (160% + 5%) x 1.16, so 7 reaches it and 3-1 doesn't, keeping
+    Prydwen's 200% / 160%. **Unconfirmed**: another base (160% / 140%) with 3-1 included would show the same numbers with 3-1 on; they differ
+    only with 3-1 locked. Since 7's "Dirge Bullet" reaches Finale, Ballad IV's Extra Attack bonus and Last-Ditch / Instant Judgment's discard
+    bonus count for Finale too (**Unconfirmed**).
+  - 7's +10% and 5-1's +5% read the stats-screen Critical Chance (60% / 20% or higher), like the Attack thresholds; the owner's 53.6%
+    gives 238% without the +10%. Battle-only Critical Chance isn't read (**Unconfirmed**).
+  - Discarded Dirge Bullets (User, 2026-10-30): a "Dirge Bullets discarded" number on any play, by anyone while Renoa is in the team, adds
+    that many Extra Attacks, computed with Renoa's build, and feeds the discard bonus of the card played. Whether Echo of Sorrow II's "create 2
+    in Discard Pile" fires them is left to that number.
+  - Ballad III's Mark is the Mark keyword, Renoa's 100% Extra Attack on each Attack Card played with Mark above 0, unraised, with its own
+    per-play number (User, 2026-10-30). Flower III's "+40% to the next card" reaches Renoa's next card only (User, 2026-10-30), not the Extra Attacks
+    on that play (Mark, discarded Dirge Bullets), as with Attack Card buffs (**Unconfirmed**).
+  - "+" rule: Instant Judgment's and Last-Ditch's +X% additive, Ballad's "base" Base %, Ballad IV / V's "by" multiplicative, E3 additive, Rose's Resolve
+    (E4) additive per stack. E1 makes Last-Ditch's bonus +70% each. E6's 50% Extra Attack per draw is unraised (**Unconfirmed**, like Narja's E6).
+  - Prydwen corrections: Ballad's +20% / +30% are "base" Damage Amount; Flower III is "for each Cost of the cards Discarded" (Prydwen: each
+    discarded Cost 1 card). Not counted: Shields, draws, Retrieve.
+- **Haru** (owner's screenshots, 2026-10-30; E0, Basic 1/10, Unique 7/10, Common 1/10, Attack 775; 3-1 and 7 unlocked, 5-1 and 5-2 locked):
+  Basic cards x1.02, Unique cards x1.14. Potentials are Card +: Power Anchor 245% = (220% + 20%) x 1.02, Anchor Shot 365% = (300% + 10% + 10%) x 1.14.
+  - Prydwen corrections: Ego skill 600%, +60% per beneficial effect, max +600% (350%, +50%, no max); Anchor Shot IV 380% (3800%, a typo); Combo is
+    Streak; Power Charge 240 / 320 / 320 / 270 / 270 / 320% (180 / 270 / 270 / 270 / 240 / 300%), single target +100% / +150% (+80% / +120%), IV +50% (+30%);
+    Charge Energy Cost 0 except III (1), 50 / 50 / 100% / +70% / 50 / 40% (30 / 40 / 50% / +70% / 30 / 20%), I adds +20% Crit Chance, II +2 Tenacity Damage;
+    5-1's threshold 500 or higher (above 500); 7's 600 or higher (above 1000); E2 30% (40%); E3 +200% (+100%); E4 +30% (+20%); E6 15% (20%), plus a card moved to
+    hand at the start of the turn at +30% (missing).
+  - E3 at max: in game 800%, +80% each, max +800% (User's screenshot, 2026-10-30), so 10 beneficial effects count at any Ego level.
+  - Anchor and Power Anchor (3-1) "+10% Damage Amount to Anchor Shot": additive, a stack for each one played, set per Anchor Shot play (User, 2026-10-30; 3-1's own
+    text says "by 10%", the cards "+10%").
+  - E2 / E6's decrease is in the same multiplicative sum as "by X%" buffs, like Rei's Strike of Darkness II: **Unconfirmed**. Pulverize (+20% on a Shield holder) is modeled for Haru only, per play.
+  - Not counted: Tenacity damage, Cost changes, draws, Shields.
+- **Yuki** (owner's screenshots, 2026-10-30; E0, Basic 1/10, Unique 6/10, Common 1/10, Attack 830; 3-1 and 7 unlocked, 5-1 and 5-2
+  locked): Basic cards x1.02 (Longsword Slash 102%), Unique cards x1.12 (Trickery Strike 202%). Freezing Blade's and Trickery Strike III's
+  hits aren't raised.
+  - Prydwen corrections: Ego skill 450%, +100% base per card moved (300%, +50%); Flash Slash has a single-target line (none), IV 400%
+    and +150% per card Drawn (350%, +100%); Iceberg Cleave has no "decrease by 20%"; Potential 7 every 20 Attack (every 80); E1 adds
+    Iceberg Cleave's single-target 50% (removes the 20%); E3 also +150% and +150% per card (+80% only); E4 max 3 stacks, no duration
+    (max 2, 1 turn); E6 also Swiftblade Flurry.
+  - Flash Slash 258% = (220% + 7's +10%) x 1.12, Iceberg Cleave 213% = (180% + 10%) x 1.12 at Attack 830 (Card +, section above).
+  - Inspiration is a switch per play: it adds the "Add 1 Hit" of Iceberg Cleave, Flash Slash III and Trickery Strike V (`counterHits`),
+    Rapid Slash's 30% (3-1) and Freezing Blade's hit (User, 2026-10-30). A play's own hit count replaces the added hit.
+  - Freezing Blade's and Trickery Strike III's hits are effect hits of normal damage: Attack Card buffs skip them, general buffs
+    count, Extra DMG% doesn't (User, 2026-10-30). Trickery Strike III needs its own per-play switch, as a trigger reads one counter.
+  - "Flash Slash" in 7 and E6 is taken to reach all its epiphanies (IV's 459% = (400% + 10%) x 1.12 fits). Unconfirmed: IV's base could
+    be 410% with no +10%. Swiftblade Flurry's max stacks aren't stated, so it's uncapped (Unconfirmed). The Ego skill's last line runs
+    off the screenshot; its end is taken from E3's wording.
+  - Not counted: Cost changes, draws, Shields. With 3-1 off, leave Inspiration off on Longsword Slash and Rapid Slash (the buff and the
+    trigger don't read the node).
+- **Chizuru** (owner's screenshots, 2026-10-30; E2, Basic 10/10, Unique 8/10, Common 1/10, Attack 972; 3-1, 5-1 and 7 unlocked, 5-2
+  locked): Basic cards x1.20 (Spiritflame's Ward 120%), Unique cards x1.16 (Karmic Flames 116%).
+  - Prydwen corrections: Ego skill 500%, +100% per Shadow created (350%, +50%); Karmic Flames and I 2 hits, Cursed Shackles adds 1
+    (1 hit, adds 2); Karmic Flames II and IV Cost 0 (1); III 250% (180%); Oni Hunt 70% (60%), I 60% (50%), II +120% to the next Bind
+    card (+100%), III 120% (100%), V "80%" without "+" and 4 Will-O'-Wisp ("+80%", 3); Potential 3-1 70% x 2 (60% x 2), 7 every 10 Attack
+    (every 40); E3 also +200% and +150% per Shadow (+150% only).
+  - Moonslash 96% x 2 = (3-1's 70% + 5-1's +5% +5%) x 1.2. Shadow 110% = (80% + 7's +15%) x 1.16, Shadow+ 249% = (180% + E1's +20% +
+    7's +15%) x 1.16 (the Card + buff type, section above). A node can change a card's % and hits (`nodeCard`).
+  - "+80% Damage Amount for each Bind stack": additive, every stack counts, the first too: Shadow 1/5 +80%, Shadow+ 3/5 +240%,
+    5/5 +400% (User, 2026-10-30). Set per play.
+  - Oni Hunt's "next Bind card" reaches any ally's Bind card, as it has no "of this unit" (User, 2026-10-30); set per play.
+  - Oni Hunt V's "80%" has no "+", so x1.8 by the "+" rule (Prydwen's "+80%" would be additive). Karmic Flames III's "Increase Damage
+    Amount by 150%" is x2.5, switched per play. Lunarshard (E4) and the Ego skill's per-Shadow and E3 buffs are additive. **Unconfirmed**:
+    the Ego skill shown as 700% at E3 (E3 is locked; assumed to work like Selena's E4).
+  - Oni Hunt IV's created Moonslash is read as Moonslash with Exhaust and Cost 0 (Basic upgrade, 3-1, 5-1). **Unconfirmed**.
+  - Added hits are set per play: Inhibit +1 on Shadow and Shadow+, E6 +1 on Shadow+ at 3 Lunarshard, Cursed Shackles, Tsukuyomi II / III,
+    Oni Hunt III. Not counted: Will-O'-Wisp and Shadow creation (Bind stacks, Shadows created and Lunarshard are set per play), Cost
+    changes, heals, shields; Bound At Dusk III / IV's procs are added as plays.
 - **Team damage** (User, 2026-10-28), website only: Selena is played beside another DPS, so teammates can deal damage too.
   - Each teammate slot links one of that character's saved builds (missing = their active build; "None" = buffs only, as before).
     A linked slot takes its Manifest Ego, partner and sets from that build.

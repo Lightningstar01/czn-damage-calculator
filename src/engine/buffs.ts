@@ -32,9 +32,10 @@ export function parseBuffValue(text: string): number {
 }
 
 /** A preset buff's value for the build: its own value (0 below minAttack), plus its attackBonus when the stats-screen Attack
- * (or Defense / Health, with thresholdStat) is above the threshold (once, or for every `every` above it up to `max`). */
+ * (or Defense / Health / Critical Chance, with thresholdStat) is above the threshold (once, or for every `every` above it up to `max`). */
 export function presetBuffValue(e: BuffEffect, build: Pick<Build, 'stats'>): { value: number; bonus: boolean } {
-  const atk = e.thresholdStat === 'Defense' ? build.stats.defense : e.thresholdStat === 'Health' ? build.stats.health : build.stats.attack
+  const atk = e.thresholdStat === 'Defense' ? build.stats.defense : e.thresholdStat === 'Health' ? build.stats.health
+    : e.thresholdStat === 'Critical Chance' ? build.stats.critChance : build.stats.attack
   if (e.minAttack !== undefined && atk < e.minAttack) return { value: 0, bonus: false }
   const ab = e.attackBonus
   const bonus = !!ab && (ab.orEqual ? atk >= ab.above : atk > ab.above)
@@ -223,7 +224,8 @@ export function activeBuffs(presets: Presets, charName: string, cs: CharacterSav
     if (s.effect.kind !== 'Buff' || s.stacks <= 0) continue
     const e = s.effect as BuffEffect
     const v = presetBuffValue(e, build)
-    out.push({ label: `${stateLabel(s)}: ${e.name}${v.bonus ? ` (${e.thresholdStat ?? 'Attack'} ${e.attackBonus!.orEqual ? `${e.attackBonus!.above}+` : `above ${e.attackBonus!.above}`})` : ''}`,
+    const above = e.attackBonus && e.thresholdStat === 'Critical Chance' ? `${Math.round(e.attackBonus.above * 100)}%` : e.attackBonus?.above
+    out.push({ label: `${stateLabel(s)}: ${e.name}${v.bonus ? ` (${e.thresholdStat ?? 'Attack'} ${e.attackBonus!.orEqual ? `${above}+` : `above ${above}`})` : ''}`,
       type: buffType(e.value, e.type), value: v.value,
       stacks: e.counter ? 0 : e.maxStacks ? Math.min(s.stacks, e.maxStacks) : s.stacks,
       appliesTo: e.appliesTo, hitScope: e.hitScope, condition: e.condition,
@@ -293,6 +295,8 @@ export interface CardBuffs {
   critDmg: { all: Bucket; first: Bucket }
   /** Card % buffs (raise the card's base %, like potentials). */
   cardPct: { all: Bucket; first: Bucket }
+  /** Card + buffs (added to the card's base %, before potentials). */
+  cardAdd: { all: Bucket; first: Bucket }
   /** Base % buffs (added to the card % after the potential). */
   basePct: { all: Bucket; first: Bucket }
   /** Final damage buffs (their own multiplier). */
@@ -304,7 +308,7 @@ export function cardBuffs(buffs: ActiveBuff[], card: Card): CardBuffs {
   const b = (): Bucket => ({ value: 0, sources: [] })
   const out: CardBuffs = { additive: { all: b(), first: b() }, multiplicative: { all: b(), first: b() }, weaknessAttack: [],
     critRate: { all: b(), first: b() }, critDmg: { all: b(), first: b() }, cardPct: { all: b(), first: b() },
-    basePct: { all: b(), first: b() }, final: { all: b(), first: b() } }
+    cardAdd: { all: b(), first: b() }, basePct: { all: b(), first: b() }, final: { all: b(), first: b() } }
   for (const buff of buffs) {
     if (buff.stacks <= 0 || !buffMatches(buff, card)) continue
     const label = buff.stacks !== 1 ? `${buff.label} x${buff.stacks}` : buff.label
@@ -314,7 +318,7 @@ export function cardBuffs(buffs: ActiveBuff[], card: Card): CardBuffs {
     }
     const v = buff.value * buff.stacks
     const group = { Additive: out.additive, Multiplicative: out.multiplicative, 'Crit Chance': out.critRate, 'Crit DMG': out.critDmg,
-      'Card %': out.cardPct, 'Base %': out.basePct, Final: out.final }[buff.type]
+      'Card %': out.cardPct, 'Card +': out.cardAdd, 'Base %': out.basePct, Final: out.final }[buff.type]
     const bucket = group[buff.hitScope === 'First hit only' ? 'first' : 'all']
     bucket.value += v
     bucket.sources.push({ label: buff.hitScope === 'First hit only' ? `${label} (first hit)` : label, value: v, unit: '%',

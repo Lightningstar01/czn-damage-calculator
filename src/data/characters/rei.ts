@@ -30,11 +30,11 @@ export default {
   effects: [
     // 5-1: "+5% Damage for Rei's Dark Blade. If Rei's Attack is greater than 500, an additional +5% to that value." Part of the
     // in-game card %, like Mei Lin's 5-1 (not unlocked by the owner: Dark Blade 114% = 100% x 1.14)
-    { kind: 'Buff', id: 'p5-1-blade', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card %', value: '+5%',
+    { kind: 'Buff', id: 'p5-1-blade', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
       appliesTo: 'Dark Blade', hitScope: 'All hits', condition: 'Always', attackBonus: { above: 500, value: '+5%' } },
     // 7: "If Rei's Attack is greater than 550, +10% Predator's Blade Damage. For every 10 Attack exceeding that value, an additional
     // +1% (up to an additional +20%)." Raises the card % (owner, 2026-10-28); not unlocked by the owner
-    { kind: 'Buff', id: 'p7-predator', name: 'Unique Stat Upgrade', category: 'Potential', type: 'Card %', value: '+10%',
+    { kind: 'Buff', id: 'p7-predator', name: 'Unique Stat Upgrade', category: 'Potential', type: 'Card +', value: '+10%',
       appliesTo: "Predator's Blade", hitScope: 'All hits', condition: 'Always', minAttack: 551,
       attackBonus: { above: 550, value: '+1%', every: 10, max: '+20%' } },
     // E4 Inner Memory: "+100% Damage for Final Shadow" (300% -> 400% in game)

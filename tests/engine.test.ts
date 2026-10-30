@@ -1080,8 +1080,8 @@ describe('Rei', () => {
     addCards(cs, predator)
     a.rotation = [{ cardId: predator.id }]
     const r = computeBuild(PRESETS, 'Rei', cs, a, settings)
-    // 250% x 1.14 x (1 + 10% + 5 x 1%) + E6 20%
-    expect(r.plays[0].nonCrit).toBeCloseTo((2.5 * 1.14 * 1.15 + 0.2) * 600 * 0.35)
+    // (250% + 10% + 5 x 1%) x 1.14 + E6 20%
+    expect(r.plays[0].nonCrit).toBeCloseTo(((2.5 + 0.15) * 1.14 + 0.2) * 600 * 0.35)
   })
 })
 
@@ -1397,6 +1397,178 @@ describe('Cassius', () => {
   })
 })
 
+describe('Yuki', () => {
+  const yuki = PRESETS.characters.find((c) => c.name === 'Yuki')!
+  const preset = (id: string) => yuki.cards!.find((p) => p.id === id)!
+  // Owner's screenshots (2026-10-30): E0, Basic 1 (x1.02), Signature 6 (x1.12), 3-1 and 7 unlocked, 5-1 locked, Attack 830
+  const ownerBuild = (attack = 830) => {
+    const cs = newCharacterSave()
+    const [a] = cs.builds
+    Object.assign(a, { egoLevel: 0, basicLevel: 1, signatureLevel: 6 })
+    a.stats.attack = attack
+    a.presetSwitches['Yuki|p5-1-basic'] = false
+    return { cs, a }
+  }
+  const atk = 830 * 0.35
+
+  it("card text matches the owner's in-game screenshots", () => {
+    const { cs, a } = ownerBuild()
+    const text = (id: string) => {
+      const p = preset(id)
+      const c = cardFromPreset(p, 'Order')
+      const buffs = activeBuffs(PRESETS, 'Yuki', cs, a, settings)
+      return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: () => true, pct: (base, fixed) => shownPct(base, c, a, yuki, buffs, settings, fixed) })
+    }
+    const single = 'If there is only a single target, increase Damage Amount by 50%'
+    expect(text('card-745')).toBe('450% Damage to all enemies\nMove all Attack Cards of this unit in hand to the top of Draw Pile\n'
+      + '+100% base Damage Amount for each card moved to top of Draw Pile')
+    expect(text('card-746')).toBe('102% Damage\nInspiration: Decrease Cost by 1')
+    expect(text('card-747')).toBe('224% Damage\nInspiration: Increase Damage Amount by 30%')
+    expect(text('card-748')).toBe('102% Shield')
+    expect(text('card-756')).toBe(`258% Damage to all enemies\n${single}\nInspiration: Decrease Cost by 1`)
+    expect(text('card-757')).toBe(`381% Damage to all enemies\n${single}\nInspiration: Decrease Cost by 1`)
+    expect(text('card-759')).toBe(`258% Damage to all enemies\n${single}\nInspiration: Add 1 Hit`)
+    expect(text('card-760')).toContain('459% Damage')
+    expect(text('card-761')).toContain('414% Damage to all enemies')
+    expect(text('card-762')).toContain('202% Damage')
+    expect(text('card-763')).toContain('269% Damage')
+    expect(text('card-766')).toContain('202% Damage')
+    expect(text('card-767')).toBe('224% Damage\nInspiration: Add 1 Hit')
+    expect(text('card-768')).toContain('120% Damage to all enemies')
+    expect(text('card-774')).toBe('213% Damage to all enemies\nInspiration: Add 1 Hit')
+  })
+
+  it('Inspiration adds the hit and sets off Freezing Blade, skipped by Attack Card buffs; a Rapid Slash gets 30%', () => {
+    const { cs, a } = ownerBuild()
+    a.deck.push({ id: 'ice', preset: 'card-774' }, { id: 'fb', preset: 'card-768' }, { id: 'rs', preset: 'card-747' }, { id: 'ps', preset: 'card-750' })
+    a.rotation = [{ cardId: 'ice' }, { cardId: 'ice', stacks: { Inspiration: 1, 'Prepare to Subdue': 1 } }, { cardId: 'rs', stacks: { Inspiration: 1 } },
+      { cardId: 'ice', hits: 5, stacks: { Inspiration: 1 } }]
+    const [off, on, rapid, set] = computeBuild(PRESETS, 'Yuki', cs, a, settings).plays
+    const ice = 1.9 * 1.12 * atk
+    expect(off.hits.length).toBe(1)
+    expect(off.triggered).toEqual([])
+    expect(on.hits.length).toBe(2)
+    expect(on.hits[1].nonCrit).toBeCloseTo(ice * 1.4)
+    expect(on.triggered[0].card.name).toBe('Freezing Blade (hit)')
+    expect(on.triggered[0].nonCrit).toBeCloseTo(1.2 * atk)
+    expect(rapid.hits[0].nonCrit).toBeCloseTo(2.2 * 1.02 * 1.3 * atk)
+    expect(set.hits.length).toBe(5)
+  })
+
+  it('Potential 7: +5 at Attack 600, +1 per 20 above it, at most +10', () => {
+    const flash = (attack: number) => {
+      const { cs, a } = ownerBuild(attack)
+      a.deck.push({ id: 'fs', preset: 'card-756' })
+      a.rotation = [{ cardId: 'fs' }]
+      const r = computeBuild(PRESETS, 'Yuki', cs, a, settings).plays[0].hits[0]
+      return r.cardPct
+    }
+    expect(flash(599)).toBeCloseTo(2.2)
+    expect(flash(600)).toBeCloseTo(2.25)
+    expect(flash(640)).toBeCloseTo(2.27)
+    expect(flash(830)).toBeCloseTo(2.3)
+  })
+
+  it('Flash Slash IV, Freezing Blade IV, the Ego skill per card and Sword Dance', () => {
+    const { cs, a } = ownerBuild()
+    a.deck.push({ id: 'iv', preset: 'card-760' }, { id: 'fs', preset: 'card-756' }, { id: 'fb', preset: 'card-772' })
+    a.rotation = [{ cardId: 'iv', stacks: { 'Cards Drawn this turn': 9 } }, { cardId: 'fs' }, { cardId: 'auto:card-745', stacks: { 'Cards moved to Draw Pile': 2 } }]
+    const [iv, fs, ego] = computeBuild(PRESETS, 'Yuki', cs, a, settings).plays
+    expect(iv.hits[0].nonCrit).toBeCloseTo((4.1 * 1.12 + 1.5 * 5) * atk)
+    // Summed multipliers: 50% single target + 50% All-Target
+    expect(fs.hits[0].nonCrit).toBeCloseTo(2.3 * 1.12 * 2 * atk)
+    expect(ego.hits[0].nonCrit).toBeCloseTo((4.5 + 2) * atk)
+    a.egoLevel = 6
+    a.rotation = [{ cardId: 'fs', stacks: { 'Sword Dance': 9, 'Swiftblade Flurry': 1 } }, { cardId: 'auto:card-745', stacks: { 'Cards moved to Draw Pile': 2 } }]
+    const [e6, ego6] = computeBuild(PRESETS, 'Yuki', cs, a, settings).plays
+    // E5 adds 3 levels: Signature x1.18. 15% x 4 Sword Dance + 20% Swiftblade Flurry + 50% + 50%
+    expect(e6.hits[0].nonCrit).toBeCloseTo(2.3 * 1.18 * (1 + 0.6 + 0.2 + 1) * atk)
+    expect(ego6.hits[0].nonCrit).toBeCloseTo((4.5 + 3 + 1.5) * atk)
+  })
+})
+
+describe('Chizuru', () => {
+  const chi = PRESETS.characters.find((c) => c.name === 'Chizuru')!
+  const preset = (id: string) => chi.cards!.find((p) => p.id === id)!
+  // Owner's screenshots (2026-10-30): E2, Basic 10 (x1.20), Signature 8 (x1.16), 3-1, 5-1 and 7 unlocked, Attack 972
+  const ownerBuild = (attack = 972) => {
+    const cs = newCharacterSave()
+    const [a] = cs.builds
+    Object.assign(a, { egoLevel: 2, basicLevel: 10, signatureLevel: 8 })
+    a.stats.attack = attack
+    return { cs, a }
+  }
+  const play = (attack: number, picks: string[], cardId: string, stacks: Record<string, number> = {}, edit: (a: Build) => void = () => {}) => {
+    const { cs, a } = ownerBuild(attack)
+    a.deck.push(...picks.map((id) => ({ id, preset: id })))
+    edit(a)
+    a.rotation = [{ cardId, stacks }]
+    return computeBuild(PRESETS, 'Chizuru', cs, a, settings).plays[0]
+  }
+
+  it("card text matches the owner's in-game screenshots", () => {
+    const { cs, a } = ownerBuild()
+    const text = (id: string) => {
+      const p = preset(id)
+      const c = cardFromPreset(p, 'Void')
+      const buffs = activeBuffs(PRESETS, 'Chizuru', cs, a, settings)
+      return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: () => true, pct: (base, fixed) => shownPct(base, c, a, chi, buffs, settings, fixed) })
+    }
+    expect(text('card-793')).toBe('500% Damage\n+100% Damage Amount for each Shadow of the Moon created (max 10)')
+    expect(text('card-794')).toBe('96% Damage × 2')
+    expect(text('card-795')).toBe('120% Shield')
+    expect(text('card-796')).toBe('[Initiation]\n116% Damage × 2\n1 Cursed Shackles\nCursed Shackles: Add 1 Hit')
+    expect(text('card-797')).toContain('174% Damage × 2')
+    expect(text('card-798')).toContain('174% Damage')
+    expect(text('card-799')).toBe('[Initiation]\n290% Damage\n1 Cursed Shackles\nCursed Shackles: Increase Damage Amount by 150%')
+    expect(text('card-814')).toBe('[Haste]\n81% Damage × 3\n+80% Damage Amount to the next Bind card activated')
+    expect(text('card-815')).toContain('70% Damage × 4')
+    expect(text('card-816')).toBe('[Haste]\n174% Damage × 2\n+120% Damage Amount to the next Bind card activated')
+    expect(text('card-817')).toContain('139% Damage × 3')
+    expect(text('card-820')).toBe('[Bind (1/5) / Retain]\n110% Damage\n+80% Damage Amount for each Bind stack')
+    expect(text('card-821')).toBe('[Unique / Bind (3/5) / Retain]\n249% Damage × 2\nRecover 8% of Max HP\n+80% Damage Amount for each Bind stack')
+  })
+
+  it('Shadow+ comes with Karmic Flames; every Bind stack counts; 7 and E1 add before the upgrade', () => {
+    const p = play(972, ['card-796'], `${AUTO}card-821`, { 'Bind stacks': 3 })
+    // ((180% + 20% + 15%) x 1.16 + 3 x 80%) x 2 hits
+    expect(p.nonCrit).toBeCloseTo((2.15 * 1.16 + 2.4) * 2 * 972 * 0.35)
+  })
+
+  it('Potential 7 reads Attack: nothing below 600, +1% per 10 above it, +15% at most', () => {
+    const shadow = (attack: number) => play(attack, ['card-820'], 'card-820').nonCrit
+    expect(shadow(599)).toBeCloseTo(0.8 * 1.16 * 599 * 0.35)
+    expect(shadow(600)).toBeCloseTo(0.85 * 1.16 * 600 * 0.35)
+    expect(shadow(655)).toBeCloseTo(0.9 * 1.16 * 655 * 0.35)
+    expect(shadow(972)).toBeCloseTo(0.95 * 1.16 * 972 * 0.35)
+  })
+
+  it("Potential 3-1 changes Moonslash's % and hits; off, it's 100% x 1", () => {
+    const on = play(972, ['card-794'], 'card-794')
+    expect(on.hits).toHaveLength(2)
+    expect(on.nonCrit).toBeCloseTo(0.8 * 1.2 * 2 * 972 * 0.35)
+    const off = play(972, ['card-794'], 'card-794', {}, (a) => { a.potentialNodes = { '3-1': false } })
+    expect(off.hits).toHaveLength(1)
+    expect(off.nonCrit).toBeCloseTo(1.1 * 1.2 * 972 * 0.35)
+  })
+
+  it("Oni Hunt raises the next Bind card; V's 80% is multiplicative; Karmic Flames III's Cursed Shackles x2.5", () => {
+    expect(play(972, ['card-814', 'card-820'], 'card-820', { 'Oni Hunt': 1, 'Bind stacks': 1 }).nonCrit)
+      .toBeCloseTo((0.95 * 1.16 + 0.8 + 0.8) * 972 * 0.35)
+    expect(preset('card-814').effects![0]).toMatchObject({ target: 'allies', appliesTo: 'Bind' })
+    expect(play(972, ['card-819'], `${AUTO}card-821`).nonCrit).toBeCloseTo(2.15 * 1.16 * 1.8 * 2 * 972 * 0.35)
+    expect(play(972, ['card-799'], 'card-799', { 'Cursed Shackles': 1 }).nonCrit).toBeCloseTo(2.5 * 1.16 * 2.5 * 972 * 0.35)
+  })
+
+  it('Ego skill: +100% per Shadow, E3 +200% and +150% per Shadow; E4 Lunarshard on Attack cards', () => {
+    expect(play(972, [], `${AUTO}card-793`, { 'Shadows created': 3 }).nonCrit).toBeCloseTo((5 + 3) * 972 * 0.35)
+    const e3 = play(972, [], `${AUTO}card-793`, { 'Shadows created': 3 }, (a) => { a.egoLevel = 3 })
+    expect(e3.nonCrit).toBeCloseTo((5 + 2 + 4.5) * 972 * 0.35)
+    const shard = play(972, ['card-796'], 'card-796', { Lunarshard: 2 }, (a) => { a.egoLevel = 4 })
+    expect(shard.nonCrit).toBeCloseTo((1.16 + 0.2) * 2 * 972 * 0.35)
+  })
+})
+
 describe('Nia', () => {
   const nia = PRESETS.characters.find((c) => c.name === 'Nia')!
   const preset = (id: string) => nia.cards!.find((p) => p.id === id)!
@@ -1590,5 +1762,199 @@ describe('Team damage (owner, 2026-10-28)', () => {
     a.team[0].cards = []
     pruneTeamPlays(meiLin, a, 0)
     expect(a.rotation).toEqual([{ cardId: 'ef' }])
+  })
+})
+
+describe('Haru', () => {
+  const haru = PRESETS.characters.find((c) => c.name === 'Haru')!
+  const preset = (id: string) => haru.cards!.find((p) => p.id === id)!
+  // Owner's screenshots (2026-10-30): E0, Basic 1/10, Unique 7/10, Common 1/10, Attack 775; 3-1 and 7 unlocked, 5-1 and 5-2 locked
+  const ownerBuild = (egoLevel = 0) => {
+    const cs = newCharacterSave()
+    const [a] = cs.builds
+    Object.assign(a, { egoLevel, basicLevel: 1, signatureLevel: 7 })
+    a.stats.attack = 775
+    a.presetSwitches['Haru|p5-1-anchors'] = false
+    return { cs, a }
+  }
+  const textAt = (egoLevel: number) => {
+    const { cs, a } = ownerBuild(egoLevel)
+    return (id: string) => {
+      const p = preset(id)
+      const c = cardFromPreset(p, 'Justice')
+      const buffs = activeBuffs(PRESETS, 'Haru', cs, a, settings)
+      return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: () => true, pct: (base, fixed) => shownPct(base, c, a, haru, buffs, settings, fixed) })
+    }
+  }
+
+  it("card text matches the owner's in-game screenshots", () => {
+    const text = textAt(0)
+    expect(text('card-637')).toBe('600% Damage\n+60% Damage Amount for each beneficial effect in possession (max +600%)')
+    expect(text('card-638')).toBe('122% Damage\n+10% Damage Amount to Anchor Shot')
+    expect(text('card-639')).toBe('245% Damage\n+10% Damage Amount to Anchor Shot')
+    expect(text('card-640')).toBe('102% Shield')
+    expect(text('card-641')).toBe('[Pulverize]\n365% Damage\n+100% Damage Amount for each activation of this card (max 10)')
+    expect(text('card-642')).toBe('[Pulverize]\n479% Damage\n+150% Damage Amount for each activation of this card (max 10)')
+    expect(text('card-643')).toBe('[Pulverize]\n422% Damage\nStreak: Add 1 Hit')
+    expect(text('card-644')).toContain('[Retain / Pulverize]\n422% Damage')
+    expect(text('card-645')).toContain('456% Damage')
+    expect(text('card-646')).toContain('422% Damage')
+    expect(text('card-653')).toBe('274% Damage to all enemies\nIf there is only one target, +100% Damage Amount')
+    expect(text('card-654')).toBe('365% Damage to all enemies\nIf there is only one target, +150% Damage Amount')
+    expect(text('card-655')).toBe('[Weakness Attack]\n365% Damage to all enemies')
+    expect(text('card-656')).toContain('308% Damage')
+    expect(text('card-657')).toContain('308% Damage')
+    expect(text('card-658')).toContain('365% Damage')
+    expect(text('card-659')).toBe('[Retain]\nIncrease Damage Amount of Attack Cards of this unit by 50% for 1 turn')
+    expect(text('card-665')).toBe('[Retain]\nIncrease Damage Amount of Anchor Shot in hand by 80% for 1 turn until activated')
+    expect(preset('card-659').cost).toBe(0)
+    expect(preset('card-662').cost).toBe(1)
+  })
+
+  it('E3 Power Strike is 800%, +80% each, max +800%; E1 Lift Anchor is 120%', () => {
+    const text = textAt(3)
+    expect(text('card-637')).toBe('800% Damage\n+80% Damage Amount for each beneficial effect in possession (max +800%)')
+    expect(text('card-665')).toContain('by 120% for 1 turn')
+    const { cs, a } = ownerBuild(3)
+    a.rotation = [{ cardId: 'auto:card-637', stacks: { 'Beneficial effects': 12 } }]
+    expect(computeBuild(PRESETS, 'Haru', cs, a, settings).plays[0].nonCrit).toBeCloseTo((6 + 2 + 10 * 0.8) * 775 * 0.35)
+    a.egoLevel = 0
+    expect(computeBuild(PRESETS, 'Haru', cs, a, settings).plays[0].nonCrit).toBeCloseTo((6 + 10 * 0.6) * 775 * 0.35)
+  })
+
+  it('Potential 7 needs Attack 600 for its second +10%', () => {
+    const { cs, a } = ownerBuild()
+    a.deck.push({ id: 'as', preset: 'card-641' })
+    a.rotation = [{ cardId: 'as' }]
+    expect(computeBuild(PRESETS, 'Haru', cs, a, settings).plays[0].nonCrit).toBeCloseTo(3.2 * 1.14 * 775 * 0.35)
+    a.stats.attack = 599
+    expect(computeBuild(PRESETS, 'Haru', cs, a, settings).plays[0].nonCrit).toBeCloseTo(3.1 * 1.14 * 599 * 0.35)
+  })
+
+  it('Anchor Shot: activations, Anchors played, Pulverize and Lift Anchor; every epiphany gets them', () => {
+    const { cs, a } = ownerBuild()
+    a.deck.push({ id: 'as', preset: 'card-645' }, { id: 'la', preset: 'card-665' })
+    a.rotation = [{ cardId: 'as', stacks: { 'Anchor Shot activations': 3, 'Anchors played': 2, 'Target holding Shield': 1, 'Lift Anchor': 1 } }]
+    const r = computeBuild(PRESETS, 'Haru', cs, a, settings)
+    // (380% + 20%) x 1.14 x (1 + 20% + 80%) + 3 x 100% + 2 x 10%
+    expect(r.plays[0].nonCrit).toBeCloseTo((4 * 1.14 * 2 + 3 + 0.2) * 775 * 0.35)
+  })
+
+  it('Charge Energy V is always on; single target is a switch; III and Power Supply read the play', () => {
+    const { cs, a } = ownerBuild(4)
+    a.deck.push({ id: 'pc', preset: 'card-653' }, { id: 'ce', preset: 'card-664' }, { id: 'ce3', preset: 'card-662' })
+    a.rotation = [{ cardId: 'pc', stacks: { 'Cards of this unit in hand': 2, 'Power Supply': 5 } }]
+    // 240% x 1.14 x (1 + 40%) + single target 100% + 2 x 70% + 3 x 30%
+    const pct = 2.4 * 1.14 * 1.4 + 1 + 1.4 + 0.9
+    expect(computeBuild(PRESETS, 'Haru', cs, a, settings).plays[0].nonCrit).toBeCloseTo(pct * 775 * 0.35)
+    a.presetSwitches['Power Charge|single-target'] = false
+    expect(computeBuild(PRESETS, 'Haru', cs, a, settings).plays[0].nonCrit).toBeCloseTo((pct - 1) * 775 * 0.35)
+  })
+
+  it('E2 / E6 lower Anchor Shot per AP short; E6 adds 30% on the start-of-turn card', () => {
+    const { cs, a } = ownerBuild(2)
+    a.deck.push({ id: 'as', preset: 'card-641' })
+    a.rotation = [{ cardId: 'as', stacks: { 'AP short of Cost': 2, 'Start-of-turn Anchor Shot': 1 } }]
+    expect(computeBuild(PRESETS, 'Haru', cs, a, settings).plays[0].nonCrit).toBeCloseTo(3.2 * 1.14 * (1 - 0.6) * 775 * 0.35)
+    // E6 has E5's +3 levels on the upgrade: Unique 10
+    a.egoLevel = 6
+    expect(computeBuild(PRESETS, 'Haru', cs, a, settings).plays[0].nonCrit).toBeCloseTo(3.2 * 1.2 * (1 - 0.3 + 0.3) * 775 * 0.35)
+  })
+})
+
+describe('Renoa', () => {
+  const renoa = PRESETS.characters.find((c) => c.name === 'Renoa')!
+  const preset = (id: string) => renoa.cards!.find((p) => p.id === id)!
+  // Owner's screenshots (2026-10-30): E0, Basic 5 (x1.1), Unique 8 (x1.16), Critical Chance 53.6%, 3-1 and 7 unlocked, 5-1 locked
+  const ownerBuild = (egoLevel = 0, critChance = 0.536) => {
+    const cs = newCharacterSave()
+    const [a] = cs.builds
+    Object.assign(a, { egoLevel, basicLevel: 5, signatureLevel: 8 })
+    a.stats.attack = 100
+    a.stats.critChance = critChance
+    a.presetSwitches['Renoa|p5-1-shot'] = false
+    return { cs, a }
+  }
+  const text = (id: string, b = ownerBuild()) => {
+    const p = preset(id)
+    const buffs = activeBuffs(PRESETS, 'Renoa', b.cs, b.a, settings)
+    return renderCardText(p.text, { egoLevel: b.a.egoLevel, nodeOn: () => true,
+      pct: (base, fixed, of) => shownPct(base, cardFromPreset(of ? preset(of) : p, 'Void'), b.a, renoa, buffs, settings, fixed) })
+  }
+
+  it("card text matches the owner's in-game screenshots", () => {
+    expect(text('card-1')).toBe('Move all Dirge Bullet from Draw Pile and Graveyard to hand\n300% Damage')
+    expect(text('card-2')).toBe('110% Damage')
+    expect(text('card-3')).toBe('110% Shield')
+    expect(text('card-4')).toBe('162% Damage\nCreate 1 Dirge Bullet Card(s)')
+    expect(text('card-10')).toBe('255% Damage\nIf Dirge Bullet is in hand, discard 1 and +100% Damage Amount')
+    expect(text('card-11')).toContain('383% Damage')
+    expect(text('card-12')).toContain('313% Damage')
+    expect(text('card-14')).toBe('209% Damage\nWhen moved to Discard Pile, 290% Extra Attack to a random enemy')
+    expect(text('card-15')).toContain('200% Extra Attack')
+    expect(text('card-16')).toBe('70% Damage × 3\n+20% base Damage Amount for each Dirge Bullet in hand')
+    expect(text('card-17')).toContain('104% Damage × 3')
+    expect(text('card-28')).toBe('[Retain]\n348% Damage (+0%)\nDiscard all Dirge Bullet, +50% Damage Amount for each')
+    expect(text('card-29')).toBe('[Bullet / Exhaust]\n238% Damage\nWhen moved to Discard Pile, 168% Extra Attack to a random enemy')
+    expect(text('card-666')).toBe('[Bullet / Exhaust]\n238% Damage\nWhen moved to Discard Pile, 191% Extra Attack × 2 to random enemies')
+  })
+
+  it('Potential 7 adds +10% from Critical Chance 60%; Ego levels change the text', () => {
+    expect(text('card-29', ownerBuild(0, 0.6))).toContain('249% Damage\nWhen moved to Discard Pile, 180% Extra Attack')
+    expect(text('card-1', ownerBuild(3))).toContain('500% Damage')
+    expect(text('card-28', ownerBuild(1))).toContain('+70% Damage Amount for each')
+  })
+
+  it('Dirge Bullets discarded on a play add that many Extra Attacks and the discard bonus', () => {
+    const { cs, a } = ownerBuild()
+    a.deck.push({ id: 'ij', preset: 'card-10' }, { id: 'lda', preset: 'card-28' }, { id: 'echo', preset: 'card-4' })
+    a.rotation = [
+      { cardId: 'auto:card-29' },
+      { cardId: 'ij', stacks: { 'Dirge Bullets discarded': 1 } },
+      { cardId: 'lda', stacks: { 'Dirge Bullets discarded': 3 } },
+      { cardId: 'echo', stacks: { 'Dirge Bullets discarded': 2 } },
+    ]
+    const r = computeBuild(PRESETS, 'Renoa', cs, a, settings)
+    const extra = 1.45 * 1.16 * 35
+    expect(r.plays[0].nonCrit).toBeCloseTo(2.05 * 1.16 * 35)
+    expect(r.plays[0].triggered).toEqual([])
+    expect(r.plays[1].nonCrit).toBeCloseTo((2.2 * 1.16 + 1) * 35 + extra)
+    expect(r.plays[2].nonCrit).toBeCloseTo((3 * 1.16 + 1.5) * 35 + 3 * extra)
+    expect(r.plays[2].triggered[0].hits).toHaveLength(3)
+    expect(r.plays[2].triggered[0].card.kind).toBe('Extra Attack')
+    expect(r.plays[3].nonCrit).toBeCloseTo(1.4 * 1.16 * 35 + 2 * extra)
+    // Ballad IV: "by 100%" doubles the Extra Attacks on that turn's plays
+    a.deck.push({ id: 'b4', preset: 'card-20' })
+    a.rotation = [{ cardId: 'echo', stacks: { 'Dirge Bullets discarded': 1, 'Ballad of Pitch Black IV': 1 } }]
+    expect(computeBuild(PRESETS, 'Renoa', cs, a, settings).plays[0].triggered[0].nonCrit).toBeCloseTo(2 * extra)
+  })
+
+  it("a teammate's play can discard Dirge Bullets: the Extra Attacks are Renoa's", () => {
+    const { cs: renoaSave } = ownerBuild()
+    renoaSave.builds[0].stats.attack = 200
+    const cs = newCharacterSave()
+    const [a] = cs.builds
+    a.stats.attack = 100
+    a.team = [{ character: 'Renoa', egoLevel: 0, partner: '', fragments: [], cards: [] }]
+    a.deck.push({ id: 'ef', preset: 'card-395' })
+    a.rotation = [{ cardId: 'ef', stacks: { 'Dirge Bullets discarded': 2 } }]
+    const r = computeBuild(PRESETS, 'Selena', cs, a, settings, { Renoa: renoaSave })
+    expect(r.counterOptions[0].map((c) => c.name)).toContain('Dirge Bullets discarded')
+    expect(r.plays[0].triggered[0].by).toBe('Renoa')
+    expect(r.plays[0].triggered[0].nonCrit).toBeCloseTo(2 * 1.45 * 1.16 * 200 * 0.35)
+  })
+
+  it('Finale joins the deck at E2; Ballad V, Flower III and Mark count per play', () => {
+    const { cs, a } = ownerBuild(2)
+    a.deck.push({ id: 'b5', preset: 'card-21' }, { id: 'f3', preset: 'card-25' }, { id: 'b3', preset: 'card-19' }, { id: 'shot', preset: 'card-2' })
+    a.rotation = [
+      { cardId: 'auto:card-666', stacks: { 'Dirge Bullets: Finale discarded': 1 } },
+      { cardId: 'b5', stacks: { 'Dirge Bullets exhausted': 2 } },
+      { cardId: 'shot', stacks: { 'Flower of Devoured Fate III (Cost discarded)': 2, 'Mark (Renoa)': 1 } },
+    ]
+    const r = computeBuild(PRESETS, 'Renoa', cs, a, settings)
+    expect(r.plays[0].nonCrit).toBeCloseTo(2.05 * 1.16 * 35 + 2 * 1.65 * 1.16 * 35)
+    expect(r.plays[1].nonCrit).toBeCloseTo(3 * 0.6 * 1.16 * 2 * 35)
+    expect(r.plays[2].nonCrit).toBeCloseTo((1.1 + 0.8) * 35 + 35)
   })
 })

@@ -5,7 +5,7 @@ import { SortableContext, arrayMove, sortableKeyboardCoordinates, useSortable, v
 import { CSS } from '@dnd-kit/utilities'
 import { useState } from 'react'
 import { PRESETS } from '../data/presets'
-import { playCard, playCount } from '../engine/calc'
+import { playBaseHits, playCard, playCount } from '../engine/calc'
 import { findCharacter } from '../engine/buffs'
 import { buildDeck, changeEpiphany, deckItems, prunePlays, pruneTeamPlays, teammateDeck, type DeckItem } from '../engine/deck'
 import { TEAM_SIZE, type Card, type CardPreset, type CharacterPreset, type RotationPlay, type Teammate } from '../engine/types'
@@ -366,7 +366,7 @@ function RotationSection() {
             {rotation.map((play, i) => {
               const base = decks.get(play.by)?.get(play.cardId)
               return (
-                <RotationItem key={ids[i]} id={ids[i]} index={i} play={play} card={base && playCard(base, play)} baseHits={base?.hits} baseCost={base?.cost}
+                <RotationItem key={ids[i]} id={ids[i]} index={i} play={play} card={base && playCard(base, play)} baseHits={base && playBaseHits(base, play)} baseCost={base?.cost}
                   by={teamPlays ? owners.find((o) => o.slot === play.by)?.name : undefined}
                   counters={counterOptions[i] ?? []} open={open === i} onToggle={() => setOpen(open === i ? null : i)}
                   onChange={(fn) => updateBuild((b) => fn(b.rotation[i]))}

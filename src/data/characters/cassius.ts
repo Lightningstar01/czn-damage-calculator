@@ -21,7 +21,7 @@ export default {
   effects: [
     // 5-1 (in game): "+5% Damage Amount to Cassius's Cards and Wild Card. If Cassius's Health is 600 or higher, add an additional
     // +5% to the modifier". Like Mei Lin's 5-1: it raises the card % (owner, 2026-10-28)
-    { kind: 'Buff', id: 'p5-1-cards', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card %', value: '+5%',
+    { kind: 'Buff', id: 'p5-1-cards', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
       appliesTo: 'Cards/Wild Card', hitScope: 'All hits', condition: 'Always', thresholdStat: 'Health',
       attackBonus: { above: 600, value: '+5%', orEqual: true } },
   ],

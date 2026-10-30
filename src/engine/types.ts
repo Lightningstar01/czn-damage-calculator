@@ -23,10 +23,11 @@ export type HitScope = 'All hits' | 'First hit only'
 export type Condition = 'Always' | 'Ravaged only'
 /** Crit Chance / Crit DMG buffs add to the crit stats of matching cards only. Card % raises the card's own %
  * like a potential (shown in the in-game card %), so it only counts on cards entered at base % (with an upgrade).
+ * Card + (a Potential node's "+15% Damage Amount") adds to the base % before the upgrade: (80% + 15%) x 1.16 = 110%; also only with an upgrade.
  * Base % ("+80% base Damage Amount") is added to the card % after the potential, so the multiplicative buffs raise it too.
  * Final ("final Damage Amount") is its own multiplier: x (1 + the sum of the final buffs), after everything else. */
-export type BuffType = 'Additive' | 'Multiplicative' | 'Weakness Attack' | 'Crit Chance' | 'Crit DMG' | 'Card %' | 'Base %' | 'Final'
-export const BUFF_TYPES: BuffType[] = ['Additive', 'Multiplicative', 'Weakness Attack', 'Crit Chance', 'Crit DMG', 'Card %', 'Base %', 'Final']
+export type BuffType = 'Additive' | 'Multiplicative' | 'Weakness Attack' | 'Crit Chance' | 'Crit DMG' | 'Card %' | 'Card +' | 'Base %' | 'Final'
+export const BUFF_TYPES: BuffType[] = ['Additive', 'Multiplicative', 'Weakness Attack', 'Crit Chance', 'Crit DMG', 'Card %', 'Card +', 'Base %', 'Final']
 export type MultMode = 'Summed' | 'Chained'
 
 /** On/off switch, or a number of stacks. true = on with the effect's default stacks. */
@@ -92,8 +93,8 @@ export interface BuffEffect {
   /** Stats-screen Attack the buff needs: it's worth 0 below it (Rossweisse 7: 'If Attack is 600 or higher'). */
   minAttack?: number
   /** 'Defense' / 'Health': minAttack and attackBonus read that stats-screen stat instead (Adelheid 7: 'If Defense is greater than
-   * 300'; Cassius 5-1: 'If Health is 600 or higher'). */
-  thresholdStat?: 'Defense' | 'Health'
+   * 300'; Cassius 5-1: 'If Health is 600 or higher'; Renoa 7: 'If Critical Chance is 60% or higher', above: 0.6). */
+  thresholdStat?: 'Defense' | 'Health' | 'Critical Chance'
   /** See StatEffect.hint. */
   hint?: string
 }
@@ -114,6 +115,8 @@ export interface Trigger {
   /** Per-play counter that must be above 0 on the play ('Mark' on the target, or a 'for 1 turn' effect): set on each play. */
   counter?: string
   maxStacks?: number
+  /** The hit happens once per counter stack, not once per play (Renoa's Dirge Bullets discarded). */
+  perStack?: boolean
   /** Chance to happen: its damage counts x this (expected value, owner 2026-10-28). */
   chance?: number
   /** Manifest Ego level (1-6) that unlocks it. */
@@ -191,6 +194,8 @@ export interface CardPreset {
   perCost?: boolean
   /** See Card.perCount. */
   perCount?: string
+  /** See Card.counterHits. */
+  counterHits?: { counter: string; hits: number }
   /** Ids of the cards it creates (shards, Sword Tassel): they join the deck with it (src/engine/deck.ts). */
   creates?: string[]
   /** A Manifest Ego effect that deals damage (Narja's E6): joins the deck by itself from this Ego level, like the Ego skill. */
@@ -199,6 +204,8 @@ export interface CardPreset {
   upgrade?: PotentialUpgrade | null
   /** Tags a Potential node adds while it's on (build.potentialNodes): { '3-1': 'Blessing' } (Adelheid's Basic cards). */
   nodeTags?: Record<string, string>
+  /** Base % and hits a Potential node changes the card to while it's on: { '3-1': { pct: 0.7, hits: 2 } } (Chizuru's Moonslash). */
+  nodeCard?: Record<string, { pct?: number; hits?: number }>
   notes?: string
   /** Stat boosts / buffs the card gives while it's in the library (switch per build, default on). */
   effects?: Effect[]
@@ -424,6 +431,8 @@ export interface Card {
   /** "X% for each <thing>" (Orlea's Annoying: 'Cards in hand'): pct is per thing; each play sets the count in its stacks
    * under this name (default 1). */
   perCount?: string
+  /** Hits added on plays with this counter above 0 (Yuki's "Inspiration: Add 1 Hit"), unless the play sets its own hits. */
+  counterHits?: { counter: string; hits: number }
   /** Damage from an effect, not a card being played (Mark, Coordinated Attacks, Attunement damage): the card type words (Attack /
    * Skill / Upgrade) don't match it, so Attack Card buffs and Attack Card triggers skip it. */
   notACard?: boolean

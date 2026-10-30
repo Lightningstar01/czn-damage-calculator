@@ -71,9 +71,10 @@ Copy the shape of the worked examples. Rules:
   play and what isn't counted.
 - `text`: the in-game wording, one line per in-game line, keywords first as `[Unique / Retain]`. Tokens
   (`src/engine/cardText.ts`): `{120%}` base % (shown raised by the build's upgrade; use it for Heal/Shield % too),
-  `{F40%}` Fixed damage % (not raised by default, Orlea's Annoying), `{E3:3|2}` Ego level, `{P3-1:text|else}` potential
+  `{F40%}` Fixed damage % (not raised by default, Orlea's Annoying), `{120%@id}` another card preset's base % (Renoa's Dirge Bullet), `{E3:3|2}` Ego level, `{P3-1:text|else}` potential
   node; they nest: `Heal {P3-1:{70%}|{100%}}`. Buff %s on a card (Softie's "by 10%") aren't raised: write them as is.
-- Corrections override the import: `pct`, `cost`, `name`, `cardType`, `tags`, `upgrade: null`, `replaceNotes`.
+- Corrections override the import: `pct`, `cost`, `name`, `cardType`, `tags`, `upgrade: null`, `replaceNotes`. A Potential node that
+  changes a card's numbers: `nodeCard: { '3-1': { pct: 0.7, hits: 2 } }` (Chizuru's Moonslash).
 - Card % "for each Cost of this card" = `perCost: true` (Tiphera's C&D V); "for each <thing>" = `perCount: '<Thing>'`
   (Orlea's Annoying: 'Cards in hand'); both give a setting per play.
 - `creates: [ids]` on every card that creates others (shards, Archetypes...), so they join the deck.
@@ -81,7 +82,7 @@ Copy the shape of the worked examples. Rules:
   (see `selena.ts`); it's computed with its owner's build, so it works when that character is a teammate.
 - Damage buffs: card buffs via `cardBuff()` in that card's `effects`; character, potential and Ego buffs in `effects`.
   - "+X%" = Additive, "by X%" (no "+") = Multiplicative; "+X% base Damage Amount" = `type: 'Base %'`;
-    "final Damage Amount" = `type: 'Final'`; scaling the card's own % (potential-like, doubled...) = `type: 'Card %'`.
+    "final Damage Amount" = `type: 'Final'`; scaling the card's own % (doubled...) = `type: 'Card %'`; a Potential node or Ego "+X%" that's part of the card's shown % = `type: 'Card +'` (added before the upgrade: Chizuru's Shadow 110% = (80% + 15%) x 1.16).
   - `target: 'allies'` / `'enemy'` when it reaches the team or is a debuff on the target.
   - Changes per play (stacks, "next card", conditions) = `counter` + `maxStacks`; fight-dependent always-on = `hint`.
   - `hitScope: 'First hit only'`, `egoLevel` / `egoBelow` for Ego versions, `minAttack` / `attackBonus` for Attack thresholds.
