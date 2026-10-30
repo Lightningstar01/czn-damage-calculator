@@ -117,6 +117,8 @@ owner asks (there is no git remote yet).
 
 - **Never assume — ask.** The owner's standing preference: when anything is ambiguous
   (game mechanics, layout, scope), ask a question instead of guessing.
+- When coming up with a plan, always try to poke holes in it and consider the alternative options,
+  weighing the pros and cons of each.
 - The owner knows the game well. Their stated mechanics (see docs/FORMULA.md, marked "User")
   take precedence over web guides unless they agree to change them.
 - When research conflicts, report the conflict with sources and ask, or make it a toggle
