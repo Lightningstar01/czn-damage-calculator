@@ -4,10 +4,10 @@ import { PRESETS } from '../data/presets'
 import { AUTO, cardUpgrade, deckItems, presetCard } from '../engine/deck'
 import { DEFAULT_SETTINGS } from '../data/settings'
 import { ELEMENTS, CARD_TYPES, FRAGMENT_SET_PICKS, type Build, type Card, type CardPreset, type CharacterPreset, type CharacterSave, type DeckCard, type Element, type RotationPlay, type SaveData, type ScreenStats, type Teammate, type UserBoost, type UserBuff } from '../engine/types'
+import { STORAGE_KEY } from './storageKey'
 
 /** Bump when the save format changes, and add a step to migrate(). */
 export const SAVE_VERSION = 10
-const STORAGE_KEY = 'czn-damage-calculator'
 
 /** Fields that older saves had (rotation: removed in v9; the shared card library: removed in v10). */
 type LegacyCharacter = CharacterSave & { rotation?: unknown[]; cards?: Card[] }

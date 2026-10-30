@@ -13,6 +13,7 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright'
 import { createServer } from 'vite'
+import { loadSaveOnce, overflowPx } from '../e2e/shared.ts'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const TABS = ['Setup', 'Buffs', 'Cards', 'Results', 'Settings']
@@ -20,7 +21,6 @@ const VIEWPORTS = {
   phone: { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true },
   desktop: { viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1 },
 }
-const STORAGE_KEY = 'czn-damage-calculator' // src/store/save.ts
 
 function parseArgs(argv) {
   const opts = { tabs: [], taps: [], save: 'output/czn-save.json', out: 'screenshots', viewports: [] }
@@ -51,13 +51,7 @@ const problems = []
 try {
   for (const vp of opts.viewports) {
     const context = await browser.newContext(VIEWPORTS[vp])
-    await context.addInitScript(([key, text]) => {
-      // Only on the first load, so taps that change the save survive a reload
-      if (!sessionStorage.getItem('screenshot-loaded')) {
-        localStorage.setItem(key, text)
-        sessionStorage.setItem('screenshot-loaded', '1')
-      }
-    }, [STORAGE_KEY, save])
+    await loadSaveOnce(context, save)
     const page = await context.newPage()
     page.on('console', (m) => { if (m.type() === 'error') problems.push(`${vp}: console: ${m.text()}`) })
     page.on('pageerror', (e) => problems.push(`${vp}: page error: ${e.message}`))
@@ -74,7 +68,7 @@ try {
       for (const text of opts.taps) {
         const target = page.getByText(text, { exact: false }).first()
         if (await target.count()) await target.click()
-        else problems.push(`${vp} ${tab}: nothing to tap with text "${text}"`)
+        else console.log(`${vp} ${tab}: nothing to tap with text "${text}"`) // not a site problem: not every tab has it
       }
       await page.waitForTimeout(150)
       // <vp>-<tab>.png: the first screen as it looks; -full-N.png: the whole page in parts of 2 screens (small enough to
@@ -90,7 +84,7 @@ try {
       }
       await hide.evaluate((el) => el.remove())
       // Horizontal scrolling on the phone is a layout bug
-      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
+      const overflow = await overflowPx(page)
       if (overflow > 0) problems.push(`${vp} ${tab}: page is ${overflow}px wider than the screen`)
       console.log(file)
     }
