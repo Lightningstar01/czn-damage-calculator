@@ -23,3 +23,6 @@ screenshots/
 
 # In-game card screenshots from the owner (reference for checking card text)
 card-screenshots/
+
+# Spreadsheets: another player's sheet (local only); Excel also stores the author's name inside the file
+*.xlsx

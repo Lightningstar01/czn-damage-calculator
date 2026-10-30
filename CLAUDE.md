@@ -20,9 +20,11 @@ npm run screenshot # phone (390px) + desktop PNGs of every tab -> screenshots/ (
 # Python is not on PATH on the owner's PC; use the project venv:
 .venv\Scripts\python.exe scripts/import_prydwen.py
 ```
-After any change: `npm test`, `npm run build`, then commit. After UI changes, also run `npm run screenshot` and
+After any change: ask before committing. If the owner agrees to commit, run `npm test`, `npm run build`, then commit. After UI changes, also run `npm run screenshot` and
 look at the phone pictures (the owner plays on phone) for layout, readability and ease of use. Deploy to GitHub Pages only when the
-owner asks (there is no git remote yet).
+owner asks: each push to `main` publishes the site (`.github/workflows/deploy.yml`), so push only when asked.
+The repo is public and the owner's real name must not appear in it (owner, 2026-10-30): commit with the GitHub noreply
+email, and check that binary files such as spreadsheets carry no author name before adding them.
 
 ## Code
 
@@ -146,7 +148,7 @@ Crit       = Damage x Crit DMG (stat is the total multiplier); Expected = Damage
 
 - Waiting on the owner: text of two Reddit posts on the formula (Reddit is blocked from the
   cloud session; in Claude Code you may be able to fetch them). Another player's calculator sheet
-  is in `CZNRedditSheet.xlsx`, to compare against ours line by line.
+  is in `CZNRedditSheet.xlsx` (on the owner's PC only, never in git: it isn't theirs), to compare against ours line by line.
 - Open mechanics questions are listed in docs/FORMULA.md section 4.
 - Card text check: the owner is saving in-game card screenshots to `card-screenshots/<slug>/` (git-ignored);
   compare them with the cards and confirm corrections with the owner (`card-review` skill). Mei Lin, Rossweisse (2026-10-27),
