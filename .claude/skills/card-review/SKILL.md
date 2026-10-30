@@ -16,11 +16,18 @@ see "Card text check" in CLAUDE.md. Worked examples: `src/data/characters/mei-li
   Chrome or another window (owner, 2026-10-28). Ignore the names: every new .png in the batch is a game screenshot (they're
   renamed on moving anyway). Read them all; delete duplicates, ask about anything that isn't the game.
   `ls -lt ~/Videos/Captures`: take only the new batch (the folder is emptied after each character, so it's usually all of them).
-- Move them, oldest first, to `card-screenshots/<slug>/01.png, 02.png...` (git-ignored; slug as in `src/data/prydwen/`):
-  ```bash
-  cd ~/Videos/Captures; i=1; ls -tr *.png | while IFS= read -r f; do mv "$f" "<repo>/card-screenshots/<slug>/$(printf %02d $i).png"; i=$((i+1)); done
-  ```
-  If the folder holds files from before the owner's message, or the count looks wrong, ask before moving.
+- Read them, then move each to `card-screenshots/<slug>/` (git-ignored; slug as in `src/data/prydwen/`) under the name for
+  what it shows (owner, 2026-10-30), using the in-game card name in lowercase with dashes and no apostrophes:
+  - `card-<name>.png`: a card's detail page; `epiphany-<name>.png`: its 5 variants; `related-<name>.png`: its Related Cards page.
+    A variant of a card adds a suffix (`card-music-start-crescendo`); a page scrolled to show the rest of the glossary adds `-scrolled`.
+  - `ego-skill.png`: the Ego skill's View Details page (`ego-skill-e3.png` for the preview of an Ego level's version).
+  - `ego-<N>.png`: Ego Manifestation level N, from the title: Sleeping 1, Awakening 2, Vivid 3, Inner 4, Complete 5, Liberated 6.
+    `ego-overview.png`: that screen with no level selected.
+  - `potential.png`: the Potential screen with no node selected; `node-3-1.png`, `node-5-1.png`, `node-7.png`: those nodes selected.
+  - `stats-detail.png`: the stats screen with Detailed Stats open (it also shows the basic numbers, so no plain stats shot).
+  Don't keep the Cards overview (every card has its own page). If the folder holds files from before the owner's message, or
+  the count looks wrong, ask before moving.
+- Every character needs `node-3-1`, `node-5-1`, `node-7` and `stats-detail`; tell the owner if any is missing.
 
 ## 1b. Ego Manifestation wording (owner, 2026-10-28)
 
@@ -32,9 +39,9 @@ that change a card's text (the card shows them), and heal / stress / draw levels
 
 ## 2. Read everything
 
-- Every screenshot (Read tool). Usual set: the Cards overview (starting + epiphany cards, Ego skill), one detail page per
+- Every screenshot (Read tool). Usual set: the Cards overview (starting + epiphany cards, Ego skill; read it, then discard it), one detail page per
   card (keyword glossary on the right, Related Cards = the cards it creates), one Epiphany page per card (its 5 variants),
-  and (from Mika on, 2026-10-28) the Potential screen and the Ego Manifestation screen.
+  the Potential screen and nodes 3-1, 5-1 and 7, the Detailed Stats screen, and the Ego Manifestation screen.
 - `src/data/prydwen/<slug>.json` (cards, potentials, Manifest Ego) and `src/data/characters/<slug>.ts` if it exists.
 
 ## 3. Work out the owner's levels
