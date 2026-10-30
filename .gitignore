@@ -21,6 +21,10 @@ __pycache__/
 # Screenshots for design review (npm run screenshot)
 screenshots/
 
+# Browser tests and browser control (npm run test:e2e, playwright cli)
+test-results/
+.playwright-cli/
+
 # In-game card screenshots from the owner (reference for checking card text)
 card-screenshots/
 

@@ -10,6 +10,7 @@ The original Excel workbook generator was removed (owner, 2026-10-27); it is in 
 npm install
 npm run dev        # local dev server (add -- --host to open it on the phone over Wi-Fi)
 npm test           # Vitest: engine tests
+npm run test:e2e   # builds, then Playwright: the real site in a browser, Android phone + desktop (e2e/site.e2e.ts)
 npm run build      # type-check + production build to dist/
 npm run lint       # oxlint
 npm run screenshot # phone (390px) + desktop PNGs of every tab -> screenshots/ (see scripts/screenshot.mjs:
@@ -20,9 +21,20 @@ npm run screenshot # phone (390px) + desktop PNGs of every tab -> screenshots/ (
 # Python is not on PATH on the owner's PC; use the project venv:
 .venv\Scripts\python.exe scripts/import_prydwen.py
 ```
-After any change: ask before committing. If the owner agrees to commit, run `npm test`, `npm run build`, then commit. After UI changes, also run `npm run screenshot` and
-look at the phone pictures (the owner plays on phone) for layout, readability and ease of use. Deploy to GitHub Pages only when the
-owner asks: each push to `main` publishes the site (`.github/workflows/deploy.yml`), so push only when asked.
+After any change: ask before committing. If the owner agrees to commit, run `npm test`, `npm run build`, then commit. After UI changes, also run `npm run test:e2e` and `npm run screenshot` and
+look at the phone pictures (the owner plays on an Android phone, and also on desktop) for layout, readability and ease of use. Deploy to GitHub Pages only when the
+owner asks: each push to `main` publishes the site (`.github/workflows/deploy.yml`; lint, engine tests or browser tests failing stop it), so push only when asked.
+
+To use the site yourself (try a change, read real numbers), run `npm run dev` in the background and drive it with the Playwright CLI; the browser stays open between commands.
+Full command list: `node_modules/playwright-core/lib/tools/skills/playwright-cli/SKILL.md`. Close sessions when done.
+```bash
+npx playwright cli -s=phone open http://localhost:5173 --mobile   # Pixel 10; for desktop: -s=desktop open <url>, then resize 1280 900
+npx playwright cli -s=phone snapshot                              # the page as text, with refs to click
+npx playwright cli -s=phone click "getByRole('button', { name: 'Buffs', exact: true })"
+# Load a save (too long for a command line to set directly): Settings tab, click Import backup, then
+npx playwright cli -s=phone upload output/czn-save.json
+npx playwright cli -s=phone dialog-accept
+```
 The repo is public and the owner's real name must not appear in it (owner, 2026-10-30): commit with the GitHub noreply
 email, and check that binary files such as spreadsheets carry no author name before adding them.
 

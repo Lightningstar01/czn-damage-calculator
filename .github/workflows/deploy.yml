@@ -1,4 +1,4 @@
-# Tests, builds and publishes the site to GitHub Pages on every push to main.
+# Lints, tests, builds, tests the built site in a browser and publishes it to GitHub Pages on every push to main.
 name: Deploy to GitHub Pages
 
 on:
@@ -28,8 +28,11 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - run: npm run lint
       - run: npm test
       - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

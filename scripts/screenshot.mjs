@@ -100,4 +100,7 @@ try {
   await browser.close()
   await server.close()
 }
-if (problems.length) console.log(`\nProblems:\n${problems.join('\n')}`)
+if (problems.length) {
+  console.log(`\nProblems:\n${problems.join('\n')}`)
+  process.exitCode = 1
+}
