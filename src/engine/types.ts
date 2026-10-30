@@ -92,9 +92,9 @@ export interface BuffEffect {
   attackBonus?: { above: number; value: string; orEqual?: boolean; every?: number; max?: string }
   /** Stats-screen Attack the buff needs: it's worth 0 below it (Rossweisse 7: 'If Attack is 600 or higher'). */
   minAttack?: number
-  /** 'Defense' / 'Health': minAttack and attackBonus read that stats-screen stat instead (Adelheid 7: 'If Defense is greater than
-   * 300'; Cassius 5-1: 'If Health is 600 or higher'; Renoa 7: 'If Critical Chance is 60% or higher', above: 0.6). */
-  thresholdStat?: 'Defense' | 'Health' | 'Critical Chance'
+  /** 'Defense' / 'Health': minAttack and attackBonus read that stats-screen stat instead (Adelheid 7: 'If Defense is 300 or
+   * higher'; Cassius 5-1: 'If Health is 600 or higher'; Renoa 7: 'If Critical Chance is 60% or higher', above: 0.6; Selena 7: 'If Extra Damage is 30% or higher', above: 0.3). */
+  thresholdStat?: 'Defense' | 'Health' | 'Critical Chance' | 'Extra Damage'
   /** See StatEffect.hint. */
   hint?: string
 }
@@ -269,6 +269,8 @@ export interface CharacterAdditions {
   cards?: Record<string, Partial<Omit<CardPreset, 'id' | 'base'>> & { replaceNotes?: boolean }>
   /** Cards the import doesn't have (ids must not clash with the import's), added after the imported ones. */
   extraCards?: CardPreset[]
+  /** Per Potential node ('3-1'): the in-game name and text, replacing the import's. */
+  potentials?: Record<string, Partial<KitEntry>>
 }
 
 /** Memory fragment slots on a character; the set dropdowns per build. */

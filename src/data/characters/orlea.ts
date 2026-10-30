@@ -3,7 +3,7 @@
 // Softie's buffs (this turn, and Retain: next Attack card) raise any ally's damage (owner, 2026-10-28).
 // Swiftie's Retain "+40% Damage Amount" adds up every turn it is retained (owner, 2026-10-28).
 // Annoying "40% Fixed Damage for each card in hand": a Cards in hand setting per play (owner, 2026-10-28).
-// Potential 7 "Critical Chance of Combatant" reaches all allies (owner, 2026-10-28).
+// Potential 7 "Critical Chance to allies" reaches all allies (owner, 2026-10-28).
 import type { BuffEffect, CharacterAdditions } from '../../engine/types'
 import { cardBuff } from '../helpers'
 
@@ -34,10 +34,16 @@ export default {
   notes: 'Stat potentials are in the stats screen; card upgrades are set on the Setup tab. Per play (Cards tab): Softie used this '
     + 'turn / turns retained (any ally\'s damage), Swiftie turns retained, Sacred Censer IV on the next Swiftie, Annoying\'s Cards '
     + 'in hand (I and base) or Creations (II, V), E4 Creation in hand. Not counted: E6 Fixed damage when a Creation is used',
+  // Potential nodes in the game's wording (owner's screenshots, 2026-10-30)
+  potentials: {
+    '3-1': { text: "Add 50% chance to Healing of Light card to create 1 Creation★ card in hand." },
+    '5-1': { text: "+10% Heal Amount to Orlea's Healing of Light" },
+    '7': { text: "If Orlea's Attack is 700 or higher, or her Defense is 300 or higher, then at the start of battle, +6% Critical Chance to allies" },
+  },
   effects: [
-    // 7: "If Orlea's Attack is greater than 700 or Defense is greater than 300, at the start of battle, +6% Critical Chance of Combatant"
+    // 7 (in game): "If Orlea's Attack is 700 or higher, or her Defense is 300 or higher, then at the start of battle, +6% Critical Chance to allies"
     { kind: 'Stat', id: 'p7-crit', name: 'Unique Stat Upgrade', category: 'Potential', target: 'allies', stat: 'Crit Rate', value: '6%',
-      hint: 'ATK > 700 or DEF > 300' },
+      hint: 'ATK 700+ or DEF 300+' },
     // E4 Inner Memory: "If holding Creation Card in hand, increase Damage Amount of allies by 10%"
     { kind: 'Buff', id: 'e4-damage', name: 'E4 Inner Memory', category: 'Ego Manifestation', target: 'allies', value: '10%',
       appliesTo: 'ALL', hitScope: 'All hits', condition: 'Always', egoLevel: 4, hint: 'Creation in hand' },

@@ -14,6 +14,12 @@ export default {
     + 'start, -1 each turn), Decibel count on the Decibel (Shuffle) play (max 5). Extra Attacks by the owner of a card (Mute '
     + 'Accent, G Chord III, Soul Riff III): add a play only when that card is Nia\'s; teammates\' Extra Attacks and their shuffle '
     + 'Extra Attacks are not counted. Soul Riff IV (next Decibel effect 1 more time): add the Decibel play twice',
+  // Potential nodes in the game's wording (owner's screenshots, 2026-10-30)
+  potentials: {
+    '3-1': { text: 'Adds the following effect to the Amp Therapy card: 2 Elasticity' },
+    '5-1': { text: "+5% Heal Amount to Nia's Amp Therapy\nIf Nia's Ego Recovery is 30 or higher, add an additional +5% to that value" },
+    '7': { text: "+30% Heal Amount to Elasticity\nIf Nia's Ego Recovery is 70 or higher, add an additional +20% to the modifier" },
+  },
   effects: [
     // E2 Awakening Memory (in game): "Each time a Shuffle is performed, gain 4 Rhythm Boost. At the start of the turn, decrease
     // Rhythm Boost by 1. Rhythm Boost: +5% Damage Amount (max 4 stacks)". E6 Liberated Memory: "At the start of battle, gain 4

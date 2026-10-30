@@ -13,6 +13,12 @@ export default {
     + 'target), Voracity decreased by Shackles of Hunger IV (up to 5), Voracity activations this turn (Bottomless Hunger V, for the '
     + 'next Mealtime). Shackles of Hunger III: set the hits (3, +1 per 4 Voracity, max 6). Domain of Voracity IV with both '
     + 'Voracity and Predation: add it twice. Voluntary Control II\'s Morale: add it on the Buffs tab',
+  // Potential nodes in the game's wording (owner's screenshots, 2026-10-30)
+  potentials: {
+    '3-1': { text: 'Adds 2 Voracity to NA: Defense Response.' },
+    '5-1': { text: "+5% Heal Amount to Narja's NA: Defense Response\nIf Narja's Defense is 250 or higher, add an additional +5% to the modifier" },
+    '7': { text: "+10% Damage Amount to Voracity\nIf Narja's Defense is 300 or higher, +20% Damage Amount to Predation" },
+  },
   effects: [
     // Keywords (in game): "Voracity: When Hitting with an Attack Card, 40% Fixed Heal. If Health is 50% or higher, +30% Damage
     // Amount dealt by Attack Cards. When the effect is activated, decrease by 1 (max 30 stacks)". "Predation: If in a Voracity

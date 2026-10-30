@@ -28,7 +28,7 @@ export function mergeCharacter(imported: ImportedCharacter, additions: Character
     notes: additions.notes,
     effects: additions.effects ?? [],
     cards,
-    potentials: imported.potentials,
+    potentials: imported.potentials.map((p) => ({ ...p, ...additions.potentials?.[p.node] })),
     manifestEgo: imported.manifestEgo,
     potentialEgo: potentialEgo(imported),
     ...(additions.triggers ? { triggers: additions.triggers } : {}),
@@ -59,6 +59,9 @@ export function checkAdditions(imported: Record<string, ImportedCharacter>, addi
       for (const t of c.triggers ?? []) if (!ids.has(t.card)) problems.push(`characters/${slug}.ts: card '${id}' triggers unknown card '${t.card}'`)
     }
     for (const t of add.triggers ?? []) if (!ids.has(t.card)) problems.push(`characters/${slug}.ts: a trigger adds unknown card '${t.card}'`)
+    for (const node of Object.keys(add.potentials ?? {})) {
+      if (!ch.potentials.some((p) => p.node === node)) problems.push(`characters/${slug}.ts: no Potential node '${node}' in prydwen/${slug}.json`)
+    }
     const dupes = (owner: string, effects: { id: string }[] = []) => {
       const seen = new Set<string>()
       for (const e of effects) {

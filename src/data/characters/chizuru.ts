@@ -32,6 +32,12 @@ export default {
     + 'III (x2.5), Lunarshard stacks (E4). Set the added hits on each play: Inhibit +1 on Shadows, E6 +1 on Shadow+ at 3 Lunarshard, '
     + 'Cursed Shackles, Tsukuyomi II / III, Oni Hunt III. Procs (Bound At Dusk III / IV): add them as plays. Not counted: Will-O\'-Wisp '
     + 'and Shadow creation (set the counters), Cost changes, heals, shields',
+  // Potential nodes in the game's wording (owner's screenshots, 2026-10-30)
+  potentials: {
+    '3-1': { text: "Change Moonslash's card effect to 70% Damage × 2." },
+    '5-1': { text: "+5% Damage Amount to Chizuru's Moonslash\nIf Chizuru's Attack is 500 or higher, add an additional +5% to the modifier" },
+    '7': { text: "If Chizuru's Attack is 600 or higher, +5% Damage Amount to Bind cards\nFor every 10 Attack above 600, add an additional +1% to the modifier (additional +10% max)" },
+  },
   effects: [
     // 5-1 (in game): "+5% Damage Amount to Chizuru's Moonslash. If Chizuru's Attack is 500 or higher, add an additional +5% to the modifier"
     { kind: 'Buff', id: 'p5-1-moonslash', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',

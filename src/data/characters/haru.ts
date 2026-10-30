@@ -29,6 +29,12 @@ export default {
     + 'Charge Energy / I-IV, Power Charge IV targets hit, Beneficial effects (Ego skill), AP short of Cost (E2), Power Supply (E4), '
     + 'Start-of-turn Anchor Shot (E6). Streak on Anchor Shot II: set 2 hits on the play. Power Charge III\'s Defeat: add a second play. '
     + 'Not counted: Tenacity damage, Cost changes, draws, Shields',
+  // Potential nodes in the game's wording (owner's screenshots, 2026-10-30)
+  potentials: {
+    '3-1': { text: '+20% Damage Amount to Anchor and Power Anchor\nThe following effect is added to Anchor Shot: Increase Damage Amount by 10%' },
+    '5-1': { text: "+5% Damage Amount to Haru's Anchor and Power Anchor\nIf Haru's Attack is 500 or higher, add an additional +5% to the modifier" },
+    '7': { text: "+10% Damage Amount to Haru's Anchor Shot\nIf Haru's Attack is 600 or higher, add an additional +10% to the modifier" },
+  },
   effects: [
     // Pulverize (in game): "When hitting a target holding Shield, increase Damage Amount by 20%"
     { kind: 'Buff', id: 'pulverize', name: 'Pulverize', category: 'Character', value: '20%', appliesTo: 'Pulverize', hitScope: 'All hits',

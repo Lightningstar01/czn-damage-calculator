@@ -31,11 +31,14 @@ export function parseBuffValue(text: string): number {
   return text.trim() && Number.isFinite(n) ? n / 100 : 0
 }
 
+/** Threshold stats kept as a share (0.6 = 60%), shown as a %. */
+export const thresholdIsPct = (stat: BuffEffect['thresholdStat']) => stat === 'Critical Chance' || stat === 'Extra Damage'
+
 /** A preset buff's value for the build: its own value (0 below minAttack), plus its attackBonus when the stats-screen Attack
- * (or Defense / Health / Critical Chance, with thresholdStat) is above the threshold (once, or for every `every` above it up to `max`). */
+ * (or Defense / Health / Critical Chance / Extra Damage, with thresholdStat) is above the threshold (once, or for every `every` above it up to `max`). */
 export function presetBuffValue(e: BuffEffect, build: Pick<Build, 'stats'>): { value: number; bonus: boolean } {
   const atk = e.thresholdStat === 'Defense' ? build.stats.defense : e.thresholdStat === 'Health' ? build.stats.health
-    : e.thresholdStat === 'Critical Chance' ? build.stats.critChance : build.stats.attack
+    : e.thresholdStat === 'Critical Chance' ? build.stats.critChance : e.thresholdStat === 'Extra Damage' ? build.stats.extraDmg : build.stats.attack
   if (e.minAttack !== undefined && atk < e.minAttack) return { value: 0, bonus: false }
   const ab = e.attackBonus
   const bonus = !!ab && (ab.orEqual ? atk >= ab.above : atk > ab.above)
@@ -224,7 +227,7 @@ export function activeBuffs(presets: Presets, charName: string, cs: CharacterSav
     if (s.effect.kind !== 'Buff' || s.stacks <= 0) continue
     const e = s.effect as BuffEffect
     const v = presetBuffValue(e, build)
-    const above = e.attackBonus && e.thresholdStat === 'Critical Chance' ? `${Math.round(e.attackBonus.above * 100)}%` : e.attackBonus?.above
+    const above = e.attackBonus && thresholdIsPct(e.thresholdStat) ? `${Math.round(e.attackBonus.above * 100)}%` : e.attackBonus?.above
     out.push({ label: `${stateLabel(s)}: ${e.name}${v.bonus ? ` (${e.thresholdStat ?? 'Attack'} ${e.attackBonus!.orEqual ? `${above}+` : `above ${above}`})` : ''}`,
       type: buffType(e.value, e.type), value: v.value,
       stacks: e.counter ? 0 : e.maxStacks ? Math.min(s.stacks, e.maxStacks) : s.stacks,

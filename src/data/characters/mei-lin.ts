@@ -23,6 +23,12 @@ export default {
     + 'set on each play of the attack list (Cards tab). Ember sources: E2 1 per damaging card, Potential 3-1 +1 per Strike, '
     + 'Spire / I / II 2 / 2 / 3, Jewel III 1 per Attack card, Aromata IV 1 per card. '
     + 'Not modeled: E3 (set the hits per play), E6, Embers from Jewel IV crits, Sovereignty keeping Embers',
+  // Potential nodes in the game's wording (owner's screenshots, 2026-10-30)
+  potentials: {
+    '3-1': { text: 'Strike cards gain an additional 1 stack of Ember' },
+    '5-1': { text: "+5% Damage Amount to Mei Lin's Strike\nIf Mei Lin's Attack is 500 or higher, add an additional +5% to the modifier" },
+    '7': { text: "If Mei Lin's Attack is 600 or higher, +4% Weakness Damage Amount\nFor every 50 Attack exceeding 600, add an additional +1% to the modifier\n(additional +8% max)" },
+  },
   effects: [
     // Ember (owner, 2026-10-25): "When hitting or putting a target in a Ravage state, deal +30% Damage for each stack of
     // Ember the target has (up to 5 stacks). Upon activation, an Ember is removed." Only on cards marked Target Ravaged.
@@ -30,10 +36,10 @@ export default {
     { kind: 'Buff', id: 'ember', name: 'Ember', category: 'Character', value: '+30%', appliesTo: 'ALL',
       hitScope: 'All hits', condition: 'Ravaged only', maxStacks: 5, counter: 'Ember' },
     // Potentials not on the stats screen (Potential 3-1, +1 Ember per Strike, goes in the Ember stacks per play)
-    // Potential 5-1 "+5% Mei Lin's Strike Damage. If Mei Lin's Attack is above 500, an additional +5%." Part of the in-game
+    // Potential 5-1 (in game): "+5% Damage Amount to Mei Lin's Strike. If Mei Lin's Attack is 500 or higher, add an additional +5%". Part of the in-game
     // card % (owner's 132% check), so it only counts on cards entered at base %. The extra +5% follows the stats-screen Attack.
     { kind: 'Buff', id: 'p5-1-strike', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
-      appliesTo: 'Strike', hitScope: 'All hits', condition: 'Always', attackBonus: { above: 500, value: '+5%' } },
+      appliesTo: 'Strike', hitScope: 'All hits', condition: 'Always', attackBonus: { above: 500, value: '+5%', orEqual: true } },
     // Manifest Ego (dupes): on from the build's level
     { kind: 'Buff', id: 'e1-crit', name: 'E1 Sleeping Memory', category: 'Ego Manifestation', type: 'Crit Chance',
       value: '100%', appliesTo: "Flame Dragon's Sovereignty", hitScope: 'All hits', condition: 'Ravaged only', egoLevel: 1 },

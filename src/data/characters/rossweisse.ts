@@ -28,6 +28,12 @@ export default {
     + 'Poised (E6) stacks, X on Flicker Blade (Unbound). Each shard activation is another play of that shard. '
     + "The Ego skill's Fixed damage is added to the next Flicker Blade play by itself. "
     + 'Not counted: Radiant Sword Flow / I discard damage',
+  // Potential nodes in the game's wording (owner's screenshots, 2026-10-30)
+  potentials: {
+    '3-1': { text: 'Decrease Cost of the Sword Slash card by 1.' },
+    '5-1': { text: "+5% Damage Amount to Rossweisse's Sword Slash, and if Rossweisse's Attack is 500 or higher, add an additional +5% to the modifier" },
+    '7': { text: "If Rossweisse's Attack is 600 or higher, +5% Justice Attribute Damage Amount, and for every 20 Attack exceeding 600, add an additional +2% to the modifier (additional +10% max)" },
+  },
   effects: [
     // Sword Tassel (Bind 1/20): "When coalesced into the Equilux card, for each stack, +80% base Damage Amount to the Equilux
     // card for 1 turn". Added to the shown card % (owner, 2026-10-27); stacks set per play.

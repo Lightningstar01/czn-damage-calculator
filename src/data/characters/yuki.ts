@@ -36,6 +36,12 @@ export default {
     + '30% and Freezing Blade\'s hit), Trickery Strike III (on the Inspiration plays of that turn), Prepare to Subdue / I-IV on the cards they '
     + 'buff, Cards Drawn this turn (Flash Slash IV), Cards moved to Draw Pile (Ego skill), Sword Dance (E4), Swiftblade Flurry (E6). Not '
     + 'counted: Cost changes, draws, Shields',
+  // Potential nodes in the game's wording (owner's screenshots, 2026-10-30)
+  potentials: {
+    '3-1': { text: 'Adds the following effects:\nInspiration: Decrease Cost by 1, to Longsword Slash\nInspiration: Increase Damage Amount by 30%, to Rapid Slash' },
+    '5-1': { text: "+5% Damage Amount to Yuki's Longsword Slash and Rapid Slash\nIf Yuki's Attack is 500 or higher, add an additional +5% to the modifier" },
+    '7': { text: "If Yuki's Attack is 600 or higher, +5% Damage Amount to Flash Slash and Iceberg Cleave.\nFor every 20 Attack above 600, add an additional +1% to the modifier (additional +5% max)" },
+  },
   effects: [
     // 3-1 (in game): "Inspiration: Decrease Cost by 1, to Longsword Slash. Inspiration: Increase Damage Amount by 30%, to Rapid Slash"
     { kind: 'Buff', id: 'p3-1-rapid', name: 'Inspiration: Increase Damage Amount', category: 'Potential', value: '30%', appliesTo: 'Rapid Slash',

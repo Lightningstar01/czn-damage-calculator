@@ -26,17 +26,21 @@ export default {
     + 'Mark above 0 adds Selena\'s 100% Mark Extra Attack; E6 adds 30% of a 100% Extra Attack), High-Power Scope III / IV and '
     + 'Drone Bombing IV (on for that turn\'s plays), Passion Weakness on the target, Passion Attack Cards this turn (Drone Bombing '
     + 'III). Not counted: Tenacity damage, Engagement Fire\'s Piercing (3-1)',
+  // Potential nodes in the game's wording (owner's screenshots, 2026-10-30)
+  potentials: {
+    '3-1': { text: 'Changes Engagement Fire to Piercing Damage.' },
+    '5-1': { text: "+5% Damage Amount to Selena's Engagement Fire\nIf Selena's Extra Damage (stat) is 15% or higher, add an additional +5% to the modifier" },
+    '7': { text: "+4% Passion Attribute Damage Amount\nIf Selena's Extra Damage (stat) is 30% or higher, add an additional +4% to the modifier" },
+  },
   effects: [
-    // 5-1 (Prydwen): "+5% Damage for Selena's Engagement Fire. If Selena's Additional Damage is greater than 15%, an additional +5% to
-    // that value": raises the card %, like Rei's 5-1 (not unlocked by the owner: Engagement Fire 112% = 100% x 1.12). The extra +5%
-    // needs a stat the engine doesn't read: not counted
+    // 5-1 (in game): "+5% Damage Amount to Selena's Engagement Fire. If Selena's Extra Damage (stat) is 15% or higher, add an additional
+    // +5% to the modifier": raises the card %, like Rei's 5-1 (not unlocked by the owner: Engagement Fire 112% = 100% x 1.12)
     { kind: 'Buff', id: 'p5-1-fire', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
-      appliesTo: 'Engagement Fire', hitScope: 'All hits', condition: 'Always' },
-    // 7 (Prydwen): "+4% Passion Attribute Damage. If Selena's Bonus Damage exceeds 30%, an additional +4%": as Tenebria's 7
+      appliesTo: 'Engagement Fire', hitScope: 'All hits', condition: 'Always', thresholdStat: 'Extra Damage',
+      attackBonus: { above: 0.15, value: '+5%', orEqual: true } },
+    // 7 (in game): "+4% Passion Attribute Damage Amount. If Selena's Extra Damage (stat) is 30% or higher, add an additional +4%": as Tenebria's 7
     { kind: 'Buff', id: 'p7-passion', name: 'Unique Stat Upgrade', category: 'Potential', value: '+4%', appliesTo: 'Passion',
-      hitScope: 'All hits', condition: 'Always' },
-    { kind: 'Buff', id: 'p7-passion-bonus', name: 'Unique Stat Upgrade (Bonus Damage)', category: 'Potential', value: '+4%',
-      appliesTo: 'Passion', hitScope: 'All hits', condition: 'Always', hint: 'Bonus Damage > 30%' },
+      hitScope: 'All hits', condition: 'Always', thresholdStat: 'Extra Damage', attackBonus: { above: 0.3, value: '+4%', orEqual: true } },
     // E2 Awakening Memory (in game): "Selena's Mark damage is increased by +20%"
     { kind: 'Buff', id: 'e2-mark', name: "Selena's Mark damage", category: 'Ego Manifestation', value: '+20%', appliesTo: 'Mark',
       hitScope: 'All hits', condition: 'Always', egoLevel: 2 },

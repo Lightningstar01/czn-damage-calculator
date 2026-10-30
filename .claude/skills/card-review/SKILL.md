@@ -19,7 +19,7 @@ see "Card text check" in CLAUDE.md. Worked examples: `src/data/characters/mei-li
 - Read them, then move each to `card-screenshots/<slug>/` (git-ignored; slug as in `src/data/prydwen/`) under the name for
   what it shows (owner, 2026-10-30), using the in-game card name in lowercase with dashes and no apostrophes:
   - `card-<name>.png`: a card's detail page; `epiphany-<name>.png`: its 5 variants; `related-<name>.png`: its Related Cards page.
-    A variant of a card adds a suffix (`card-music-start-crescendo`); a page scrolled to show the rest of the glossary adds `-scrolled`.
+    A variant of a card adds a suffix (`card-music-start-crescendo`); a page scrolled to show the rest of its text adds `-scrolled` (`node-7-scrolled`).
   - `ego-skill.png`: the Ego skill's View Details page (`ego-skill-e3.png` for the preview of an Ego level's version).
   - `ego-<N>.png`: Ego Manifestation level N, from the title: Sleeping 1, Awakening 2, Vivid 3, Inner 4, Complete 5, Liberated 6.
     `ego-overview.png`: that screen with no level selected.
@@ -80,6 +80,9 @@ Copy the shape of the worked examples. Rules:
   (`src/engine/cardText.ts`): `{120%}` base % (shown raised by the build's upgrade; use it for Heal/Shield % too),
   `{F40%}` Fixed damage % (not raised by default, Orlea's Annoying), `{120%@id}` another card preset's base % (Renoa's Dirge Bullet), `{E3:3|2}` Ego level, `{P3-1:text|else}` potential
   node; they nest: `Heal {P3-1:{70%}|{100%}}`. Buff %s on a card (Softie's "by 10%") aren't raised: write them as is.
+- `potentials`: nodes 3-1, 5-1 and 7 in the game's wording: `{ '3-1': { text: '...' } }`, plus `name` if it differs. Check every number
+  against the node's buff. "X or higher" = `minAttack: X` and `attackBonus` with `orEqual: true` (with `every`, `minAttack` alone is enough). Text cut off in a
+  screenshot: ask for the rest.
 - Corrections override the import: `pct`, `cost`, `name`, `cardType`, `tags`, `upgrade: null`, `replaceNotes`. A Potential node that
   changes a card's numbers: `nodeCard: { '3-1': { pct: 0.7, hits: 2 } }` (Chizuru's Moonslash).
 - Card % "for each Cost of this card" = `perCost: true` (Tiphera's C&D V); "for each <thing>" = `perCount: '<Thing>'`

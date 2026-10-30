@@ -8,6 +8,12 @@ import type { CharacterAdditions } from '../../engine/types'
 export default {
   notes: 'Healer: Water Arrow and Whirlpool deal damage. Not counted: Blessing of Waves IV damage equal to its Heal Amount',
   // Card text: the in-game wording (owner's screenshots, 2026-10-28), with tokens for the build's numbers (engine/cardText.ts)
+  // Potential nodes in the game's wording (owner's screenshots, 2026-10-30)
+  potentials: {
+    '3-1': { text: '+30% Heal Amount to Water Barrier cards.' },
+    '5-1': { text: "+5% Heal Amount to Mika's Water Barrier\nIf Mika's Ego Recovery is 30 or higher, add an additional +5% to that value" },
+    '7': { text: "If Mika's Ego Recovery is 40 or higher, +10% Recover Amount to Source of Water\nFor every 5 Ego Recovery exceeding 40, add an additional +2% to the modifier\n(additional +20% max)" },
+  },
   cards: {
     // E4 Inner Memory adds Retain to the created Source of Water
     'card-543': { creates: ['card-571'], text: 'Create 2 Source of Water Card(s), grant Exhaust{E4: and Retain|} to it' },

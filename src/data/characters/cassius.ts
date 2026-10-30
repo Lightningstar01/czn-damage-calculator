@@ -18,6 +18,12 @@ export default {
     + 'this turn (Triple 0), the drawn card\'s Cost (Devil Dice V). Dice Trick IV: add one play per Quest card activated. '
     + 'Morale from Straight and Potential 7 (1 per Quest completed, for 1 turn): add it on the Buffs tab. '
     + 'Potential 5-1: switch it off on the Buffs tab while it is locked',
+  // Potential nodes in the game's wording (owner's screenshots, 2026-10-30)
+  potentials: {
+    '3-1': { text: 'Add a 30% chance to draw 1 card to Card and Wild Card.' },
+    '5-1': { text: "+5% Damage Amount to Cassius's Cards and Wild Card\nIf Cassius's Health is 600 or higher, add an additional +5% to the modifier" },
+    '7': { text: "Upon completing a Quest, gain 1 Morale for 1 turn\nIf Cassius's Health is 700 or higher, when a Quest is completed, 1 Fortitude for 1 turn" },
+  },
   effects: [
     // 5-1 (in game): "+5% Damage Amount to Cassius's Cards and Wild Card. If Cassius's Health is 600 or higher, add an additional
     // +5% to the modifier". Like Mei Lin's 5-1: it raises the card % (owner, 2026-10-28)

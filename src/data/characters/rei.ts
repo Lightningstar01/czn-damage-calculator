@@ -27,15 +27,21 @@ export default {
     + 'Resonating Darkness V used this turn, Dark Condensation\'s selected card; the hits of Strike of Darkness III (1 + Basic '
     + 'Cards discarded). Predator\'s Blade Morale (2, 4 from E1, for 1 turn): add it on the Buffs tab. '
     + 'Strike of Darkness V procs Basic Cards: add them as plays',
+  // Potential nodes in the game's wording (owner's screenshots, 2026-10-30)
+  potentials: {
+    '3-1': { text: 'Add a 20% Damage-Based Recovery effect to the Dark Blade card.' },
+    '5-1': { text: "+5% Damage Amount to Rei's Dark Blade\nIf Rei's Attack is 500 or higher, add an additional +5% to the modifier" },
+    '7': { text: "If Rei's Attack is 550 or higher, +10% Damage Amount to Predator's Blade\nFor every 10 Attack exceeding 550, add an additional +1% to the modifier\n(additional +20% max)" },
+  },
   effects: [
-    // 5-1: "+5% Damage for Rei's Dark Blade. If Rei's Attack is greater than 500, an additional +5% to that value." Part of the
+    // 5-1 (in game): "+5% Damage Amount to Rei's Dark Blade. If Rei's Attack is 500 or higher, add an additional +5%". Part of the
     // in-game card %, like Mei Lin's 5-1 (not unlocked by the owner: Dark Blade 114% = 100% x 1.14)
     { kind: 'Buff', id: 'p5-1-blade', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
-      appliesTo: 'Dark Blade', hitScope: 'All hits', condition: 'Always', attackBonus: { above: 500, value: '+5%' } },
-    // 7: "If Rei's Attack is greater than 550, +10% Predator's Blade Damage. For every 10 Attack exceeding that value, an additional
-    // +1% (up to an additional +20%)." Raises the card % (owner, 2026-10-28); not unlocked by the owner
+      appliesTo: 'Dark Blade', hitScope: 'All hits', condition: 'Always', attackBonus: { above: 500, value: '+5%', orEqual: true } },
+    // 7 (in game): "If Rei's Attack is 550 or higher, +10% Damage Amount to Predator's Blade. For every 10 Attack exceeding 550, add an
+    // additional +1% to the modifier (additional +20% max)". Raises the card % (owner, 2026-10-28); not unlocked by the owner
     { kind: 'Buff', id: 'p7-predator', name: 'Unique Stat Upgrade', category: 'Potential', type: 'Card +', value: '+10%',
-      appliesTo: "Predator's Blade", hitScope: 'All hits', condition: 'Always', minAttack: 551,
+      appliesTo: "Predator's Blade", hitScope: 'All hits', condition: 'Always', minAttack: 550,
       attackBonus: { above: 550, value: '+1%', every: 10, max: '+20%' } },
     // E4 Inner Memory: "+100% Damage for Final Shadow" (300% -> 400% in game)
     { kind: 'Buff', id: 'e4-final-shadow', name: 'E4 Inner Memory', category: 'Ego Manifestation', type: 'Base %', value: '+100%',

@@ -13,7 +13,7 @@ const cardPct = (id: string, name: string, card: string, counter: string, maxSta
   cardBuff(id, name, '+100%', card, { type: 'Card %', maxStacks, counter })
 const harmonization = (card: string) => cardPct('harmonization', 'Harmonization: Double all effects', card, 'Harmonization', 1)
 
-// Archetype heal / shield: 50% + Potential 5-1's +5% (+5% more at Defense above 250); 67% in-game = 60% x 1.12 Signature upgrade
+// Archetype heal / shield: 50% + Potential 5-1's +5% (+5% more at Defense 250 or higher); 67% in-game = 60% x 1.12 Signature upgrade
 const archetypeText = (effect: string) => `[Exhaust]\n${effect}`
 const archetypePct = '{P5-1:{60%}|{50%}}'
 
@@ -22,10 +22,16 @@ export default {
     + 'stacks (30% each, max 10) and Event Horizon on the first hit of the next Attack card, any ally\'s; Harmonization on '
     + 'Creation and Destruction / I; Retain stacks on III; the Cost of V; Power of Archetype stacks (E4). '
     + 'Not counted: Event Horizon\'s Form Upgrade and Form Convergence doubling a random effect',
+  // Potential nodes in the game's wording (owner's screenshots, 2026-10-30)
+  potentials: {
+    '3-1': { text: 'Decrease Heal Amount of the Barrier Deployment card to 70%, and add a 70% Shield effect.' },
+    '5-1': { name: 'Signature Card Proficiency', text: "+5% Heal and Shield Gain Amounts to Archetype cards, and if Tiphera's Defense is 250 or higher, add an additional +5% to the modifier" },
+    '7': { text: "If Tiphera's Defense is 300 or higher, at the start of battle, +10% to Critical Damage of allies" },
+  },
   effects: [
-    // 7: "If Tiphera's Defense is greater than 300, at the start of battle, +10% to Critical Damage of allies"
+    // 7 (in game): "If Tiphera's Defense is 300 or higher, at the start of battle, +10% to Critical Damage of allies"
     { kind: 'Stat', id: 'p7-crit', name: 'Unique Stat Upgrade', category: 'Potential', target: 'allies', stat: 'Crit DMG', value: '10%',
-      hint: 'DEF > 300' },
+      hint: 'DEF 300+' },
     // E4 Power of Archetype: "When Tiphera's Archetype card is used ... At the end of the turn, remove (max 2 stacks)"
     { kind: 'Buff', id: 'e4-attack', name: 'E4 Power of Archetype: Attack Cards', category: 'Ego Manifestation', target: 'allies',
       value: '5%', appliesTo: 'Attack', hitScope: 'All hits', condition: 'Always', maxStacks: 2, counter: 'Power of Archetype', egoLevel: 4 },

@@ -397,14 +397,16 @@ describe('potentials', () => {
     addCards(cs, strike, spire, own)
     setPlays(cs, plays(strike.id, spire.id, own.id))
     const mults = () => computeBuild(PRESETS, 'Mei Lin', cs, a, settings).plays.map((p) => p.hits[0].cardMult)
-    // Strike also has potential 5-1: +5%, +5% more above 500 Attack (x1.1 on the card %)
+    // Strike also has potential 5-1: +5%, +5% more from 500 Attack (x1.1 on the card %)
     expect(mults()).toEqual([1.1, spire.pct, 1.5].map((x) => expect.closeTo(x)))
     a.basicLevel = 10
     a.signatureLevel = 6
     // the owner's in-game Strike: 132% at Basic Card Upgrade 10
     expect(mults()).toEqual([1.32, spire.pct * 1.12, 1.5].map((x) => expect.closeTo(x)))
-    // the extra +5% follows the stats-screen Attack (above 500, not at 500)
+    // the extra +5% follows the stats-screen Attack (500 or higher)
     a.stats.attack = 500
+    expect(mults()[0]).toBeCloseTo(1.2 * 1.1)
+    a.stats.attack = 499
     expect(mults()[0]).toBeCloseTo(1.2 * 1.05)
     a.stats.attack = 1000
     a.egoLevel = mei.potentialEgo![0].level
@@ -1072,7 +1074,7 @@ describe('Rei', () => {
     expect(r.plays[1].nonCrit).toBeCloseTo(4 * 100 * 0.35)
   })
 
-  it("Potential 7 raises Predator's Blade's card % above 550 Attack", () => {
+  it("Potential 7 raises Predator's Blade's card % from 550 Attack", () => {
     const { cs, a } = ownerBuild()
     delete a.presetSwitches['Rei|p7-predator']
     a.stats.attack = 600
@@ -1237,12 +1239,12 @@ describe('Adelheid', () => {
     }
   })
 
-  it('Potential 7 follows the stats-screen Defense: +5% above 300, +2% per 10 above, max +10% more', () => {
+  it('Potential 7 follows the stats-screen Defense: +5% from 300, +2% per 10 above, max +10% more', () => {
     const p7 = adel.effects.find((e) => e.id === 'p7-void')!
     if (p7.kind !== 'Buff') throw new Error('p7 is a buff')
     const at = (defense: number) => presetBuffValue(p7, { stats: { ...newBuild('x').stats, attack: 1000, defense } }).value
-    expect(at(300)).toBe(0)
-    expect(at(301)).toBeCloseTo(0.05)
+    expect(at(299)).toBe(0)
+    expect(at(300)).toBeCloseTo(0.05)
     expect(at(325)).toBeCloseTo(0.05 + 0.04)
     expect(at(1000)).toBeCloseTo(0.15)
   })
@@ -1626,7 +1628,7 @@ describe('Selena', () => {
     const [a] = cs.builds
     Object.assign(a, { egoLevel: 6 })
     a.stats.attack = 100
-    for (const id of ['p5-1-fire', 'p7-passion', 'p7-passion-bonus']) a.presetSwitches[`Selena|${id}`] = false
+    for (const id of ['p5-1-fire', 'p7-passion']) a.presetSwitches[`Selena|${id}`] = false
     return { cs, a }
   }
 
@@ -1700,7 +1702,7 @@ describe('Team damage (owner, 2026-10-28)', () => {
     const [a] = cs.builds
     Object.assign(a, { egoLevel: 6 })
     a.stats.attack = 100
-    for (const id of ['p5-1-fire', 'p7-passion', 'p7-passion-bonus']) a.presetSwitches[`Selena|${id}`] = false
+    for (const id of ['p5-1-fire', 'p7-passion']) a.presetSwitches[`Selena|${id}`] = false
     a.deck.push({ id: 'ef', preset: 'card-395' }, { id: 'hps4', preset: 'card-401' })
     a.team = [{ ...newTeammate(), character: 'Mei Lin', cards: ['card-338'] }]
     return { cs, a }
@@ -1749,8 +1751,8 @@ describe('Team damage (owner, 2026-10-28)', () => {
     sel.builds[0].stats.attack = 300
     const r = computeBuild(PRESETS, 'Mei Lin', ml, b, settings, { Selena: sel })
     expect(r.plays[0].triggered.map((t) => t.card.name)).toEqual(['Mark'])
-    // 100% + Sniper's Domain +80% (E2 not unlocked) + Selena's 7 (+4% Passion, twice: its switches are on), with Selena's 300 Attack
-    expect(r.plays[0].triggered[0].nonCrit).toBeCloseTo((1 + 0.8 + 0.08) * 300 * 0.35)
+    // 100% + Sniper's Domain +80% (E2 not unlocked) + Selena's 7 (+4% Passion; her Extra Damage is below 30%), with Selena's 300 Attack
+    expect(r.plays[0].triggered[0].nonCrit).toBeCloseTo((1 + 0.8 + 0.04) * 300 * 0.35)
   })
 
   it('removing a teammate card drops its plays; emptying the slot drops all of theirs', () => {
@@ -1956,5 +1958,78 @@ describe('Renoa', () => {
     expect(r.plays[0].nonCrit).toBeCloseTo(2.05 * 1.16 * 35 + 2 * 1.65 * 1.16 * 35)
     expect(r.plays[1].nonCrit).toBeCloseTo(3 * 0.6 * 1.16 * 2 * 35)
     expect(r.plays[2].nonCrit).toBeCloseTo((1.1 + 0.8) * 35 + 35)
+  })
+})
+
+describe('Potential node wording', () => {
+  const node = (name: string, id: string) => PRESETS.characters.find((c) => c.name === name)!.potentials!.find((p) => p.node === id)!
+
+  it('uses the in-game name and text instead of the import', () => {
+    expect(node('Chizuru', '3-1').text).toBe("Change Moonslash's card effect to 70% Damage × 2.")
+    expect(node('Chizuru', '7').text).toContain('For every 10 Attack above 600')
+    expect(node('Haru', '7').text).toContain('Attack is 600 or higher')
+    expect(node('Renoa', '3-1').name).toBe('Signature Card Proficiency')
+    expect(node('Tiphera', '5-1').name).toBe('Signature Card Proficiency')
+    // nodes without a screenshot keep the import's text
+    expect(node('Chizuru', '5').name).toBe('Critical Chance Proficiency')
+    expect(node('Chizuru', '7').name).toBe('Unique Stat Upgrade')
+  })
+
+  it('every reviewed character has nodes 3-1, 5-1 and 7; an unknown node is a problem', () => {
+    for (const [slug, add] of Object.entries(ADDITIONS)) expect(Object.keys(add.potentials ?? {}).sort(), slug).toEqual(['3-1', '5-1', '7'])
+    expect(checkAdditions(IMPORTED, { 'mei-lin': { potentials: { '9-9': { text: 'x' } } } })).toHaveLength(1)
+  })
+
+  const value = (name: string, id: string, stats: Partial<Build['stats']>) => {
+    const e = PRESETS.characters.find((c) => c.name === name)!.effects.find((x) => x.id === id)!
+    if (e.kind !== 'Buff') throw new Error(`${id} is a buff`)
+    return presetBuffValue(e, { stats: { ...newBuild('x').stats, ...stats } }).value
+  }
+
+  it('Tenebria 7: +1% per 20 Attack above 600, +10% at most', () => {
+    expect(value('Tenebria', 'p7-passion', { attack: 599 })).toBe(0)
+    expect(value('Tenebria', 'p7-passion', { attack: 600 })).toBeCloseTo(0.05)
+    expect(value('Tenebria', 'p7-passion', { attack: 640 })).toBeCloseTo(0.07)
+    expect(value('Tenebria', 'p7-passion', { attack: 2000 })).toBeCloseTo(0.15)
+  })
+
+  it('Selena 5-1 and 7 read the Extra Damage stat', () => {
+    expect(value('Selena', 'p5-1-fire', { extraDmg: 0.149 })).toBeCloseTo(0.05)
+    expect(value('Selena', 'p5-1-fire', { extraDmg: 0.15 })).toBeCloseTo(0.1)
+    expect(value('Selena', 'p7-passion', { extraDmg: 0.299 })).toBeCloseTo(0.04)
+    expect(value('Selena', 'p7-passion', { extraDmg: 0.3 })).toBeCloseTo(0.08)
+    const cs = newCharacterSave()
+    const [a] = cs.builds
+    a.stats.attack = 100
+    a.stats.extraDmg = 0.2
+    a.basicLevel = 0
+    a.deck.push({ id: 'ef', preset: 'card-395' })
+    a.rotation = [{ cardId: 'ef' }]
+    // Engagement Fire: (100% + 5% + 5%) + 7's +4% Passion: a Normal card, so Extra Damage only opens the bonus
+    expect(computeBuild(PRESETS, 'Selena', cs, a, settings).plays[0].hits[0].cardMult).toBeCloseTo(1.14)
+  })
+
+  it('Extra Damage multiplies Extra Attacks, triggered ones too, and not normal hits', () => {
+    const build = (extraDmg: number) => {
+      const cs = newCharacterSave()
+      const [a] = cs.builds
+      a.stats.attack = 100
+      a.stats.extraDmg = extraDmg
+      for (const id of ['p5-1-fire', 'p7-passion']) a.presetSwitches[`Selena|${id}`] = false
+      a.deck.push({ id: 'ef', preset: 'card-395' })
+      a.rotation = [{ cardId: 'ef', stacks: { Mark: 1 } }]
+      return computeBuild(PRESETS, 'Selena', cs, a, settings).plays[0]
+    }
+    const [off, on] = [build(0), build(0.5)]
+    expect(on.triggered[0].card.kind).toBe('Extra Attack')
+    expect(on.triggered[0].nonCrit).toBeCloseTo(off.triggered[0].nonCrit * 1.5)
+    expect(on.hits[0].nonCrit).toBeCloseTo(off.hits[0].nonCrit)
+  })
+
+  it('Rei and Mei Lin count exactly at the "or higher" thresholds', () => {
+    expect(value('Rei', 'p5-1-blade', { attack: 500 })).toBeCloseTo(0.1)
+    expect(value('Rei', 'p7-predator', { attack: 549 })).toBe(0)
+    expect(value('Rei', 'p7-predator', { attack: 550 })).toBeCloseTo(0.1)
+    expect(value('Mei Lin', 'p5-1-strike', { attack: 500 })).toBeCloseTo(0.1)
   })
 })

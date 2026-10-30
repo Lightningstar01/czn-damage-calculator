@@ -40,7 +40,7 @@ email, and check that binary files such as spreadsheets carry no author name bef
     Card fields set here override the import; notes are joined. `src/data/helpers.ts` has `cardBuff()`.
     Put character `effects` before `cards`.
     Overrides may rename a card (`name`, e.g. Flicker Blade (Amped)); `replaceNotes` drops the import's notes;
-    `extraCards` adds cards Prydwen lacks. A new characters/*.ts file isn't seen by `npm test` until
+    `extraCards` adds cards Prydwen lacks; `potentials: { '3-1': { text } }` replaces a node's wording with the in-game text (`name` too if it differs). A new characters/*.ts file isn't seen by `npm test` until
     node_modules/.vitest-cache is deleted (cached glob).
   - `src/data/merge.ts` combines the two; `checkAdditions()` (run by the tests) catches unknown
     slugs or card ids and duplicate effect ids.
@@ -107,7 +107,7 @@ email, and check that binary files such as spreadsheets carry no author name bef
   with an upgrade: "Double all effects"); `Card +` (a Potential node's "+X%", owner 2026-10-30) adds to the base % before the upgrade
   (Shadow 110% = (80% + 15%) x 1.16); `Base %` ("+X% base Damage Amount") adds to the shown card %; `Final` ("final Damage
   Amount") is its own multiplier. Effects: `egoBelow` (off from that Ego level), `minAttack`, `attackBonus.every`
-  (`thresholdStat: 'Defense'` / `'Health'` / `'Critical Chance'` makes both read that stats-screen stat: Adelheid's 7, Cassius's 5-1, Renoa's 7).
+  (`thresholdStat: 'Defense'` / `'Health'` / `'Critical Chance'` / `'Extra Damage'` makes both read that stats-screen stat: Adelheid's 7, Cassius's 5-1, Renoa's 7, Selena's 5-1).
   A card's `followUp` adds Fixed damage (a share of the next matching play's damage), e.g. Rossweisse's Ego skill.
 - Saves are per character: builds (partner, Manifest Ego level, card upgrade levels, 3 fragment set
   picks, stats, team, deck, attack list...), boosts and buffs.

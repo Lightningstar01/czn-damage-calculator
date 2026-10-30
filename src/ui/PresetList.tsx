@@ -1,7 +1,7 @@
 // Preset effects for the active build, as switches: the character's own (with partner, fragment sets, library cards),
 // or the teammates' ally buffs and enemy debuffs.
 import { PRESETS } from '../data/presets'
-import { buffType, findCharacter, findPartner, presetBuffValue, presetStates, stateLabel, type PresetState } from '../engine/buffs'
+import { buffType, findCharacter, findPartner, presetBuffValue, presetStates, stateLabel, thresholdIsPct, type PresetState } from '../engine/buffs'
 import { useCharacter } from '../store/store'
 import type { Build, Effect } from '../engine/types'
 import { pct } from './format'
@@ -19,7 +19,7 @@ function effectPills(e: Effect, onStatsScreen: boolean, build: Build): Pill[] {
   const v = presetBuffValue(e, build)
   const ab = e.attackBonus
   const stat = e.thresholdStat ?? 'Attack'
-  const at = (n: number) => stat === 'Critical Chance' ? pct(n) : n
+  const at = (n: number) => thresholdIsPct(e.thresholdStat) ? pct(n) : n
   const byAttack = !!ab || e.minAttack !== undefined
   const shown = byAttack ? `${e.value.trim().startsWith('+') ? '+' : ''}${pct(v.value)}` : e.value
   const bonus: Pill[] = [

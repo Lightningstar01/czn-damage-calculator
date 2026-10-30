@@ -37,6 +37,12 @@ export default {
     + 'Bullets exhausted (Ballad V), Ballad IV (on for that turn\'s plays), Cost discarded (Flower III), Mark (Ballad III), Rose\'s '
     + 'Resolve (E4), Dirge Bullets drawn (E6), Finales discarded (E2). Instant Judgment III: add 1 hit on the play. Instant Judgment IV\'s '
     + 'discard hit and V\'s end-of-turn hit are plays of their own. Not counted: Shields, draws, Tenacity',
+  // Potential nodes in the game's wording (owner's screenshots, 2026-10-30)
+  potentials: {
+    '3-1': { name: 'Signature Card Proficiency', text: '+40% Damage Amount to Dirge Bullet, +20% Damage Amount to Extra Attacks' },
+    '5-1': { text: "+5% Damage Amount to Renoa's Annihilation Shot\nIf Renoa's Critical Chance is 20% or higher, add an additional +5% to the modifier" },
+    '7': { text: "+5% Damage Amount to Dirge Bullet\nIf Renoa's Critical Chance is 60% or higher, add an additional +10% to the modifier" },
+  },
   effects: [
     // 3-1 Signature Card Proficiency (in game): "+40% Damage Amount to Dirge Bullet, +20% Damage Amount to Extra Attacks". The +20% shows on
     // Dirge Bullet's Extra Attack only: Instant Judgment IV's is 290% = 250% x 1.16, Finale's 191% = (160% + 5%) x 1.16

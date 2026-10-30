@@ -19,11 +19,17 @@ export default {
     + 'Dreams stacks (E2), Truth Behind A Story (on target) after Truth / I was played this turn, Truth Behind A Story III and '
     + 'Protect Us V used this turn, Blessing cards in hand (Truth IV), Doggies in hand (Doggie (Pack)), Blessing cards in All '
     + 'Piles (Friends from Fairy Tales I\'s Doggie). Each Doggie (Pack) proc (Quietus) is another play',
+  // Potential nodes in the game's wording (owner's screenshots, 2026-10-30)
+  potentials: {
+    '3-1': { text: "Add Blessing to Gather Around and Fairy's Protection cards." },
+    '5-1': { text: "+5% Shield Gain Amount to Adelheid's Fairy's Protection\nIf Adelheid's Defense is 250 or higher, add an additional +5% to the modifier" },
+    '7': { text: "If Adelheid's Defense is 300 or higher, +5% Void-Attribute Damage Amount, and for every 10 Defense exceeding 300, add an additional 2% to the modifier (additional +10% max)" },
+  },
   effects: [
-    // 7 (Prydwen): "If Adelheid's Defense is greater than 300, +5% Void-Attribute Damage Amount. For every 10 Defense exceeding 300,
+    // 7 (in game): "If Adelheid's Defense is 300 or higher, +5% Void-Attribute Damage Amount, and for every 10 Defense exceeding 300,
     // add an additional 2% to the modifier (additional +10% max)": as Rossweisse's 7, on the stats-screen Defense
     { kind: 'Buff', id: 'p7-void', name: 'Unique Stat Upgrade', category: 'Potential', value: '+5%', appliesTo: 'Void',
-      hitScope: 'All hits', condition: 'Always', thresholdStat: 'Defense', minAttack: 301,
+      hitScope: 'All hits', condition: 'Always', thresholdStat: 'Defense', minAttack: 300,
       attackBonus: { above: 300, value: '+2%', every: 10, max: '+10%' } },
     // E2 Awakening Memory (in game): "Gains the Bliss of Dreams effect for each Blessing Adelheid applies or creates. At the start
     // of battle, gain the Bliss of Dreams effect for each Blessing card in Deck. Bliss of Dreams: Increase Damage Amount of allies

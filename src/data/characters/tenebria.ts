@@ -30,15 +30,21 @@ export default {
     + 'cards, Encore V on a drawn Rhythm card, E4 Everyone\'s Cheer stacks / at max; Performance Buzz on Photo Time; the hits '
     + 'added by Everyone\'s Idol (7 times), Encore III, Call & Response IV and Fortissimo. Procs (Encore, Spotlight III, Arpeggio, '
     + 'Call & Response II): add them as plays. Not counted: E2 Ego Skill damage, 5-1 on allies\' Rhythm cards',
+  // Potential nodes in the game's wording (owner's screenshots, 2026-10-30)
+  potentials: {
+    '3-1': { text: 'Add the following effect to Sound Check: Incinerate: Heal 50%.' },
+    '5-1': { text: "At the start of battle, increase Damage Amount of Tenebria's Rhythm cards by 10%, and if Tenebria's Attack is 500 or higher, increase Damage Amount of other Combatants' Rhythm cards by 10% as well" },
+    '7': { text: "If Tenebria's Attack is 600 or higher, +5% Passion Attribute Damage Amount, and for every 20 Attack exceeding 600, add an additional +1% (additional +10% max)" },
+  },
   effects: [
-    // 5-1 (Prydwen): "At the start of battle, increase Damage Amount of Tenebria's Rhythm cards by 10%, and if Tenebria's Attack is
+    // 5-1 (in game): "At the start of battle, increase Damage Amount of Tenebria's Rhythm cards by 10%, and if Tenebria's Attack is
     // 500 or higher, increase Damage Amount of other Combatants' Rhythm cards by 10% as well". Allies' Rhythm cards aren't modeled
     { kind: 'Buff', id: 'p5-1-rhythm', name: 'Basic Card Proficiency', category: 'Potential', value: '10%', appliesTo: 'Rhythm Card',
       hitScope: 'All hits', condition: 'Always' },
-    // 7 (Prydwen): "If Tenebria's Attack is 600 or higher, +5% Passion Attribute Damage Amount, and for every 20 Attack exceeding 600,
-    // add an additional +2% (additional +10% max)": as Rossweisse's 7
+    // 7 (in game): "If Tenebria's Attack is 600 or higher, +5% Passion Attribute Damage Amount, and for every 20 Attack exceeding 600,
+    // add an additional +1% (additional +10% max)" (Prydwen: +2%): as Rossweisse's 7
     { kind: 'Buff', id: 'p7-passion', name: 'Unique Stat Upgrade', category: 'Potential', value: '+5%', appliesTo: 'Passion',
-      hitScope: 'All hits', condition: 'Always', minAttack: 600, attackBonus: { above: 600, value: '+2%', every: 20, max: '+10%' } },
+      hitScope: 'All hits', condition: 'Always', minAttack: 600, attackBonus: { above: 600, value: '+1%', every: 20, max: '+10%' } },
     // E1 Sleeping Memory: "Increases Damage Amount of Performance Buzz for the Photo Time card from 100% to 150%" (x1.5)
     { kind: 'Buff', id: 'e1-buzz', name: 'E1 Sleeping Memory', category: 'Ego Manifestation', type: 'Final', value: '50%',
       appliesTo: 'Photo Time', hitScope: 'All hits', condition: 'Always', egoLevel: 1 },
