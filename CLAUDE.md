@@ -138,8 +138,9 @@ email, and check that binary files such as spreadsheets carry no author name bef
 
 - **Never assume — ask.** The owner's standing preference: when anything is ambiguous
   (game mechanics, layout, scope), ask a question instead of guessing.
-- When coming up with a plan, always try to poke holes in it and consider the alternative options,
-  weighing the pros and cons of each.
+- Before settling on any plan or fix, however small (bug fixes and workarounds count, and "it works" doesn't end the search): poke holes
+  in it, look for the alternatives, weigh the pros and cons of each and pick the best. For a bug in a tool or library, first look for a known
+  issue and try its settings. When presenting the result, name the options compared and why this one won, so the owner can see it happened.
 - The owner knows the game well. Their stated mechanics (see docs/FORMULA.md and docs/characters/<slug>.md, marked "User")
   take precedence over web guides unless they agree to change them.
 - When research conflicts, report the conflict with sources and ask, or make it a toggle
