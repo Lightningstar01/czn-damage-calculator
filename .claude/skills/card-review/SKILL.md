@@ -6,8 +6,8 @@ description: Compare a character's cards with the owner's in-game screenshots an
 # Card review from in-game screenshots
 
 The owner takes screenshots of one character's card pages with the Xbox Game Bar and says which character. Done so far:
-see "Card text check" in CLAUDE.md. Worked examples: `src/data/characters/mei-lin.ts`, `rossweisse.ts`, `tiphera.ts`
-(and their `describe` blocks in `tests/engine.test.ts`).
+every character with a `src/data/characters/<slug>.ts`. Worked examples: `rossweisse.ts`, `tiphera.ts` there
+(and `tests/characters/<slug>.test.ts`, `docs/characters/<slug>.md`).
 
 ## 1. Collect the screenshots
 
@@ -69,7 +69,8 @@ Before writing buffs, ask about every mechanic that's ambiguous. CLAUDE.md: neve
 - Whose cards a buff reaches: "this unit" = self, "allies" = allies, "next Attack Card" without an owner = ask.
 - How "Double all effects" / "Increase all effects by 100%" / "for each X" scale the card %.
 - Whether a triggered effect is an extra play of a card, Fixed damage, an Extra Attack.
-Offer a recommended reading as the first option. Record the answers as "(User, <date>)" in docs/FORMULA.md.
+Offer a recommended reading as the first option. Record the answers as "(User, <date>)" in docs/characters/<slug>.md
+(a rule for every character: docs/FORMULA.md).
 
 ## 6. Write `src/data/characters/<slug>.ts`
 
@@ -104,10 +105,9 @@ Copy the shape of the worked examples. Rules:
 
 ## 7. Test, document, commit
 
-- `tests/engine.test.ts`: a `describe('<Name>')` with the owner's levels: rendered text of the key cards equals the
-  in-game screenshots (numbers included), plus one damage check per new mechanic. Delete `node_modules/.vitest-cache`
-  first (new characters/*.ts files aren't seen otherwise).
-- docs/FORMULA.md section 2c: a bullet for the character (levels, Prydwen corrections, each User answer, Unconfirmed points).
-- CLAUDE.md: add the character to the "Done" lists (Card text, Card text check).
-- `npm test`, `npm run build`, `npm run lint`; `npm run screenshot` only if UI code changed. Commit
-  ("<Name>: in-game card text, ..."), then tell the owner what differed from Prydwen, what was modeled and what wasn't.
+- `tests/characters/<slug>.test.ts`: a `describe('<Name>')` with the owner's levels: rendered text of the key cards equals the
+  in-game screenshots (numbers included), plus one damage check per new mechanic.
+- `docs/characters/<slug>.md`: levels, Prydwen corrections, each User answer, Unconfirmed points.
+- Tell the owner what differed from Prydwen, what was modeled and what wasn't, then ask before committing. If UI code changed, also
+  run `npm run test:e2e` and `npm run screenshot` and look at the phone pictures. If the owner agrees: `npm run check`, then commit
+  ("<Name>: in-game card text, ...").

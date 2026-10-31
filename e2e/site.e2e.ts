@@ -1,10 +1,11 @@
-// The real site in a browser: does what's on screen reach the engine and come back? The math itself: tests/engine.test.ts.
+// The real site in a browser: does what's on screen reach the engine and come back? The math itself: tests/engine/.
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { expect, test as base, type Page } from 'playwright/test'
+import { STORAGE_KEY } from '../src/store/storageKey.ts'
 import { loadSaveOnce, overflowPx } from './shared.ts'
 
-const SAVE_FILE = resolve(import.meta.dirname, '../output/czn-save.json') // an old save: Mei Lin with one Strike
+const SAVE_FILE = resolve(import.meta.dirname, '../tests/fixtures/save-v1.json') // an old save: Mei Lin with one Strike
 const MY_BUFF = 'Emblem of an Exceptional Entity' // in the save, counts on every card
 const PRESET_BUFF = 'Basic Card Proficiency' // Mei Lin's 5-1: only on her Strike from the picker, not the save's old one
 const CARD = "Flame Dragon's Jewel"
@@ -121,4 +122,42 @@ test('changes are still there after a reload', async ({ page }) => {
   expect(await total(page)).toBe(changed)
   await tabButton(page, 'Buffs').click()
   await expect(page.getByRole('switch', { name: MY_BUFF, exact: true })).toHaveAttribute('aria-checked', 'false')
+})
+
+test('a stored save that cannot be opened is kept until the owner starts fresh', async ({ page }) => {
+  const broken = '{"version":10,"characters":{"Mei Lin":'
+  await loadSaveOnce(page, broken)
+  await page.goto('/')
+  const stored = () => page.evaluate((key) => localStorage.getItem(key), STORAGE_KEY)
+  const warning = page.getByRole('alert')
+  await expect(warning).toContainText("couldn't be opened")
+  await page.getByRole('combobox', { name: 'Character' }).selectOption('Mei Lin')
+  await expect(page.getByRole('tablist', { name: 'Builds' })).toBeVisible()
+  expect(await stored()).toBe(broken)
+  await page.reload()
+  await expect(warning).toBeVisible()
+  expect(await stored()).toBe(broken)
+
+  page.once('dialog', (d) => d.accept())
+  await warning.getByRole('button', { name: 'Start fresh' }).click()
+  await expect(warning).toBeHidden()
+  await expect.poll(stored).not.toBe(broken)
+  expect(JSON.parse((await stored())!).characters).toEqual({})
+})
+
+test('Export backup downloads the save', async ({ page }) => {
+  await openWithSave(page)
+  await tabButton(page, 'Settings').click()
+  const download = page.waitForEvent('download')
+  await page.getByRole('button', { name: 'Export backup' }).click()
+  const file = await (await download).path()
+  expect(Object.keys(JSON.parse(readFileSync(file, 'utf8')).characters)).toContain('Mei Lin')
+})
+
+test('a warning shows when the browser refuses to save', async ({ page }) => {
+  await page.addInitScript(() => {
+    Storage.prototype.setItem = () => { throw new DOMException('full', 'QuotaExceededError') }
+  })
+  await page.goto('/')
+  await expect(page.getByRole('alert')).toContainText("isn't saving your changes")
 })

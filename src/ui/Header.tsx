@@ -5,6 +5,7 @@ import { findCharacter } from '../engine/buffs'
 import { newBuild } from '../store/save'
 import { selectCharacter, useCharacter, useStore } from '../store/store'
 import { num, signedPct } from './format'
+import { SaveWarnings } from './SaveWarnings'
 
 /** children: the tab bar on wide screens. */
 export function Header({ children }: { children?: ReactNode }) {
@@ -28,6 +29,7 @@ export function Header({ children }: { children?: ReactNode }) {
       </div>
       {ch && <CompareBar />}
       {children}
+      <SaveWarnings />
     </header>
   )
 }

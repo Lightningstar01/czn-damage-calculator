@@ -5,21 +5,37 @@ import { PRESETS } from '../data/presets'
 import { computeBuild, type BuildResult } from '../engine/calc'
 import { linkedBuild, type Linked } from '../engine/team'
 import type { Build, CharacterSave, SaveData, Teammate } from '../engine/types'
-import { loadSave, newCharacterSave, storeSave } from './save'
+import { newCharacterSave } from './save'
+import { loadSave, storeSave, type LoadedSave } from './storage'
 
 interface Store {
   data: SaveData
   update: (recipe: (d: SaveData) => void) => void
+  /** Replaces everything, also a stored save that couldn't be opened. */
   replace: (d: SaveData) => void
+  /** The stored save couldn't be opened: nothing is autosaved until the owner replaces it. */
+  unreadable: LoadedSave['unreadable']
+  /** The last autosave failed. */
+  saveFailed: boolean
 }
 
 const Ctx = createContext<Store | null>(null)
 
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const [data, setData] = useState<SaveData>(loadSave)
-  useEffect(() => storeSave(data), [data])
+  const [loaded] = useState(loadSave)
+  const [data, setData] = useState<SaveData>(loaded.data)
+  const [unreadable, setUnreadable] = useState(loaded.unreadable)
+  const [saveFailed, setSaveFailed] = useState(false)
+  useEffect(() => {
+    // oxlint-disable-next-line react/set-state-in-effect -- the answer from the browser's storage, known only after writing
+    if (!unreadable) setSaveFailed(!storeSave(data))
+  }, [data, unreadable])
   const update = useCallback((recipe: (d: SaveData) => void) => setData((d) => produce(d, recipe)), [])
-  const store = useMemo(() => ({ data, update, replace: setData }), [data, update])
+  const replace = useCallback((d: SaveData) => {
+    setUnreadable(undefined)
+    setData(d)
+  }, [])
+  const store = useMemo(() => ({ data, update, replace, unreadable, saveFailed }), [data, update, replace, unreadable, saveFailed])
   return <Ctx.Provider value={store}>{children}</Ctx.Provider>
 }
 

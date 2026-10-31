@@ -2,7 +2,9 @@
 import { useRef, useState } from 'react'
 import { DEFAULT_SETTINGS, SETTING_INFO } from '../data/settings'
 import type { MultMode } from '../engine/types'
-import { defaultSave, downloadBackup, migrate } from '../store/save'
+import { migrate } from '../store/migrate'
+import { defaultSave } from '../store/save'
+import { downloadBackup } from '../store/storage'
 import { useStore } from '../store/store'
 import { NumberField, Section, SelectField } from './inputs'
 

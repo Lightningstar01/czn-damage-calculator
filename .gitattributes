@@ -1,0 +1,4 @@
+* text=auto eol=lf
+
+# Written by scripts/import_prydwen.py: collapsed in GitHub diffs
+src/data/prydwen/*.json linguist-generated=true

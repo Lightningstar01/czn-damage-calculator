@@ -1,5 +1,5 @@
 // Combines a character imported from Prydwen with our additions (buffs, notes, corrections).
-import type { CardPreset, CharacterAdditions, CharacterPreset, ImportedCharacter } from '../engine/types'
+import type { CardPreset, CharacterAdditions, CharacterPreset, FragmentSetPreset, ImportedCharacter, PartnerPreset } from '../engine/types'
 
 /** The Manifest Ego levels whose text raises the card upgrade potentials ('...Card Upgrade]... by 3'); some have two (E3, E5). */
 export function potentialEgo(ch: ImportedCharacter): CharacterPreset['potentialEgo'] {
@@ -79,6 +79,30 @@ export function checkAdditions(imported: Record<string, ImportedCharacter>, addi
     }
     for (const [id, c] of Object.entries(add.cards ?? {})) dupes(id, c.effects)
     for (const c of extra) dupes(c.id, c.effects)
+  }
+  return problems
+}
+
+/** Problems with the hand-entered partners and sets: a file without a default export, repeated names or effect ids (saved switches are keyed "Owner|effectId"). Checked by the tests. */
+export function checkPartnersAndSets(partners: Record<string, PartnerPreset | undefined>, sets: FragmentSetPreset[]): string[] {
+  const problems: string[] = []
+  const names = new Set<string>()
+  const owners = [
+    ...Object.entries(partners).map(([slug, p]) => [`partners/${slug}.ts`, p] as const),
+    ...sets.map((s) => ['fragmentSets.ts', s] as const),
+  ]
+  for (const [file, owner] of owners) {
+    if (!owner) {
+      problems.push(`${file}: no default export`)
+      continue
+    }
+    if (names.has(owner.name)) problems.push(`${file}: the name '${owner.name}' is used twice`)
+    names.add(owner.name)
+    const ids = new Set<string>()
+    for (const e of owner.effects) {
+      if (ids.has(e.id)) problems.push(`${file}: effect id '${e.id}' used twice on ${owner.name}`)
+      ids.add(e.id)
+    }
   }
   return problems
 }

@@ -110,30 +110,13 @@ multiplier; this conflicts with Game8 and the owner, and was rejected.
 - Conditional set buffs the calculator can't check (vs Agony, 3+ cards in hand, at 3 stacks...)
   stay on by default (owner); switch them off per build when they don't apply.
 
-## 3. Damage — Sourced (Prydwen)
-
-```
-ATK card: Damage = Card Mult x Final ATK x 0.35 x (1 + Elemental DMG%) x (1 + Mechanic DMG%)
-                   x Enemy DEF multiplier x (1 + Crit DMG)
-DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
-```
-- Mechanic DMG% = Extra DMG% or DoT DMG% (fragment substats), applied only to that damage kind. The game's Detailed Stats call the first
-  one Extra Damage: it multiplies every hit of kind Extra Attack, triggered ones included (Selena's Mark and Coordinated Attacks, Renoa's
-  discard hits, Nia's). Selena's 5-1 and 7 also read it as a threshold (`thresholdStat: 'Extra Damage'`, stats-screen value) (User, 2026-10-30).
-- Enemy DEF: no known formula; it's an input to back-solve from a real hit.
-- Crit DMG — **Confirmed (User + in-game data)**: the stat-screen Crit DMG is the total
-  multiplier, so crit hit = non-crit x Crit DMG (Prydwen's "(1 + Crit DMG)" is wrong).
-  Evidence: Reddit post (Mei Lin, 188.6% Crit DMG) shows 572 non-crit and 1078 crit;
-  572 x 1.886 = 1079. The community calculator sheet uses the same rule. No toggle.
-- Expected per hit = Non-crit x (1 + CritRate x (CritMult - 1)); each hit crits separately.
-
 ## 2c. Card presets — User (2026-10-25), website only
 
 - Every character's cards (base + every epiphany; mythic cards like Flame Dragon's Sovereignty
   have none) are imported from Prydwen, which the owner confirmed has the right "+" wording
   (2026-10-25); other sites (OffBanner outdated, Game8 adds "+" everywhere) are not used.
   `scripts/import_prydwen.py` writes `src/data/prydwen/<slug>.json`; our buffs and notes go in
-  `src/data/characters/<slug>.ts`. Picking a card copies it into the card library with the
+  `src/data/characters/<slug>.ts`. Picking a card adds it to the build's deck with the
   **base** values; the build's card upgrade potentials are applied (below).
 - Importer reading of the card text (check against the game; corrections go in the additions file):
   damage % and hits from the first "N% Damage" / "N% x H Damage" / "N% Damage x H" phrase;
@@ -143,7 +126,7 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
   or Basic Skill). Each character has one Basic Skill, Maribell two (User, 2026-10-25). The Weakness Attack tag means Weakness DMG applies (User). Ego skills are type
   Skill with tag "Ego Skill" and no AP cost: damaging ego skills are not Attack cards (User,
   2026-10-25). X-cost/unplayable cards have no cost and a tag. Status cards are type Skill with tag "Status".
-- Buffs are added character by character with the owner (only Mei Lin's so far).
+- Notes for one character (levels, Prydwen corrections, what the owner confirmed, what isn't counted): `docs/characters/<slug>.md`.
 - **Potential node wording** (owner's screenshots, 2026-10-30): nodes 3-1, 5-1 and 7 of the 16 reviewed characters use the in-game
   text (`potentials` in characters/<slug>.ts). In game every threshold is "X or higher" (Prydwen often "greater than"), so the buffs
   count exactly at X. Prydwen numbers that differ: Tenebria 7 +1% per 20 Attack (+2%), Chizuru 7 every 10 Attack (40), Yuki 7 every
@@ -179,274 +162,12 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
     Effects that scale the card's own % ("Double all effects", Tiphera) stay type **Card %**: x (1 + sum of Card % buffs).
     The "above 500 Attack" part is one buff with the node (owner, 2026-10-27): it adds the extra +5% by
     itself when the stats-screen Attack is above 500 (`attackBonus`).
-  - **Rossweisse** (owner's screenshots, 2026-10-27; E1, Basic 1, Signature 10): every in-game % = Prydwen's
-    base x 1.2. Not raised by the upgrade: the "+X% base Damage Amount" numbers (Sword Tassel +80%, Flicker
-    Blade (Unbound) +120% per X, Radiant Sword Flow IV +50%) and the Ego skill (1,200%; Prydwen has 200%, wrong).
-    Prydwen also lacks the base Shard:Light / Shard:Dark (80% base, 96% in-game), added as extra cards.
 - **Base %** (User, 2026-10-27): "+X% base Damage Amount" is added to the card % as shown (after the
   potential): card % = base x upgrade + Base %. Mult then multiplies it like the rest of the card %
   (**Unconfirmed**: the owner said "added to the shown %"; whether the multiplicative buffs raise it too isn't tested).
 - **Final** (User, 2026-10-27): "final Damage Amount" buffs are their own multiplier, x (1 + sum of the final
   buffs), after everything else. Rossweisse: Kyrken's Aegis on Flicker Blade (15%, E1 20%), E2 20%, E6 Blade
   Poised (15% Attack cards, 25% Flicker Blade = 15% + 10%, as final buffs add up).
-- **Kyrken's Aegis below E1** (User, 2026-10-27): Attack Cards 20%, final on Flicker Blade 15% (E1: 30% / 20%).
-  An effect with `egoBelow` is off from that Ego level, where another effect replaces it.
-- **Shard activations** (User, 2026-10-27): "activate effect" (the shard's trigger, Sword Resonance I / V,
-  Radiant Sword Flow II, Blade of the Cycle V on Shield Break) deals the card's full damage again: each one
-  is another play of that card in the attack list.
-- **Flickering White Night's Fixed damage** (User, 2026-10-27): 30% (E3 60%) of the damage of the next Equilux
-  (Flicker Blade) play is added to that play as Fixed damage (non-crit, crit and expected each x the share).
-- **Blade Afterimage** (E2, User, 2026-10-27): damage from an effect, not a card. An extra card (120%, no upgrade,
-  type Skill, so no "Attack Card" buffs) you add once per Light / Dark activation. **Unconfirmed**: whether it's an
-  Extra Attack, gets the Signature upgrade or the Attack-card buffs; the owner has E2 to test.
-- **Brand of the Cycle** ("Increase Damage Amount taken from Rossweisse by 20%"): 20% multiplicative at any number
-  of Brands, so a per-play counter that is 1 (on) or 0.
-- **Rossweisse Potential 7**: +5% additive on Justice cards from 600 stats-screen Attack, +2% for every full 20
-  Attack above 600, max +10% more (`minAttack`, `attackBonus.every`). Not counted: Radiant Sword Flow / I discard damage.
-- **Tiphera** (owner's screenshots, 2026-10-28; Basic 1, Signature 6): every in-game % = Prydwen's base x upgrade
-  (Creation and Destruction 120% -> 134%). Prydwen's Ego skill has the E3 numbers ("3 times"); in-game base is 2.
-  - Archetype cards show Heal / Shield 67%, Prydwen 50%: (50% + Potential 5-1's +5% +5% at Defense 250 or higher) x 1.12
-    matches, so the card text shows it that way. Heal and shield only, no damage.
-  - **Archetype: △ / Event Horizon** (User, 2026-10-28): "Increase Damage Amount of the first Hit of next Attack Card
-    by 30% / 40%" reaches the next Attack card of **any ally** (`allies`), first hit only, multiplicative (no "+").
-    Per-play counters: △ stacks (30% each, max 300%; E6 35%, max 350%; E2's △ shape card is one more), Event Horizon on/off.
-    Not counted: Event Horizon's Form Upgrade (+100% to a random effect) and Form Convergence's "Double a random effect".
-  - **Harmonization "Double all effects"** (User, 2026-10-28) doubles the card % (134% -> 268%): a Card % buff of +100%,
-    switched on per play. Creation and Destruction III's Retain ("Increase all effects by 100% until activated, max 4
-    times") is the same, +100% per stack.
-  - **C&D V "150% for each Cost of this card"** (User, 2026-10-28): the in-game % (168%) x the Cost, set on each play
-    (1-9, the card's 5 by default): Cost 3 = 168% x 3. Cards with `perCost` get a Cost setting per play (`RotationPlay.cost`).
-  - Potential 7 (+10% Crit DMG of allies at Defense 300 or higher) is an allies stat with a hint; E4 Power of Archetype is
-    5% multiplicative each on Attack cards, Order and Defense-Based Damage (DEF cards), per-play stacks (max 2), allies.
-- **Orlea** (owner's screenshots, 2026-10-28; E0, Basic 1, Signature 7 = x1.14): every in-game % = Prydwen's base x upgrade
-  (Annoying III 450% -> 513%), except Fixed damage % and the buff %s (Softie, Swiftie's Retain, Sacred Censer IV / V).
-  - Prydwen's Heaven's Healing is "Healing of Light" in-game, and Potential 3-1's 50% chance to create a Creation★ is on
-    it (Prydwen: on Attack, My Minions). Potential 5-1 "+10% Heal Amount to Orlea's Healing of Light" is read as +10% base heal
-    (**Unconfirmed**; the owner hasn't unlocked 5-1 yet, 2026-10-28: Heal 102%).
-  - Base Annoying's Heal 20% isn't raised in-game either (Annoying I's Heal is); the text shows 20% as is.
-  - Creation cards (Softie / Swiftie / Sturdie ★-★★★) evolve, so every card that creates one brings all nine into the deck.
-  - **Softie** (User, 2026-10-28): "Increase Damage Amount by 10% for 1 turn" and "Retain: Increase Damage Amount of the
-    next Attack Card activated by 10% (max 350%)" raise **any ally's** damage, multiplicative. Per-play counters: Softies
-    used this turn, turns retained (max 350% / the %: ★ 35, ★★ 17, ★★★ 10 stacks).
-  - **Swiftie "Retain: +40% Damage Amount"** (User, 2026-10-28) adds up every turn it is retained (★★ +80%, ★★★ +150%),
-    additive; per-play counter Swiftie retains. Sacred Censer IV "next Swiftie by 40%": multiplicative, on/off per play.
-  - **Annoying "40% Fixed Damage for each card in hand"** (User, 2026-10-28): a Cards in hand setting per play (default 1)
-    multiplies the %. Cards with `perCount` get a count setting per play, kept in `RotationPlay.stacks` under its name.
-    Annoying II / V "+100% / +120% Damage Amount for each Creation" are additive per-play counters.
-  - Potential 7 "+6% Critical Chance to allies" (ATK 700+ or DEF 300+) reaches all allies (User, 2026-10-28).
-    E4 "increase Damage Amount of allies by 10%" while holding a Creation: multiplicative, allies, hint. Not counted:
-    E6 Fixed damage (★ x 50%) when a Creation is used.
-- **Mika** (owner's screenshots, 2026-10-28; E6 = +6 card upgrade levels from E3 and E5, Basic 10 = x1.32, Signature 1 = x1.14;
-  the Potential screen confirms it: Basic 16/16, Unique 7/16, 3-1 unlocked, 5-1 locked):
-  every in-game % = Prydwen's base x upgrade (Whirlpool IV 300% -> 342%). A healer: no damage buffs.
-  - Water Barrier Heal 172% = (100% + Potential 3-1's +30%) x 1.32: "+30% Healing" is +30% base heal. 5-1 "+5% Heal" is
-    read the same way (**Unconfirmed**; not unlocked by the owner, 2026-10-28).
-  - Whirlpool's "Heal 50% / 100% for each target hit" isn't raised in-game.
-  - **Whirlpool V** "114%(228%) Damage ... Increase Damage Amount equal to Heal Amount of this card" (User, 2026-10-28):
-    counts the bracket value, 228% (100% + its 100% Heal, both raised); Heal Amount buffs aren't added.
-  - **Blessing of Waves IV** "Inflict Damage equal to Heal Amount to a random enemy": not counted (User, 2026-10-28).
-  - Surge (Ego skill) creates Source of Water; E4 adds Retain to it, E1 adds Initiation to Deluge (in-game text).
-- **Rei** (owner's screenshots, 2026-10-28; E6, Potential screen Basic / Common / Unique 7/16 = level 1 + 6 = x1.14,
-  3-1 unlocked, 5-1 and 7 locked): every in-game % = Prydwen's base x 1.14 (Predator's Blade 250% -> 285%,
-  Strike of Darkness II 350% -> 399%). Buff %s on cards and Resonating Darkness's end-of-turn Heal (60% / 90%) aren't raised.
-  - Prydwen corrections: Final Shadow (Ego skill) shows 400% at E4 (300% + E4's +100%, a Base % buff); Predator's Blade
-    Morale 4 = 2 + E1's 2; Strike of Darkness V says "Proc" (Prydwen: "Activate").
-  - Buffs without "of this unit" (Strike of Darkness's Basic Attack Cards, Resonating Darkness's 1-Cost / Void cards,
-    Dark Condensation's selected card) raise any ally's cards (User, 2026-10-28).
-  - **Strike of Darkness II** "Decrease Damage Amount by 20% for 1 turn": Rei's later cards that turn x0.8, not its own
-    399% hit (User, 2026-10-28). Switched on per play.
-  - **Potential 7** "+10% Damage Amount to Predator's Blade" from 550 Attack (+1% per 10 more, max +20%) raises the card %, like
-    5-1 on Dark Blade (User, 2026-10-28). 5-1's "+5% Damage Amount to Rei's Dark Blade" is read as Mei Lin's 5-1 (card %).
-  - **E6** is "+20% Damage Amount to allies' Attack Cards" in game (Prydwen: "increased by 20%"): additive, whole team
-    (User, 2026-10-28).
-  - Not counted: Predator's Blade Morale (set it on the Buffs tab), Strike of Darkness III's extra hits (set per play),
-    Strike of Darkness V's procs (add them as plays).
-- **Tenebria** (owner's screenshots, 2026-10-28; E1, Potential screen Basic 10/10, Common 1/10, Unique 6/10; 3-1 unlocked):
-  Basic cards and Rhythm cards x1.20 (Rhythm 60% -> 72%, Arpeggio(5) 90% -> 108%), Unique cards x1.12 (Spotlight 140% -> 157%,
-  Call & Response V 700% -> 784%). The "+X% base Damage Amount" on Rhythm cards, Encore II's 100% and Photo Time's
-  Performance Buzz 150% aren't raised.
-  - Prydwen corrections: the six Rhythm: Arpeggio cards are named Arpeggio(0)...(5) by Cost in game; Rhythm cards are
-    "Basic Attack" (Fermata "Basic Skill"); Rhythm's text is "+30% base Damage Amount for each Rhythm / Proc 1 Rhythm in hand"
-    (Prydwen: "+30% Damage Amount for each Rhythm activated in hand"); Spotlight V is "Draw 2, of those cards, Discard all
-    non-Rhythm cards"; "activate" is "proc" in game.
-  - Rhythm cards are Basic Attacks: the Basic level raises them, and other characters' Basic / Basic Attack buffs reach them
-    (User, 2026-10-28). Call & Response base / I / V ("If in hand, treat as a Rhythm card") get every Rhythm buff (User, 2026-10-28).
-  - "+X% base Damage Amount for each Rhythm" (Rhythm, Staccato) and Arpeggio's "X% Damage for each Rhythm" read one per-play
-    number, Rhythms; the +X% is added to the shown % (Base %) (User, 2026-10-28). Crescendo (in Graveyard) and Fortissimo
-    (Linked) have their own counts.
-  - Photo Time deals its Performance Buzz damage, 100% (E1 150%, a x1.5 Final buff) x the Performance Buzz count, without
-    card upgrade (User, 2026-10-28).
-  - Everyone's Idol (7%, E3 11%), Encore V's +100% on a drawn Rhythm card, 5-1 (+10%) and E4's at-max +10% are multiplicative on
-    Rhythm cards; E4 Everyone's Cheer is 1% per stack (max 20) on all of Tenebria's cards; E6 All Eyes On You is a 40% debuff
-    on the target for Rhythm cards. Potential 7 is read as Rossweisse's (+5% additive on Passion cards from 600 Attack), with +1% per 20 Attack above 600, max +10% more.
-    5-1 and 7 are unlocked: on the Potential screen an unlocked node is dark, a lit one (5-2) is still locked (User, 2026-10-28).
-    Fermata's 4 Rhythm cards are Rhythm, Crescendo, Staccato and Fortissimo (its Related Cards screen).
-  - Not counted: allies' own Rhythm cards (Music, Start! gives each ally 2) and 5-1's buff on them, E2's Ego Skill damage,
-    procs (add them as plays), extra hits (Everyone's Idol at 7, Encore III, Call & Response IV, Fortissimo: set per play).
-- **Adelheid** (owner's screenshots, 2026-10-28; Ego 0, Potential screen Basic 5/10, Common 1/10, Unique 7/10; 3-1 unlocked,
-  5-1 and 7 locked): Basic cards x1.10 (Gather Around 110%), Unique cards x1.14 (Truth Behind A Story 200% -> 228%), and the
-  Doggie / Teddy cards too (Doggie 60% -> 68%, Doggie (Morphed) 90% -> 103%, Teddy (Morphed) 300% -> 342% Shield).
-  - Prydwen corrections: Doggie (Pack) is "+50% ... for each Doggie in hand before activation" (Prydwen: "Doggie Linked");
-    Once Upon A Time III is "Discard 1" (Prydwen: "1 random card from Draw Pile"); Friends from Fairy Tales I counts
-    "Blessing card in All Piles" (Prydwen: "in possession"); E2 gives Bliss of Dreams "at the start of battle ... for each
-    Blessing card in Deck" (Prydwen: "start of the turn ... in possession").
-  - Truth Behind A Story / I "+100% Damage Amount taken by the target for 1 turn": an additive debuff on the target for the
-    cards played after it, not its own hit (User, 2026-10-28).
-  - Truth Behind A Story III's "Doggie and Teddy" reaches Doggie, Doggie (Pack) and Doggie (Morphed) (User, 2026-10-28).
-  - Fairy's Protection showed 121% Shield: a partner's effect, 110% without it (User, 2026-10-28).
-  - Potential 7 reads the stats-screen Defense (`thresholdStat: 'Defense'`): +5% additive on Void cards from 300 Defense,
-    +2% per 10 above 300, max +10% more (User, 2026-10-28: add Defense thresholds), like Rossweisse's 7.
-  - Multiplicative: Truth IV's 30% per Blessing card in hand, Doggie (Pack)'s 50% per Doggie in hand, Truth III's 100%,
-    Protect Us V's 60% on the drawn Blessing cards, E2 Bliss of Dreams 3% per stack (max 10) on allies, E6 8% (max 5).
-    Additive: Friends I's +20% per Blessing card in All Piles (max 15) on Doggie.
-  - Potential 3-1 adds the Blessing tag to Gather Around and Fairy's Protection, only while 3-1 is switched on
-    (`nodeTags`; User, 2026-10-28: tags follow the node). At E3 Happy Ending shows 500% Shield and the Fixed Heal limit 50%
-    (User, 2026-10-28).
-  - Not counted: Blessing's Fixed Shield, Shields, Heals, Counterattack (Friends IV), Action Count (Truth V).
-- **Narja** (owner's screenshots, 2026-10-28; Ego 0 (User: Mealtime shows 4 Predation, E3+ locked), Potential screen Basic 1/10,
-  Common 1/10, Unique 7/10, Defense 3/5, Crit 1/5; 3-1 and 7 unlocked, 5-1 locked): Basic cards x1.02 (NA: Attack Response
-  102%), Unique cards x1.14 (Shackles of Hunger 30% -> 34%, Domain of Voracity 100% -> 114%, Mealtime 160% -> 182%); every
-  in-game % matches Prydwen x factor. The Ego skill isn't upgraded (250%).
-  - Keywords (in game): Voracity "When Hitting with an Attack Card, 40% Fixed Heal. If Health is 50% or higher, +30% Damage
-    Amount dealt by Attack Cards. When the effect is activated, decrease by 1 (max 30 stacks)"; Predation "If in a Voracity
-    state, +80% Damage Amount dealt by Attack Cards. When the effect is activated, decrease by 1". Both are set per play
-    (counters 'Voracity' / 'Predation', 0 or 1), since each hit uses a stack (User, 2026-10-28).
-  - Potential 7 (in game): "+10% Damage Amount to Voracity. If Narja's Defense is 300 or higher, +20% Damage Amount to
-    Predation" (Prydwen: "greater than 300"): Voracity +40%, Predation +100% at stats-screen Defense 300+ (User, 2026-10-28).
-  - Manifest Ego in-game wording: E4 "+40% Damage Amount to Predation" (Prydwen: +30%); E6 "At the start of the turn, gain 4
-    Voracity and 2 Predation. At the end of the turn, 50% Defense-Based Damage to random enemies and Heal 1% Health x Predation
-    count decreased this turn" (Prydwen lacks the start-of-turn gain). E6's damage is its own card, Liberated Memory, that joins
-    the deck from E6 (User, 2026-10-28; `CardPreset.egoLevel`). It gets no Attack Card buffs and no card upgrade (User, 2026-10-28).
-  - Bottomless Hunger IV "For 1 turn, +100% Defense-Based Damage" and Domain of Voracity II "For 2 turn(s), +100%
-    Defense-Based Damage taken by the target": additive on Defense-Based cards, set per play; Domain II's only for the plays
-    after it (User, 2026-10-28).
-  - Additive: Shackles of Hunger IV's +40% per Voracity decreased (max 5) on the next Attack Card, Bottomless Hunger V's +40%
-    per Voracity activation on the next Mealtime, Voluntary Control V's +50% on Basic Attack cards.
-  - Not counted: Voracity's Fixed Heal, Heals, Shields, Cost changes, Tenacity damage (Domain of Voracity), Morale (Voluntary
-    Control II: add it on the Buffs tab). Set per play: Shackles of Hunger III's extra hits; Domain of Voracity IV's
-    "proc 1 more time": add it twice.
-- **Cassius** (owner's screenshots, 2026-10-28; Ego 6, Potential screen Basic 13/16, Common 7/16, Unique 12/16 (E3 + E5 +6
-  included), Health 1/5, Attack 1/5; 3-1 and 7 unlocked, 5-1 locked): Basic cards x1.26 (Cards 126%, Wild Card 277%, Mana
-  Field Heal 126%), Unique and Quest cards x1.24 (Devil Dice 160% -> 198%, Dice Trick 240% -> 298%, Triple 0 200% -> 248%,
-  Empowered Triple 0 250% -> 310%); every in-game % matches Prydwen x factor (rounded to nearest).
-  - Prydwen corrections: "Card" is "Cards" in game; Dice Trick III's and Triple 0's "+X% Damage Amount" are "+X% base Damage
-    Amount" in game (`Base %`); Empowered Triple 0 is +50% base per Attack Card (Prydwen +40%); Dice Trick IV is "100% Fixed
-    Damage" (Prydwen "100"). Dice Trick IV's Heal 100% and Fixed 100% aren't raised by the Unique upgrade in game.
-  - Quest cards: Quests (Pop Eyed Popper) create Triple 0 / Triple 1 / Straight / Full House; Dice Trick V and Pop Eyed Popper III
-    create the stronger ones, named the same in game, kept as Prydwen's "Empowered ..." (User, 2026-10-28).
-  - Devil Dice V "99% Damage to all enemies equal to that card's Cost": damage x the drawn card's Cost, set per play (User,
-    2026-10-28). Dice Trick IV's Fixed damage is its own play, one per Quest card activated (User, 2026-10-28).
-  - Potential 5-1 (in game): "+5% Damage Amount to Cassius's Cards and Wild Card. If Cassius's Health is 600 or higher, add an
-    additional +5% to the modifier": like Mei Lin's 5-1, it raises the card % (User, 2026-10-28); the extra +5% reads the
-    stats-screen Health (`thresholdStat: 'Health'`).
-  - Decrease Morale (Dice Trick, Death Trick, E4, E6) is on enemies ("-20% Damage amount per Morale"): their damage, not ours.
-    Not counted: Morale from Straight and Potential 7 (add it on the Buffs tab), Heals, draws, Cost changes. E1 (Joker: Discard
-    Pile) and E4 (Death Trick: 5) are in the card text; E2 (heal, in game) and E6 (Morale decrease) deal no damage.
-- **Nia** (owner's screenshots, 2026-10-28; Ego 6, Potential screen Basic, Common and Unique 7/16 (E3 + E5 +6 included), Health
-  1/5, Attack 1/5; 3-1 and 7 unlocked, 5-1 locked): Basic and Unique cards x1.14 (Stroke 114%, Amp Therapy Heal 114%, Soul Riff
-  Heal 171%, Mute Accent III Heal 171%, Soul Riff I / IV Heal 228%). Rock and Roll shows 5 Decibel (3 + E4).
-  - Prydwen corrections: "Soul Rip" is "Soul Riff" in game; Soul Riff's base Heal is 150% (Prydwen 120%) and it has no Heal on
-    discard; Elasticity is max 5 stacks in game (Prydwen 2). "Activate" is "Proc" in game. Nia's Curiosity costs 0 in game (E1),
-    kept at Prydwen's base 1.
-  - Extra Attack %s on cards (Mute Accent 150/250/200/150/100%, G Chord III 120%, Soul Riff III 100%) and triggered heals (Soul
-    Riff II, Adagio III: 100%) aren't raised by the Unique upgrade in game (`upgrade: null` on the damage cards).
-  - Extra Attacks "by the Combatant who owns that card" count as Nia's own Extra Attack plays, added when the card is Nia's
-    (User, 2026-10-28). Attack Card buffs don't boost Extra Attacks (User, 2026-10-28); here they come from Skill / Upgrade cards.
-  - Decibel keyword (in game): "On Shuffle, 50% Extra Attack by allies to a random enemy, and on activation, remove Decibel. Heal
-    50% × Decibel count, and +50% Damage Amount × Decibel count to Extra Attacks (max 5 stacks)": each ally does a 50% Extra
-    Attack on Shuffle; the +50% × Decibel only boosts those shuffle Extra Attacks, then Decibel is removed (User, 2026-10-28).
-    Modeled as Nia's "Decibel (Shuffle)" card (comes with the Ego skill), Decibel count per play. Teammates' shuffle attacks
-    aren't counted.
-  - E2 Rhythm Boost (in game): "+5% Damage Amount (max 4 stacks)": additive, Nia's damage only (User, 2026-10-28), stacks per
-    play. E6: 4 Rhythm Boost at battle start (set the stacks). Not counted: heals, Elasticity, draws, discards, Cost changes.
-- **Selena** (owner's screenshots, 2026-10-28; Ego 6, Basic and Unique cards x1.12 (E3 + E5 +6); 3-1, 5-1 and 7 locked, so
-  their switches are on until turned off on the Buffs tab): Engagement Fire 112%, Target Spotted 168%, Drone Bombing 134%.
-  - Prydwen corrections: the Ego skill Final Shot shows 350% Damage and 4 Mark at E4 (Prydwen 300%, 3 Mark; E4 "+50% Damage
-    Amount to Final Shot, and increase Mark by 1"); Target Spotted I's Attunement is 300% (Prydwen 200%), shown unraised.
-  - Mark (in game): "When an Attack Card is activated, inflict 100% Extra Attack, ... and decrease Mark by 1". Modeled as a
-    **trigger**: on every Attack Card play, anyone's, while the play's Mark (set per play) is above 0, Selena's 100% Extra Attack
-    is added to the play (User, 2026-10-28: automatic per play). Mark Damage buffs (Sniper's Domain +80%, E2 +20%, High-Power
-    Scope III +50% for 1 turn) are additive and boost only Mark hits. E6's "30% chance to inflict 100% Extra Attack" counts as
-    30% of the hit (expected value) and gets no Mark buffs (User, 2026-10-28).
-  - Coordinated Attacks (High-Power Scope IV on other Combatants' Attack Cards, Drone Bombing IV on Weakness Attacks, Drone
-    Bombing V 50% on Passion Attack Cards, Target Spotted V 200% on Ravage) are Selena's Extra Attacks (User, 2026-10-28).
-    High-Power Scope IV / Drone Bombing IV are switched on per play (their 1 turn); Target Spotted V and I's Attunement are
-    plays of their own (one per Ravage / draw).
-  - Mark, Coordinated and Attunement hits are effects, not cards: Attack / Skill card buffs don't match them (`notACard`)
-    and card upgrades don't raise them (User, 2026-10-28). Passion Weakness (Drone Bombing I / II) is a per-play enemy debuff
-    that makes every Passion hit a Weakness Attack (x Weakness DMG), Selena's Coordinated Attacks included (User, 2026-10-28).
-    Target Spotted V's hit counts the target as Ravaged (User, 2026-10-28).
-  - 5-1's extra +5% (Extra Damage 15% or higher) and 7's extra +4% (30% or higher) read the stats-screen Extra Damage (User, 2026-10-30).
-  - Not counted: Tenacity damage, 3-1's Piercing, Shields, draws.
-- **Renoa** (owner's screenshots, 2026-10-30; E0, Basic 5/10, Unique 8/10, Common 1/10, Critical Chance 53.6%; 3-1 and 7 unlocked, 5-1 and
-  5-2 locked, so 5-1's switch is on until turned off on the Buffs tab): Basic cards x1.1, Unique cards x1.16.
-  - Potentials are Card +, measured on the cards: Dirge Bullet 238% = (160% + 40% + 5%) x 1.16, its Extra Attack 168% = (120% + 20% + 5%)
-    x 1.16. 3-1 (in game): "+40% Damage Amount to Dirge Bullet, +20% Damage Amount to Extra Attacks" (Prydwen calls it Basic Card
-    Proficiency, the game Signature Card Proficiency). The +20% does not show on Instant Judgment IV's Extra Attack (290% = 250% x 1.16)
-    or Instant Judgment V's (200%), so it's modeled on Dirge Bullet's Extra Attack only.
-  - Dirge Bullet: Finale (in game): 238% = (200% + 5%) x 1.16 and 191% × 2 = (160% + 5%) x 1.16, so 7 reaches it and 3-1 doesn't, keeping
-    Prydwen's 200% / 160%. **Unconfirmed**: another base (160% / 140%) with 3-1 included would show the same numbers with 3-1 on; they differ
-    only with 3-1 locked. Since 7's "Dirge Bullet" reaches Finale, Ballad IV's Extra Attack bonus and Last-Ditch / Instant Judgment's discard
-    bonus count for Finale too (**Unconfirmed**).
-  - 7's +10% and 5-1's +5% read the stats-screen Critical Chance (60% / 20% or higher), like the Attack thresholds; the owner's 53.6%
-    gives 238% without the +10%. Battle-only Critical Chance isn't read (**Unconfirmed**).
-  - Discarded Dirge Bullets (User, 2026-10-30): a "Dirge Bullets discarded" number on any play, by anyone while Renoa is in the team, adds
-    that many Extra Attacks, computed with Renoa's build, and feeds the discard bonus of the card played. Whether Echo of Sorrow II's "create 2
-    in Discard Pile" fires them is left to that number.
-  - Ballad III's Mark is the Mark keyword, Renoa's 100% Extra Attack on each Attack Card played with Mark above 0, unraised, with its own
-    per-play number (User, 2026-10-30). Flower III's "+40% to the next card" reaches Renoa's next card only (User, 2026-10-30), not the Extra Attacks
-    on that play (Mark, discarded Dirge Bullets), as with Attack Card buffs (**Unconfirmed**).
-  - "+" rule: Instant Judgment's and Last-Ditch's +X% additive, Ballad's "base" Base %, Ballad IV / V's "by" multiplicative, E3 additive, Rose's Resolve
-    (E4) additive per stack. E1 makes Last-Ditch's bonus +70% each. E6's 50% Extra Attack per draw is unraised (**Unconfirmed**, like Narja's E6).
-  - Prydwen corrections: Ballad's +20% / +30% are "base" Damage Amount; Flower III is "for each Cost of the cards Discarded" (Prydwen: each
-    discarded Cost 1 card). Not counted: Shields, draws, Retrieve.
-- **Haru** (owner's screenshots, 2026-10-30; E0, Basic 1/10, Unique 7/10, Common 1/10, Attack 775; 3-1 and 7 unlocked, 5-1 and 5-2 locked):
-  Basic cards x1.02, Unique cards x1.14. Potentials are Card +: Power Anchor 245% = (220% + 20%) x 1.02, Anchor Shot 365% = (300% + 10% + 10%) x 1.14.
-  - Prydwen corrections: Ego skill 600%, +60% per beneficial effect, max +600% (350%, +50%, no max); Anchor Shot IV 380% (3800%, a typo); Combo is
-    Streak; Power Charge 240 / 320 / 320 / 270 / 270 / 320% (180 / 270 / 270 / 270 / 240 / 300%), single target +100% / +150% (+80% / +120%), IV +50% (+30%);
-    Charge Energy Cost 0 except III (1), 50 / 50 / 100% / +70% / 50 / 40% (30 / 40 / 50% / +70% / 30 / 20%), I adds +20% Crit Chance, II +2 Tenacity Damage;
-    5-1's threshold 500 or higher (above 500); 7's 600 or higher (above 1000); E2 30% (40%); E3 +200% (+100%); E4 +30% (+20%); E6 15% (20%), plus a card moved to
-    hand at the start of the turn at +30% (missing).
-  - E3 at max: in game 800%, +80% each, max +800% (User's screenshot, 2026-10-30), so 10 beneficial effects count at any Ego level.
-  - Anchor and Power Anchor (3-1) "+10% Damage Amount to Anchor Shot": additive, a stack for each one played, set per Anchor Shot play (User, 2026-10-30; 3-1's own
-    text says "by 10%", the cards "+10%").
-  - E2 / E6's decrease is in the same multiplicative sum as "by X%" buffs, like Rei's Strike of Darkness II: **Unconfirmed**. Pulverize (+20% on a Shield holder) is modeled for Haru only, per play.
-  - Not counted: Tenacity damage, Cost changes, draws, Shields.
-- **Yuki** (owner's screenshots, 2026-10-30; E0, Basic 1/10, Unique 6/10, Common 1/10, Attack 830; 3-1 and 7 unlocked, 5-1 and 5-2
-  locked): Basic cards x1.02 (Longsword Slash 102%), Unique cards x1.12 (Trickery Strike 202%). Freezing Blade's and Trickery Strike III's
-  hits aren't raised.
-  - Prydwen corrections: Ego skill 450%, +100% base per card moved (300%, +50%); Flash Slash has a single-target line (none), IV 400%
-    and +150% per card Drawn (350%, +100%); Iceberg Cleave has no "decrease by 20%"; Potential 7 every 20 Attack (every 80); E1 adds
-    Iceberg Cleave's single-target 50% (removes the 20%); E3 also +150% and +150% per card (+80% only); E4 max 3 stacks, no duration
-    (max 2, 1 turn); E6 also Swiftblade Flurry.
-  - Flash Slash 258% = (220% + 7's +10%) x 1.12, Iceberg Cleave 213% = (180% + 10%) x 1.12 at Attack 830 (Card +, section above).
-  - Inspiration is a switch per play: it adds the "Add 1 Hit" of Iceberg Cleave, Flash Slash III and Trickery Strike V (`counterHits`),
-    Rapid Slash's 30% (3-1) and Freezing Blade's hit (User, 2026-10-30). A play's own hit count replaces the added hit.
-  - Freezing Blade's and Trickery Strike III's hits are effect hits of normal damage: Attack Card buffs skip them, general buffs
-    count, Extra DMG% doesn't (User, 2026-10-30). Trickery Strike III needs its own per-play switch, as a trigger reads one counter.
-  - "Flash Slash" in 7 and E6 is taken to reach all its epiphanies (IV's 459% = (400% + 10%) x 1.12 fits). Unconfirmed: IV's base could
-    be 410% with no +10%. Swiftblade Flurry's max stacks aren't stated, so it's uncapped (Unconfirmed). The Ego skill's last line runs
-    off the screenshot; its end is taken from E3's wording.
-  - Not counted: Cost changes, draws, Shields. With 3-1 off, leave Inspiration off on Longsword Slash and Rapid Slash (the buff and the
-    trigger don't read the node).
-- **Chizuru** (owner's screenshots, 2026-10-30; E2, Basic 10/10, Unique 8/10, Common 1/10, Attack 972; 3-1, 5-1 and 7 unlocked, 5-2
-  locked): Basic cards x1.20 (Spiritflame's Ward 120%), Unique cards x1.16 (Karmic Flames 116%).
-  - Prydwen corrections: Ego skill 500%, +100% per Shadow created (350%, +50%); Karmic Flames and I 2 hits, Cursed Shackles adds 1
-    (1 hit, adds 2); Karmic Flames II and IV Cost 0 (1); III 250% (180%); Oni Hunt 70% (60%), I 60% (50%), II +120% to the next Bind
-    card (+100%), III 120% (100%), V "80%" without "+" and 4 Will-O'-Wisp ("+80%", 3); Potential 3-1 70% x 2 (60% x 2), 7 every 10 Attack
-    (every 40); E3 also +200% and +150% per Shadow (+150% only).
-  - Moonslash 96% x 2 = (3-1's 70% + 5-1's +5% +5%) x 1.2. Shadow 110% = (80% + 7's +15%) x 1.16, Shadow+ 249% = (180% + E1's +20% +
-    7's +15%) x 1.16 (the Card + buff type, section above). A node can change a card's % and hits (`nodeCard`).
-  - "+80% Damage Amount for each Bind stack": additive, every stack counts, the first too: Shadow 1/5 +80%, Shadow+ 3/5 +240%,
-    5/5 +400% (User, 2026-10-30). Set per play.
-  - Oni Hunt's "next Bind card" reaches any ally's Bind card, as it has no "of this unit" (User, 2026-10-30); set per play.
-  - Oni Hunt V's "80%" has no "+", so x1.8 by the "+" rule (Prydwen's "+80%" would be additive). Karmic Flames III's "Increase Damage
-    Amount by 150%" is x2.5, switched per play. Lunarshard (E4) and the Ego skill's per-Shadow and E3 buffs are additive. **Unconfirmed**:
-    the Ego skill shown as 700% at E3 (E3 is locked; assumed to work like Selena's E4).
-  - Oni Hunt IV's created Moonslash is read as Moonslash with Exhaust and Cost 0 (Basic upgrade, 3-1, 5-1). **Unconfirmed**.
-  - Added hits are set per play: Inhibit +1 on Shadow and Shadow+, E6 +1 on Shadow+ at 3 Lunarshard, Cursed Shackles, Tsukuyomi II / III,
-    Oni Hunt III. Not counted: Will-O'-Wisp and Shadow creation (Bind stacks, Shadows created and Lunarshard are set per play), Cost
-    changes, heals, shields; Bound At Dusk III / IV's procs are added as plays.
 - **Team damage** (User, 2026-10-28), website only: Selena is played beside another DPS, so teammates can deal damage too.
   - Each teammate slot links one of that character's saved builds (missing = their active build; "None" = buffs only, as before).
     A linked slot takes its Manifest Ego, partner and sets from that build.
@@ -468,18 +189,10 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
   - **Snapshot**: every switched-on buff counts on every hit of every play, including the card that
     applies it. "Damage taken" debuffs on the enemy (e.g. Adelheid's Truth) are additive. Teammates' damage
     counts only for their plays in the attack list (Team damage, 2026-10-28).
-  - Each build has its own ordered **attack list** (the card library is shared; a list can be copied
+  - Each build has its own ordered **attack list** and deck (a list can be copied
     from another build). Per play: hits, Vulnerable on/off, Weakness debuff on/off, and the stacks of
     each per-play buff (`counter`), all off / 0 by default. A counter buff's switch is on/off only;
     its stacks are capped at its max stacks.
-  - **Spirit of the Aromata**: stacks set per play (max 20). Aromata I counts Passion cards; allies'
-    Passion cards count in the play's stacks.
-  - **Ember** (text from the owner: "When hitting or putting a target in a Ravage state, deal +30%
-    Damage for each stack of Ember the target has (up to 5 stacks). Upon activation, an Ember is
-    removed."): +30% **additive** per stack, only on hits on a Ravaged target (cards marked Target
-    Ravaged). Stacks are set per play; one is used per hit in-game, so lower the play's stacks to
-    estimate that. Sources (notes on the cards): E2, potential 3-1, Rising Dragon Spire / I / II,
-    Jewel III, Aromata IV.
   - Save v9: each build got a copy of the old shared rotation; a play has Vulnerable / Weakness
     debuff on if its first hit was within the build's old stack count; counter stacks start at 0.
   - The Excel workbook was removed (owner, 2026-10-27); the website is the only version.
@@ -494,15 +207,26 @@ DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
   2026-10-25). Ego buffs carry `egoLevel` and only count (and only show on the Buffs tab) from that level; set another build to a
   different level to see what a dupe adds. The E level that raises potential levels counts in the
   card upgrade factor (above).
-- A card's buffs (e.g. Flame Dragon's Jewel's Attack damage, Spirit of the Aromata's per-card
-  stacks) show as preset buffs while the card is in the library, on by default, switch per build.
+- A card's buffs show as preset buffs while the card is in the deck, on by default, switch per build.
   The "+" rule applies: "by 20%" = multiplicative, "+20%" = additive.
-- Extra hits (Combo, Rising Dragon Spire V, Ego skill) are set per play in the attack list; a play's
-  hit count also drives `N+ hits` matching.
-- Jewel's "1 Passion Weakness to the target" is a Weakness Attack buff on all cards.
-  **Unconfirmed** whether the first Attack card already gets it.
-- Not modeled: Embers, Tenacity Damage, shields, draw/cost effects. Jewel V's Ravage hit is a
-  300% card with Target Ravaged on; each play is one Ravage.
+- Extra hits are set per play in the attack list; a play's hit count also drives `N+ hits` matching.
+
+## 3. Damage — Sourced (Prydwen)
+
+```
+ATK card: Damage = Card Mult x Final ATK x 0.35 x (1 + Elemental DMG%) x (1 + Mechanic DMG%)
+                   x Enemy DEF multiplier x (1 + Crit DMG)
+DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
+```
+- Mechanic DMG% = Extra DMG% or DoT DMG% (fragment substats), applied only to that damage kind. The game's Detailed Stats call the first
+  one Extra Damage: it multiplies every hit of kind Extra Attack, triggered ones included (Selena's Mark and Coordinated Attacks, Renoa's
+  discard hits, Nia's). Selena's 5-1 and 7 also read it as a threshold (`thresholdStat: 'Extra Damage'`, stats-screen value) (User, 2026-10-30).
+- Enemy DEF: no known formula; it's an input to back-solve from a real hit.
+- Crit DMG — **Confirmed (User + in-game data)**: the stat-screen Crit DMG is the total
+  multiplier, so crit hit = non-crit x Crit DMG (Prydwen's "(1 + Crit DMG)" is wrong).
+  Evidence: Reddit post (Mei Lin, 188.6% Crit DMG) shows 572 non-crit and 1078 crit;
+  572 x 1.886 = 1079. The community calculator sheet uses the same rule. No toggle.
+- Expected per hit = Non-crit x (1 + CritRate x (CritMult - 1)); each hit crits separately.
 
 ## 4. Open questions / to verify
 

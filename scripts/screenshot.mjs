@@ -6,7 +6,7 @@
 //   node scripts/screenshot.mjs --tab Results --tap "Strike"   # tap the first element with that text before the shot
 //   node scripts/screenshot.mjs --save my-backup.json   # another save (a backup from the Settings tab)
 //
-// Default save: output/czn-save.json. Each tab gives <viewport>-<tab>.png (the first screen, as seen) and
+// Default save: tests/fixtures/save-v1.json. Each tab gives <viewport>-<tab>.png (the first screen, as seen) and
 // <viewport>-<tab>-full-N.png (the whole scrolled page in parts of 2 screens, tab bar hidden).
 import { mkdir, readFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
@@ -23,7 +23,7 @@ const VIEWPORTS = {
 }
 
 function parseArgs(argv) {
-  const opts = { tabs: [], taps: [], save: 'output/czn-save.json', out: 'screenshots', viewports: [] }
+  const opts = { tabs: [], taps: [], save: 'tests/fixtures/save-v1.json', out: 'screenshots', viewports: [] }
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]
     if (a === '--tab') opts.tabs.push(argv[++i])

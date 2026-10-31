@@ -73,6 +73,11 @@ h2 { font-size: 1.05rem; margin: 0; display: flex; align-items: center; gap: 6px
   background: var(--surface); border-bottom: 1px solid var(--border);
   padding: 8px 12px 6px;
 }
+.save-warning {
+  margin-top: 8px; padding: 8px 10px; border-radius: 10px; font-size: 0.85rem;
+  border: 1px solid var(--bad); background: color-mix(in srgb, var(--bad) 10%, var(--surface));
+}
+.save-warning .btn-row { margin-top: 6px; }
 .topbar-row { display: flex; align-items: center; gap: 10px; max-width: 1400px; margin: 0 auto; }
 .char-select { font-size: 1.15rem; font-weight: 700; border: none; background: transparent; padding: 4px 0; max-width: 60%; }
 .char-meta { display: flex; gap: 6px; font-size: 0.8rem; }

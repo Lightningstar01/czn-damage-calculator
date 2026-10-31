@@ -9,7 +9,8 @@ The original Excel workbook generator was removed (owner, 2026-10-27); it is in 
 ```bash
 npm install
 npm run dev        # local dev server (add -- --host to open it on the phone over Wi-Fi)
-npm test           # Vitest: engine tests
+npm test           # Vitest: tests/ (engine, migrations, each character)
+npm run check      # lint + test + build (what the deploy runs before the browser tests)
 npm run test:e2e   # builds, then Playwright: the real site in a browser, Android phone + desktop (e2e/site.e2e.ts)
 npm run build      # type-check + production build to dist/
 npm run lint       # oxlint
@@ -21,7 +22,7 @@ npm run screenshot # phone (390px) + desktop PNGs of every tab -> screenshots/ (
 # Python is not on PATH on the owner's PC; use the project venv:
 .venv\Scripts\python.exe scripts/import_prydwen.py
 ```
-After any change: ask before committing. If the owner agrees to commit, run `npm test`, `npm run build`, then commit. After UI changes, also run `npm run test:e2e` and `npm run screenshot` and
+After any change: ask before committing. If the owner agrees to commit, run `npm run check`, then commit. After UI changes, also run `npm run test:e2e` and `npm run screenshot` and
 look at the phone pictures (the owner plays on an Android phone, and also on desktop) for layout, readability and ease of use. Deploy to GitHub Pages only when the
 owner asks: each push to `main` publishes the site (`.github/workflows/deploy.yml`; lint, engine tests or browser tests failing stop it), so push only when asked.
 
@@ -32,7 +33,7 @@ npx playwright cli -s=phone open http://localhost:5173 --mobile   # Pixel 10; fo
 npx playwright cli -s=phone snapshot                              # the page as text, with refs to click
 npx playwright cli -s=phone click "getByRole('button', { name: 'Buffs', exact: true })"
 # Load a save (too long for a command line to set directly): Settings tab, click Import backup, then
-npx playwright cli -s=phone upload output/czn-save.json
+npx playwright cli -s=phone upload tests/fixtures/save-v1.json
 npx playwright cli -s=phone dialog-accept
 ```
 The repo is public and the owner's real name must not appear in it (owner, 2026-10-30): commit with the GitHub noreply
@@ -52,8 +53,7 @@ email, and check that binary files such as spreadsheets carry no author name bef
     Card fields set here override the import; notes are joined. `src/data/helpers.ts` has `cardBuff()`.
     Put character `effects` before `cards`.
     Overrides may rename a card (`name`, e.g. Flicker Blade (Amped)); `replaceNotes` drops the import's notes;
-    `extraCards` adds cards Prydwen lacks; `potentials: { '3-1': { text } }` replaces a node's wording with the in-game text (`name` too if it differs). A new characters/*.ts file isn't seen by `npm test` until
-    node_modules/.vitest-cache is deleted (cached glob).
+    `extraCards` adds cards Prydwen lacks; `potentials: { '3-1': { text } }` replaces a node's wording with the in-game text (`name` too if it differs).
   - `src/data/merge.ts` combines the two; `checkAdditions()` (run by the tests) catches unknown
     slugs or card ids and duplicate effect ids.
   - Deck per build (`build.deck`, `src/engine/deck.ts`): `{id, preset}` entries resolved live from the presets
@@ -66,8 +66,8 @@ email, and check that binary files such as spreadsheets carry no author name bef
     `public/cards/<slug>/` and sets each card's `image`. Source: cznmetadecks.com (420x632, the game's files; matched by
     card or base card name, `ART_NAMES` for names that differ), else Prydwen (200x300). Every picture on the character's
     cznmetadecks page is copied, so `extraCards` can set `image` to one (Rossweisse's base shards).
-- `src/data/presets.ts`: loads the above, plus partners and memory fragment sets with their
-  effects (entered by hand, not imported). The owner and Claude edit these files; there is no
+- `src/data/presets.ts` loads the above, plus partners (`src/data/partners/<slug>.ts`) and memory fragment sets
+  (`src/data/fragmentSets.ts`) with their effects (entered by hand, not imported). The owner and Claude edit these files; there is no
   in-app preset editor. Effect ids must be unique per owner, because saved switches are keyed
   `"Owner|effectId"` (owner = character, partner, set or card name). Renaming an id resets that switch.
   Partner Ego skill damage is out of scope (owner, 2026-10-27: nobody uses it for damage); character
@@ -77,10 +77,12 @@ email, and check that binary files such as spreadsheets carry no author name bef
   `hint` (a few words, e.g. `'ATK > 500'`), shown as a grey chip; other explanations go in code comments.
   Buff rows show colored chips in the formula strip's colors (`src/ui/BuffChips.tsx`).
 - `src/data/settings.ts`: formula constants and rules (defaults + notes); edited on the Settings tab.
-- `src/store/`: localStorage autosave (`save.ts`: `SAVE_VERSION`, `migrate()`, backup export) and the
-  React context (`store.tsx`). If you change the save format, bump `SAVE_VERSION` and add a step to
-  `migrate()` so the owner's saved data keeps working. `output/czn-save.json` is an old v8 save
-  (from the workbook); `tests/fixtures/workbook.json` is the same save, used by the migration test.
+- `src/store/`: `save.ts` (`SAVE_VERSION`, defaults, new objects), `migrate.ts` (older saves), `storage.ts` (localStorage
+  autosave, backup export) and the React context (`store.tsx`). A stored save that can't be opened is left untouched, with autosave off,
+  until the owner decides; that and failed autosaves show a warning under the header (`src/ui/SaveWarnings.tsx`). If you change the save format, bump `SAVE_VERSION` and add a step to
+  `migrate()` so the owner's saved data keeps working.
+- `tests/`: `engine/` (formula, buffs, cards, plays, team), `migrate.test.ts`, `save.test.ts`, `characters/<slug>.test.ts`, shared
+  `helpers.ts`. `fixtures/save-v1.json` is an old save (Mei Lin with one Strike), also loaded by the browser tests and screenshots.
 - `src/ui/`: tabs Setup, Buffs, Cards (library + ordered rotation), Results (color-coded formula
   strip per play, tap for hits), Settings (rules, backup). At 1000px or wider, Results sits beside
   the other tabs.
@@ -93,7 +95,7 @@ email, and check that binary files such as spreadsheets carry no author name bef
   A node that changes a card's numbers: `nodeCard: { '3-1': { pct: 0.7, hits: 2 } }` (Chizuru's Moonslash).
   `{F40%}` is a Fixed damage % (raised only with the potentialFixed setting). `{120%@id}` is another card preset's base %, raised by that
   card's buffs (the Extra Attack on Renoa's Dirge Bullet).
-  Done: Mei Lin, Rossweisse, Tiphera, Orlea, Mika, Rei, Tenebria, Adelheid, Narja, Cassius, Nia, Selena, Chizuru, Yuki, Haru, Renoa. The step-by-step process is the `card-review` skill (.claude/skills/card-review).
+  The step-by-step process is the `card-review` skill (.claude/skills/card-review).
 - Card upgrade potentials: build `basicLevel` / `signatureLevel`, card `upgrade`
   (Basic / Signature; `pct` is then the base %), `potentialFactor()` in calc.ts; the Manifest Ego
   levels that add +3 (E3 and/or E5; some characters have both) are parsed from the import (`potentialEgo` in merge.ts). See docs/FORMULA.md 2c.
@@ -125,7 +127,8 @@ email, and check that binary files such as spreadsheets carry no author name bef
   picks, stats, team, deck, attack list...), boosts and buffs.
   Preset switches that are missing count as on; own boost/buff switches that are missing count as off.
 - Constants and rules belong in settings, never hard-coded in the engine.
-- Document every new assumption in docs/FORMULA.md with its source or "Unconfirmed".
+- Document every new assumption with its source or "Unconfirmed": general rules in docs/FORMULA.md, one character's in
+  docs/characters/<slug>.md.
 - "Applies to" matches ALL, an exact card name, or one tag in the card's comma-separated Tags;
   also `A & B` (all), `A/B` (any), `N+ hits`, card kinds `DoT` / `Extra Attack`, `Defense-Based` (DEF cards), and the card's own
   type (Attack / Skill / Upgrade), element and cost (`1-cost`, `2+ cost`) fields; buff types
@@ -137,7 +140,7 @@ email, and check that binary files such as spreadsheets carry no author name bef
   (game mechanics, layout, scope), ask a question instead of guessing.
 - When coming up with a plan, always try to poke holes in it and consider the alternative options,
   weighing the pros and cons of each.
-- The owner knows the game well. Their stated mechanics (see docs/FORMULA.md, marked "User")
+- The owner knows the game well. Their stated mechanics (see docs/FORMULA.md and docs/characters/<slug>.md, marked "User")
   take precedence over web guides unless they agree to change them.
 - When research conflicts, report the conflict with sources and ask, or make it a toggle
   in the Settings tab rather than silently picking one.
@@ -160,22 +163,30 @@ Crit       = Damage x Crit DMG (stat is the total multiplier); Expected = Damage
 - Vulnerable / Weakness debuff are switched on per play; first-hit-only buffs apply to hit 1 of each play.
 - Partner class-limited effects only apply when the partner's class = the character's class.
 
+## Screenshot collection
+
+`card-screenshots/<slug>/` (the owner's PC only, git-ignored) holds in-game screenshots from the owner's own account, for every character
+with a `src/data/characters/<slug>.ts`; other characters' folders are empty. Look here before asking the owner for a level, a stat or a card's
+wording, and read only the files you need. File names are listed in the `card-review` skill, section 1.
+- **Levels**: any `node-*.png` shows the whole Potential tree (`potential.png` too, where it exists). Badges are level / max, Ego bonus included; `potentials` in
+  `src/data/prydwen/<slug>.json` says what each node is. A node without a badge is unlocked when dark, locked when bright yellow.
+- **Ego level**: any `ego-<N>.png` shows all six levels: unlocked in color, locked grey with a padlock. Not every character has one; then use the skill's section 3.
+  The "00" badge on the stats screen isn't the Ego level (Cassius is E6 and shows it too).
+- **Stats**: `stats-detail.png` has the real Attack, Critical, Weakness, Extra and Damage over time numbers to check calculations against.
+- **Wording and card %s**: `card-*`, `epiphany-*`, `related-*`, `ego-skill*`, `ego-<N>` and `node-*`; the %s are at the owner's levels, so dividing by the upgrade factor gives the base.
+- **Snapshot**: they show the account when they were taken (see the file dates), so ask for new ones if the owner has levelled the character since.
+
 ## Status / backlog
 
 - Waiting on the owner: text of two Reddit posts on the formula (Reddit is blocked from the
   cloud session; in Claude Code you may be able to fetch them). Another player's calculator sheet
   is in `CZNRedditSheet.xlsx` (on the owner's PC only, never in git: it isn't theirs), to compare against ours line by line.
 - Open mechanics questions are listed in docs/FORMULA.md section 4.
-- Card text check: the owner is saving in-game card screenshots to `card-screenshots/<slug>/` (git-ignored);
-  compare them with the cards and confirm corrections with the owner (`card-review` skill). Mei Lin, Rossweisse (2026-10-27),
-  Tiphera, Orlea, Mika, Rei, Tenebria, Adelheid, Narja, Cassius, Nia, Selena (2026-10-28), Chizuru, Yuki, Haru, Renoa (2026-10-30) done; next: every other character the owner has, as they send them; Luke, Kayron, Olga and Fei
-  last (the owner doesn't have them yet).
+- Character review: only from the owner's in-game screenshots, saved to `card-screenshots/<slug>/` (git-ignored); compare them with
+  the cards and confirm corrections with the owner (`card-review` skill). A character is done once `src/data/characters/<slug>.ts` exists.
+  Next: every other character the owner has, as they send them; Luke, Kayron, Olga and Fei last (the owner doesn't have them yet).
 - Idea for later (owner, 2026-10-27): animated card art. cznmetadecks has the game's animated unique cards as video
   (`https://cdn.czndecksmeta.com/card/cards_animated/<artId>.mp4`, 900x770, ~1 MB each, ~200 MB in all): skipped for size.
-- `creates` links: Rossweisse, Tenebria, Adelheid, Cassius, Nia, Selena, Chizuru, Renoa so far; add each character's during the alphabetical review (until then their created
-  cards can't be added).
+- `creates` links: add each character's during their review (until then their created cards can't be added).
 - Cards tab "Other": neutral and seasonal cards later (Prydwen has 31 Neutral cards).
-- Presets: all 38 characters and their cards are imported. Reviewing every character alphabetically
-  with the owner (cards, buffs with self/allies/enemy targets, Manifest Ego, potentials; Prydwen +
-  the owner's in-game check); Adelheid done (2026-10-28); next: Amir, then on (re-check Mei Lin at M).
-  Partners: only Marianne so far, entered by the owner.
+- Partners: only Marianne so far, entered by the owner.
