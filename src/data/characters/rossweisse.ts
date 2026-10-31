@@ -3,7 +3,7 @@
 // "+X% base Damage Amount" = Base % (added to the shown card %), "final Damage Amount" = Final (own multiplier) (owner, 2026-10-27).
 // Shard activations ("activate effect", Sword Resonance I/V, Radiant Sword Flow II) are extra plays of the shard (owner, 2026-10-27).
 import type { CardPreset, CharacterAdditions } from '../../engine/types'
-import { cardBuff } from '../helpers'
+import { cardBuff, EGO_POTENTIALS_PLUS_3 } from '../helpers'
 
 // Flicker Blade's epiphanies have in-game names, which their shards share (owner, 2026-10-27)
 const flickerText = (pct: number, suffix: string, extra = '', keywords = 'Equilux / Unique') =>
@@ -23,6 +23,7 @@ const baseShard = (kind: 'Light' | 'Dark', trigger: string): CardPreset => ({
 })
 
 export default {
+  verified: { date: '2026-10-30', gameVersion: '841' },
   notes: 'Stat potentials are in the stats screen; card upgrades are set on the Setup tab. Per play (Cards tab): Sword Tassel '
     + 'stacks on Flicker Blade plays, Brand of the Cycle (on target) 1 while the target has Brand, Precious Name (E4) and Blade '
     + 'Poised (E6) stacks, X on Flicker Blade (Unbound). Each shard activation is another play of that shard. '
@@ -34,6 +35,15 @@ export default {
     '5-1': { text: "+5% Damage Amount to Rossweisse's Sword Slash, and if Rossweisse's Attack is 500 or higher, add an additional +5% to the modifier" },
     '7': { text: "If Rossweisse's Attack is 600 or higher, +5% Justice Attribute Damage Amount, and for every 20 Attack exceeding 600, add an additional +2% to the modifier (additional +10% max)" },
   },
+  // Manifest Ego in the game's wording (owner's screenshots, 2026-10-31)
+  ego: {
+    1: { text: "Adds the following effect to the Kyrken's Apostle card: Gain 1 AP.\nChanges the following effects for the Kyrken's Aegis effect: Increase Damage Amount of Attack Cards of this unit by 30%, and increase final Damage Amount of Flicker Blade by 20%" },
+    2: { text: "At the start of battle, increase Rossweisse's final Damage Amount by 20%.\nAt the start of the turn, gain 4 Blade Afterimage.\nBlade Afterimage: When Rossweisse's Light or Dark cards are activated, 120% Damage to a random enemy, create 1 Sword Tassel, then decrease Blade Afterimage by 1 (max 8 stacks)" },
+    3: { text: '+400% Damage Amount to Flickering White Night, and changes the Fixed Damage inflicted to the target when the next Equilux card is activated from being equal to 30% Damage taken into being equal to 60% Damage taken.' },
+    4: { text: "At the start of battle, gain 1 Precious Name.\nEach time the effect of Rossweisse's Light or Dark cards activate, gain 1 Precious Name.\nPrecious Name: Increase Rossweisse's Damage Amount by 8% (max 5 stacks)\n\n「Sig, Siegrune, Gerhilde, Fricka... and you.」" },
+    5: { text: EGO_POTENTIALS_PLUS_3 },
+    6: { text: "When Rossweisse's Flicker Blade moves to hand, gain 1 Blade Poised Against the Cycle, and the Equilux, Light, and Dark cards are no longer included in the hand's maximum capacity count.\nBlade Poised Against the Cycle: Increase final Damage Amount of Rossweisse's Attack Cards by 15%, and if that card is Flicker Blade, increase by 25% (max 2 stacks)" },
+  },
   effects: [
     // Sword Tassel (Bind 1/20): "When coalesced into the Equilux card, for each stack, +80% base Damage Amount to the Equilux
     // card for 1 turn". Added to the shown card % (owner, 2026-10-27); stacks set per play.
@@ -44,12 +54,12 @@ export default {
     { kind: 'Buff', id: 'brand', name: 'Brand of the Cycle', category: 'Character', value: '20%', appliesTo: 'ALL',
       hitScope: 'All hits', condition: 'Always', maxStacks: 1, counter: 'Brand of the Cycle (on target)' },
     // Potentials not on the stats screen. 5-1 is part of the in-game card % (like Mei Lin's 5-1).
-    { kind: 'Buff', id: 'p5-1-slash', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
-      appliesTo: 'Sword Slash', hitScope: 'All hits', condition: 'Always', attackBonus: { above: 500, value: '+5%', orEqual: true } },
+    { kind: 'Buff', id: 'p5-1-slash', node: '5-1', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
+      appliesTo: 'Sword Slash', hitScope: 'All hits', condition: 'Always', thresholdBonus: { above: 500, value: '+5%', orEqual: true } },
     // 7: "If Rossweisse's Attack is 600 or higher, +5% Justice Attribute Damage Amount, and for every 20 Attack exceeding 600,
     // add an additional +2% to the modifier (additional +10% max)"
-    { kind: 'Buff', id: 'p7-justice', name: 'Unique Stat Upgrade', category: 'Potential', value: '+5%', appliesTo: 'Justice',
-      hitScope: 'All hits', condition: 'Always', minAttack: 600, attackBonus: { above: 600, value: '+2%', every: 20, max: '+10%' } },
+    { kind: 'Buff', id: 'p7-justice', node: '7', name: 'Unique Stat Upgrade', category: 'Potential', value: '+5%', appliesTo: 'Justice',
+      hitScope: 'All hits', condition: 'Always', thresholdMin: 600, thresholdBonus: { above: 600, value: '+2%', every: 20, max: '+10%' } },
     // Manifest Ego (dupes): on from the build's level. E1 (Kyrken's Aegis) is on Kyrken's Apostle; E5 is the +3 upgrade levels.
     { kind: 'Buff', id: 'e2-final', name: 'E2 Awakening Memory', category: 'Ego Manifestation', type: 'Final', value: '20%',
       appliesTo: 'ALL', hitScope: 'All hits', condition: 'Always', egoLevel: 2 },

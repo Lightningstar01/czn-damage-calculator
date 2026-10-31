@@ -1,8 +1,9 @@
 // The damage formula (docs/FORMULA.md). Pure functions: inputs in, numbers and their sources out.
 import { buildDeck, buildNodeOn, deckPresets, presetCard, teammateDeck, type DeckItem } from './deck'
-import { activeBuffs, activeCounters, activeStats, buffMatches, cardBuffs, findCharacter, type ActiveBuff, type ActiveStat, type Source } from './buffs'
+import { activeBuffs, activeCounters, activeStats, buffMatches, cardBuffs, findCharacter, findFragmentSet, findPartner, type ActiveBuff, type ActiveStat, type Source } from './buffs'
 import { teammateView, withLinkedTeam, type Saves } from './team'
-import type { Build, Card, CharacterPreset, CharacterSave, PotentialUpgrade, Presets, RotationPlay, Settings, StatName, Trigger } from './types'
+import { NO_ENEMY } from './types'
+import type { Build, Card, CharacterPreset, CharacterSave, Enemy, Fight, LiveBuild, PotentialUpgrade, Presets, RotationPlay, Settings, StatName, Trigger } from './types'
 
 export interface Stat {
   value: number
@@ -77,6 +78,8 @@ export interface Play {
   counters: { name: string; stacks: number }[]
   vulnerable: boolean
   weaknessDebuff: boolean
+  /** The target is Ravaged on this play's hits (the play's switch, else the card's flag). */
+  ravaged: boolean
   /** Fixed damage an earlier card (Rossweisse's Ego skill) adds to this play: a share of its damage, included in the totals. */
   followUp?: FollowUp
   /** Teammate slot and name for a teammate's play; missing = the build's character. */
@@ -126,6 +129,8 @@ export interface BuildResult extends Totals {
   byCharacter: (Totals & { name: string })[]
   /** Per attack list play (same index): the per-play counters it can set (its player's counter buffs and the team's triggers). */
   counterOptions: { name: string; max: number | null }[][]
+  /** Things in the save the calculation had to leave out or that likely don't do what they seem to (shown on the Results tab). */
+  warnings: string[]
 }
 
 function sumStat(stats: ActiveStat[], name: StatName): Stat {
@@ -136,7 +141,7 @@ function sumStat(stats: ActiveStat[], name: StatName): Stat {
 }
 
 /** Final stats: stats screen + boosts. ATK/DEF = screen x (1 + %) + flat. */
-export function finalStats(presets: Presets, charName: string, cs: CharacterSave, build: Build, settings: Settings): FinalStats {
+export function finalStats(presets: Presets, charName: string, cs: CharacterSave, build: LiveBuild, settings: Settings): FinalStats {
   const st = activeStats(presets, charName, cs, build)
   const s = build.stats
   const element = findCharacter(presets, charName)?.element
@@ -166,11 +171,11 @@ export function finalStats(presets: Presets, charName: string, cs: CharacterSave
 }
 
 /** The Manifest Ego levels that raise the card upgrade potentials and are unlocked in this build. */
-export const unlockedPotentialEgo = (ch: CharacterPreset | undefined, build: Build) =>
+export const unlockedPotentialEgo = (ch: CharacterPreset | undefined, build: LiveBuild) =>
   (ch?.potentialEgo ?? []).filter((e) => (build.egoLevel ?? 0) >= e.level)
 
 /** Potential factor for a card upgrade: 1 + per level x (build level + the Manifest Ego bonuses that are unlocked). */
-export function potentialFactor(upgrade: PotentialUpgrade | undefined, build: Build, ch: CharacterPreset | undefined,
+export function potentialFactor(upgrade: PotentialUpgrade | undefined, build: LiveBuild, ch: CharacterPreset | undefined,
   settings: Settings): Factor | null {
   if (!upgrade) return null
   const set = (upgrade === 'Basic' ? build.basicLevel : build.signatureLevel) || 0
@@ -183,7 +188,7 @@ export function potentialFactor(upgrade: PotentialUpgrade | undefined, build: Bu
 
 /** The % the game shows on a card for a base % (1 = 100%): raised by the Card + buffs, the card's potential and the Card % buffs that match it.
  * fixed: a Fixed damage % (raised only with the potentialFixed setting; a Fixed card's Heal is raised, Orlea's Annoying I). */
-export function shownPct(base: number, card: Card, build: Build, ch: CharacterPreset | undefined, buffs: ActiveBuff[],
+export function shownPct(base: number, card: Card, build: LiveBuild, ch: CharacterPreset | undefined, buffs: ActiveBuff[],
   settings: Settings, fixed = false): number {
   if (fixed && !settings.potentialFixed) return base
   const potential = potentialFactor(card.upgrade, build, ch, settings)
@@ -204,7 +209,7 @@ export const playBaseHits = (card: Card, play: RotationPlay) =>
 /** The card as played: the play's own hit count and Cost, if set, replace the card's. A per-Cost card's % is its % x the Cost;
  * a per-count card's, its % x the play's count. */
 export function playCard(card: Card, play: RotationPlay): Card {
-  const played = { ...card, hits: play.hits ?? playBaseHits(card, play), cost: play.cost ?? card.cost }
+  const played = { ...card, hits: play.hits ?? playBaseHits(card, play), cost: play.cost ?? card.cost, targetRavaged: play.ravaged ?? card.targetRavaged }
   if (card.perCost) played.pct = card.pct * (played.cost ?? 1)
   if (card.perCount) played.pct = card.pct * playCount(card.perCount, play)
   return played
@@ -217,7 +222,7 @@ interface Member {
   /** Their cards by attack list card id. */
   cards: Map<string, Card>
   dmg?: {
-    build: Build
+    build: LiveBuild
     stats: FinalStats
     fixedBuffs: ActiveBuff[]
     counterBuffs: ActiveBuff[]
@@ -225,7 +230,7 @@ interface Member {
   }
 }
 
-function member(presets: Presets, name: string, cards: Card[], dmg?: { cs: CharacterSave; build: Build }, settings?: Settings): Member {
+function member(presets: Presets, name: string, cards: Card[], dmg?: { cs: CharacterSave; build: LiveBuild }, settings?: Settings): Member {
   const ch = findCharacter(presets, name)
   const m: Member = { name, ch, cards: new Map(cards.map((c) => [c.id, c])) }
   if (dmg && settings) {
@@ -247,11 +252,13 @@ const capped = (play: RotationPlay, name: string, max: number | null | undefined
   Math.min(Math.max(0, play.stacks?.[name] ?? 0), max ?? Infinity)
 
 /** Damage of every hit of every play in the build's attack list: the build's character's plays and (with `saves`, for teammates
- * linked to a saved build) their teammates', plus the hits the team's triggers add. */
+ * linked to a saved build) their teammates', plus the hits the team's triggers add. fight: the enemy everyone hits (none: no modifiers). */
 export function computeBuild(presets: Presets, charName: string, cs: CharacterSave, build: Build, settings: Settings,
-  saves: Saves = {}): BuildResult {
+  saves: Saves = {}, fight?: Pick<Fight, 'enemies'>): BuildResult {
+  const enemy = fight?.enemies[0] ?? NO_ENEMY
   const team = withLinkedTeam(build, saves)
   const ch = findCharacter(presets, charName)
+  const warnings = setupWarnings(presets, charName, ch, team)
   const mainDeck = buildDeck(ch, team)
   const main = member(presets, charName, mainDeck.map((i) => i.card), { cs, build: team }, settings)
   const members: (Member | undefined)[] = []
@@ -279,7 +286,8 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
     const upgradable = !(card.scaling === 'Fixed' && !settings.potentialFixed)
     const potential = upgradable ? potentialFactor(card.upgrade, d.build, m.ch, settings) : null
     const hits: Hit[] = []
-    for (let h = 1; h <= Math.max(0, Math.floor(card.hits)); h++) hits.push(computeHit(card, h, ++k, cb, potential, d.stats, d.build, play, settings))
+    const stats = { ...d.stats, elemDmg: cardElement(m, d, card) }
+    for (let h = 1; h <= Math.max(0, Math.floor(card.hits)); h++) hits.push(computeHit(card, h, ++k, cb, potential, stats, enemy, play, settings))
     return { hits, counters, cb, ...totals(hits) }
   }
 
@@ -296,10 +304,14 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
     const m = play.by === undefined ? main : members[play.by]
     const base = m?.cards.get(play.cardId)
     counterOptions[index] = mergeCaps(m?.dmg?.caps ?? [], triggerCaps)
-    if (!m || !base) return
+    if (!m || !base) {
+      warnings.push(`Play ${index + 1}: its card is no longer in the deck, so it's left out.`)
+      return
+    }
     // A per-play hit count also counts for '2+ hits' buffs, so it's buffed as its own card
     const card = playCard(base, play)
     const own = m.dmg ? cardHits(m, card, play) : { hits: [], counters: [], cb: undefined, nonCrit: 0, crit: 0, expected: 0 }
+    if (m.dmg && !card.targetRavaged) warnings.push(...ravagedOnly(m.dmg.counterBuffs, card, play, index))
     // Fixed damage set up by an earlier play of the same character: a share of this play's damage (crit or not), on the next matching card
     let followUp: FollowUp | undefined
     const p = pending.get(m)
@@ -323,6 +335,9 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
       if (!tp) continue
       const tcard = presetCard(tp, owner.ch!.element, `trigger:${tp.id}`, buildNodeOn(owner.dmg.build))
       if (t.perStack) tcard.hits *= capped(play, t.counter!, t.maxStacks)
+      // Same target, same moment (Unconfirmed; in-game test ravaged-triggered-hits): Ravaged on the play is Ravaged on the hit it sets off,
+      // and a play switched off is off for that hit too
+      tcard.targetRavaged = play.ravaged ?? (tcard.targetRavaged || card.targetRavaged)
       const r = cardHits(owner, tcard, { cardId: tcard.id, vulnerable: play.vulnerable, stacks: play.stacks })
       const chance = t.chance ?? 1
       const hit = { nonCrit: r.nonCrit * chance, crit: r.crit * chance, expected: r.expected * chance }
@@ -331,15 +346,59 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
     }
     const trig = totals(triggered)
     plays.push({ card, index, hits: own.hits, counters: own.counters.filter((c) => c.stacks > 0),
-      vulnerable: !!play.vulnerable, weaknessDebuff: !!play.weaknessDebuff, followUp, triggered,
+      vulnerable: !!play.vulnerable, weaknessDebuff: !!play.weaknessDebuff, ravaged: card.targetRavaged, followUp, triggered,
       ...(play.by !== undefined ? { slot: play.by, by: m.name, ...(m.dmg ? {} : { noBuild: true }) } : {}),
       nonCrit: own.nonCrit + (followUp?.nonCrit ?? 0) + trig.nonCrit, crit: own.crit + (followUp?.crit ?? 0) + trig.crit,
       expected: own.expected + (followUp?.expected ?? 0) + trig.expected })
   })
-  const byCharacter = [main, ...members.filter((x): x is Member => !!x)]
+  const others = members.filter((x): x is Member => !!x)
+  for (const x of others) {
+    // byMember: they played a card or one of their triggers fired
+    if (x.dmg && !x.dmg.build.stats.attack && byMember.has(x)) {
+      warnings.push(`${x.name}'s linked build (${x.dmg.build.name}) has no Attack on its stats screen, so their hits deal no damage.`)
+    }
+  }
+  const byCharacter = [main, ...others]
     .filter((x) => x === main || byMember.has(x))
     .map((x) => ({ name: x.name, ...(byMember.get(x) ?? { nonCrit: 0, crit: 0, expected: 0 }) }))
-  return { stats: main.dmg!.stats, plays, byCharacter, counterOptions, ...totals(plays) }
+  // Two dropdowns naming the same lost set give the same warning: once is enough
+  return { stats: main.dmg!.stats, plays, byCharacter, counterOptions, warnings: [...new Set(warnings)], ...totals(plays) }
+}
+
+/** What the build names but the presets don't have (renamed or removed by an update): it counts for nothing, so say so. */
+function setupWarnings(presets: Presets, charName: string, ch: CharacterPreset | undefined, build: LiveBuild): string[] {
+  const out: string[] = []
+  if (!ch) out.push(`${charName} is not in the presets.`)
+  const sets = (who: string, fragments: string[] = []) => fragments.filter((f) => f && !findFragmentSet(presets, f))
+    .map((f) => `${who}'s memory fragment set ${f} is not in the presets: its effects don't count.`)
+  const partner = (who: string, p: string) => (p && !findPartner(presets, p) ? [`${who}'s partner ${p} is not in the presets: its effects don't count.`] : [])
+  out.push(...partner(charName, build.partner), ...sets(charName, build.fragments))
+  for (const d of build.deck ?? []) {
+    if (!d.custom && !ch?.cards?.some((p) => p.id === d.preset)) out.push(`Deck card ${d.preset} is not in ${charName}'s cards any more, so it's left out.`)
+  }
+  for (const t of build.team ?? []) {
+    if (!t.character) continue
+    const tch = findCharacter(presets, t.character)
+    if (!tch) out.push(`Teammate ${t.character} is not in the presets.`)
+    out.push(...partner(t.character, t.partner), ...sets(t.character, t.fragments))
+    for (const id of t.cards ?? []) if (tch && !tch.cards?.some((p) => p.id === id)) out.push(`${t.character}'s card ${id} is not in their cards any more, so it's left out.`)
+  }
+  return out
+}
+
+/** A play's stacks that do nothing because they only count on a Ravaged target (Ember on a Strike with Target Ravaged off). */
+function ravagedOnly(buffs: ActiveBuff[], card: Card, play: RotationPlay, index: number): string[] {
+  const names = buffs.filter((b) => b.condition === 'Ravaged only' && capped(play, b.counter!, b.maxStacks) > 0
+    && buffMatches({ appliesTo: b.appliesTo, condition: 'Always' }, card)).map((b) => b.counter!)
+  return [...new Set(names)].map((n) => `Play ${index + 1} (${card.name}): ${n} only counts on a Ravaged target. Switch on Target Ravaged for this play, or set it to 0.`)
+}
+
+/** The elemental damage a card gets: its own element's stat. Boosts (Elemental DMG%) are read as the character's own element
+ * (Unconfirmed; no card has another element yet). */
+function cardElement(m: Member, d: NonNullable<Member['dmg']>, card: Card): Stat {
+  if (!m.ch || card.element === m.ch.element) return d.stats.elemDmg
+  const value = d.build.stats.elemDmg[card.element] || 0
+  return { value, sources: [{ label: `Stats screen ${card.element} DMG`, value, unit: '%' }] }
 }
 
 function totals(xs: Totals[]): Totals {
@@ -360,7 +419,7 @@ function mergeCaps(a: { name: string; max: number | null }[], b: { name: string;
 }
 
 function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof cardBuffs>, potential: Factor | null,
-  stats: FinalStats, build: Build, play: RotationPlay, settings: Settings): Hit {
+  stats: FinalStats, enemy: Enemy, play: RotationPlay, settings: Settings): Hit {
   const first = hitNo === 1
   // Card % buffs raise the base % like the card upgrade potentials, so only on cards entered at base %
   const cardPctSources = potential ? [...cb.cardPct.all.sources, ...(first ? cb.cardPct.first.sources : [])] : []
@@ -401,8 +460,8 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
   const vulnerable = play.vulnerable
     ? { value: 1 + settings.vulnerable, sources: [{ label: 'Vulnerable on the target (this play)', value: settings.vulnerable, unit: '%' as const }] }
     : null
-  const enemyDr = build.enemyDr
-    ? { value: 1 - build.enemyDr, sources: [{ label: 'Enemy damage reduction', value: build.enemyDr, unit: '%' as const }] }
+  const enemyDr = enemy.dr
+    ? { value: 1 - enemy.dr, sources: [{ label: 'Enemy damage reduction', value: enemy.dr, unit: '%' as const }] }
     : null
   const weaknessDebuff = play.weaknessDebuff
     ? { value: 1 - settings.weaknessDebuff, sources: [{ label: 'Weakness debuff on you (this play)', value: settings.weaknessDebuff, unit: '%' as const }] }
@@ -425,8 +484,8 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
   const elemDmg = stats.elemDmg.value ? { value: 1 + stats.elemDmg.value, sources: stats.elemDmg.sources } : null
   const mech = card.kind === 'Extra Attack' ? stats.extraDmg : card.kind === 'DoT' ? stats.dotDmg : null
   const mechDmg = mech && mech.value ? { value: 1 + mech.value, sources: mech.sources } : null
-  const enemyDef = build.enemyDefMult !== 1
-    ? { value: build.enemyDefMult, sources: [{ label: 'Enemy DEF multiplier', value: build.enemyDefMult, unit: 'x' as const }] }
+  const enemyDef = enemy.defMult !== 1
+    ? { value: enemy.defMult, sources: [{ label: 'Enemy DEF multiplier', value: enemy.defMult, unit: 'x' as const }] }
     : null
   const critBuffs = (b: typeof cb.critDmg) => [...b.all.sources, ...(first ? b.first.sources : [])]
   const critDmgSources = [...stats.critDmg.sources, ...critBuffs(cb.critDmg)]

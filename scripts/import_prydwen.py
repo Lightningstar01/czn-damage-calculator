@@ -23,6 +23,7 @@ import datetime
 import html
 import json
 import re
+import sys
 import urllib.request
 from pathlib import Path
 
@@ -254,6 +255,21 @@ def card_entry(c, base, is_basic, has_epiphanies):
     return entry
 
 
+def changes(old, doc):
+    """What a re-import changes that our additions and saves depend on: card ids (saved decks and characters/<slug>.ts point at them) and numbers."""
+    before = {c["id"]: c for c in old["cards"]}
+    after = {c["id"]: c for c in doc["cards"]}
+    out = [f"card {i} ({before[i]['name']}) is gone: saved decks and our additions may point at it" for i in before if i not in after]
+    for i in before.keys() & after.keys():
+        a, b = before[i], after[i]
+        if a["name"] != b["name"]:
+            out.append(f"card {i} was {a['name']}, now {b['name']}: its id may point at another card")
+        for field in ("pct", "hits", "cost"):
+            if a.get(field) != b.get(field):
+                out.append(f"card {i} ({b['name']}): {field} {a.get(field)} -> {b.get(field)}")
+    return sorted(out)
+
+
 def build(cache=None, refresh_art=False):
     characters, cards = find_lists(rsc_rows(fetch("mei-lin", cache)))
     OUT.mkdir(parents=True, exist_ok=True)
@@ -290,15 +306,18 @@ def build(cache=None, refresh_art=False):
             "manifestEgo": ego,
         }
         path = OUT / f"{ch['slug']}.json"
+        if path.exists():
+            for line in changes(json.loads(path.read_text(encoding="utf-8")), doc):
+                print(f"CHANGED {ch['name']}: {line}")
         path.write_text(json.dumps(doc, indent=1, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
         written.add(path.name)
         print(f"{ch['name']:12} {len(entries):3} cards, {len(doc['potentials'])} potentials, {len(ego)} ego levels, "
               f"{pictures} pictures" + (f", {fallback} cards with Prydwen's art" if fallback else ""))
-    for old in OUT.glob("*.json"):
-        if old.name not in written and old.name != "_meta.json":
-            old.unlink()
-            print("removed", old.name)
-    meta = {"source": URL.format(slug="<slug>"), "imported": datetime.date.today().isoformat(), "characters": len(written)}
+    # A character missing from the list is never deleted: saves, additions and tests may depend on it, and it may be a slip on the site
+    kept = [old.name for old in OUT.glob("*.json") if old.name not in written and old.name != "_meta.json"]
+    for name in kept:
+        print(f"WARNING: {name} is not in Prydwen's list any more (or is marked upcoming): kept as it was. Check it, and delete it by hand if it's really gone")
+    meta = {"source": URL.format(slug="<slug>"), "imported": datetime.date.today().isoformat(), "characters": len(written) + len(kept)}
     (OUT / "_meta.json").write_text(json.dumps(meta, indent=1) + "\n", encoding="utf-8", newline="\n")
 
 
@@ -307,4 +326,6 @@ if __name__ == "__main__":
     ap.add_argument("--cache", help="folder for the downloaded pages: reused if there, saved if not")
     ap.add_argument("--refresh-art", action="store_true", help="download the card art again, even pictures already copied")
     args = ap.parse_args()
+    # Card names have characters a piped Windows console can't encode (Diana's "、"): a print must not stop the import halfway
+    sys.stdout.reconfigure(errors="backslashreplace")
     build(args.cache, args.refresh_art)

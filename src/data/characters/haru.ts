@@ -3,7 +3,7 @@
 // Potentials 3-1, 5-1 and 7 add to the base % before the upgrade (Card +), measured at Attack 775: Power Anchor 245% = (220% + 20%) x 1.02,
 // Anchor Shot 365% = (300% + 10% + 10%) x 1.14. Prydwen's Attack thresholds are wrong: 7's is 600 in game (Prydwen 1000).
 import type { CharacterAdditions } from '../../engine/types'
-import { cardBuff } from '../helpers'
+import { cardBuff, EGO_POTENTIALS_PLUS_3 } from '../helpers'
 
 // "Anchor Shot" reaches every epiphany
 const ANCHOR_SHOT = ['Anchor Shot', 'Anchor Shot I', 'Anchor Shot II', 'Anchor Shot III', 'Anchor Shot IV', 'Anchor Shot V'].join('/')
@@ -24,6 +24,7 @@ const chargeEnergy = (value: string, counter: string) =>
   cardBuff('attack-cards', 'Damage Amount of Attack Cards of this unit for 1 turn', value, 'Attack', { counter, maxStacks: 1 })
 
 export default {
+  verified: { date: '2026-10-30', gameVersion: '841' },
   notes: 'Card upgrades are set on the Setup tab. Per play (Cards tab): Anchor Shot activations (+100% each, +150% on I, max 10), Anchors '
     + 'played (+10% each, 3-1), Target holding Shield (Pulverize), Cards Discarded (Anchor Shot III), Lift Anchor, Anchor Pointer IV / V, '
     + 'Charge Energy / I-IV, Power Charge IV targets hit, Beneficial effects (Ego skill), AP short of Cost (E2), Power Supply (E4), '
@@ -35,6 +36,15 @@ export default {
     '5-1': { text: "+5% Damage Amount to Haru's Anchor and Power Anchor\nIf Haru's Attack is 500 or higher, add an additional +5% to the modifier" },
     '7': { text: "+10% Damage Amount to Haru's Anchor Shot\nIf Haru's Attack is 600 or higher, add an additional +10% to the modifier" },
   },
+  // Manifest Ego in the game's wording (owner's screenshots, 2026-10-31)
+  ego: {
+    1: { text: 'Changes the increase in Damage Amount effect of Lift Anchor from 80% to 120%.' },
+    2: { text: 'Changes Anchor Shot to be usable even if Cost is insufficient.\nThe Anchor Shot card used through this effect will consume all remaining AP, and for each 1 AP spent less than the original Cost, decrease Damage Amount by 30%.' },
+    3: { text: '+200% Damage Amount to Power Strike and +20% to the Damage Amount for each beneficial effect in possession' },
+    4: { text: "Each time Anchor Shot is activated by Haru, gain 1 Power Supply.\nPower Supply: +30% Damage Amount to Haru's Attack Cards (max 3 stacks)" },
+    5: { text: EGO_POTENTIALS_PLUS_3 },
+    6: { text: 'Change the Damage Amount decreased effect that is caused when using the Anchor Shot card with insufficient AP to 15% for each 1 AP spent less than the original Cost.\nAt the start of the turn, move 1 Anchor Shot card to hand, and increase Damage Amount of that card by 30% until activated.' },
+  },
   effects: [
     // Pulverize (in game): "When hitting a target holding Shield, increase Damage Amount by 20%"
     { kind: 'Buff', id: 'pulverize', name: 'Pulverize', category: 'Character', value: '20%', appliesTo: 'Pulverize', hitScope: 'All hits',
@@ -42,17 +52,17 @@ export default {
     // 3-1 (in game): "+20% Damage Amount to Anchor and Power Anchor. The following effect is added to Anchor Shot: Increase Damage Amount by
     // 10%". The cards show the second part as "+10% Damage Amount to Anchor Shot" on Anchor and Power Anchor: additive, a stack for each
     // one played (owner, 2026-10-30)
-    { kind: 'Buff', id: 'p3-1-anchors', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+20%',
+    { kind: 'Buff', id: 'p3-1-anchors', node: '3-1', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+20%',
       appliesTo: 'Anchor/Power Anchor', hitScope: 'All hits', condition: 'Always' },
-    { kind: 'Buff', id: 'p3-1-shot', name: 'Damage Amount to Anchor Shot', category: 'Potential', value: '+10%', appliesTo: ANCHOR_SHOT,
+    { kind: 'Buff', id: 'p3-1-shot', node: '3-1', name: 'Damage Amount to Anchor Shot', category: 'Potential', value: '+10%', appliesTo: ANCHOR_SHOT,
       hitScope: 'All hits', condition: 'Always', counter: 'Anchors played' },
     // 5-1 (in game): "+5% Damage Amount to Haru's Anchor and Power Anchor. If Haru's Attack is 500 or higher, add an additional +5% to the
     // modifier". Not unlocked by the owner
-    { kind: 'Buff', id: 'p5-1-anchors', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
-      appliesTo: 'Anchor/Power Anchor', hitScope: 'All hits', condition: 'Always', attackBonus: { above: 500, value: '+5%', orEqual: true } },
+    { kind: 'Buff', id: 'p5-1-anchors', node: '5-1', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
+      appliesTo: 'Anchor/Power Anchor', hitScope: 'All hits', condition: 'Always', thresholdBonus: { above: 500, value: '+5%', orEqual: true } },
     // 7 (in game): "+10% Damage Amount to Haru's Anchor Shot. If Haru's Attack is 600 or higher, add an additional +10% to the modifier"
-    { kind: 'Buff', id: 'p7-shot', name: 'Unique Stat Upgrade', category: 'Potential', type: 'Card +', value: '+10%', appliesTo: ANCHOR_SHOT,
-      hitScope: 'All hits', condition: 'Always', attackBonus: { above: 600, value: '+10%', orEqual: true } },
+    { kind: 'Buff', id: 'p7-shot', node: '7', name: 'Unique Stat Upgrade', category: 'Potential', type: 'Card +', value: '+10%', appliesTo: ANCHOR_SHOT,
+      hitScope: 'All hits', condition: 'Always', thresholdBonus: { above: 600, value: '+10%', orEqual: true } },
     // E2 Awakening Memory (in game): "... for each 1 AP spent less than the original Cost, decrease Damage Amount by 30%" (Prydwen: 40%)
     { kind: 'Buff', id: 'e2-short', name: 'Anchor Shot with insufficient AP', category: 'Ego Manifestation', value: '-30%', appliesTo: ANCHOR_SHOT,
       hitScope: 'All hits', condition: 'Always', egoLevel: 2, egoBelow: 6, counter: 'AP short of Cost', maxStacks: 2 },

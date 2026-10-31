@@ -72,7 +72,7 @@ describe('Rossweisse', () => {
   it('Potential 7 follows the stats-screen Attack: +5% from 600, +2% per 20 above, max +10% more', () => {
     const p7 = ross.effects.find((e) => e.id === 'p7-justice')!
     if (p7.kind !== 'Buff') throw new Error('p7 is a buff')
-    const at = (attack: number) => presetBuffValue(p7, { stats: { ...newBuild('x').stats, attack } }).value
+    const at = (attack: number) => presetBuffValue(p7, { ...newBuild('x').stats, attack }).value
     expect(at(599)).toBe(0)
     expect(at(600)).toBeCloseTo(0.05)
     expect(at(659)).toBeCloseTo(0.05 + 0.04)

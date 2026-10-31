@@ -19,4 +19,4 @@ What the owner confirmed about this character's cards. The general rules are in 
 - **Brand of the Cycle** ("Increase Damage Amount taken from Rossweisse by 20%"): 20% multiplicative at any number
   of Brands, so a per-play counter that is 1 (on) or 0.
 - **Rossweisse Potential 7**: +5% additive on Justice cards from 600 stats-screen Attack, +2% for every full 20
-  Attack above 600, max +10% more (`minAttack`, `attackBonus.every`). Not counted: Radiant Sword Flow / I discard damage.
+  Attack above 600, max +10% more (`thresholdMin`, `thresholdBonus.every`). Not counted: Radiant Sword Flow / I discard damage.

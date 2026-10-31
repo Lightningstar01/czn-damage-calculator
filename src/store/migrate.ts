@@ -2,12 +2,12 @@
 import { PRESETS } from '../data/presets'
 import { DEFAULT_SETTINGS } from '../data/settings'
 import { AUTO, cardUpgrade, deckItems } from '../engine/deck'
-import { ELEMENTS, CARD_TYPES, FRAGMENT_SET_PICKS, type Build, type Card, type CharacterPreset, type CharacterSave, type DeckCard, type Element, type RotationPlay, type SaveData } from '../engine/types'
-import { defaultSave, newBuild, newStats, SAVE_VERSION } from './save'
+import { ELEMENTS, CARD_TYPES, FRAGMENT_SET_PICKS, NO_ENEMY, type Build, type Card, type CharacterPreset, type CharacterSave, type DeckCard, type Element, type Fight, type RotationPlay, type SaveData } from '../engine/types'
+import { defaultFight, defaultSave, newBuild, newFight, newStats, SAVE_VERSION } from './save'
 
 /** Fields that older saves had (rotation: removed in v9; the shared card library: removed in v10). */
 type LegacyCharacter = CharacterSave & { rotation?: unknown[]; cards?: Card[] }
-type LegacyBuild = Build & { vulnerable?: number; weaknessDebuff?: number }
+type LegacyBuild = Build & { vulnerable?: number; weaknessDebuff?: number; enemyDefMult?: number; enemyDr?: number }
 
 /** Mei Lin's card preset ids before v6 -> Prydwen card ids. */
 const MEI_LIN_V5_IDS: Record<string, string> = {
@@ -42,6 +42,28 @@ function completeCharacter(name: string, cs: CharacterSave) {
   })
   const lists = [cs.boosts, cs.buffs, ...cs.builds.flatMap((b) => [b.team, b.deck, b.rotation])]
   if (!lists.every(isObjectList) || !cs.builds.every((b) => isObject(b.presetSwitches))) throw new Error(`${NOT_A_SAVE} ${name} has unreadable builds.`)
+}
+
+/** A fight the site could read: a string id if any, enemies whose numbers are numbers (a null DEF multiplier would turn all damage into 0).
+ * The site's own fields never write anything else, so only a damaged file is refused. */
+function readableFight(f: Record<string, unknown>) {
+  const number = (x: unknown) => x === undefined || Number.isFinite(x)
+  return (f.id === undefined || typeof f.id === 'string')
+    && (f.enemies === undefined || (isObjectList(f.enemies) && f.enemies.every((e) => number(e.defMult) && number(e.dr))))
+}
+
+/** Same for the fights: at least one, each with an enemy, unique ids (two alike can't be told apart), and a valid active one. */
+function completeFights(data: SaveData) {
+  const fights: unknown = data.fights ?? []
+  if (!isObjectList(fights) || !fights.every(readableFight)) throw new Error(`${NOT_A_SAVE} Its fights are unreadable.`)
+  const ids = fights.flatMap((f) => f.id ?? [])
+  if (new Set(ids).size !== ids.length) throw new Error(`${NOT_A_SAVE} Two of its fights have the same id.`)
+  data.fights = data.fights?.map((f) => {
+    const blank = newFight('Fight')
+    return { ...blank, ...f, enemies: f.enemies?.length ? f.enemies.map((e) => ({ ...NO_ENEMY, ...e })) : blank.enemies }
+  }) ?? []
+  if (!data.fights.length) data.fights = [defaultFight()]
+  if (!data.fights.some((f) => f.id === data.activeFight)) data.activeFight = data.fights[0].id
 }
 
 /** Bring an older (or partial) save up to the current format. Throws if it isn't a save file. */
@@ -181,8 +203,39 @@ export function migrate(raw: unknown): SaveData {
     }
     data.version = 10
   }
-  // Future migrations go here, in version order: if (data.version === 10) { ...; data.version = 11 }
+  if (data.version === 10) {
+    // v11: the enemy moves from the build to shared fights (owner, 2026-10-31), one per distinct pair of values, so none is lost; the open
+    // build's stays active. Builds never touched (Crit DMG 0, which no character has) get the game's base crit stats.
+    const fights: Fight[] = []
+    const fightOf = (b: LegacyBuild) => {
+      const enemy = { defMult: b.enemyDefMult ?? NO_ENEMY.defMult, dr: b.enemyDr ?? NO_ENEMY.dr }
+      const found = fights.find((f) => f.enemies[0].defMult === enemy.defMult && f.enemies[0].dr === enemy.dr)
+      if (found) return found
+      const neutral = enemy.defMult === NO_ENEMY.defMult && enemy.dr === NO_ENEMY.dr
+      const made = newFight(neutral ? 'Default' : `Fight ${fights.length + 1}`, enemy)
+      fights.push(made)
+      return made
+    }
+    const open = data.characters[data.activeCharacter]
+    const openBuild = open?.builds.find((b) => b.id === open.activeBuild) ?? open?.builds[0]
+    if (openBuild) data.activeFight = fightOf(openBuild).id
+    for (const cs of Object.values(data.characters)) {
+      for (const b of cs.builds as LegacyBuild[]) {
+        fightOf(b)
+        delete b.enemyDefMult
+        delete b.enemyDr
+        if (b.stats && !b.stats.critDmg) {
+          b.stats.critDmg = newStats().critDmg
+          if (!b.stats.critChance) b.stats.critChance = newStats().critChance
+        }
+      }
+    }
+    data.fights = fights
+    data.version = 11
+  }
+  // Future migrations go here, in version order: if (data.version === 11) { ...; data.version = 12 }
   for (const [name, cs] of Object.entries(data.characters)) completeCharacter(name, cs)
+  completeFights(data)
   return {
     ...defaultSave(),
     ...data,

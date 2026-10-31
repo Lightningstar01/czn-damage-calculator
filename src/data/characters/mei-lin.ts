@@ -2,7 +2,7 @@
 // Damage % follows the "+" rule: 'by 20%' (no "+") = multiplicative, '+20%' = additive (owner, 2026-10-25).
 // Extra hits (Combo, Spire V, the Ego skill) are set per play in the attack list.
 import type { CharacterAdditions } from '../../engine/types'
-import { cardBuff } from '../helpers'
+import { cardBuff, EGO_POTENTIALS_PLUS_3 } from '../helpers'
 
 // Applied when an Attack card is used. Unconfirmed whether the first Attack card already gets it.
 const passionWeakness = cardBuff('weak', 'Passion Weakness', 'Weakness Attack', 'ALL')
@@ -19,6 +19,7 @@ const ember = (amount: number) => `Applies ${amount} Ember (count it in the Embe
 const awakens = '1 turn after a Ravage'
 
 export default {
+  verified: { date: '2026-10-30', gameVersion: '841' },
   notes: 'Stat potentials are in the stats screen; card upgrades are set on the Setup tab. Ember and Spirit of the Aromata stacks are '
     + 'set on each play of the attack list (Cards tab). Ember sources: E2 1 per damaging card, Potential 3-1 +1 per Strike, '
     + 'Spire / I / II 2 / 2 / 3, Jewel III 1 per Attack card, Aromata IV 1 per card. '
@@ -29,17 +30,26 @@ export default {
     '5-1': { text: "+5% Damage Amount to Mei Lin's Strike\nIf Mei Lin's Attack is 500 or higher, add an additional +5% to the modifier" },
     '7': { text: "If Mei Lin's Attack is 600 or higher, +4% Weakness Damage Amount\nFor every 50 Attack exceeding 600, add an additional +1% to the modifier\n(additional +8% max)" },
   },
+  // Manifest Ego in the game's wording (owner's screenshots, 2026-10-31)
+  ego: {
+    1: { text: "Flame Dragon's Sovereignty Card now strikes Critical Hit to Ravaged targets." },
+    2: { text: "If Mei Lin's cards deal Damage, apply 1 Ember to the target" },
+    3: { text: 'Change the following effect for Heavenly Flame Dragon: Add 1 Hit to the next 6 Basic Attack Cards activated, instead of 4 Basic Attack Cards' },
+    4: { text: "If Mei Lin's attack Ravages an enemy, gain 1 Flame Dragon Awakens.\nFlame Dragon Awakens: For 1 turn, +20% Damage Amount to Mei Lin's Attack Cards and +20% Damage Amount against targets in a Ravaged state." },
+    5: { text: EGO_POTENTIALS_PLUS_3 },
+    6: { text: 'Whenever Mei Lin gains Flame Dragon Awakens 2times, 100% Fixed Damage to all enemies and apply 3 Ember' },
+  },
   effects: [
     // Ember (owner, 2026-10-25): "When hitting or putting a target in a Ravage state, deal +30% Damage for each stack of
-    // Ember the target has (up to 5 stacks). Upon activation, an Ember is removed." Only on cards marked Target Ravaged.
+    // Ember the target has (up to 5 stacks). Upon activation, an Ember is removed." Only on plays with Target Ravaged on (Cards tab), which On Ravage cards have by default.
     // The stacks on the target are set per play (snapshot, owner 2026-10-26).
     { kind: 'Buff', id: 'ember', name: 'Ember', category: 'Character', value: '+30%', appliesTo: 'ALL',
       hitScope: 'All hits', condition: 'Ravaged only', maxStacks: 5, counter: 'Ember' },
     // Potentials not on the stats screen (Potential 3-1, +1 Ember per Strike, goes in the Ember stacks per play)
     // Potential 5-1 (in game): "+5% Damage Amount to Mei Lin's Strike. If Mei Lin's Attack is 500 or higher, add an additional +5%". Part of the in-game
     // card % (owner's 132% check), so it only counts on cards entered at base %. The extra +5% follows the stats-screen Attack.
-    { kind: 'Buff', id: 'p5-1-strike', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
-      appliesTo: 'Strike', hitScope: 'All hits', condition: 'Always', attackBonus: { above: 500, value: '+5%', orEqual: true } },
+    { kind: 'Buff', id: 'p5-1-strike', node: '5-1', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
+      appliesTo: 'Strike', hitScope: 'All hits', condition: 'Always', thresholdBonus: { above: 500, value: '+5%', orEqual: true } },
     // Manifest Ego (dupes): on from the build's level
     { kind: 'Buff', id: 'e1-crit', name: 'E1 Sleeping Memory', category: 'Ego Manifestation', type: 'Crit Chance',
       value: '100%', appliesTo: "Flame Dragon's Sovereignty", hitScope: 'All hits', condition: 'Ravaged only', egoLevel: 1 },

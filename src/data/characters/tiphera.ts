@@ -3,7 +3,7 @@
 // Archetype: △ and Event Horizon raise the first hit of the next Attack card of any ally (owner, 2026-10-28).
 // Harmonization "Double all effects" doubles the card % (134% -> 268%), like Creation and Destruction III's Retain +100% (owner, 2026-10-28).
 import type { CharacterAdditions } from '../../engine/types'
-import { cardBuff } from '../helpers'
+import { cardBuff, EGO_POTENTIALS_PLUS_3 } from '../helpers'
 
 // The cards that create Archetype cards bring all three into the deck
 const archetypes = ['card-985', 'card-986', 'card-987']
@@ -18,6 +18,7 @@ const archetypeText = (effect: string) => `[Exhaust]\n${effect}`
 const archetypePct = '{P5-1:{60%}|{50%}}'
 
 export default {
+  verified: { date: '2026-10-30', gameVersion: '841' },
   notes: 'Stat potentials are in the stats screen; card upgrades are set on the Setup tab. Per play (Cards tab): Archetype △ '
     + 'stacks (30% each, max 10) and Event Horizon on the first hit of the next Attack card, any ally\'s; Harmonization on '
     + 'Creation and Destruction / I; Retain stacks on III; the Cost of V; Power of Archetype stacks (E4). '
@@ -28,9 +29,18 @@ export default {
     '5-1': { name: 'Signature Card Proficiency', text: "+5% Heal and Shield Gain Amounts to Archetype cards, and if Tiphera's Defense is 250 or higher, add an additional +5% to the modifier" },
     '7': { text: "If Tiphera's Defense is 300 or higher, at the start of battle, +10% to Critical Damage of allies" },
   },
+  // Manifest Ego in the game's wording (owner's screenshots, 2026-10-31)
+  ego: {
+    1: { text: 'Change the max stack count of Form Upgrade for the Event Horizon card from 3 to 4.' },
+    2: { text: "When an Archetype card is activated, gain that card's shape effect.\nWhen shape effects stack to 3, create 1 card consisting of the stacked shape effects.\n○: Heal 150%\n△: Increase Damage Amount of the first Hit of the next Attack Card by 30% (max 300%)\n□: Draw 1 Archetype card\nThis effect can only be activated once per turn, and the shape effect is removed at the end of the turn once it is activated." },
+    3: { text: 'Increase the additional creation count of Archetype Resonance to 3 times, and increase the Cost decrease effect of the next Ego Skill used to 3.' },
+    4: { text: "When Tiphera's Archetype card is activated, gain the Power of Archetype effect.\nPower of Archetype: Increase Damage Amount of Attack Cards of allies by 5%, increase Order Attribute Damage Amount of allies by 5%, and increase Defense-Based Damage Amount of allies by 5%\nAt the end of the turn, remove Power of Archetype (max 2 stacks)" },
+    5: { text: EGO_POTENTIALS_PLUS_3 },
+    6: { text: "Tiphera's Signature Cards receive Damage Amount Increase effects gained from Archetype: △ cards, but are changed to not be consumed.\nAt the start of battle, change Archetype: △'s Damage Amount effect to increase from 30% to 35%, and max stacks from 300% to 350%." },
+  },
   effects: [
     // 7 (in game): "If Tiphera's Defense is 300 or higher, at the start of battle, +10% to Critical Damage of allies"
-    { kind: 'Stat', id: 'p7-crit', name: 'Unique Stat Upgrade', category: 'Potential', target: 'allies', stat: 'Crit DMG', value: '10%',
+    { kind: 'Stat', id: 'p7-crit', node: '7', name: 'Unique Stat Upgrade', category: 'Potential', target: 'allies', stat: 'Crit DMG', value: '10%',
       hint: 'DEF 300+' },
     // E4 Power of Archetype: "When Tiphera's Archetype card is used ... At the end of the turn, remove (max 2 stacks)"
     { kind: 'Buff', id: 'e4-attack', name: 'E4 Power of Archetype: Attack Cards', category: 'Ego Manifestation', target: 'allies',

@@ -153,6 +153,7 @@ h2 { font-size: 1.05rem; margin: 0; display: flex; align-items: center; gap: 6px
 .row-note { font-size: 0.78rem; color: var(--muted); font-style: italic; }
 .pre-line { white-space: pre-line; }
 .row-warn { font-size: 0.8rem; }
+.tag.not-reviewed { color: var(--warn); align-self: center; }
 .row.dragging { z-index: 5; position: relative; box-shadow: 0 6px 18px rgb(0 0 0 / 0.18); border-radius: 10px; }
 .tag { font-size: 0.7rem; font-weight: 500; padding: 1px 7px; border-radius: 999px; background: var(--surface-2); color: var(--muted); }
 .editor { padding: 10px 0 4px; }
@@ -186,6 +187,7 @@ h2 { font-size: 1.05rem; margin: 0; display: flex; align-items: center; gap: 6px
 .btn.small { padding: 4px 10px; min-height: 32px; font-size: 0.85rem; white-space: nowrap; }
 .btn.danger { color: var(--bad); }
 .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.field-stack { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
 .inline-row { display: flex; gap: 8px; align-items: flex-end; flex-wrap: wrap; }
 .inline-row .field { flex: 1 1 140px; }
 .gap-top { margin-top: 10px; }

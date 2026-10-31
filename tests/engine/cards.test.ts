@@ -4,9 +4,9 @@ import { renderCardText } from '../../src/engine/cardText'
 import { AUTO, buildDeck, changeEpiphany, prunePlays } from '../../src/engine/deck'
 import { activeBuffs } from '../../src/engine/buffs'
 import { ADDITIONS, IMPORTED, PARTNERS, PRESETS } from '../../src/data/presets'
-import { checkAdditions, checkPartnersAndSets } from '../../src/data/merge'
+import { checkAdditions, checkEffects, checkPartnersAndSets, mergeCharacter } from '../../src/data/merge'
 import { newBuild, newCharacterSave } from '../../src/store/save'
-import { type Build, type Card, type PartnerPreset } from '../../src/engine/types'
+import { type Build, type Card, type Effect, type PartnerPreset } from '../../src/engine/types'
 import { addCards, cardFromPreset, newCard, noStrikeNode, plays, setPlays, settings } from '../helpers'
 
 describe('card presets', () => {
@@ -17,10 +17,62 @@ describe('card presets', () => {
     expect(PRESETS.characters.length).toBe(Object.keys(IMPORTED).length)
     expect(new Set(PRESETS.characters.map((c) => c.name)).size).toBe(PRESETS.characters.length)
     expect(checkAdditions(IMPORTED, ADDITIONS)).toEqual([])
-    expect(checkAdditions(IMPORTED, { nobody: {}, 'mei-lin': { cards: { 'card-0': {} } } })).toHaveLength(2)
-    expect(checkAdditions(IMPORTED, { 'mei-lin': { cards: { 'card-338': { creates: ['card-0'] } } } })).toHaveLength(1)
+    const verified = { date: '2026-10-30', gameVersion: '841' }
+    expect(checkAdditions(IMPORTED, { nobody: {}, 'mei-lin': { verified, cards: { 'card-0': {} } } })).toHaveLength(2)
+    expect(checkAdditions(IMPORTED, { 'mei-lin': { verified, cards: { 'card-338': { creates: ['card-0'] } } } })).toHaveLength(1)
     const badEgo = { ...PRESETS.characters[0].effects[0], kind: 'Buff', id: 'x', egoLevel: 7 } as never
-    expect(checkAdditions(IMPORTED, { 'mei-lin': { effects: [badEgo] } })).toHaveLength(1)
+    expect(checkAdditions(IMPORTED, { 'mei-lin': { verified, effects: [badEgo] } })).toHaveLength(1)
+    expect(checkAdditions(IMPORTED, { 'mei-lin': {} })).toEqual(["characters/mei-lin.ts: no verified date and game version"])
+  })
+
+  it('the additions checks catch Potential nodes, Ego levels and text tokens that point nowhere', () => {
+    const verified = { date: '2026-10-30', gameVersion: '841' }
+    const check = (add: object) => checkAdditions(IMPORTED, { 'mei-lin': { verified, ...add } })
+    expect(check({ ego: { 7: { text: 'x' } } })).toHaveLength(1)
+    expect(check({ potentials: { '9-9': { text: 'x' } } })).toHaveLength(1)
+    expect(check({ effects: [{ ...PRESETS.characters[0].effects[0], id: 'x', node: '9-9' }] })).toHaveLength(1)
+    expect(check({ cards: { 'card-338': { nodeTags: { '9-9': 'X' } } } })).toHaveLength(1)
+    expect(check({ cards: { 'card-338': { nodeCard: { '9-9': { hits: 2 } } } } })).toHaveLength(1)
+    expect(check({ cards: { 'card-338': { text: '{P9-9:x} {100%@card-0}' } } })).toHaveLength(2)
+    expect(check({ cards: { 'card-338': { text: '{E7:x} {E30:6|4} {E1:x}' } } })).toHaveLength(2)
+    expect(check({ cards: { 'card-338': { triggers: [{ card: 'card-338', on: 'Attack', egoLevel: 7 }] } } })).toHaveLength(1)
+  })
+
+  it('no effect silently does nothing: every "Applies to", trigger and value reads', () => {
+    const others = [...PRESETS.partners, ...PRESETS.fragmentSets]
+    expect(checkEffects(PRESETS.characters, others)).toEqual([])
+    const buff = { kind: 'Buff', id: 'x', name: 'X', category: 'Other', value: '+5%', appliesTo: 'ALL', hitScope: 'All hits', condition: 'Always' } as const
+    const mei2 = (effects: Effect[]) => [{ ...mei, effects }]
+    expect(checkEffects(mei2([{ ...buff, appliesTo: 'Strik' }]), [])).toHaveLength(1)
+    expect(checkEffects(mei2([{ ...buff, value: 'five' }]), [])).toHaveLength(1)
+    expect(checkEffects(mei2([{ ...buff, thresholdBonus: { above: 1, value: 'x' } }]), [])).toHaveLength(1)
+    expect(checkEffects(mei2([{ ...buff, thresholdBonus: { above: 1, value: '+5%', every: 10, max: '10 percent' } }]), [])).toHaveLength(1)
+    expect(checkEffects([{ ...mei, effects: [], triggers: [{ card: 'c', on: 'Nothing' }] }], [])).toHaveLength(1)
+    expect(checkEffects(mei2([]), [{ name: 'P', effects: [{ ...buff, appliesTo: 'Nothing' }] }])).toHaveLength(1)
+    // Effects waiting for a mechanic that isn't modeled yet are listed on purpose
+    expect(checkEffects(mei2([{ ...buff, appliesTo: 'DoT' }]), [])).toEqual([])
+  })
+
+  it('card ids keep pointing at the same cards (a re-import that moves them must be looked at: saves and additions use them)', async () => {
+    const ids = Object.fromEntries(Object.values(IMPORTED).sort((a, b) => a.slug.localeCompare(b.slug))
+      .map((c) => [c.slug, Object.fromEntries([...c.cards].sort((a, b) => a.id.localeCompare(b.id)).map((x) => [x.id, x.name]))]))
+    await expect(`${JSON.stringify(ids, null, 1)}\n`).toMatchFileSnapshot('../fixtures/card-ids.json')
+  })
+
+  it('in-game wording replaces the text only: Ego overrides never change what the import says about levels', () => {
+    const imported = IMPORTED['mei-lin']
+    const before = mergeCharacter(imported)
+    const merged = mergeCharacter(imported, { ego: { 5: { text: 'Other wording' }, 1: { name: 'In-game name' } } })
+    expect(merged.manifestEgo!.find((m) => m.level === 5)!.text).toBe('Other wording')
+    expect(merged.manifestEgo!.find((m) => m.level === 1)!.name).toBe('In-game name')
+    expect(merged.potentialEgo).toEqual(before.potentialEgo)
+    expect(before.potentialEgo!.length).toBeGreaterThan(0)
+  })
+
+  it('reviewed characters carry when they were verified, the rest are marked not reviewed', () => {
+    expect(mei.verified).toEqual({ date: '2026-10-30', gameVersion: '841' })
+    expect(PRESETS.characters.filter((c) => c.verified).map((c) => c.slug).sort()).toEqual(Object.keys(ADDITIONS).sort())
+    expect(PRESETS.characters.some((c) => !c.verified)).toBe(true)
   })
 
   it('partners and fragment sets have default exports, unique names and unique effect ids', () => {

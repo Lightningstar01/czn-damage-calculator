@@ -6,7 +6,7 @@
 // Fairy's Protection's 121% Shield in the owner's screenshot is a partner's effect (owner, 2026-10-28): not in the text.
 // Potential 3-1 adds the Blessing tag to Gather Around and Fairy's Protection (nodeTags: only while 3-1 is on).
 import type { CharacterAdditions } from '../../engine/types'
-import { cardBuff } from '../helpers'
+import { cardBuff, EGO_POTENTIALS_PLUS_3 } from '../helpers'
 
 const doggie = 'card-1154', teddy = 'card-1155', pack = 'card-1156', doggieMorphed = 'card-1157', teddyMorphed = 'card-1158'
 
@@ -15,6 +15,7 @@ const truthDebuff = () => [cardBuff('taken', 'Damage Amount taken by the target'
   { target: 'enemy', counter: 'Truth Behind A Story (on target)', maxStacks: 1 })]
 
 export default {
+  verified: { date: '2026-10-30', gameVersion: '841' },
   notes: 'Card upgrades are set on the Setup tab (Doggie and Teddy cards use the Signature level). Per play (Cards tab): Bliss of '
     + 'Dreams stacks (E2), Truth Behind A Story (on target) after Truth / I was played this turn, Truth Behind A Story III and '
     + 'Protect Us V used this turn, Blessing cards in hand (Truth IV), Doggies in hand (Doggie (Pack)), Blessing cards in All '
@@ -25,12 +26,21 @@ export default {
     '5-1': { text: "+5% Shield Gain Amount to Adelheid's Fairy's Protection\nIf Adelheid's Defense is 250 or higher, add an additional +5% to the modifier" },
     '7': { text: "If Adelheid's Defense is 300 or higher, +5% Void-Attribute Damage Amount, and for every 10 Defense exceeding 300, add an additional 2% to the modifier (additional +10% max)" },
   },
+  // Manifest Ego in the game's wording (owner's screenshots, 2026-10-31)
+  ego: {
+    1: { text: 'For the Garden of Secrets card, decrease Cost by 1 and add +100% Shield Gain Amount.' },
+    2: { text: 'Gains the Bliss of Dreams effect for each Blessing Adelheid applies or creates.\nAt the start of the battle, gain the Bliss of Dreams effect for each Blessing card in Deck.\nBliss of Dreams: Increase Damage Amount of allies by 3% (max 10 stacks).' },
+    3: { text: '+200% Shield Gain Amount to Happy Ending.\nChanges the restrictions of the Fixed Heal equal to Shield in possession effect to (cannot exceed 50% of max HP).' },
+    4: { text: 'At the start of battle, apply Blessing to any number of cards in hand.\nWhen a Blessing Upgrade Card is activated, apply Blessing to 1 random card in Draw Pile.' },
+    5: { text: EGO_POTENTIALS_PLUS_3 },
+    6: { text: 'For Bliss of Dreams, decrease max stacks by 5 and change the increased Damage Amount effect to 8%.\nAt the start of the turn, if Bliss of Dreams is 5, Draw 1 Blessing card.' },
+  },
   effects: [
     // 7 (in game): "If Adelheid's Defense is 300 or higher, +5% Void-Attribute Damage Amount, and for every 10 Defense exceeding 300,
     // add an additional 2% to the modifier (additional +10% max)": as Rossweisse's 7, on the stats-screen Defense
-    { kind: 'Buff', id: 'p7-void', name: 'Unique Stat Upgrade', category: 'Potential', value: '+5%', appliesTo: 'Void',
-      hitScope: 'All hits', condition: 'Always', thresholdStat: 'Defense', minAttack: 300,
-      attackBonus: { above: 300, value: '+2%', every: 10, max: '+10%' } },
+    { kind: 'Buff', id: 'p7-void', node: '7', name: 'Unique Stat Upgrade', category: 'Potential', value: '+5%', appliesTo: 'Void',
+      hitScope: 'All hits', condition: 'Always', thresholdStat: 'Defense', thresholdMin: 300,
+      thresholdBonus: { above: 300, value: '+2%', every: 10, max: '+10%' } },
     // E2 Awakening Memory (in game): "Gains the Bliss of Dreams effect for each Blessing Adelheid applies or creates. At the start
     // of battle, gain the Bliss of Dreams effect for each Blessing card in Deck. Bliss of Dreams: Increase Damage Amount of allies
     // by 3% (max 10 stacks)". Prydwen: "start of the turn ... in possession"

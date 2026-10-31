@@ -5,7 +5,7 @@
 // Potential 7 adds to the base % before the upgrade (Card +), measured at Attack 830: Flash Slash 258% = (220% + 10%) x 1.12,
 // Iceberg Cleave 213% = (180% + 10%) x 1.12.
 import type { CardPreset, CharacterAdditions } from '../../engine/types'
-import { cardBuff } from '../helpers'
+import { cardBuff, EGO_POTENTIALS_PLUS_3 } from '../helpers'
 
 /** A hit from an effect, not a card: unraised by card upgrades. */
 const effectHit = (id: string, name: string, pct: number, hits: number, text: string): CardPreset => ({
@@ -32,6 +32,7 @@ const drawnBuff = (value: string, counter: string) =>
 const onInspiration = (card: string) => [{ card, on: 'ALL', ...inspiration }]
 
 export default {
+  verified: { date: '2026-10-30', gameVersion: '841' },
   notes: 'Card upgrades are set on the Setup tab. Per play (Cards tab), on Yuki\'s own cards: Inspiration (adds the "Add 1 Hit", Rapid Slash\'s '
     + '30% and Freezing Blade\'s hit), Trickery Strike III (on the Inspiration plays of that turn), Prepare to Subdue / I-IV on the cards they '
     + 'buff, Cards Drawn this turn (Flash Slash IV), Cards moved to Draw Pile (Ego skill), Sword Dance (E4), Swiftblade Flurry (E6). Not '
@@ -42,19 +43,28 @@ export default {
     '5-1': { text: "+5% Damage Amount to Yuki's Longsword Slash and Rapid Slash\nIf Yuki's Attack is 500 or higher, add an additional +5% to the modifier" },
     '7': { text: "If Yuki's Attack is 600 or higher, +5% Damage Amount to Flash Slash and Iceberg Cleave.\nFor every 20 Attack above 600, add an additional +1% to the modifier (additional +5% max)" },
   },
+  // Manifest Ego in the game's wording (owner's screenshots, 2026-10-31)
+  ego: {
+    1: { text: 'Add the following to Iceberg Cleave: If there is only a single target, increase Damage Amount by 50%.' },
+    2: { text: 'At the start of battle, for 3 turns, enable Inspiration for cards of this unit drawn at the start of the turn.' },
+    3: { text: '+150% Damage Amount to Skyscraper Cleave and change the +100% Damage Amount for each card moved to top of Draw Pile to +150%' },
+    4: { text: 'Each time a card of this unit is Drawn through an ability, gain 1 Sword Dance.\nSword Dance: Increases Damage Amount of Attack Cards of this unit by 10% (max 3 stacks)' },
+    5: { text: EGO_POTENTIALS_PLUS_3 },
+    6: { text: 'Increase max stacks of Sword Dance by 1 and change the Damage Amount increase effect to 15%.\nIf Sword Dance is stacked to 4, gain 1 Swiftblade Flurry.\nSwiftblade Flurry: Increase Damage Amount of Flash Slash and Iceberg Cleave by 20%' },
+  },
   effects: [
     // 3-1 (in game): "Inspiration: Decrease Cost by 1, to Longsword Slash. Inspiration: Increase Damage Amount by 30%, to Rapid Slash"
-    { kind: 'Buff', id: 'p3-1-rapid', name: 'Inspiration: Increase Damage Amount', category: 'Potential', value: '30%', appliesTo: 'Rapid Slash',
+    { kind: 'Buff', id: 'p3-1-rapid', node: '3-1', name: 'Inspiration: Increase Damage Amount', category: 'Potential', value: '30%', appliesTo: 'Rapid Slash',
       hitScope: 'All hits', condition: 'Always', ...inspiration },
     // 5-1 (in game): "+5% Damage Amount to Yuki's Longsword Slash and Rapid Slash. If Yuki's Attack is 500 or higher, add an additional +5%
     // to the modifier". Not unlocked by the owner (Rapid Slash 224% = 220% x 1.02)
-    { kind: 'Buff', id: 'p5-1-basic', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
-      appliesTo: 'Longsword Slash/Rapid Slash', hitScope: 'All hits', condition: 'Always', attackBonus: { above: 500, value: '+5%', orEqual: true } },
+    { kind: 'Buff', id: 'p5-1-basic', node: '5-1', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
+      appliesTo: 'Longsword Slash/Rapid Slash', hitScope: 'All hits', condition: 'Always', thresholdBonus: { above: 500, value: '+5%', orEqual: true } },
     // 7 (in game): "If Yuki's Attack is 600 or higher, +5% Damage Amount to Flash Slash and Iceberg Cleave. For every 20 Attack above 600,
     // add an additional +1% to the modifier (additional +5% max)" (Prydwen: every 80)
-    { kind: 'Buff', id: 'p7-flash-iceberg', name: 'Unique Stat Upgrade', category: 'Potential', type: 'Card +', value: '+5%',
-      appliesTo: flashAndIceberg, hitScope: 'All hits', condition: 'Always', minAttack: 600,
-      attackBonus: { above: 600, value: '+1%', every: 20, max: '+5%' } },
+    { kind: 'Buff', id: 'p7-flash-iceberg', node: '7', name: 'Unique Stat Upgrade', category: 'Potential', type: 'Card +', value: '+5%',
+      appliesTo: flashAndIceberg, hitScope: 'All hits', condition: 'Always', thresholdMin: 600,
+      thresholdBonus: { above: 600, value: '+1%', every: 20, max: '+5%' } },
     // E1 Sleeping Memory (in game): "Add the following to Iceberg Cleave: If there is only a single target, increase Damage Amount by 50%"
     // (Prydwen: removes a 20% decrease that the card doesn't have in game)
     { kind: 'Buff', id: 'e1-iceberg', name: singleTarget, category: 'Ego Manifestation', value: '50%', appliesTo: 'Iceberg Cleave',

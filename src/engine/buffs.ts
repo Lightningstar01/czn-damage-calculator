@@ -2,8 +2,8 @@
 import { buildDeck, deckPresets, teammateDeck } from './deck'
 import { CARD_TYPES } from './types'
 import type {
-  BuffEffect, BuffType, Build, Card, CardPreset, CharacterPreset, CharacterSave, Condition, Effect, FragmentSetPreset, HitScope, PartnerPreset,
-  Presets, Settings, StatEffect, StatName, Switch,
+  BuffEffect, BuffType, Build, Card, CardPreset, CharacterPreset, CharacterSave, Condition, Effect, FragmentSetPreset, HitScope, LiveBuild, PartnerPreset,
+  Presets, ScreenStats, Settings, StatEffect, StatName, Switch,
 } from './types'
 
 /** Where a number came from, for the "tap a chip" breakdown. */
@@ -34,13 +34,14 @@ export function parseBuffValue(text: string): number {
 /** Threshold stats kept as a share (0.6 = 60%), shown as a %. */
 export const thresholdIsPct = (stat: BuffEffect['thresholdStat']) => stat === 'Critical Chance' || stat === 'Extra Damage'
 
-/** A preset buff's value for the build: its own value (0 below minAttack), plus its attackBonus when the stats-screen Attack
- * (or Defense / Health / Critical Chance / Extra Damage, with thresholdStat) is above the threshold (once, or for every `every` above it up to `max`). */
-export function presetBuffValue(e: BuffEffect, build: Pick<Build, 'stats'>): { value: number; bonus: boolean } {
-  const atk = e.thresholdStat === 'Defense' ? build.stats.defense : e.thresholdStat === 'Health' ? build.stats.health
-    : e.thresholdStat === 'Critical Chance' ? build.stats.critChance : e.thresholdStat === 'Extra Damage' ? build.stats.extraDmg : build.stats.attack
-  if (e.minAttack !== undefined && atk < e.minAttack) return { value: 0, bonus: false }
-  const ab = e.attackBonus
+/** A preset buff's value for its owner: its own value (0 below thresholdMin), plus its thresholdBonus when the owner's stats-screen Attack
+ * (or Defense / Health / Critical Chance / Extra Damage, with thresholdStat) is above the threshold (once, or for every `every` above it up to `max`).
+ * stats: the owner's ("If Mei Lin's Attack is 500 or higher"), not the receiver's; without them no threshold is met. */
+export function presetBuffValue(e: BuffEffect, stats: ScreenStats | undefined): { value: number; bonus: boolean } {
+  const atk = !stats ? -Infinity : e.thresholdStat === 'Defense' ? stats.defense : e.thresholdStat === 'Health' ? stats.health
+    : e.thresholdStat === 'Critical Chance' ? stats.critChance : e.thresholdStat === 'Extra Damage' ? stats.extraDmg : stats.attack
+  if (e.thresholdMin !== undefined && atk < e.thresholdMin) return { value: 0, bonus: false }
+  const ab = e.thresholdBonus
   const bonus = !!ab && (ab.orEqual ? atk >= ab.above : atk > ab.above)
   let extra = bonus ? parseBuffValue(ab!.value) : 0
   if (bonus && ab!.every) {
@@ -97,6 +98,10 @@ export interface PresetState {
   onStatsScreen: boolean
   /** Needs a higher Manifest Ego level than the build has, or is replaced at the build's level (egoBelow). */
   egoLocked: boolean
+  /** Comes from a Potential node that's switched off (Setup > Potentials). */
+  nodeLocked: boolean
+  /** The stats of whoever owns the effect, read by its thresholds; missing for a teammate without a linked build. */
+  ownerStats?: ScreenStats
   stacks: number
   /** Card preset id, for effects of a library card. */
   cardId?: string
@@ -160,12 +165,20 @@ export function stateLabel(s: Pick<PresetState, 'owner' | 'teammateName'>): stri
   return s.teammateName && s.teammateName !== s.owner ? `${s.teammateName} › ${s.owner}` : s.owner
 }
 
+/** Whose effects are being listed: their Manifest Ego level, stats and Potential nodes. */
+interface Who {
+  ego: number
+  stats?: ScreenStats
+  nodes?: Build['potentialNodes']
+}
+
 /** The preset effects of the build's character, partner, memory fragment sets and deck cards, with their switch state;
  * then each teammate's ally / enemy effects (character, partner, sets, deck cards). */
-export function presetStates(presets: Presets, charName: string, build: Build): PresetState[] {
+export function presetStates(presets: Presets, charName: string, build: LiveBuild): PresetState[] {
   const out: PresetState[] = []
   const add = (owner: string, ownerKind: PresetState['ownerKind'], effects: Effect[], blocked: (e: Effect) => boolean,
-    ego: number, cardId?: string, team?: { slot: number; name: string }) => {
+    who: Who, cardId?: string, team?: { slot: number; name: string }) => {
+    const ego = who.ego
     for (const e of effects) {
       if (team && !reachesTeam(e)) continue
       const key = team ? teamKey(team.name, owner, e) : presetKey(owner, e)
@@ -174,31 +187,33 @@ export function presetStates(presets: Presets, charName: string, build: Build): 
       // On the stats screen means the build's own screen; a teammate's ally stat isn't on it
       const onStatsScreen = !team && e.kind === 'Stat' && !!e.onStatsScreen
       const egoLocked = (e.egoLevel ?? 0) > ego || (e.egoBelow !== undefined && ego >= e.egoBelow)
-      const stacks = classBlocked || onStatsScreen || egoLocked ? 0 : switchStacks(sw === undefined ? true : sw, e.defaultStacks)
-      out.push({ owner, ownerKind, effect: e, classBlocked, onStatsScreen, egoLocked, stacks, cardId, key,
+      const nodeLocked = e.node !== undefined && who.nodes?.[e.node] === false
+      const stacks = classBlocked || onStatsScreen || egoLocked || nodeLocked ? 0 : switchStacks(sw === undefined ? true : sw, e.defaultStacks)
+      out.push({ owner, ownerKind, effect: e, classBlocked, onStatsScreen, egoLocked, nodeLocked, ownerStats: who.stats, stacks, cardId, key,
         ...(team ? { teammate: team.slot, teammateName: team.name } : {}) })
     }
   }
-  const addAll = (ch: CharacterPreset | undefined, partner: string, fragments: string[], ego: number, cardPresets: CardPreset[],
+  const addAll = (ch: CharacterPreset | undefined, partner: string, fragments: string[], who: Who, cardPresets: CardPreset[],
     team?: { slot: number; name: string }) => {
-    if (ch) add(ch.name, 'Character', ch.effects, () => false, ego, undefined, team)
+    if (ch) add(ch.name, 'Character', ch.effects, () => false, who, undefined, team)
     const p = partner ? findPartner(presets, partner) : undefined
-    if (p) add(p.name, 'Partner', p.effects, (e) => !!e.classLimited && p.class !== ch?.class, ego, undefined, team)
-    for (const f of distinctSets(presets, fragments)) add(f.name, 'Memory Fragment', f.effects, () => false, ego, undefined, team)
-    for (const c of cardPresets) add(c.name, 'Card', c.effects ?? [], () => false, ego, c.id, team)
+    if (p) add(p.name, 'Partner', p.effects, (e) => !!e.classLimited && p.class !== ch?.class, who, undefined, team)
+    for (const f of distinctSets(presets, fragments)) add(f.name, 'Memory Fragment', f.effects, () => false, who, undefined, team)
+    for (const c of cardPresets) add(c.name, 'Card', c.effects ?? [], () => false, who, c.id, team)
   }
   const ch = findCharacter(presets, charName)
-  addAll(ch, build.partner, build.fragments ?? [], build.egoLevel ?? 0, deckPresets(buildDeck(ch, build)))
+  addAll(ch, build.partner, build.fragments ?? [], { ego: build.egoLevel ?? 0, stats: build.stats, nodes: build.potentialNodes }, deckPresets(buildDeck(ch, build)))
   ;(build.team ?? []).forEach((t, slot) => {
     if (!t.character || t.character === charName) return
     const tch = findCharacter(presets, t.character)
-    addAll(tch, t.partner, t.fragments ?? [], t.egoLevel ?? 0, deckPresets(teammateDeck(tch, t)), { slot, name: t.character })
+    addAll(tch, t.partner, t.fragments ?? [], { ego: t.egoLevel ?? 0, stats: t.live?.stats, nodes: t.live?.potentialNodes },
+      deckPresets(teammateDeck(tch, t)), { slot, name: t.character })
   })
   return out
 }
 
 /** Stat boosts active for the build: preset stat effects, then the owner's own boosts. */
-export function activeStats(presets: Presets, charName: string, cs: CharacterSave, build: Build): ActiveStat[] {
+export function activeStats(presets: Presets, charName: string, cs: CharacterSave, build: LiveBuild): ActiveStat[] {
   const out: ActiveStat[] = []
   for (const s of presetStates(presets, charName, build)) {
     if (s.effect.kind !== 'Stat' || s.stacks <= 0) continue
@@ -216,7 +231,7 @@ export function activeStats(presets: Presets, charName: string, cs: CharacterSav
 }
 
 /** Buffs active for the build: Morale, preset buffs, then the owner's own buffs (max stacks applied). */
-export function activeBuffs(presets: Presets, charName: string, cs: CharacterSave, build: Build, settings: Settings): ActiveBuff[] {
+export function activeBuffs(presets: Presets, charName: string, cs: CharacterSave, build: LiveBuild, settings: Settings): ActiveBuff[] {
   const out: ActiveBuff[] = []
   const morale = Math.min(Math.max(0, build.morale || 0), settings.moraleMax)
   if (morale > 0) {
@@ -226,9 +241,9 @@ export function activeBuffs(presets: Presets, charName: string, cs: CharacterSav
   for (const s of presetStates(presets, charName, build)) {
     if (s.effect.kind !== 'Buff' || s.stacks <= 0) continue
     const e = s.effect as BuffEffect
-    const v = presetBuffValue(e, build)
-    const above = e.attackBonus && thresholdIsPct(e.thresholdStat) ? `${Math.round(e.attackBonus.above * 100)}%` : e.attackBonus?.above
-    out.push({ label: `${stateLabel(s)}: ${e.name}${v.bonus ? ` (${e.thresholdStat ?? 'Attack'} ${e.attackBonus!.orEqual ? `${above}+` : `above ${above}`})` : ''}`,
+    const v = presetBuffValue(e, s.ownerStats)
+    const above = e.thresholdBonus && thresholdIsPct(e.thresholdStat) ? `${Math.round(e.thresholdBonus.above * 100)}%` : e.thresholdBonus?.above
+    out.push({ label: `${stateLabel(s)}: ${e.name}${v.bonus ? ` (${e.thresholdStat ?? 'Attack'} ${e.thresholdBonus!.orEqual ? `${above}+` : `above ${above}`})` : ''}`,
       type: buffType(e.value, e.type), value: v.value,
       stacks: e.counter ? 0 : e.maxStacks ? Math.min(s.stacks, e.maxStacks) : s.stacks,
       appliesTo: e.appliesTo, hitScope: e.hitScope, condition: e.condition,

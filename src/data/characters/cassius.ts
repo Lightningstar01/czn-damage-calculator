@@ -7,29 +7,38 @@
 // 5-1 works like Mei Lin's: it raises the card % (owner, 2026-10-28).
 // Decrease Morale (enemies' Morale: -20% Damage amount per Morale) lowers their damage, not ours: text only.
 import type { CharacterAdditions } from '../../engine/types'
-import { cardBuff } from '../helpers'
+import { cardBuff, EGO_POTENTIALS_PLUS_3 } from '../helpers'
 
 const quests = ['card-601', 'card-602', 'card-603', 'card-604']
 const questCards = ['card-605', 'card-606', 'card-607', 'card-608']
 const empoweredCards = ['card-880', 'card-881', 'card-882', 'card-883']
 
 export default {
+  verified: { date: '2026-10-30', gameVersion: '841' },
   notes: 'Card upgrades are set on the Setup tab. Per play (Cards tab): Completed Quests (Dice Trick III), Attack Cards activated '
     + 'this turn (Triple 0), the drawn card\'s Cost (Devil Dice V). Dice Trick IV: add one play per Quest card activated. '
-    + 'Morale from Straight and Potential 7 (1 per Quest completed, for 1 turn): add it on the Buffs tab. '
-    + 'Potential 5-1: switch it off on the Buffs tab while it is locked',
+    + 'Morale from Straight and Potential 7 (1 per Quest completed, for 1 turn): add it on the Buffs tab',
   // Potential nodes in the game's wording (owner's screenshots, 2026-10-30)
   potentials: {
     '3-1': { text: 'Add a 30% chance to draw 1 card to Card and Wild Card.' },
     '5-1': { text: "+5% Damage Amount to Cassius's Cards and Wild Card\nIf Cassius's Health is 600 or higher, add an additional +5% to the modifier" },
     '7': { text: "Upon completing a Quest, gain 1 Morale for 1 turn\nIf Cassius's Health is 700 or higher, when a Quest is completed, 1 Fortitude for 1 turn" },
   },
+  // Manifest Ego in the game's wording (owner's screenshots, 2026-10-31)
+  ego: {
+    1: { text: "Add the Discard Pile as a targeted area for the Joker card's effect." },
+    2: { text: 'Each time Cassius draws through an ability, Fixed Heal equal to 40%.' },
+    3: { text: EGO_POTENTIALS_PLUS_3 },
+    4: { text: 'Increase Morale Reduction by 2 of Death Trick to all enemies' },
+    5: { text: EGO_POTENTIALS_PLUS_3 },
+    6: { text: 'Whenever Cassius completes a Quest, apply 1 Morale Reduction to all enemies for 1 turn.' },
+  },
   effects: [
     // 5-1 (in game): "+5% Damage Amount to Cassius's Cards and Wild Card. If Cassius's Health is 600 or higher, add an additional
     // +5% to the modifier". Like Mei Lin's 5-1: it raises the card % (owner, 2026-10-28)
-    { kind: 'Buff', id: 'p5-1-cards', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
+    { kind: 'Buff', id: 'p5-1-cards', node: '5-1', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
       appliesTo: 'Cards/Wild Card', hitScope: 'All hits', condition: 'Always', thresholdStat: 'Health',
-      attackBonus: { above: 600, value: '+5%', orEqual: true } },
+      thresholdBonus: { above: 600, value: '+5%', orEqual: true } },
   ],
   // Card text: the in-game wording (owner's screenshots, 2026-10-28), with tokens for the build's numbers (engine/cardText.ts)
   cards: {

@@ -18,12 +18,13 @@ export function Header({ children }: { children?: ReactNode }) {
         <select className="char-select" aria-label="Character" value={data.activeCharacter}
           onChange={(e) => update((d) => selectCharacter(d, e.target.value))}>
           <option value="">Pick a character…</option>
-          {PRESETS.characters.map((c) => <option key={c.name} value={c.name}>{c.name}</option>)}
+          {PRESETS.characters.map((c) => <option key={c.name} value={c.name}>{c.name}{c.verified ? '' : ' (not reviewed)'}</option>)}
         </select>
         {preset && (
           <span className="char-meta">
             <span className={`el el-${preset.element.toLowerCase()}`}>{preset.element}</span>
             <span className="cls">{preset.class}</span>
+            {!preset.verified && <span className="tag not-reviewed">Not reviewed</span>}
           </span>
         )}
       </div>

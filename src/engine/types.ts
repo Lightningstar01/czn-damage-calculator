@@ -58,6 +58,8 @@ export interface StatEffect {
   egoLevel?: number
   /** Manifest Ego level from which it's replaced (by another effect with that egoLevel): off for builds at or above it. */
   egoBelow?: number
+  /** Potential node ('5-1') it comes from: off while that node is locked (Setup > Potentials, build.potentialNodes). */
+  node?: string
   /** A few words shown as a grey chip when the switch depends on something in the fight, e.g. 'ATK > 500'. No notes on effects. */
   hint?: string
 }
@@ -83,16 +85,18 @@ export interface BuffEffect {
   egoLevel?: number
   /** See StatEffect.egoBelow. */
   egoBelow?: number
+  /** See StatEffect.node. */
+  node?: string
   /** Per-play stacks (e.g. 'Ember'): the stacks are set on each play of the attack list (default 0), instead of
    * by the switch, which is then on/off only. Buffs with the same counter share the play's number; maxStacks caps it. */
   counter?: string
   /** Extra value added automatically while the build's stats-screen Attack is above `above` (Mei Lin 5-1: +5% more above 500);
    * `orEqual`: from `above` on ('500 or higher'). With `every`, the value is added for every full `every` Attack above
    * `above`, up to `max` (Rossweisse 7: +2% for every 20 Attack exceeding 600, max +10%). */
-  attackBonus?: { above: number; value: string; orEqual?: boolean; every?: number; max?: string }
+  thresholdBonus?: { above: number; value: string; orEqual?: boolean; every?: number; max?: string }
   /** Stats-screen Attack the buff needs: it's worth 0 below it (Rossweisse 7: 'If Attack is 600 or higher'). */
-  minAttack?: number
-  /** 'Defense' / 'Health': minAttack and attackBonus read that stats-screen stat instead (Adelheid 7: 'If Defense is 300 or
+  thresholdMin?: number
+  /** 'Defense' / 'Health': thresholdMin and thresholdBonus read that stats-screen stat instead (Adelheid 7: 'If Defense is 300 or
    * higher'; Cassius 5-1: 'If Health is 600 or higher'; Renoa 7: 'If Critical Chance is 60% or higher', above: 0.6; Selena 7: 'If Extra Damage is 30% or higher', above: 0.3). */
   thresholdStat?: 'Defense' | 'Health' | 'Critical Chance' | 'Extra Damage'
   /** See StatEffect.hint. */
@@ -143,6 +147,14 @@ export interface CharacterPreset {
   potentialEgo?: { level: number; levels: number }[]
   /** Damage the character's keywords set off on any team member's play (Selena's Mark). */
   triggers?: Trigger[]
+  /** When the character was last compared with the owner's in-game screenshots; missing = not reviewed yet (Prydwen's data only). */
+  verified?: Verified
+}
+
+/** The last review of a character against the game: its date and the game version shown in-game. */
+export interface Verified {
+  date: string
+  gameVersion: string
 }
 
 /** A Potential node ('3-1') or a Manifest Ego level (dupes, 1-6), as Prydwen lists them. Reference text. */
@@ -259,6 +271,8 @@ export interface ImportedCharacter {
 
 /** What a re-import must not overwrite, mainly the buffs. Stored in src/data/characters/<slug>.ts. */
 export interface CharacterAdditions {
+  /** See CharacterPreset.verified. Every additions file has one (checkAdditions). */
+  verified?: Verified
   notes?: string
   /** The character's own stat boosts and buffs. */
   effects?: Effect[]
@@ -271,6 +285,9 @@ export interface CharacterAdditions {
   extraCards?: CardPreset[]
   /** Per Potential node ('3-1'): the in-game name and text, replacing the import's. */
   potentials?: Record<string, Partial<KitEntry>>
+  /** Per Manifest Ego level: the in-game name and text, replacing the import's. Wording only: the +3 card upgrade levels stay
+   * read from the import (potentialEgo in merge.ts). */
+  ego?: Record<number, Partial<KitEntry>>
 }
 
 /** Memory fragment slots on a character; the set dropdowns per build. */
@@ -324,8 +341,6 @@ export interface Build {
   /** Memory fragment set names, one per dropdown ('' = none). */
   fragments: string[]
   stats: ScreenStats
-  enemyDefMult: number
-  enemyDr: number
   morale: number
   /** Manifest Ego level (dupes), 0-6: unlocks the character's effects with an egoLevel. */
   egoLevel: number
@@ -370,7 +385,16 @@ export interface Teammate {
   cards: string[]
   /** Id of the teammate character's saved build to use; missing = their active build; NO_BUILD = none (the fields above). */
   build?: string
+  /** Only on a LiveTeammate: a computed team assigned into a saved build doesn't compile. */
+  live?: never
 }
+
+/** A teammate while computing (withLinkedTeam, teammateView), never saved. live: their stats and Potential nodes. Missing: their "If
+ * Attack is 500 or higher" thresholds aren't met and their nodes count as on. */
+export type LiveTeammate = Omit<Teammate, 'live'> & { live?: Pick<Build, 'stats' | 'potentialNodes'> }
+
+/** A build while computing; a saved Build is one too (its teammates have no live stats). */
+export type LiveBuild = Omit<Build, 'team'> & { team: LiveTeammate[] }
 
 /** Teammate.build: not linked to a saved build. */
 export const NO_BUILD = 'none'
@@ -457,6 +481,8 @@ export interface RotationPlay {
   vulnerable?: boolean
   /** Weakness debuff on the character for this play's hits. */
   weaknessDebuff?: boolean
+  /** Whether the target is Ravaged on this play's hits; missing = the card's own flag (on for "On Ravage" cards, off for the rest). */
+  ravaged?: boolean
   /** Counter name (BuffEffect.counter, e.g. 'Ember') -> stacks for this play. Missing = 0. */
   stacks?: Record<string, number>
 }
@@ -469,9 +495,30 @@ export interface CharacterSave {
   buffs: UserBuff[]
 }
 
+/** One enemy of a fight. */
+export interface Enemy {
+  /** Enemy DEF multiplier (1 = none). */
+  defMult: number
+  /** Enemy damage reduction (fraction). */
+  dr: number
+}
+
+/** No enemy modifiers: what the engine uses without a fight. */
+export const NO_ENEMY: Enemy = { defMult: 1, dr: 0 }
+
+/** A saved fight (owner, 2026-10-31): shared by every character and build, so builds are compared against the same enemy.
+ * One target for now: the engine reads enemies[0]; a list so several targets can come later. */
+export interface Fight {
+  id: string
+  name: string
+  enemies: Enemy[]
+}
+
 export interface SaveData {
   version: number
   settings: Settings
   activeCharacter: string
   characters: Record<string, CharacterSave>
+  fights: Fight[]
+  activeFight: string
 }

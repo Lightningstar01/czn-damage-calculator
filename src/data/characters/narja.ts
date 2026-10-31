@@ -5,9 +5,10 @@
 // are additive on Defense-Based cards; Domain II's debuff counts for the plays after it, not its own hit (owner, 2026-10-28).
 // E6's end-of-turn damage is its own card that joins the deck at E6 (owner, 2026-10-28).
 import type { CharacterAdditions } from '../../engine/types'
-import { cardBuff } from '../helpers'
+import { cardBuff, EGO_POTENTIALS_PLUS_3 } from '../helpers'
 
 export default {
+  verified: { date: '2026-10-30', gameVersion: '841' },
   notes: 'Card upgrades are set on the Setup tab. Per play (Cards tab): Voracity and Predation (1 while Narja has a stack; Voracity '
     + 'needs Health 50% or higher, Predation needs Voracity), Bottomless Hunger IV (played this turn), Domain of Voracity II (on '
     + 'target), Voracity decreased by Shackles of Hunger IV (up to 5), Voracity activations this turn (Bottomless Hunger V, for the '
@@ -19,6 +20,15 @@ export default {
     '5-1': { text: "+5% Heal Amount to Narja's NA: Defense Response\nIf Narja's Defense is 250 or higher, add an additional +5% to the modifier" },
     '7': { text: "+10% Damage Amount to Voracity\nIf Narja's Defense is 300 or higher, +20% Damage Amount to Predation" },
   },
+  // Manifest Ego in the game's wording (owner's screenshots, 2026-10-31)
+  ego: {
+    1: { text: "Increase Mealtime card's Predation by 2." },
+    2: { text: 'When Voracity is decreased, 40% chance to gain 1 Voracity.' },
+    3: { text: "Increases Predator's Hunting Method's Predation gained if Mealtime is in Graveyard by 3." },
+    4: { text: '+40% Damage Amount to Predation.' },
+    5: { text: EGO_POTENTIALS_PLUS_3 },
+    6: { text: 'At the start of the turn, gain 4 Voracity and 2 Predation.\nAt the end of the turn, 50% Defense-Based Damage to random enemies and Heal 1% Health × Predation count decreased this turn.' },
+  },
   effects: [
     // Keywords (in game): "Voracity: When Hitting with an Attack Card, 40% Fixed Heal. If Health is 50% or higher, +30% Damage
     // Amount dealt by Attack Cards. When the effect is activated, decrease by 1 (max 30 stacks)". "Predation: If in a Voracity
@@ -29,11 +39,11 @@ export default {
       hitScope: 'All hits', condition: 'Always', counter: 'Predation', maxStacks: 1, hint: 'with Voracity' },
     // 7 (in game): "+10% Damage Amount to Voracity. If Narja's Defense is 300 or higher, +20% Damage Amount to Predation"
     // (Prydwen: "greater than 300"): Voracity's +30% becomes +40%, Predation's +80% +100% (owner, 2026-10-28)
-    { kind: 'Buff', id: 'p7-voracity', name: 'Unique Stat Upgrade: Voracity', category: 'Potential', value: '+10%',
+    { kind: 'Buff', id: 'p7-voracity', node: '7', name: 'Unique Stat Upgrade: Voracity', category: 'Potential', value: '+10%',
       appliesTo: 'Attack', hitScope: 'All hits', condition: 'Always', counter: 'Voracity', maxStacks: 1 },
-    { kind: 'Buff', id: 'p7-predation', name: 'Unique Stat Upgrade: Predation', category: 'Potential', value: '+20%',
+    { kind: 'Buff', id: 'p7-predation', node: '7', name: 'Unique Stat Upgrade: Predation', category: 'Potential', value: '+20%',
       appliesTo: 'Attack', hitScope: 'All hits', condition: 'Always', counter: 'Predation', maxStacks: 1,
-      thresholdStat: 'Defense', minAttack: 300 },
+      thresholdStat: 'Defense', thresholdMin: 300 },
     // E4 Inner Memory (in game): "+40% Damage Amount to Predation" (Prydwen: +30%)
     { kind: 'Buff', id: 'e4-predation', name: 'E4 Inner Memory', category: 'Ego Manifestation', value: '+40%', appliesTo: 'Attack',
       hitScope: 'All hits', condition: 'Always', counter: 'Predation', maxStacks: 1, egoLevel: 4 },

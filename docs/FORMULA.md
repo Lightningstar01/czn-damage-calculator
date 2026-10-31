@@ -1,251 +1,200 @@
-# CZN damage formula — research notes
+# CZN damage formula
 
-Last reviewed: 2026-10-20. Status of each piece: **Sourced** (published guide), **User** (the
-owner's own knowledge/testing), **Unconfirmed** (assumption, exposed as a toggle or input).
+The rules the calculator uses. Each is marked **Sourced** (a published guide, see Sources), **User** (the owner's own knowledge or
+testing, which takes precedence) or **Unconfirmed** (an assumption, usually a toggle on the Settings tab).
+Open questions are in-game tests in [in-game-tests.md](in-game-tests.md). One character's readings are in `docs/characters/<slug>.md`.
 
-## 1. Final stats — Sourced (Prydwen)
+## The formula
+
+```
+Final ATK = Stats-screen Attack x (1 + partner/equipment ATK%) + flat equipment ATK       (DEF the same)
+
+Card %    = (base % + Card +) x (1 + 2% x upgrade levels) x (1 + Card %) + Base %         (the % the game shows for the card itself)
+
+Card mult = (Card % x Mult + Additive buffs incl. Morale)
+            x Weakness DMG     if the card applies weakness, or a Weakness Attack buff matches it
+            x (1 + 50%)        if Vulnerable is on for the play
+            x (1 - Enemy damage reduction)
+            x (1 - 25%)        if the Weakness debuff is on for the play
+            x (1 + Ravaged)    if Target Ravaged is on for the play (size Unconfirmed, default 0)
+
+Mult      = 1 + the sum of the multiplicative buffs (Summed, default), or the product of (1 + each) (Chained): Settings
+
+Damage    = Card mult x Stat x 0.35 x (1 + card element's DMG%) x (1 + Extra or DoT DMG%, by card kind) x Enemy DEF mult x (1 + Final buffs)
+Stat      = Final ATK; DEF cards: Final ATK x 0.3 + Final DEF x 2.1
+
+Fixed     = Card % x Final ATK x 0.35, and no other factor (Unconfirmed)
+
+Crit hit  = Damage x Crit DMG                                 (Crit DMG is the total multiplier; Crit Chance capped at 100%)
+Expected  = Damage x (1 + Crit Chance x (Crit DMG - 1))       per hit; each hit crits separately
+```
+
+All constants are on the Settings tab, none is written into the engine. Base stats of a new build are the game's: 3% Crit Chance,
+125% Crit DMG, 125% Weakness DMG (User, 2026-10-31).
+
+## Stats
+
+**Sourced (Prydwen)**, the game's own calculation:
 
 ```
 Final ATK = ((Base ATK + Partner ATK) x (1 + Memory ATK% + Potential ATK%) + Fragment flat + Affection flat)
             x (1 + Partner ATK% + Equipment ATK%) + Equipment flat
 ```
-DEF and HP use the same structure. Equipment % stacks additively with Partner %.
 
-**Workbook entry — User (2026-10-20):** the workbook no longer rebuilds Final ATK from parts.
-The owner copies Attack, Defense, etc. from the in-game detailed stats screen for each build.
-That Attack includes the partner's base ATK and memory fragments, but NOT partner effects
-(e.g. +16% Attack, +5% Weakness DMG) or equipment, which is save-data specific and applies only
-in battle (slot 1 always gives flat ATK; any piece may give ATK%). Those go in the Partner
-Effects & Equipment table: Final ATK = screen ATK x (1 + ATK%) + flat ATK. **Confirmed (User):**
-Mei Lin 1033 x 1.16 + 74 = 1272, matching her in-battle Attack. Elemental DMG% uses the stat
-row for the character's element (dropdown).
-Stats-screen check (User, 2026-10-25): Mei Lin's 637 base = 622 (character + partner) + 15
-affinity; the fragments' Attack % multiply only the 622 (622 x 56.7% + 43 flat = +396; removing the
-25% piece drops 156). Her in-battle Attack is 1198 + 74 equipment = 1272, as calculated.
+DEF and HP have the same structure. Equipment % adds to Partner %.
 
-## 2. Card multiplier — Sourced (Prydwen), with User rules
+**User:** we don't rebuild this from parts. The owner copies Attack, Defense and the rest from the in-game Detailed Stats screen for each
+build. That screen includes the partner's base stats and the fragments, but not partner effects (+16% Attack, +5% Weakness DMG) or
+equipment, which apply only in battle (slot 1 always gives flat ATK; any piece may give ATK%). Those are added on top, as above.
 
-```
-Final Card Mult = ((Base + Potential additive base) x (1 + Potential mult) x Generic multiplicative
-                   + Generic additive)
-                  x (1 + Elemental advantage) x (1 + Vulnerable) x (1 - Enemy DR) x (1 - Weakness)
-```
-- Potential multiplicative: x1.2 on Basic, Neutral and Unique cards (Prydwen).
-- Elemental advantage = the **Weakness Damage** stat on the stats screen, a total multiplier
-  with base 125% (User; Mei Lin's potential adds up to 12%). Does not apply to non-active
-  damage such as extra-attack bolts (Prydwen).
-- **No extra x1.25 on top of Weakness DMG — User test (2026-10-20):** Mei Lin Strike showed
-  204% and 290% when targeting a Passion-weak enemy; 204.24% x 1.42 (137% screen + 5% Marianne)
-  = 290.0%. The Reddit post's 270% (which seemed to need an extra x1.25) is unexplained, but
-  its inputs may have been incomplete. The "Extra weakness factor" setting stays at 0% as a test hook.
-- Cards: enter the damage % the card shows in-game; it already includes potentials and
-  epiphany (User). The website can instead take the base % plus upgrade levels (see 2c).
-- Vulnerable / Weakness debuff: old workbook: one stack is used up per hit, in card-table order across
-  every play of every card (User: "one sequence"). Every hit counts, including Fixed damage
-  (**Unconfirmed**). Website (2026-10-26): switched on per play and counts on every hit of it
-  (see Team snapshot).
-- Same in-game test: non-crit hit 500 with Final ATK 1272.28 back-solves to an enemy DEF
-  multiplier of about 0.387 (1st enemy targeted; more data needed).
-- Second test enemy (User, 2026-10-25, DEF guessed): Strike 592 and Rising Dragon Spire V 641
-  (crit 1070) non-crit both fit an enemy DEF multiplier of 0.3733 (0.3735 if the game rounds down).
-- Vulnerable x1.5, used up per hit (Prydwen; per-hit use from the owner).
-- Weakness x0.75 (Prydwen). Per-hit use is **Unconfirmed** (assumed same as Vulnerable).
-- Fixed damage ignores all multipliers (Prydwen). Whether it can crit: **Unconfirmed**, assumed not.
-  Fixed damage = Fixed % x Final ATK x a constant (Settings, default 0.35 like other cards): the owner thinks it is
-  ATK-based (2026-10-28, not sure); **Unconfirmed**, test in-game.
+- Stat nodes of the Potential tree are on the stats screen, so they're reference text (User).
+- Partner base stats are on the stats screen and never added again.
+- Memory fragment set stats are on the stats screen (`onStatsScreen`): listed for reference, never added. Set buffs are added like partner buffs.
+- Elemental DMG% is the stat of the card's element. Boosts (Elemental DMG%) count for the character's own element (**Unconfirmed**, in-game
+  test `card-other-element`; no card has an element other than its character's yet).
+- Mechanic DMG% (**Sourced**; fragment substats): Extra DMG on hits of kind Extra Attack, triggered ones included (Selena's Mark, Renoa's
+  discard hits, Nia's; User), DoT DMG on DoT hits.
 
-**Additive vs multiplicative wording — User:** after a localization update, a buff written
-with a leading "+" (e.g. "+30% Damage Amount") is additive; one without "+" is multiplicative.
-No public source found for this. Buff types are picked by this rule.
+## Buff types
 
-**Multiplicative buffs combine by summing — User belief**, supported by UltimateGacha, which
-cites Reddit testing. Prydwen's formula is ambiguous. Toggle: the "Multiplicative buffs combine" rule on the Settings tab, Summed/Chained.
+How a buff's text decides where it goes:
 
-**Morale — Sourced (Game8) + User:** +20% flat per stack in the additive bucket (Game8: 2 stacks
-turn a 100% card into 140%). Max 20 stacks (owner). UltimateGacha claims Morale is a late
-multiplier; this conflicts with Game8 and the owner, and was rejected.
+| Text | Type | Effect |
+| --- | --- | --- |
+| "+X% Damage Amount" | Additive | added to the card mult, after Mult |
+| "by X%", no "+" | Multiplicative | in Mult |
+| "+X%" from a Potential node or Ego, part of the card's shown % | Card + | added to the base %, before the upgrade |
+| "Double all effects", "for each X" of the card's own % | Card % | x (1 + the sum), with the upgrade |
+| "+X% base Damage Amount" | Base % | added to the shown % after the upgrade; Mult raises it too (**Unconfirmed**) |
+| "final Damage Amount" | Final | its own multiplier, x (1 + the sum), after everything else |
+| Crit Chance / Crit DMG on some cards | Crit Chance / Crit DMG | added to those cards' crit stats, before the cap |
+| Weakness Attack | Weakness Attack | Weakness DMG applies to matching cards, on all hits |
 
-## 2a. Partners, presets, Ravaged, Weakness Attack — User (2026-10-20)
+- **The "+" rule (User):** after a localization update, "+" means additive and no "+" means multiplicative. No public source; **Unconfirmed**
+  in a test, and also that it covers partner passives. Prydwen says English can't tell them apart without testing.
+- **Summed vs Chained (User belief, 2026-10-31; in-game test `multiplicative-summed-or-chained`):** multiplicative buffs add up, supported by
+  UltimateGacha citing Reddit tests; Prydwen's formula is ambiguous. Settings toggle, Summed by default. Chained treats a buff with stacks as one source (3 stacks of 10% = x1.3, not x1.331): **Unconfirmed**.
+- **Morale (Sourced, Game8 + User):** +20% per stack in the additive group, max 20 stacks. UltimateGacha calls it a late multiplier; that
+  conflicts with Game8 and the owner and was rejected.
+- **Card + (User, 2026-10-30):** measured on Chizuru's Shadow of the Moon, whose base isn't 100%: 110% = (80% + 15%) x 1.16. Multiplying
+  (80% x 1.16 x 1.15 = 107%) doesn't fit. Only cards with an upgrade (entered at base %). **Unconfirmed** on Rei's 7 on Predator's Blade and
+  Cassius's 5-1 on Wild Card, both locked for the owner.
+- **Thresholds:** in game every threshold is "X or higher" (Prydwen often "greater than"), so buffs count exactly at X
+  (`thresholdMin`, `thresholdBonus` with `orEqual`). `thresholdStat` picks the stats-screen stat read (Attack by default; Defense, Health,
+  Critical Chance, Extra Damage). A threshold reads the effect owner's stats ("If Mei Lin's Attack is 500 or higher"), not the receiver's
+  (User, 2026-10-31); a teammate without a linked build has no stats, so their thresholds aren't met. Battle-only Crit Chance isn't read
+  (**Unconfirmed**, Renoa). How the game rounds "for every X above Y" is an in-game test.
 
-- **Class-limited partner effects — User:** any partner can go with any character, but the
-  partner's class-limited effects only work when the partner's class matches the character's.
-  Base stats and the ego skill always apply. Presets mark each effect "Class-limited? Yes/No";
-  the calculator switches a class-limited effect off on a mismatch.
-- **Partner base stats** are already in the stats-screen numbers, so the Presets tab records
-  them for reference only (not added again).
-- **Marianne (Striker) — User:** 144 HP, 5 DEF, 155 ATK; class-limited: +16% Attack (as ATK%),
-  +5% Weakness DMG, "15% increased damage to Ravaged enemies", and Basic Attack cards always
-  count as Weakness Attacks.
-  - The Ravaged 15% has no "+", so it's multiplicative under the owner's "+" rule.
-    **Unconfirmed** that the "+" rule covers partner passives.
-- **Ravaged — User:** Ravaged enemies take more damage. The size is **Unconfirmed**:
-  the "Ravaged: extra damage taken" setting (default 0%) multiplies the card mult by (1 + it) when the card's
-  "Target Ravaged?" is Yes. Buffs with Condition "Ravaged only" apply only to those cards.
-- **Weakness Attack — User:** a buff of type "Weakness Attack" makes Weakness DMG apply to
-  matching cards, as if the card's "Weakness DMG applies?" were Yes. It ignores hit scope
-  (all hits). **Unconfirmed:** whether it also applies to non-active damage.
+**"Applies to"** (case-insensitive): `ALL`, an exact card name, a tag, the card's type (Attack, Skill, Upgrade), element, cost (`1-cost`,
+`2+ cost`; Ego skills have no AP cost), kind (`DoT`, `Extra Attack`), `Defense-Based`, `N+ hits` (the play's hit count), joined by `A & B` (all)
+or `A/B` (any). Hits from effects rather than cards (`notACard`) don't match card-type words.
 
-## 2b. Memory fragment sets — User (2026-10-25), website only
+## Weakness, Vulnerable, Ravaged
 
-- 6 fragment slots per character. A set is **either** a 2-piece set **or** a 4-piece set (one
-  bonus, never both), so a build has three 2-piece sets, or one 4-piece and one 2-piece set.
-- Set **stat** bonuses are already on the stats screen, so presets mark them `onStatsScreen`
-  and they are listed for reference only (not added again). Set **buffs** (damage, conditional)
-  are added like partner buffs, with a switch per build.
-- The website has three set dropdowns per build; it warns past 6 pieces, and a set picked twice
-  counts once (owner: two copies of a set never stack).
-- Set texts are from Prydwen, supplied by the owner. "Damage Amount by X%" follows the "+" rule
-  literally (owner): no "+" = multiplicative, "+X%" = additive.
-- **Per-card crit (website):** buffs of type "Crit Chance" / "Crit DMG" add to the final crit stats
-  of matching cards only (Crit DMG stays a total multiplier: +35% makes 188.6% into 223.6%). The crit
-  cap applies after them.
-- **Matching (website):** "Applies to" accepts `A & B` (all must match) and `A/B` (any one), plus
-  `N+ hits` (from the card's hit count), and the card kind (`DoT`, `Extra Attack`). The card's
-  own fields match too (owner): card type (`Attack`, `Skill`, `Upgrade`), element (`Passion`...),
-  and cost (`1-cost`, `2+ cost`; Ego skills have no AP cost). Other keywords (Exhaust, Basic
-  Attack...) are tags.
-- Triggered set buffs default to on at max stacks (owner); switch off or lower them per build.
-- Prelude to a Hero ("+15% ... max 15%, max 2 stacks") and Sanguine Thorn ("+25% ... max 25%,
-  max 2 stacks") give 15% / 25% total; the "stacks" are only turns of duration (owner).
-- Conditional set buffs the calculator can't check (vs Agony, 3+ cards in hand, at 3 stacks...)
-  stay on by default (owner); switch them off per build when they don't apply.
+- **Weakness DMG (User):** the stats-screen stat is the elemental advantage, a total multiplier, base 125%. There's no other x1.25 on top.
+- **Weakness Attack on non-active hits:** Prydwen says non-active damage (extra-attack bolts) gets no elemental bonus. The owner ruled that
+  Selena's Passion Weakness makes her Coordinated Attacks Weakness Attacks (2026-10-28), which is what's modeled there. As a general rule, **Unconfirmed**.
+- **Vulnerable x1.5, Weakness debuff x0.75 (Sourced).** In the game a stack is used per hit (Vulnerable: Prydwen and owner; Weakness: **Unconfirmed**).
+  The calculator has switches per play, counting on all its hits, instead of tracking stacks.
+- **Ravaged (User):** Ravaged enemies take more damage; the size is **Unconfirmed** (Settings, default 0). Target Ravaged is switched per play on the
+  Cards tab; On Ravage cards (`targetRavaged` on the card) start on, and the play can override either way (User, 2026-10-31). "Ravaged only" buffs count
+  only with it on, and a hit the play sets off is on the same Ravaged target, or not when the play's switch is off (**Unconfirmed**, in-game test
+  `ravaged-triggered-hits`). Ember stacks with it off do nothing, and the Results tab says so.
+- **Card % in hand / on target (User):** Results shows both per hit. In hand: Card % x Mult + Add, without the buffs that need a Ravaged target
+  (Ember, Marianne's and E4's vs Ravaged). On target: the full card mult.
 
-## 2c. Card presets — User (2026-10-25), website only
+## Crit and Fixed
 
-- Every character's cards (base + every epiphany; mythic cards like Flame Dragon's Sovereignty
-  have none) are imported from Prydwen, which the owner confirmed has the right "+" wording
-  (2026-10-25); other sites (OffBanner outdated, Game8 adds "+" everywhere) are not used.
-  `scripts/import_prydwen.py` writes `src/data/prydwen/<slug>.json`; our buffs and notes go in
-  `src/data/characters/<slug>.ts`. Picking a card adds it to the build's deck with the
-  **base** values; the build's card upgrade potentials are applied (below).
-- Importer reading of the card text (check against the game; corrections go in the additions file):
-  damage % and hits from the first "N% Damage" / "N% x H Damage" / "N% Damage x H" phrase;
-  "Defense-based" = DEF scaling, "Fixed" = Fixed; Piercing only ignores enemy shields (User,
-  2026-10-25; shields aren't modeled, so it counts as normal damage); for "100% (200%) Damage" the
-  first % is used. Basic = a starting card with no epiphanies (User; tags Basic, plus Basic Attack
-  or Basic Skill). Each character has one Basic Skill, Maribell two (User, 2026-10-25). The Weakness Attack tag means Weakness DMG applies (User). Ego skills are type
-  Skill with tag "Ego Skill" and no AP cost: damaging ego skills are not Attack cards (User,
-  2026-10-25). X-cost/unplayable cards have no cost and a tag. Status cards are type Skill with tag "Status".
-- Notes for one character (levels, Prydwen corrections, what the owner confirmed, what isn't counted): `docs/characters/<slug>.md`.
-- **Potential node wording** (owner's screenshots, 2026-10-30): nodes 3-1, 5-1 and 7 of the 16 reviewed characters use the in-game
-  text (`potentials` in characters/<slug>.ts). In game every threshold is "X or higher" (Prydwen often "greater than"), so the buffs
-  count exactly at X. Prydwen numbers that differ: Tenebria 7 +1% per 20 Attack (+2%), Chizuru 7 every 10 Attack (40), Yuki 7 every
-  20 Attack (80), Haru 7 Attack 600 (1000), Chizuru 3-1 70% (60%). Renoa 3-1 and Tiphera 5-1 are "Signature Card Proficiency".
-- **Potentials**: stat nodes are on the stats screen (User, 2026-10-25), so they're reference text.
-  The card upgrade nodes are modeled (website only, User 2026-10-25):
-  - **Basic Card Upgrade** raises Basic cards; **Signature Card Upgrade** (in-game name; Prydwen
-    says "Unique Card Upgrade") raises all the character's other cards: the non-basic starting
-    card, the 4 other cards, their epiphanies and the cards they generate, whatever the Unique tag
-    says. Not Ego skills (their upgrades come from Manifest Ego). Common/Neutral Card Upgrade
-    (cards from other characters) is not modeled yet.
-    Exception (User, 2026-10-27, from the in-game epiphany screen): Mei Lin's Flame Dragon's Jewel V shows
-    300% while Spire and Sovereignty show their upgrade; the owner thinks damage from a condition (On Ravage)
-    instead of an Attack card isn't raised. Only Jewel V is marked (`upgrade: null`); other characters' non-basic
-    starting cards stay Signature until checked.
-  - In-game card % = base % x (1 + 2% x level) (Settings: per level). Levels 0-10 per build
-    (default 0; in-game "by 12%" = level 6). The Manifest Ego levels whose text says "+3 levels" (E5 for most,
-    E3 for some, both E3 and E5 for 12 characters such as Mika; read from the import) each add 3 (max 13 or 16 = 32%;
-    Mika's Water Arrow 132% at Basic 10 and E6, owner's screenshots 2026-10-28).
-  - Raises ATK- and DEF-scaling damage (User). Fixed damage: **Unconfirmed**, a Settings toggle
-    (default off). In-game, Orlea's Annoying I shows its Fixed 40% unraised but its Heal raised (228% at Signature 7),
-    which fits the default; card text marks Fixed damage %s as `{F40%}`.
-  - Library cards store the base % with their upgrade (Basic / Signature / none). Own cards with no
-    upgrade use the % as shown in-game. Save v8: preset cards still at the base % got their upgrade;
-    edited ones kept their in-game % with no upgrade.
-  - Potential nodes that raise one card's damage (Mei Lin 5-1: "+5% Strike Damage", +5% more from
-    500 Attack) are part of the in-game card % (User: Strike shows 132% at Basic Card Upgrade 10 =
-    (100% + 10%) x 1.2). They are buffs of type **Card +**: card % = (base + sum of Card + buffs) x (1 + upgrade levels x 2%),
-    only on cards with an upgrade (entered at base %). Measured on Chizuru's cards (not 100% base, 2026-10-30): Shadow of the Moon
-    110% = (80% + 15%) x 1.16; multiplying (80% x 1.16 x 1.15 = 107%) doesn't fit. All earlier checks were on 100% cards, where
-    both give the same number. Moving every "+X%" node to Card +: User, 2026-10-30. It changes only Rei's 7 on Predator's Blade
-    (250%) and Cassius's 5-1 on Wild Card (220%), both locked for the owner, so **Unconfirmed on those two cards**.
-    Effects that scale the card's own % ("Double all effects", Tiphera) stay type **Card %**: x (1 + sum of Card % buffs).
-    The "above 500 Attack" part is one buff with the node (owner, 2026-10-27): it adds the extra +5% by
-    itself when the stats-screen Attack is above 500 (`attackBonus`).
-- **Base %** (User, 2026-10-27): "+X% base Damage Amount" is added to the card % as shown (after the
-  potential): card % = base x upgrade + Base %. Mult then multiplies it like the rest of the card %
-  (**Unconfirmed**: the owner said "added to the shown %"; whether the multiplicative buffs raise it too isn't tested).
-- **Final** (User, 2026-10-27): "final Damage Amount" buffs are their own multiplier, x (1 + sum of the final
-  buffs), after everything else. Rossweisse: Kyrken's Aegis on Flicker Blade (15%, E1 20%), E2 20%, E6 Blade
-  Poised (15% Attack cards, 25% Flicker Blade = 15% + 10%, as final buffs add up).
-- **Team damage** (User, 2026-10-28), website only: Selena is played beside another DPS, so teammates can deal damage too.
-  - Each teammate slot links one of that character's saved builds (missing = their active build; "None" = buffs only, as before).
-    A linked slot takes its Manifest Ego, partner and sets from that build.
-  - The attack list mixes everyone's plays: a teammate's picked cards can be played (`by` = the slot). Their plays are computed as
-    that teammate's own build would (their stats, own buffs, their deck = the slot's cards), with this build's character and the
-    other slot as their team; switches for the others' effects come from this build. An unlinked teammate's play deals no
-    damage but still sets off triggers (Mark).
-  - Triggers belong to whoever owns the effect (Selena as main or as teammate) and are computed with that owner's build.
-    Results shows each character's expected damage and share.
-- **Manifest Ego in-game wording** (owner's screenshots, 2026-10-28; Prydwen's can be outdated): Mei Lin E1 / E4,
-  Rossweisse E2 / E4 / E6, Tiphera E4 (max 2 stacks, removed at the end of the turn) and Orlea E4 match what is modeled.
-- **Team snapshot** (User, 2026-10-26), website only. Replaces the rotation buffs counted along
-  the rotation (2026-10-25):
-  - Each build has a team of up to 2 teammates (character, Manifest Ego level, partner, 3 fragment
-    sets, picked cards incl. the Ego skill). Effects have a **target**: `self` (default), `allies`
-    or `enemy`. The main character gets all of its own effects; a teammate gives only its allies /
-    enemy effects (character and Ego, partner incl. the partner's Ego skill, fragment sets, picked
-    cards). Teammates' equipment goes in My stat boosts / My buffs with a "From" label.
-  - **Snapshot**: every switched-on buff counts on every hit of every play, including the card that
-    applies it. "Damage taken" debuffs on the enemy (e.g. Adelheid's Truth) are additive. Teammates' damage
-    counts only for their plays in the attack list (Team damage, 2026-10-28).
-  - Each build has its own ordered **attack list** and deck (a list can be copied
-    from another build). Per play: hits, Vulnerable on/off, Weakness debuff on/off, and the stacks of
-    each per-play buff (`counter`), all off / 0 by default. A counter buff's switch is on/off only;
-    its stacks are capped at its max stacks.
-  - Save v9: each build got a copy of the old shared rotation; a play has Vulnerable / Weakness
-    debuff on if its first hit was within the build's old stack count; counter stacks start at 0.
-  - The Excel workbook was removed (owner, 2026-10-27); the website is the only version.
-- **Card % in hand / on target** (User, 2026-10-25), website only. The Results tab shows both for
-  each hit. In hand = card % x Mult + Add, without the buffs that need a Ravaged target (Ember,
-  Marianne's and E4's vs Ravaged). On target = the full card multiplier: those buffs, then x Weakness
-  DMG, Vulnerable, enemy damage reduction, Weakness debuff and Ravaged. Owner's check: Mei Lin's
-  Strike (Basic Card Upgrade 10, 5-1, Jewel, 1 Morale, Scarab, Obsidian Sword, Emblem) shows 251% in
-  hand and 357% on target in-game; the calculator gives 250.6% and 355.9% (x 142% Weakness DMG). The
-  ~0.3% gap on target is unexplained (game rounding or hidden decimals?).
-- **Manifest Ego (dupes)** can't be switched off in-game, so each build has a level E0-E6 (User,
-  2026-10-25). Ego buffs carry `egoLevel` and only count (and only show on the Buffs tab) from that level; set another build to a
-  different level to see what a dupe adds. The E level that raises potential levels counts in the
-  card upgrade factor (above).
-- A card's buffs show as preset buffs while the card is in the deck, on by default, switch per build.
-  The "+" rule applies: "by 20%" = multiplicative, "+20%" = additive.
-- Extra hits are set per play in the attack list; a play's hit count also drives `N+ hits` matching.
+- **Crit DMG is the total multiplier (User + in-game data):** crit = non-crit x Crit DMG; Prydwen's "(1 + Crit DMG)" is wrong. No toggle.
+- Crit cap 100%: **Unconfirmed** (Settings).
+- **Fixed damage ignores every multiplier (Sourced)**, with rare exceptions stated on the card. Fixed % x Final ATK x 0.35: the owner thinks it's ATK-based (2026-10-28), **Unconfirmed**.
+  Whether it crits: **Unconfirmed**, assumed not. Upgrades raising it: **Unconfirmed**, Settings toggle, default off (Orlea's Annoying I in hand shows Fixed 40% unraised
+  and its Heal raised; text token `{F40%}`).
 
-## 3. Damage — Sourced (Prydwen)
+## Card upgrades
 
-```
-ATK card: Damage = Card Mult x Final ATK x 0.35 x (1 + Elemental DMG%) x (1 + Mechanic DMG%)
-                   x Enemy DEF multiplier x (1 + Crit DMG)
-DEF card: same, with (Final ATK x 0.3 + Final DEF x 2.1) in place of Final ATK
-```
-- Mechanic DMG% = Extra DMG% or DoT DMG% (fragment substats), applied only to that damage kind. The game's Detailed Stats call the first
-  one Extra Damage: it multiplies every hit of kind Extra Attack, triggered ones included (Selena's Mark and Coordinated Attacks, Renoa's
-  discard hits, Nia's). Selena's 5-1 and 7 also read it as a threshold (`thresholdStat: 'Extra Damage'`, stats-screen value) (User, 2026-10-30).
-- Enemy DEF: no known formula; it's an input to back-solve from a real hit.
-- Crit DMG — **Confirmed (User + in-game data)**: the stat-screen Crit DMG is the total
-  multiplier, so crit hit = non-crit x Crit DMG (Prydwen's "(1 + Crit DMG)" is wrong).
-  Evidence: Reddit post (Mei Lin, 188.6% Crit DMG) shows 572 non-crit and 1078 crit;
-  572 x 1.886 = 1079. The community calculator sheet uses the same rule. No toggle.
-- Expected per hit = Non-crit x (1 + CritRate x (CritMult - 1)); each hit crits separately.
+**Sourced + User (2026-10-25):** Card % = base % x (1 + 2% x level) (Settings). Levels 0-10 per build.
 
-## 4. Open questions / to verify
+- **Basic Card Upgrade** raises Basic cards. **Signature Card Upgrade** (Prydwen: "Unique Card Upgrade") raises the character's other cards: the non-basic
+  starting card, the 4 others, their epiphanies and what they generate, whatever the Unique tag says. Not Ego skills. Common/Neutral Card Upgrade isn't modeled.
+- Manifest Ego levels saying "+3 levels" each add 3, read from the import (E5 for most, E3 too for some; max 16 = +32%; Mika's Water Arrow 132% at Basic 10, E6).
+- Exception (User, 2026-10-27): Mei Lin's Jewel V shows 300% while Spire and Sovereignty show their upgrade. The owner thinks damage from a condition instead of an Attack card
+  isn't raised. Only that card is marked (`upgrade: null`); others' non-basic starting cards stay Signature until checked.
+- A Potential node's effect is off while the node is off on Setup > Potentials (`node` on the effect; missing switch = on). A node can also change card text, tags and numbers
+  (`{P3-1:...}`, `nodeTags`, `nodeCard`). Stat nodes stay on the stats screen.
 
-- [x] Compared with the community calculator sheet (CZNRedditSheet.xlsx) and its Reddit
-      post, 2026-10-20. Its Final ATK leaves Partner ATK out of the % layer (pre-partner-change
-      formula; ours matches the in-game 1121). Card mult and damage line match ours.
-- [ ] Idea for later: enemy DEF multiplier may be 100 / enemy DEF. One data point, from that
-      sheet's note: Lv50 (Stage 3) Kentris, Nebula event, 255 DEF -> 0.392. **Unconfirmed**.
-- [ ] Confirm the "+" rule with an in-game test (one buff of each kind on the same card).
-- [ ] Summed vs Chained multiplicative buffs.
-- [x] Crit DMG: total multiplier (confirmed 2026-10-20).
-- [ ] Does Weakness use up a stack per hit or per card?
-- [ ] Can fixed damage crit?
-- [ ] Where Weakness DMG and partner "+X% damage" buffs sit relative to Morale.
-- [x] Extra x1.25 on top of Weakness DMG: none (Mei Lin test, 2026-10-20).
-- [x] Partner/equipment ATK% multiplies the stats-screen Attack (Mei Lin 1272 matches).
-- [ ] How much extra damage Ravaged enemies take ("Ravaged: extra damage taken" setting; 0% for now).
-- [ ] Is Marianne's Ravaged 15% multiplicative (no "+") or additive?
-- [ ] Gather more hits to pin down the enemy DEF multiplier (later).
+## Manifest Ego
+
+Can't be switched off in game, so each build has a level, E0-E6 (User, 2026-10-25). Effects with `egoLevel` count from that level (`egoBelow`: until that level). A character's
+`ego` additions replace Prydwen's wording with the game's (Prydwen's can be outdated); this changes the text only, never the +3 levels.
+
+## Cards
+
+Every character's cards (base + every epiphany) are imported from Prydwen, which the owner confirmed has the right "+" wording (2026-10-25); OffBanner is outdated and Game8 adds
+"+" everywhere. `scripts/import_prydwen.py` writes `src/data/prydwen/<slug>.json`; corrections and buffs go in `src/data/characters/<slug>.ts`. A character with such a file has been
+compared with the game (`verified`: date, game version); the rest show "Not reviewed".
+
+Reading of the card text (corrections go in the additions file):
+
+- Damage % and hits from the first "N% Damage", "N% x H Damage" or "N% Damage x H"; for "100% (200%) Damage" the first %.
+- "Defense-based" = DEF scaling, "Fixed" = Fixed; Piercing only ignores enemy shields (User; shields aren't modeled, so normal damage).
+- Basic = a starting card with no epiphanies (User; tags Basic and Basic Attack or Basic Skill). One Basic Skill per character, Maribell two (User).
+- The Weakness Attack tag means Weakness DMG applies (User).
+- Ego skills are type Skill with tag "Ego Skill" and no AP cost, so damaging ones aren't Attack cards (User). X-cost and unplayable cards have no cost and a tag. Status cards are type Skill with tag "Status".
+
+A card's buffs count while it's in the deck, on by default, with a switch per build. Extra hits are set per play; the hit count also drives `N+ hits`.
+
+## Partners and memory fragment sets
+
+- **Class-limited effects (User):** any partner goes with any character, but class-limited effects only work when the classes match. Base stats and the Ego skill always apply.
+- **Marianne (User):** Striker; 144 HP, 5 DEF, 155 ATK. Class-limited: +16% Attack, +5% Weakness DMG, "15% increased damage to Ravaged enemies" (multiplicative under the "+" rule: **Unconfirmed**),
+  and Basic Attack cards always count as Weakness Attacks.
+- **Sets (User):** 6 slots; a set is either 2-piece or 4-piece, never both bonuses, so three 2-piece sets or one 4-piece and one 2-piece. A set picked twice counts once. Texts from Prydwen.
+- Triggered set buffs default to on at max stacks; conditional ones the calculator can't check stay on. Switch them per build (User).
+- Prelude to a Hero ("+15% ... max 15%, max 2 stacks") and Sanguine Thorn ("+25% ... max 25%, max 2 stacks") give 15% / 25% in total: the "stacks" are turns of duration (User).
+
+## Teams
+
+- **Snapshot (User, 2026-10-26):** every switched-on buff counts on every hit of every play, including the card that applies it. Debuffs on the enemy ("damage taken") are additive.
+- A build has up to 2 teammates. Effects have a target: `self` (default), `allies` or `enemy`. The main character gets all of theirs; a teammate gives only allies and enemy effects (character and
+  Ego, partner incl. its Ego skill, sets, picked cards). Their equipment goes in My stat boosts / My buffs with a From label.
+- **Attack list (per build):** per play, hits, Vulnerable, Weakness debuff, Target Ravaged and the stacks of per-play buffs (`counter`, capped at max stacks), off / 0 by default.
+- **Team damage (User, 2026-10-28):** a slot links a saved build of that character (missing = their active build; None = buffs only), taking its Ego, partner and sets. Their plays are computed as their
+  own build would, with this character and the other slot as their team; switches for others' effects come from this build. An unlinked teammate's play deals no damage but still sets off triggers.
+- Triggers belong to whoever owns the effect and use that owner's build. Results shows each character's expected damage and share.
+
+## Fights
+
+The enemy lives in shared fights, not in builds (User, 2026-10-31), so builds compare against the same enemy and teammates' hits land on it too. Single target for now (`enemies[0]`); several targets later.
+
+**Enemy DEF multiplier:** no known formula; an input to back-solve from a real hit. Idea: 100 / enemy DEF (**Unconfirmed**; see the log). Damage reduction: boss and elite types (Sourced); entered by hand.
+
+## Not modeled yet
+
+- DoT damage: only when a character uses it (owner, 2026-10-31). Sanguine Thorn's `DoT` buff waits for it.
+- Partner Ego skill damage: out of scope, nobody uses it for damage (owner, 2026-10-27).
+- Shields, stress, draw and AP effects: text only.
+- Ego effects that deal damage with no card yet: Mei Lin E6, Orlea E6, Tenebria E2 (they wait for the extra-damage model).
+- See CLAUDE.md's backlog for the planned extra-damage model, in-game rounding and what unreviewed characters' imports miss.
+
+## Evidence log
+
+Dated measurements behind the rules. In-game numbers are also tests in [in-game-tests.md](in-game-tests.md).
+
+- **2026-10-20, Final ATK (User):** Mei Lin 1033 x 1.16 + 74 = 1272, her in-battle Attack.
+- **2026-10-20, no extra x1.25 (User):** Strike 204% in hand, 290% on a Passion-weak target: 204.24% x 1.42 (137% screen + 5% Marianne) = 290.0%. A Reddit post's 270%, which seemed to need one, is unexplained; its inputs may have been incomplete. The "Extra weakness factor" setting stays at 0% as a test hook.
+- **2026-10-20, Crit DMG (Reddit post, community sheet):** Mei Lin 188.6%: 572 non-crit, 1078 crit; 572 x 1.886 = 1079.
+- **2026-10-20, community sheet (CZNRedditSheet.xlsx):** its Final ATK leaves Partner ATK out of the % layer (an older formula; ours matches the in-game 1121). Its card mult and damage lines match ours.
+- **2026-10-20, enemy DEF (User):** a non-crit 500 with Final ATK 1272.28 back-solves to 0.387 (first enemy targeted).
+- **2026-10-25, enemy DEF (User, DEF guessed):** Strike 592 and Rising Dragon Spire V 641 (crit 1070) fit 0.3733 (0.3735 if the game rounds down).
+- **Enemy DEF idea (that sheet's note):** Lv50 Stage 3 Kentris, Nebula event, 255 DEF -> 0.392.
+- **2026-10-25, stats screen (User):** Mei Lin's 637 base = 622 (character + partner) + 15 affinity; fragment Attack % multiply only the 622 (622 x 56.7% + 43 flat = +396; removing the 25% piece drops 156). In battle 1198 + 74 equipment = 1272.
+- **2026-10-25, card % (User):** Strike with Basic Card Upgrade 10, 5-1, Jewel, 1 Morale, Scarab, Obsidian Sword, Emblem shows 251% in hand, 357% on target; the calculator 250.6% and 355.9% (x 142% Weakness DMG). The ~0.3% on target is unexplained (rounding or hidden decimals?). Strike's 132% = (100% + 10%) x 1.2.
+- **2026-10-28, Manifest Ego wording (User's screenshots):** Mei Lin E1 / E4, Rossweisse E2 / E4 / E6, Tiphera E4 (max 2 stacks, removed at end of turn) and Orlea E4 match what's modeled.
+- **2026-10-30, Potential wording (User's screenshots):** nodes 3-1, 5-1 and 7 of the 16 reviewed characters use the in-game text. Prydwen differs on Tenebria 7 +1% per 20 Attack (+2%), Chizuru 7 every 10 Attack (40), Yuki 7 every 20 Attack (80), Haru 7 Attack 600 (1000), Chizuru 3-1 70% (60%). Renoa 3-1 and Tiphera 5-1 are "Signature Card Proficiency".
+- **2026-10-31, Prydwen's formula page (updated 2026-04-11) re-read:** still the formula above, except its "(1 + Crit DMG)" (see Crit and Fixed).
+
+**Save format history** is in the comments of `src/store/migrate.ts`.
 
 ## Sources
 

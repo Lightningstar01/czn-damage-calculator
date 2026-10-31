@@ -112,6 +112,63 @@ test('a card added to the deck and played adds damage', async ({ page }) => {
   await expect(page.locator('.plays .play').nth(1)).toContainText(CARD)
 })
 
+test('the fight sets the enemy, and another saved fight can be picked', async ({ page }) => {
+  await openWithSave(page)
+  expect(await total(page, 'Non-crit')).toBe(500)
+  await tabButton(page, 'Setup').click()
+  const fight = page.locator('section', { has: page.getByRole('heading', { name: /^Fight/ }) }) // the heading's name includes its help button
+  await fight.getByRole('button', { name: 'Duplicate', exact: true }).click()
+  await fight.getByLabel('DEF multiplier').fill('0.774') // twice the save's 0.387
+  await fight.getByLabel('DEF multiplier').blur()
+  expect(Math.abs(await total(page, 'Non-crit') - 1000)).toBeLessThanOrEqual(1)
+  await tabButton(page, 'Setup').click()
+  await fight.getByRole('combobox', { name: 'Fight', exact: true }).selectOption({ index: 0 })
+  expect(await total(page, 'Non-crit')).toBe(500)
+})
+
+test('Target Ravaged is switched per play', async ({ page }) => {
+  await openWithSave(page)
+  await addAndPlay(page, 'Strike')
+  const before = await total(page)
+  const toggle = page.getByRole('switch', { name: 'Target Ravaged', exact: true })
+  // On the phone, going to Results closes the play; on desktop it stays open
+  const openPlay = async () => {
+    await tabButton(page, 'Cards').click()
+    const play = page.locator('.row-main[aria-expanded]').last()
+    if (await play.getAttribute('aria-expanded') === 'false') await play.click()
+  }
+  await openPlay()
+  await toggle.click()
+  await expect(toggle).toHaveAttribute('aria-checked', 'true')
+  expect(await total(page)).toBeGreaterThan(before) // Marianne's damage to Ravaged enemies
+  await openPlay()
+  await toggle.click()
+  expect(await total(page)).toBe(before)
+})
+
+test('a Potential node switched off takes its buff away', async ({ page }) => {
+  await openWithSave(page)
+  await addAndPlay(page, 'Strike')
+  const before = await total(page)
+  await tabButton(page, 'Setup').click()
+  const node = page.getByRole('switch', { name: 'Potential 5-1 Basic Card Proficiency', exact: true })
+  await node.click()
+  expect(await total(page)).toBeLessThan(before)
+  await tabButton(page, 'Buffs').click()
+  await expect(page.getByRole('switch', { name: PRESET_BUFF, exact: true })).toHaveCount(0)
+  await tabButton(page, 'Setup').click()
+  await node.click()
+  expect(await total(page)).toBe(before)
+})
+
+test('characters not reviewed yet say so', async ({ page }) => {
+  await openWithSave(page)
+  const badge = page.locator('.not-reviewed')
+  await expect(badge).toHaveCount(0)
+  await page.getByRole('combobox', { name: 'Character' }).selectOption('Beryl')
+  await expect(badge).toHaveText('Not reviewed')
+})
+
 test('changes are still there after a reload', async ({ page }) => {
   await openWithSave(page)
   const before = await total(page)

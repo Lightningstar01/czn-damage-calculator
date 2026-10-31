@@ -6,7 +6,7 @@
 // Potential 7 raises Predator's Blade's card %, like 5-1 on Dark Blade (owner, 2026-10-28).
 // E6 is "+20% Damage Amount to allies' Attack Cards" in game (Prydwen: "increased by 20%"): additive (owner, 2026-10-28).
 import type { CharacterAdditions } from '../../engine/types'
-import { cardBuff } from '../helpers'
+import { cardBuff, EGO_POTENTIALS_PLUS_3 } from '../helpers'
 
 /** "Increase Damage Amount of Basic Attack Cards by X%": any ally's Basic Attack cards. */
 const basicAttacks = (value: string, counter?: string) =>
@@ -22,6 +22,7 @@ const condensation = (card: string, value: string, appliesTo: string, name: stri
   [cardBuff('selected', name, value, appliesTo, { target: 'allies', counter: card, maxStacks: 1 })]
 
 export default {
+  verified: { date: '2026-10-30', gameVersion: '841' },
   notes: 'Stat potentials are in the stats screen; card upgrades are set on the Setup tab. Per play (Cards tab): Strike of Darkness '
     + '/ I used this turn (any ally\'s Basic Attack cards), Strike of Darkness II used earlier this turn (Rei\'s cards x0.8), '
     + 'Resonating Darkness V used this turn, Dark Condensation\'s selected card; the hits of Strike of Darkness III (1 + Basic '
@@ -33,16 +34,25 @@ export default {
     '5-1': { text: "+5% Damage Amount to Rei's Dark Blade\nIf Rei's Attack is 500 or higher, add an additional +5% to the modifier" },
     '7': { text: "If Rei's Attack is 550 or higher, +10% Damage Amount to Predator's Blade\nFor every 10 Attack exceeding 550, add an additional +1% to the modifier\n(additional +20% max)" },
   },
+  // Manifest Ego in the game's wording (owner's screenshots, 2026-10-31)
+  ego: {
+    1: { text: "Increase the Morale gained from the Predator's Blade card by 2 for 1 turn." },
+    2: { text: 'If Rei activates an Attack Card, Fixed Heal equal to 120%. This effect activates 1 time per turn.' },
+    3: { text: EGO_POTENTIALS_PLUS_3 },
+    4: { text: '+100% Damage Amount to Final Shadow' },
+    5: { text: EGO_POTENTIALS_PLUS_3 },
+    6: { text: "+20% Damage Amount to allies' Attack Cards." },
+  },
   effects: [
     // 5-1 (in game): "+5% Damage Amount to Rei's Dark Blade. If Rei's Attack is 500 or higher, add an additional +5%". Part of the
     // in-game card %, like Mei Lin's 5-1 (not unlocked by the owner: Dark Blade 114% = 100% x 1.14)
-    { kind: 'Buff', id: 'p5-1-blade', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
-      appliesTo: 'Dark Blade', hitScope: 'All hits', condition: 'Always', attackBonus: { above: 500, value: '+5%', orEqual: true } },
+    { kind: 'Buff', id: 'p5-1-blade', node: '5-1', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
+      appliesTo: 'Dark Blade', hitScope: 'All hits', condition: 'Always', thresholdBonus: { above: 500, value: '+5%', orEqual: true } },
     // 7 (in game): "If Rei's Attack is 550 or higher, +10% Damage Amount to Predator's Blade. For every 10 Attack exceeding 550, add an
     // additional +1% to the modifier (additional +20% max)". Raises the card % (owner, 2026-10-28); not unlocked by the owner
-    { kind: 'Buff', id: 'p7-predator', name: 'Unique Stat Upgrade', category: 'Potential', type: 'Card +', value: '+10%',
-      appliesTo: "Predator's Blade", hitScope: 'All hits', condition: 'Always', minAttack: 550,
-      attackBonus: { above: 550, value: '+1%', every: 10, max: '+20%' } },
+    { kind: 'Buff', id: 'p7-predator', node: '7', name: 'Unique Stat Upgrade', category: 'Potential', type: 'Card +', value: '+10%',
+      appliesTo: "Predator's Blade", hitScope: 'All hits', condition: 'Always', thresholdMin: 550,
+      thresholdBonus: { above: 550, value: '+1%', every: 10, max: '+20%' } },
     // E4 Inner Memory: "+100% Damage for Final Shadow" (300% -> 400% in game)
     { kind: 'Buff', id: 'e4-final-shadow', name: 'E4 Inner Memory', category: 'Ego Manifestation', type: 'Base %', value: '+100%',
       appliesTo: 'Final Shadow', hitScope: 'All hits', condition: 'Always', egoLevel: 4 },

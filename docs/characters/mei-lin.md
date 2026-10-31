@@ -12,11 +12,12 @@ What the owner confirmed about this character's cards. The general rules are in 
   Passion cards count in the play's stacks.
 - **Ember** (text from the owner: "When hitting or putting a target in a Ravage state, deal +30%
   Damage for each stack of Ember the target has (up to 5 stacks). Upon activation, an Ember is
-  removed."): +30% **additive** per stack, only on hits on a Ravaged target (cards marked Target
-  Ravaged). Stacks are set per play; one is used per hit in-game, so lower the play's stacks to
+  removed."): +30% **additive** per stack, only on hits on a Ravaged target (plays with Target
+  Ravaged on, the default for On Ravage cards). Stacks are set per play; one is used per hit in-game, so lower the play's stacks to
   estimate that. Sources (notes on the cards): E2, potential 3-1, Rising Dragon Spire / I / II,
   Jewel III, Aromata IV.
 - Jewel's "1 Passion Weakness to the target" is a Weakness Attack buff on all cards.
   **Unconfirmed** whether the first Attack card already gets it.
-- Not modeled: Embers, Tenacity Damage, shields, draw/cost effects. Jewel V's Ravage hit is a
+- Not modeled: E6 (in game: "Whenever Mei Lin gains Flame Dragon Awakens 2times, 100% Fixed Damage to all enemies and apply 3 Ember"),
+  Embers, Tenacity Damage, shields, draw/cost effects. Jewel V's Ravage hit is a
   300% card with Target Ravaged on; each play is one Ravage.

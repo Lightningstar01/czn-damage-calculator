@@ -5,7 +5,7 @@
 // Potential 5-1, 7 and E1 add to the card's base % before the upgrade, measured on the cards (Card +): Moonslash 96% = (70% + 10%) x 1.2,
 // Shadow 110% = (80% + 15%) x 1.16, Shadow+ 249% = (180% + 20% + 15%) x 1.16. Added hits are set per play.
 import type { CardPreset, CharacterAdditions } from '../../engine/types'
-import { cardBuff } from '../helpers'
+import { cardBuff, EGO_POTENTIALS_PLUS_3 } from '../helpers'
 
 // Karmic Flames' Cursed Shackles and Will-O'-Wisp make Shadows; stacked to Bind 3 it becomes Shadow of the Moon+
 const shadows = ['card-820', 'card-821']
@@ -27,6 +27,7 @@ const moonslash: Partial<CardPreset> = { nodeCard: { '3-1': { pct: 0.7, hits: 2 
 const moonslashText = '{P3-1:{70%} Damage × 2|{100%} Damage}'
 
 export default {
+  verified: { date: '2026-10-30', gameVersion: '841' },
   notes: 'Card upgrades are set on the Setup tab. Per play (Cards tab): Bind stacks on Shadow of the Moon / + (set at least 1: every stack '
     + 'counts), Shadows created on Moonlight of High Tide, Oni Hunt / I / II before the next Bind card, Cursed Shackles on Karmic Flames '
     + 'III (x2.5), Lunarshard stacks (E4). Set the added hits on each play: Inhibit +1 on Shadows, E6 +1 on Shadow+ at 3 Lunarshard, '
@@ -38,14 +39,23 @@ export default {
     '5-1': { text: "+5% Damage Amount to Chizuru's Moonslash\nIf Chizuru's Attack is 500 or higher, add an additional +5% to the modifier" },
     '7': { text: "If Chizuru's Attack is 600 or higher, +5% Damage Amount to Bind cards\nFor every 10 Attack above 600, add an additional +1% to the modifier (additional +10% max)" },
   },
+  // Manifest Ego in the game's wording (owner's screenshots, 2026-10-31)
+  ego: {
+    1: { text: '+20% Damage Amount to Shadow of the Moon+, +3% to Recover Amount of Max HP.' },
+    2: { text: 'When a Shadow of the Moon+ card is activated, create 1 Shadow of the Moon card.' },
+    3: { text: '+200% Damage Amount to Moonlight of High Tide, and change the +100% Damage Amount for each Shadow of the Moon created to +150%.' },
+    4: { text: "When Shadow of the Moon is created, gain 1 Lunarshard.\nLunarshard: +10% Damage Amount to Chizuru's Attack Cards (max 3 stacks)" },
+    5: { text: EGO_POTENTIALS_PLUS_3 },
+    6: { text: 'When Lunarshard stacks to 3, increases Hit Count of Shadow of the Moon+ by 1.' },
+  },
   effects: [
     // 5-1 (in game): "+5% Damage Amount to Chizuru's Moonslash. If Chizuru's Attack is 500 or higher, add an additional +5% to the modifier"
-    { kind: 'Buff', id: 'p5-1-moonslash', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
-      appliesTo: 'Moonslash', hitScope: 'All hits', condition: 'Always', attackBonus: { above: 500, value: '+5%', orEqual: true } },
+    { kind: 'Buff', id: 'p5-1-moonslash', node: '5-1', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
+      appliesTo: 'Moonslash', hitScope: 'All hits', condition: 'Always', thresholdBonus: { above: 500, value: '+5%', orEqual: true } },
     // 7 (in game): "If Chizuru's Attack is 600 or higher, +5% Damage Amount to Bind cards. For every 10 Attack above 600, add an
     // additional +1% to the modifier (additional +10% max)" (Prydwen: every 40)
-    { kind: 'Buff', id: 'p7-bind', name: 'Unique Stat Upgrade', category: 'Potential', type: 'Card +', value: '+5%', appliesTo: 'Bind',
-      hitScope: 'All hits', condition: 'Always', minAttack: 600, attackBonus: { above: 600, value: '+1%', every: 10, max: '+10%' } },
+    { kind: 'Buff', id: 'p7-bind', node: '7', name: 'Unique Stat Upgrade', category: 'Potential', type: 'Card +', value: '+5%', appliesTo: 'Bind',
+      hitScope: 'All hits', condition: 'Always', thresholdMin: 600, thresholdBonus: { above: 600, value: '+1%', every: 10, max: '+10%' } },
     // E1 Sleeping Memory (in game): "+20% Damage Amount to Shadow of the Moon+, +3% to Recover Amount of Max HP"
     { kind: 'Buff', id: 'e1-shadow', name: 'E1 Sleeping Memory', category: 'Ego Manifestation', type: 'Card +', value: '+20%',
       appliesTo: 'Shadow of the Moon+', hitScope: 'All hits', condition: 'Always', egoLevel: 1 },

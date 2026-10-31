@@ -87,7 +87,7 @@ export function buildDeck(ch: CharacterPreset | undefined, build: Pick<Build, 'd
 
 /** A teammate's deck: their picked cards (entry = index in Teammate.cards; card id = the preset id, so attack list plays keep
  * pointing at it when another card is removed), Ego skill and created cards. nodeOn: their linked build's Potential nodes. */
-export function teammateDeck(ch: CharacterPreset | undefined, t: Teammate, nodeOn: NodeOn = allNodesOn): DeckItem[] {
+export function teammateDeck(ch: CharacterPreset | undefined, t: Pick<Teammate, 'cards' | 'egoLevel'>, nodeOn: NodeOn = allNodesOn): DeckItem[] {
   return deckItems(ch, (t.cards ?? []).map((preset, i) => ({ id: String(i), preset })), nodeOn, t.egoLevel ?? 0)
     .map((i) => i.entry !== undefined && i.preset ? { ...i, card: { ...i.card, id: i.preset.id } } : i)
 }

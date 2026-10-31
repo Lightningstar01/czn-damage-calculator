@@ -339,7 +339,7 @@ function RotationSection() {
   }
   const others = cs.builds.filter((b) => b.id !== build.id)
   return (
-    <Section title={`${build.name} attack list`} help={`The team's plays for this build, in order (each build has its own list): this character's cards and the teammates' (their damage uses their saved build, picked on Setup › Team). Every buff that's on counts on every play (snapshot). Tap a play to set its hits (Combo, extra-hit effects), whether Vulnerable (×${1 + settings.vulnerable}) or the Weakness debuff (×${1 - settings.weaknessDebuff}) is up, and the stacks of per-play effects (Ember, Mark on the target...). Drag ⠿ to reorder.`}
+    <Section title={`${build.name} attack list`} help={`The team's plays for this build, in order (each build has its own list): this character's cards and the teammates' (their damage uses their saved build, picked on Setup › Team). Every buff that's on counts on every play (snapshot). Tap a play to set its hits (Combo, extra-hit effects), whether Vulnerable (×${1 + settings.vulnerable}) or the Weakness debuff (×${1 - settings.weaknessDebuff}) is up, whether the target is Ravaged (“Ravaged only” buffs such as Ember need it; On Ravage cards start on), and the stacks of per-play effects (Ember, Mark on the target...). Drag ⠿ to reorder.`}
       actions={(
         <span className="btn-row tight">
           {rotation.length > 0 && <button className="btn small" onClick={() => { if (confirm(`Clear ${build.name}'s attack list?`)) updateBuild((b) => { b.rotation = [] }) }}>Clear</button>}
@@ -366,7 +366,7 @@ function RotationSection() {
             {rotation.map((play, i) => {
               const base = decks.get(play.by)?.get(play.cardId)
               return (
-                <RotationItem key={ids[i]} id={ids[i]} index={i} play={play} card={base && playCard(base, play)} baseHits={base && playBaseHits(base, play)} baseCost={base?.cost}
+                <RotationItem key={ids[i]} id={ids[i]} index={i} play={play} card={base && playCard(base, play)} baseHits={base && playBaseHits(base, play)} baseCost={base?.cost} baseRavaged={!!base?.targetRavaged}
                   by={teamPlays ? owners.find((o) => o.slot === play.by)?.name : undefined}
                   counters={counterOptions[i] ?? []} open={open === i} onToggle={() => setOpen(open === i ? null : i)}
                   onChange={(fn) => updateBuild((b) => fn(b.rotation[i]))}
@@ -381,20 +381,20 @@ function RotationSection() {
   )
 }
 
-function playFlags(play: RotationPlay): string {
+function playFlags(play: RotationPlay, ravaged: boolean): string {
   const stacks = Object.entries(play.stacks ?? {}).filter(([, n]) => n > 0).map(([name, n]) => `${name} ${n}`)
-  return [...(play.vulnerable ? ['Vulnerable'] : []), ...(play.weaknessDebuff ? ['Weakness debuff'] : []), ...stacks].join(' · ')
+  return [...(play.vulnerable ? ['Vulnerable'] : []), ...(play.weaknessDebuff ? ['Weakness debuff'] : []), ...(ravaged ? ['Target Ravaged'] : []), ...stacks].join(' · ')
 }
 
 /** baseHits: the card's own hits. counters: the per-play stacks the switched-on buffs and the team's triggers read. by: who plays it
  * (shown once the list has teammates' plays). */
-function RotationItem({ id, index, play, card, baseHits, baseCost, by, counters, open, onToggle, onChange, onRemove }: {
-  id: string; index: number; play: RotationPlay; card?: Card; baseHits?: number; baseCost?: number | null; by?: string
+function RotationItem({ id, index, play, card, baseHits, baseCost, baseRavaged, by, counters, open, onToggle, onChange, onRemove }: {
+  id: string; index: number; play: RotationPlay; card?: Card; baseHits?: number; baseCost?: number | null; baseRavaged: boolean; by?: string
   counters: { name: string; max: number | null }[]
   open: boolean; onToggle: () => void; onChange: (fn: (p: RotationPlay) => void) => void; onRemove: () => void
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
-  const flags = playFlags(play)
+  const flags = playFlags(play, !!card?.targetRavaged)
   return (
     <li ref={setNodeRef} className={`row col ${isDragging ? 'dragging' : ''}`}
       style={{ transform: CSS.Transform.toString(transform), transition }}>
@@ -438,6 +438,9 @@ function RotationItem({ id, index, play, card, baseHits, baseCost, by, counters,
           </div>
           <div className="toggle-field"><span>Weakness debuff</span>
             <Toggle label="Weakness debuff" checked={!!play.weaknessDebuff} onChange={(v) => onChange((p) => { if (v) p.weaknessDebuff = true; else delete p.weaknessDebuff })} />
+          </div>
+          <div className="toggle-field"><span>Target Ravaged</span>
+            <Toggle label="Target Ravaged" checked={card.targetRavaged} onChange={(v) => onChange((p) => { if (v === baseRavaged) delete p.ravaged; else p.ravaged = v })} />
           </div>
           {/* A counter named like the card's per-count setting (Tenebria's Rhythms) is that same number: shown once, above */}
           {counters.filter((c) => c.name !== card.perCount).map((c) => (

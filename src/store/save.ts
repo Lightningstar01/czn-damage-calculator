@@ -1,10 +1,10 @@
 // Saved data: defaults and new objects. Older saves: migrate.ts; browser storage and backups: storage.ts.
 import { current, isDraft, type Draft } from 'immer'
 import { DEFAULT_SETTINGS } from '../data/settings'
-import { ELEMENTS, FRAGMENT_SET_PICKS, type Build, type CharacterSave, type SaveData, type ScreenStats, type Teammate, type UserBoost, type UserBuff } from '../engine/types'
+import { ELEMENTS, FRAGMENT_SET_PICKS, NO_ENEMY, type Build, type CharacterSave, type Enemy, type Fight, type SaveData, type ScreenStats, type Teammate, type UserBoost, type UserBuff } from '../engine/types'
 
 /** Bump when the save format changes, and add a step to migrate(). */
-export const SAVE_VERSION = 10
+export const SAVE_VERSION = 11
 
 export function newId(): string {
   return Math.random().toString(36).slice(2, 10)
@@ -12,7 +12,8 @@ export function newId(): string {
 
 export function newStats(): ScreenStats {
   return {
-    attack: 0, defense: 0, health: 0, critChance: 0, critDmg: 0, weaknessDmg: 1.25,
+    // The game's base values (owner, 2026-10-31): 3% Crit Chance, 125% Crit DMG, 125% Weakness DMG
+    attack: 0, defense: 0, health: 0, critChance: 0.03, critDmg: 1.25, weaknessDmg: 1.25,
     elemDmg: Object.fromEntries(ELEMENTS.map((e) => [e, 0])) as ScreenStats['elemDmg'],
     extraDmg: 0, dotDmg: 0,
   }
@@ -20,13 +21,27 @@ export function newStats(): ScreenStats {
 
 export function newBuild(name: string): Build {
   return {
-    id: newId(), name, partner: '', fragments: Array(FRAGMENT_SET_PICKS).fill(''), stats: newStats(), enemyDefMult: 1, enemyDr: 0,
+    id: newId(), name, partner: '', fragments: Array(FRAGMENT_SET_PICKS).fill(''), stats: newStats(),
     morale: 0, egoLevel: 0, basicLevel: 0, signatureLevel: 0, presetSwitches: {}, team: [], deck: [], rotation: [],
   }
 }
 
 export function newTeammate(): Teammate {
   return { character: '', egoLevel: 0, partner: '', fragments: Array(FRAGMENT_SET_PICKS).fill(''), cards: [] }
+}
+
+export function newFight(name: string, enemy: Enemy = NO_ENEMY): Fight {
+  return { id: newId(), name, enemies: [{ ...enemy }] }
+}
+
+/** The first fight of a new save: a fixed id, so two new saves are equal. */
+export function defaultFight(): Fight {
+  return { ...newFight('Default'), id: 'default' }
+}
+
+/** The fight the results are computed against. */
+export function activeFight(data: Pick<SaveData, 'fights' | 'activeFight'>): Fight {
+  return data.fights.find((f) => f.id === data.activeFight) ?? data.fights[0]
 }
 
 export function newCharacterSave(): CharacterSave {
@@ -60,5 +75,6 @@ export function duplicateBuild(cs: CharacterSave, build: Build, name: string): B
 }
 
 export function defaultSave(): SaveData {
-  return { version: SAVE_VERSION, settings: { ...DEFAULT_SETTINGS }, activeCharacter: '', characters: {} }
+  const fight = defaultFight()
+  return { version: SAVE_VERSION, settings: { ...DEFAULT_SETTINGS }, activeCharacter: '', characters: {}, fights: [fight], activeFight: fight.id }
 }

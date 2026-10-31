@@ -32,10 +32,9 @@ every character with a `src/data/characters/<slug>.ts`. Worked examples: `rosswe
 ## 1b. Ego Manifestation wording (owner, 2026-10-28)
 
 Prydwen's Manifest Ego texts are outdated (Rei's E6 is "+20% Damage Amount to allies' Attack Cards" in game, Prydwen
-"increased by 20%"). Before the owner takes a character's screenshots, or right after reading them, tell them which Ego levels
-to screenshot (Ego Manifestation screen, tap a level; the text may scroll, so ask for the rest if it's cut off). Only the levels
-that can change damage and aren't shown elsewhere: skip E3 / E5 "+3 card upgrade levels" (the card %s confirm them), levels
-that change a card's text (the card shows them), and heal / stress / draw levels. Save them as `card-screenshots/<slug>/ego-<N>.png`.
+"increased by 20%", and some numbers differ). Before the owner takes a character's screenshots, ask for all six levels (Ego
+Manifestation screen, tap a level; the text may scroll, so ask for the rest if it's cut off). Save them as
+`card-screenshots/<slug>/ego-<N>.png`, write them into `ego`, and check every damage number against the character's buffs.
 
 ## 2. Read everything
 
@@ -81,8 +80,10 @@ Copy the shape of the worked examples. Rules:
   (`src/engine/cardText.ts`): `{120%}` base % (shown raised by the build's upgrade; use it for Heal/Shield % too),
   `{F40%}` Fixed damage % (not raised by default, Orlea's Annoying), `{120%@id}` another card preset's base % (Renoa's Dirge Bullet), `{E3:3|2}` Ego level, `{P3-1:text|else}` potential
   node; they nest: `Heal {P3-1:{70%}|{100%}}`. Buff %s on a card (Softie's "by 10%") aren't raised: write them as is.
+- `verified: { date, gameVersion }` first: the date of the screenshots and the game version they show (ask for it if it isn't in them).
+- `ego`: the Ego levels you have screenshots for, in the game's wording: `{ 2: { text: '...' } }`, plus `name` if it differs (wording only).
 - `potentials`: nodes 3-1, 5-1 and 7 in the game's wording: `{ '3-1': { text: '...' } }`, plus `name` if it differs. Check every number
-  against the node's buff. "X or higher" = `minAttack: X` and `attackBonus` with `orEqual: true` (with `every`, `minAttack` alone is enough). Text cut off in a
+  against the node's buff. "X or higher" = `thresholdMin: X` and `thresholdBonus` with `orEqual: true` (with `every`, `thresholdMin` alone is enough). Text cut off in a
   screenshot: ask for the rest.
 - Corrections override the import: `pct`, `cost`, `name`, `cardType`, `tags`, `upgrade: null`, `replaceNotes`. A Potential node that
   changes a card's numbers: `nodeCard: { '3-1': { pct: 0.7, hits: 2 } }` (Chizuru's Moonslash).
@@ -96,7 +97,7 @@ Copy the shape of the worked examples. Rules:
     "final Damage Amount" = `type: 'Final'`; scaling the card's own % (doubled...) = `type: 'Card %'`; a Potential node or Ego "+X%" that's part of the card's shown % = `type: 'Card +'` (added before the upgrade: Chizuru's Shadow 110% = (80% + 15%) x 1.16).
   - `target: 'allies'` / `'enemy'` when it reaches the team or is a debuff on the target.
   - Changes per play (stacks, "next card", conditions) = `counter` + `maxStacks`; fight-dependent always-on = `hint`.
-  - `hitScope: 'First hit only'`, `egoLevel` / `egoBelow` for Ego versions, `minAttack` / `attackBonus` for Attack thresholds.
+  - `hitScope: 'First hit only'`, `egoLevel` / `egoBelow` for Ego versions, `thresholdMin` / `thresholdBonus` for thresholds, `node: '5-1'` on every Potential effect (it goes off with the node).
   - "Applies to": ALL, card name, tag, Attack/Skill/Upgrade, element, `Defense-Based`, `N+ hits`, `A & B`, `A/B`.
 - Effect ids unique per owner; never rename an existing id (resets saved switches).
 - Heal, shield, draw, cost and AP effects get text only; mention unmodeled damage effects in `notes`.
@@ -107,7 +108,7 @@ Copy the shape of the worked examples. Rules:
 
 - `tests/characters/<slug>.test.ts`: a `describe('<Name>')` with the owner's levels: rendered text of the key cards equals the
   in-game screenshots (numbers included), plus one damage check per new mechanic.
-- `docs/characters/<slug>.md`: levels, Prydwen corrections, each User answer, Unconfirmed points.
+- `docs/characters/<slug>.md`: levels, Prydwen corrections, each User answer, Unconfirmed points. Add every Unconfirmed point to `tests/ingame/checks.ts` as a test the owner can run.
 - Tell the owner what differed from Prydwen, what was modeled and what wasn't, then ask before committing. If UI code changed, also
   run `npm run test:e2e` and `npm run screenshot` and look at the phone pictures. If the owner agrees: `npm run check`, then commit
   ("<Name>: in-game card text, ...").

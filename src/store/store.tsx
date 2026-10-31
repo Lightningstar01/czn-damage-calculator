@@ -5,7 +5,7 @@ import { PRESETS } from '../data/presets'
 import { computeBuild, type BuildResult } from '../engine/calc'
 import { linkedBuild, type Linked } from '../engine/team'
 import type { Build, CharacterSave, SaveData, Teammate } from '../engine/types'
-import { newCharacterSave } from './save'
+import { activeFight, newCharacterSave } from './save'
 import { loadSave, storeSave, type LoadedSave } from './storage'
 
 interface Store {
@@ -71,12 +71,13 @@ export function useCharacter(): CharacterCtx | null {
   const { data, update } = useStore()
   const name = data.activeCharacter
   const cs = data.characters[name]
+  const fight = activeFight(data)
   // Every character's saves: teammates linked to their saved builds deal damage with them
   const results = useMemo(() => {
     const m = new Map<string, BuildResult>()
-    if (cs) for (const b of cs.builds) m.set(b.id, computeBuild(PRESETS, name, cs, b, data.settings, data.characters))
+    if (cs) for (const b of cs.builds) m.set(b.id, computeBuild(PRESETS, name, cs, b, data.settings, data.characters, fight))
     return m
-  }, [cs, name, data.settings, data.characters])
+  }, [cs, name, data.settings, data.characters, fight])
   const updateCs = useCallback((recipe: (cs: CharacterSave) => void) => update((d) => recipe(d.characters[name])), [update, name])
   const buildId = cs?.activeBuild
   const updateBuild = useCallback((recipe: (b: Build) => void) => update((d) => {

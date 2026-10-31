@@ -2,28 +2,29 @@
 // or the teammates' ally buffs and enemy debuffs.
 import { PRESETS } from '../data/presets'
 import { buffType, findCharacter, findPartner, presetBuffValue, presetStates, stateLabel, thresholdIsPct, type PresetState } from '../engine/buffs'
-import { useCharacter } from '../store/store'
-import type { Build, Effect } from '../engine/types'
+import { withLinkedTeam } from '../engine/team'
+import { useCharacter, useStore } from '../store/store'
+import type { Effect, ScreenStats } from '../engine/types'
 import { pct } from './format'
 import { buffPill, conditionPills, Pills, statPill, type Pill } from './BuffChips'
 import { SwitchControl } from './inputs'
 
-function effectPills(e: Effect, onStatsScreen: boolean, build: Build): Pill[] {
+function effectPills(e: Effect, onStatsScreen: boolean, ownerStats: ScreenStats | undefined): Pill[] {
   if (e.kind === 'Stat') {
     return [statPill(e.stat, e.value),
       ...(e.target && e.target !== 'self' ? [{ text: e.target === 'allies' ? 'all allies' : 'on the enemy', group: 'const' as const }] : []),
       ...(e.hint ? [{ text: e.hint, group: 'const' as const }] : []),
       ...(onStatsScreen ? [{ text: 'on the stats screen: not added', group: 'const' as const }] : [])]
   }
-  // attackBonus / minAttack: the value already follows the stats-screen Attack (or Defense / Health)
-  const v = presetBuffValue(e, build)
-  const ab = e.attackBonus
+  // thresholdBonus / thresholdMin: the value already follows the stats-screen Attack (or Defense / Health)
+  const v = presetBuffValue(e, ownerStats)
+  const ab = e.thresholdBonus
   const stat = e.thresholdStat ?? 'Attack'
   const at = (n: number) => thresholdIsPct(e.thresholdStat) ? pct(n) : n
-  const byAttack = !!ab || e.minAttack !== undefined
+  const byAttack = !!ab || e.thresholdMin !== undefined
   const shown = byAttack ? `${e.value.trim().startsWith('+') ? '+' : ''}${pct(v.value)}` : e.value
   const bonus: Pill[] = [
-    ...(e.minAttack !== undefined ? [{ group: 'const' as const, text: `needs ${e.minAttack} ${stat}` }] : []),
+    ...(e.thresholdMin !== undefined ? [{ group: 'const' as const, text: `needs ${e.thresholdMin} ${stat}` }] : []),
     ...(ab ? [{ group: 'const' as const, text: ab.every
       ? `${ab.value} per ${ab.every} ${stat} above ${ab.above}${ab.max ? ` (max ${ab.max})` : ''}`
       : v.bonus ? `${stat} ${ab.orEqual ? `${at(ab.above)}+` : `above ${at(ab.above)}`}`
@@ -34,10 +35,13 @@ function effectPills(e: Effect, onStatsScreen: boolean, build: Build): Pill[] {
 
 /** team: list the teammates' effects instead of the character's own. */
 export function PresetList({ kind, team = false }: { kind: 'Stat' | 'Buff'; team?: boolean }) {
-  const { name, build, updateBuild } = useCharacter()!
-  // Manifest Ego effects above the build's (or teammate's) level are hidden (they can't be on in-game either)
+  const { name, build: saved, updateBuild } = useCharacter()!
+  const { data } = useStore()
+  // With the linked teammates' Ego, partner, sets and stats (engine/team.ts)
+  const build = withLinkedTeam(saved, data.characters)
+  // Manifest Ego effects above the build's (or teammate's) level and those of locked Potential nodes are hidden (they can't be on in-game either)
   const states = presetStates(PRESETS, name, build)
-    .filter((s) => s.effect.kind === kind && !s.egoLocked && (s.teammate !== undefined) === team)
+    .filter((s) => s.effect.kind === kind && !s.egoLocked && !s.nodeLocked && (s.teammate !== undefined) === team)
   if (!states.length) {
     return <p className="muted">{team
       ? `${build.team.filter((t) => t.character).map((t) => t.character).join(' and ')} give no ${kind === 'Stat' ? 'stat boosts' : 'buffs'} yet (or none of their cards are picked).`
@@ -55,7 +59,6 @@ export function PresetList({ kind, team = false }: { kind: 'Stat' | 'Buff'; team
 function PresetRow({ s, sw, mainName, partnerName, onChange }: {
   s: PresetState; sw: boolean | number | undefined; mainName: string; partnerName: string; onChange: (v: boolean | number) => void
 }) {
-  const { build } = useCharacter()!
   const e = s.effect
   const ch = findCharacter(PRESETS, s.teammateName ?? mainName)
   const partner = findPartner(PRESETS, partnerName)
@@ -65,7 +68,7 @@ function PresetRow({ s, sw, mainName, partnerName, onChange }: {
     <li className={`row ${s.stacks > 0 ? '' : 'off'}`}>
       <div className="row-main">
         <div className="row-title">{e.name} <span className="tag">{stateLabel(s)}</span></div>
-        <Pills pills={effectPills(e, s.onStatsScreen, build)} />
+        <Pills pills={effectPills(e, s.onStatsScreen, s.ownerStats)} />
         {s.classBlocked && (
           <div className="row-warn">Class-limited: {partner?.name} is {partner?.class}, {ch?.name} is {ch?.class}</div>
         )}

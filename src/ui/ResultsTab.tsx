@@ -1,13 +1,16 @@
 // Results for the active build: totals, final stats, then each play with its formula strip.
 import { useState } from 'react'
 import type { Play, Triggered } from '../engine/calc'
-import { useCharacter } from '../store/store'
+import { activeFight } from '../store/save'
+import { useCharacter, useStore } from '../store/store'
 import { num, pct } from './format'
 import { FormulaStrip, LEGEND } from './FormulaStrip'
 import { Section } from './inputs'
 
 export function ResultsTab() {
   const { build, results } = useCharacter()!
+  const { data } = useStore()
+  const fight = activeFight(data)
   const [key, setKey] = useState(false)
   const r = results.get(build.id)
   if (!r) return null
@@ -15,6 +18,7 @@ export function ResultsTab() {
   return (
     <>
       <Section title={`${build.name} results`}>
+        {r.warnings.map((w) => <p key={w} className="row-warn">{w}</p>)}
         <div className="totals">
           <div><span className="muted">Non-crit</span><strong>{num(r.nonCrit)}</strong></div>
           <div className="main"><span className="muted">Expected</span><strong>{num(r.expected)}</strong></div>
@@ -39,8 +43,9 @@ export function ResultsTab() {
           {s.extraDmg.value !== 0 && <span>Extra <b>+{pct(s.extraDmg.value)}</b></span>}
           {s.dotDmg.value !== 0 && <span>DoT <b>+{pct(s.dotDmg.value)}</b></span>}
         </div>
+        <p className="muted small">Fight: {fight.name || 'Unnamed fight'} (DEF ×{fight.enemies[0].defMult}, reduction {pct(fight.enemies[0].dr)})</p>
       </Section>
-      <Section title="Attack list" help="One row per play of this build's attack list, the teammates' too (with their saved build's stats and buffs). Every buff that's on counts (snapshot); the play's Vulnerable, Weakness debuff and per-play stacks (Ember, Mark...) show under the card, and the hits it sets off (Mark, Coordinated Attacks) under its formula, included in its total. The formula shows hit 1; tap “hits” to see every hit (first-hit buffs can change them). Tap any chip to see where it comes from."
+      <Section title="Attack list" help="One row per play of this build's attack list, the teammates' too (with their saved build's stats and buffs). Every buff that's on counts (snapshot); the play's Vulnerable, Weakness debuff, Ravaged target and per-play stacks (Ember, Mark...) show under the card, and the hits it sets off (Mark, Coordinated Attacks) under its formula, included in its total. The formula shows hit 1; tap “hits” to see every hit (first-hit buffs can change them). Tap any chip to see where it comes from."
         actions={r.plays.length > 0 && (
           <button className="btn small" onClick={() => setKey(!key)} aria-expanded={key}>{key ? 'Hide colors' : 'Colors'}</button>
         )}>
@@ -85,9 +90,9 @@ function PlayRow({ play }: { play: Play }) {
           <span className="play-nums-label">expected · {num(play.nonCrit)} non-crit</span>
         </span>
       </div>
-      {(play.counters.length > 0 || play.vulnerable || play.weaknessDebuff) && (
+      {(play.counters.length > 0 || play.vulnerable || play.weaknessDebuff || play.ravaged) && (
         <div className="muted small">
-          {[...(play.vulnerable ? ['Vulnerable'] : []), ...(play.weaknessDebuff ? ['Weakness debuff'] : []),
+          {[...(play.vulnerable ? ['Vulnerable'] : []), ...(play.weaknessDebuff ? ['Weakness debuff'] : []), ...(play.ravaged ? ['Target Ravaged'] : []),
             ...play.counters.map((c) => `${c.name} ${c.stacks}`)].join(' · ')}
         </div>
       )}

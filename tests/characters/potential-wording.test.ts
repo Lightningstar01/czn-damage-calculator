@@ -7,6 +7,28 @@ import { newBuild, newCharacterSave } from '../../src/store/save'
 import { type Build } from '../../src/engine/types'
 import { settings } from '../helpers'
 
+describe('Manifest Ego wording', () => {
+  const ego = (name: string, level: number) => PRESETS.characters.find((c) => c.name === name)!.manifestEgo!.find((m) => m.level === level)!
+
+  it('uses the in-game text instead of the import', () => {
+    expect(ego('Rei', 6).text).toBe("+20% Damage Amount to allies' Attack Cards.")
+    expect(ego('Narja', 4).text).toBe('+40% Damage Amount to Predation.')
+    expect(ego('Tiphera', 2).text).toContain('△: Increase Damage Amount of the first Hit')
+    expect(ego('Mika', 3).text).toContain('[Signature Card Upgrade]')
+    expect(ego('Adelheid', 4).text).toContain('apply Blessing to any number of cards in hand')
+    expect(ego('Rei', 6).name).toBe('Liberated Memory')
+  })
+
+  it('the +3 card upgrade levels stay read from the import', () => {
+    expect(PRESETS.characters.find((c) => c.name === 'Mika')!.potentialEgo).toEqual([{ level: 3, levels: 3 }, { level: 5, levels: 3 }])
+  })
+
+  it('every reviewed character has all six levels; an unknown level is a problem', () => {
+    for (const [slug, add] of Object.entries(ADDITIONS)) expect(Object.keys(add.ego ?? {}), slug).toEqual(['1', '2', '3', '4', '5', '6'])
+    expect(checkAdditions(IMPORTED, { 'mei-lin': { verified: { date: 'x', gameVersion: 'x' }, ego: { 9: { text: 'x' } } } })).toHaveLength(1)
+  })
+})
+
 describe('Potential node wording', () => {
   const node = (name: string, id: string) => PRESETS.characters.find((c) => c.name === name)!.potentials!.find((p) => p.node === id)!
 
@@ -23,13 +45,13 @@ describe('Potential node wording', () => {
 
   it('every reviewed character has nodes 3-1, 5-1 and 7; an unknown node is a problem', () => {
     for (const [slug, add] of Object.entries(ADDITIONS)) expect(Object.keys(add.potentials ?? {}).sort(), slug).toEqual(['3-1', '5-1', '7'])
-    expect(checkAdditions(IMPORTED, { 'mei-lin': { potentials: { '9-9': { text: 'x' } } } })).toHaveLength(1)
+    expect(checkAdditions(IMPORTED, { 'mei-lin': { verified: { date: 'x', gameVersion: 'x' }, potentials: { '9-9': { text: 'x' } } } })).toHaveLength(1)
   })
 
   const value = (name: string, id: string, stats: Partial<Build['stats']>) => {
     const e = PRESETS.characters.find((c) => c.name === name)!.effects.find((x) => x.id === id)!
     if (e.kind !== 'Buff') throw new Error(`${id} is a buff`)
-    return presetBuffValue(e, { stats: { ...newBuild('x').stats, ...stats } }).value
+    return presetBuffValue(e, { ...newBuild('x').stats, ...stats }).value
   }
 
   it('Tenebria 7: +1% per 20 Attack above 600, +10% at most', () => {

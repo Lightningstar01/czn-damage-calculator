@@ -5,11 +5,12 @@
 // Decibel: on Shuffle each ally (Nia too) performs a 50% Extra Attack; the +50% x Decibel count only boosts that shuffle Extra
 // Attack, then Decibel is removed (owner, 2026-10-28). E2 Rhythm Boost raises only Nia's damage (owner, 2026-10-28).
 import type { CharacterAdditions } from '../../engine/types'
-import { cardBuff } from '../helpers'
+import { cardBuff, EGO_POTENTIALS_PLUS_3 } from '../helpers'
 
 const ownerEA = 'Extra Attack to a random enemy by the Combatant who owns that card'
 
 export default {
+  verified: { date: '2026-10-30', gameVersion: '841' },
   notes: 'Card upgrades are set on the Setup tab. Per play (Cards tab): Rhythm Boost (E2, 0-4: 4 on Shuffle, E6 4 at battle '
     + 'start, -1 each turn), Decibel count on the Decibel (Shuffle) play (max 5). Extra Attacks by the owner of a card (Mute '
     + 'Accent, G Chord III, Soul Riff III): add a play only when that card is Nia\'s; teammates\' Extra Attacks and their shuffle '
@@ -19,6 +20,15 @@ export default {
     '3-1': { text: 'Adds the following effect to the Amp Therapy card: 2 Elasticity' },
     '5-1': { text: "+5% Heal Amount to Nia's Amp Therapy\nIf Nia's Ego Recovery is 30 or higher, add an additional +5% to that value" },
     '7': { text: "+30% Heal Amount to Elasticity\nIf Nia's Ego Recovery is 70 or higher, add an additional +20% to the modifier" },
+  },
+  // Manifest Ego in the game's wording (owner's screenshots, 2026-10-31)
+  ego: {
+    1: { text: "The Cost of Nia's Curiosity card decreases by 1." },
+    2: { text: 'Each time a Shuffle is performed, gain 4 Rhythm Boost. At the start of the turn, decrease Rhythm Boost by 1.\nRhythm Boost: +5% Damage Amount (max 4 stacks)' },
+    3: { text: EGO_POTENTIALS_PLUS_3 },
+    4: { text: "Increase Rock & Roll's Decibel gain effect by 2" },
+    5: { text: EGO_POTENTIALS_PLUS_3 },
+    6: { text: 'At the start of battle, gain 4 Rhythm Boost, and whenever a shuffle occurs, Heal 40% for each Decibel' },
   },
   effects: [
     // E2 Awakening Memory (in game): "Each time a Shuffle is performed, gain 4 Rhythm Boost. At the start of the turn, decrease

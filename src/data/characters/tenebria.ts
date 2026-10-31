@@ -8,7 +8,7 @@
 // Photo Time deals its Performance Buzz damage: 100% (E1 150%) x Buzz, not raised by the Signature level (owner, 2026-10-28).
 // Allies' own Rhythm cards (Music, Start! gives each ally 2) aren't in the calculator: 5-1's ally part isn't modeled.
 import type { CharacterAdditions } from '../../engine/types'
-import { cardBuff } from '../helpers'
+import { cardBuff, EGO_POTENTIALS_PLUS_3 } from '../helpers'
 
 const rhythm = 'Basic, Basic Attack, Rhythm Card'
 const crescendo = 'card-1188', staccato = 'card-1189', fortissimo = 'card-1190', fermata = 'card-1191'
@@ -25,6 +25,7 @@ const arpeggio = (n: number, line: string) => ({
 })
 
 export default {
+  verified: { date: '2026-10-30', gameVersion: '841' },
   notes: 'Card upgrades are set on the Setup tab (Rhythm cards use the Basic level). Per play (Cards tab): Rhythms (Rhythm, '
     + 'Staccato, Arpeggio), Rhythms in Graveyard (Crescendo), Linked Rhythms (Fortissimo), Everyone\'s Idol on the next 7 Rhythm '
     + 'cards, Encore V on a drawn Rhythm card, E4 Everyone\'s Cheer stacks / at max; Performance Buzz on Photo Time; the hits '
@@ -36,15 +37,24 @@ export default {
     '5-1': { text: "At the start of battle, increase Damage Amount of Tenebria's Rhythm cards by 10%, and if Tenebria's Attack is 500 or higher, increase Damage Amount of other Combatants' Rhythm cards by 10% as well" },
     '7': { text: "If Tenebria's Attack is 600 or higher, +5% Passion Attribute Damage Amount, and for every 20 Attack exceeding 600, add an additional +1% (additional +10% max)" },
   },
+  // Manifest Ego in the game's wording (owner's screenshots, 2026-10-31)
+  ego: {
+    1: { text: 'Increases Damage Amount of Performance Buzz for the Photo Time card from 100% to 150%.' },
+    2: { text: 'At the start of battle, create 1 Photo Card card.\nWhen an Ego Skill is used, 200% Damage × original Cost to random enemies.\nPhoto Card: 2 Ego Points' },
+    3: { text: "Increases the Damage Amount increase effect that Everyone's Idol gives to Rhythm cards from 7% to 11%." },
+    4: { text: "When a Rhythm card is moved to hand or activated, gain Everyone's Cheer.\nEveryone's Cheer: Increase Tenebria's Damage Amount by 1% (max 20 stacks)\nWhen stacked to max, increase Damage Amount of Rhythm cards by an additional 10%" },
+    5: { text: EGO_POTENTIALS_PLUS_3 },
+    6: { text: "When Photo Card is activated, decrease Cost of Tenebria's next Ego Skill used by 3.\nWhen a Rhythm card is activated, inflicts 1 All Eyes On You on the target.\nAll Eyes On You: Increase Damage Amount taken from Rhythm cards by 40%, and if a Rhythm card is procced, this monster becomes the target of those Rhythm cards.\nWhen applied to a different target, remove All Eyes On You" },
+  },
   effects: [
     // 5-1 (in game): "At the start of battle, increase Damage Amount of Tenebria's Rhythm cards by 10%, and if Tenebria's Attack is
     // 500 or higher, increase Damage Amount of other Combatants' Rhythm cards by 10% as well". Allies' Rhythm cards aren't modeled
-    { kind: 'Buff', id: 'p5-1-rhythm', name: 'Basic Card Proficiency', category: 'Potential', value: '10%', appliesTo: 'Rhythm Card',
+    { kind: 'Buff', id: 'p5-1-rhythm', node: '5-1', name: 'Basic Card Proficiency', category: 'Potential', value: '10%', appliesTo: 'Rhythm Card',
       hitScope: 'All hits', condition: 'Always' },
     // 7 (in game): "If Tenebria's Attack is 600 or higher, +5% Passion Attribute Damage Amount, and for every 20 Attack exceeding 600,
     // add an additional +1% (additional +10% max)" (Prydwen: +2%): as Rossweisse's 7
-    { kind: 'Buff', id: 'p7-passion', name: 'Unique Stat Upgrade', category: 'Potential', value: '+5%', appliesTo: 'Passion',
-      hitScope: 'All hits', condition: 'Always', minAttack: 600, attackBonus: { above: 600, value: '+1%', every: 20, max: '+10%' } },
+    { kind: 'Buff', id: 'p7-passion', node: '7', name: 'Unique Stat Upgrade', category: 'Potential', value: '+5%', appliesTo: 'Passion',
+      hitScope: 'All hits', condition: 'Always', thresholdMin: 600, thresholdBonus: { above: 600, value: '+1%', every: 20, max: '+10%' } },
     // E1 Sleeping Memory: "Increases Damage Amount of Performance Buzz for the Photo Time card from 100% to 150%" (x1.5)
     { kind: 'Buff', id: 'e1-buzz', name: 'E1 Sleeping Memory', category: 'Ego Manifestation', type: 'Final', value: '50%',
       appliesTo: 'Photo Time', hitScope: 'All hits', condition: 'Always', egoLevel: 1 },

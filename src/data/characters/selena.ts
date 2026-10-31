@@ -8,7 +8,7 @@
 // Effect hits (Mark, Coordinated, Attunement) get no Attack / Skill card buffs; Passion Weakness makes Coordinated Attacks Weakness
 // Attacks too; Target Spotted V hits a Ravaged target (owner, 2026-10-28).
 import type { CardPreset, CharacterAdditions } from '../../engine/types'
-import { cardBuff } from '../helpers'
+import { cardBuff, EGO_POTENTIALS_PLUS_3 } from '../helpers'
 
 /** A hit from an effect, not a card: Selena's Extra Attack, unraised by card upgrades. */
 const effectHit = (id: string, name: string, pct: number, tags: string, text: string, extra: Partial<CardPreset> = {}): CardPreset => ({
@@ -22,6 +22,7 @@ const passionWeakness = cardBuff('passion-weakness', 'Passion Weakness', 'Weakne
   { target: 'enemy', counter: 'Passion Weakness', maxStacks: 1 })
 
 export default {
+  verified: { date: '2026-10-30', gameVersion: '841' },
   notes: 'Card upgrades are set on the Setup tab. Per play (Cards tab): Mark on the target (each Attack Card play, anyone\'s, with '
     + 'Mark above 0 adds Selena\'s 100% Mark Extra Attack; E6 adds 30% of a 100% Extra Attack), High-Power Scope III / IV and '
     + 'Drone Bombing IV (on for that turn\'s plays), Passion Weakness on the target, Passion Attack Cards this turn (Drone Bombing '
@@ -32,15 +33,24 @@ export default {
     '5-1': { text: "+5% Damage Amount to Selena's Engagement Fire\nIf Selena's Extra Damage (stat) is 15% or higher, add an additional +5% to the modifier" },
     '7': { text: "+4% Passion Attribute Damage Amount\nIf Selena's Extra Damage (stat) is 30% or higher, add an additional +4% to the modifier" },
   },
+  // Manifest Ego in the game's wording (owner's screenshots, 2026-10-31)
+  ego: {
+    1: { text: "The Sniper's Domain card gains Initiation." },
+    2: { text: "Selena's Mark damage is increased by +20%." },
+    3: { text: EGO_POTENTIALS_PLUS_3 },
+    4: { text: '+50% Damage Amount to Final Shot, and increase Mark by 1.' },
+    5: { text: EGO_POTENTIALS_PLUS_3 },
+    6: { text: "When Selena's Mark is activated, she has a 30% chance to inflict 100% Extra Attack on the target." },
+  },
   effects: [
     // 5-1 (in game): "+5% Damage Amount to Selena's Engagement Fire. If Selena's Extra Damage (stat) is 15% or higher, add an additional
     // +5% to the modifier": raises the card %, like Rei's 5-1 (not unlocked by the owner: Engagement Fire 112% = 100% x 1.12)
-    { kind: 'Buff', id: 'p5-1-fire', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
+    { kind: 'Buff', id: 'p5-1-fire', node: '5-1', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
       appliesTo: 'Engagement Fire', hitScope: 'All hits', condition: 'Always', thresholdStat: 'Extra Damage',
-      attackBonus: { above: 0.15, value: '+5%', orEqual: true } },
+      thresholdBonus: { above: 0.15, value: '+5%', orEqual: true } },
     // 7 (in game): "+4% Passion Attribute Damage Amount. If Selena's Extra Damage (stat) is 30% or higher, add an additional +4%": as Tenebria's 7
-    { kind: 'Buff', id: 'p7-passion', name: 'Unique Stat Upgrade', category: 'Potential', value: '+4%', appliesTo: 'Passion',
-      hitScope: 'All hits', condition: 'Always', thresholdStat: 'Extra Damage', attackBonus: { above: 0.3, value: '+4%', orEqual: true } },
+    { kind: 'Buff', id: 'p7-passion', node: '7', name: 'Unique Stat Upgrade', category: 'Potential', value: '+4%', appliesTo: 'Passion',
+      hitScope: 'All hits', condition: 'Always', thresholdStat: 'Extra Damage', thresholdBonus: { above: 0.3, value: '+4%', orEqual: true } },
     // E2 Awakening Memory (in game): "Selena's Mark damage is increased by +20%"
     { kind: 'Buff', id: 'e2-mark', name: "Selena's Mark damage", category: 'Ego Manifestation', value: '+20%', appliesTo: 'Mark',
       hitScope: 'All hits', condition: 'Always', egoLevel: 2 },

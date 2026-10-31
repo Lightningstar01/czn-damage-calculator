@@ -2,9 +2,56 @@ import { describe, expect, it } from 'vitest'
 import { AUTO } from '../src/engine/deck'
 import { PRESETS } from '../src/data/presets'
 import { migrate } from '../src/store/migrate'
-import { defaultSave, SAVE_VERSION } from '../src/store/save'
+import { activeFight, defaultSave, SAVE_VERSION } from '../src/store/save'
 
 describe('migrate', () => {
+  it('v11: the enemy moves to shared fights, one per distinct pair of values, and the open build keeps its own', () => {
+    const build = (id: string, enemyDefMult: number, enemyDr: number) => ({ id, enemyDefMult, enemyDr, stats: { attack: 900, critDmg: 1.8, critChance: 0.2 } })
+    const old = { version: 10, activeCharacter: 'Y', characters: {
+      X: { activeBuild: 'a', builds: [build('a', 0.387, 0), build('b', 1, 0)] },
+      Y: { activeBuild: 'd', builds: [build('c', 0.387, 0), build('d', 0.5, 0.2)] },
+    } }
+    const save = migrate(old)
+    expect(save.fights.map((f) => f.enemies[0])).toEqual(expect.arrayContaining([{ defMult: 0.387, dr: 0 }, { defMult: 1, dr: 0 }, { defMult: 0.5, dr: 0.2 }]))
+    expect(save.fights).toHaveLength(3)
+    expect(activeFight(save).enemies[0]).toEqual({ defMult: 0.5, dr: 0.2 })
+    expect(save.characters.X.builds[0]).not.toHaveProperty('enemyDefMult')
+    expect(save.characters.X.builds[0]).not.toHaveProperty('enemyDr')
+    expect(new Set(save.fights.map((f) => f.id)).size).toBe(3)
+  })
+
+  it('v11: untouched builds get the game base crit stats, filled-in ones keep theirs', () => {
+    const old = { version: 10, characters: { X: { activeBuild: 'a', builds: [
+      { id: 'a', stats: { attack: 0, critChance: 0, critDmg: 0 } },
+      { id: 'b', stats: { attack: 900, critChance: 0, critDmg: 1.5 } },
+      { id: 'c', stats: { attack: 900, critChance: 0.4, critDmg: 0 } },
+    ] } } }
+    const [a, b, c] = migrate(old).characters.X.builds.map((x) => x.stats)
+    expect([a.critChance, a.critDmg]).toEqual([0.03, 1.25])
+    expect([b.critChance, b.critDmg]).toEqual([0, 1.5])
+    expect([c.critChance, c.critDmg]).toEqual([0.4, 1.25])
+  })
+
+  it('a current save keeps its fights; a partial one gets a default; unreadable fights are refused', () => {
+    const fights = [{ id: 'f', name: 'Boss', enemies: [{ defMult: 0.4, dr: 0 }] }]
+    const save = migrate({ version: SAVE_VERSION, activeFight: 'f', fights, characters: {} })
+    expect(save.fights).toEqual(fights)
+    expect(save.activeFight).toBe('f')
+    const partial = migrate({ version: SAVE_VERSION, characters: {} })
+    expect(partial.fights).toHaveLength(1)
+    expect(partial.activeFight).toBe(partial.fights[0].id)
+    const bad = migrate({ version: SAVE_VERSION, activeFight: 'gone', fights, characters: {} })
+    expect(bad.activeFight).toBe('f')
+    expect(migrate({ version: SAVE_VERSION, fights: [{ id: 'f', enemies: [] }], characters: {} }).fights[0].enemies).toEqual([{ defMult: 1, dr: 0 }])
+    expect(() => migrate({ version: SAVE_VERSION, fights: 'x', characters: {} })).toThrow()
+    expect(() => migrate({ version: SAVE_VERSION, fights: [{ id: 'f', enemies: 'x' }], characters: {} })).toThrow()
+    expect(() => migrate({ version: SAVE_VERSION, fights: [{ id: 'f', enemies: [{ defMult: null, dr: 0 }] }], characters: {} })).toThrow()
+    expect(() => migrate({ version: SAVE_VERSION, fights: [{ id: 'f', enemies: [{ defMult: 1, dr: '0' }] }], characters: {} })).toThrow()
+    expect(() => migrate({ version: SAVE_VERSION, fights: [{ id: 7, enemies: [] }], characters: {} })).toThrow()
+    expect(() => migrate({ version: SAVE_VERSION, fights: [{ id: 'f' }, { id: 'f' }], characters: {} })).toThrow()
+    expect(migrate({ version: SAVE_VERSION, fights: [{ enemies: [{ dr: 0.1 }] }], characters: {} }).fights[0].enemies).toEqual([{ defMult: 1, dr: 0.1 }])
+  })
+
   const mei = PRESETS.characters.find((c) => c.name === 'Mei Lin')!
   const preset = (id: string) => mei.cards!.find((p) => p.id === id)!
 

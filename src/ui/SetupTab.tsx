@@ -1,12 +1,12 @@
-// Setup: build management, partner, Manifest Ego level, memory fragment sets, team, stats-screen values, stat boosts, enemy.
+// Setup: build management, partner, Manifest Ego level, memory fragment sets, team, stats-screen values, stat boosts, fight.
 import { useState } from 'react'
 import { PRESETS } from '../data/presets'
 import { findCharacter, findFragmentSet, findPartner, fragmentPiecesUsed, hasTeam } from '../engine/buffs'
 import { unlockedPotentialEgo } from '../engine/calc'
 import { pruneTeamPlays } from '../engine/deck'
 import { linkedBuild } from '../engine/team'
-import { CATEGORIES, FRAGMENT_SET_PICKS, MAX_EGO_LEVEL, MAX_POTENTIAL_LEVEL, FRAGMENT_SLOTS, NO_BUILD, STATS, TEAM_SIZE, type ScreenStats, type StatName, type Teammate } from '../engine/types'
-import { duplicateBuild, newBoost, newTeammate } from '../store/save'
+import { CATEGORIES, FRAGMENT_SET_PICKS, MAX_EGO_LEVEL, MAX_POTENTIAL_LEVEL, FRAGMENT_SLOTS, NO_BUILD, STATS, TEAM_SIZE, type Fight, type ScreenStats, type StatName, type Teammate } from '../engine/types'
+import { activeFight, duplicateBuild, newBoost, newFight, newTeammate } from '../store/save'
 import { FromField } from './FromField'
 import { useCharacter, useStore } from '../store/store'
 import { pct } from './format'
@@ -36,14 +36,15 @@ export function SetupTab() {
         </Section>
       )}
       <BoostsSection />
-      <EnemySection />
+      <FightSection />
     </>
   )
 }
 
 function BuildSection() {
-  const { cs, build, updateCs, updateBuild } = useCharacter()!
+  const { name, cs, build, updateCs, updateBuild } = useCharacter()!
   const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  const verified = findCharacter(PRESETS, name)?.verified
   return (
     <Section title="Build" help="Builds share the card library; each build has its own team and attack list. Duplicate a build, then change one thing to compare.">
       <div className="inline-row">
@@ -65,6 +66,9 @@ function BuildSection() {
           }}>Delete</button>
         )}
       </div>
+      <p className="muted">{verified
+        ? `${name}'s cards reviewed against the game on ${verified.date} (game version ${verified.gameVersion}).`
+        : `${name} is not reviewed yet: Prydwen's cards only, with no character buffs.`}</p>
     </Section>
   )
 }
@@ -122,7 +126,7 @@ function PotentialSection() {
     )
   }
   return (
-    <Section title="Potentials" help="Card upgrade levels from the Potential screen: each level raises the card's base damage by 2%. Basic Card Upgrade: Basic cards. Signature Card Upgrade (Prydwen: Unique Card Upgrade): the character's other cards, generated ones too; not Ego skills. Other potentials are in the stats screen.">
+    <Section title="Potentials" help="Card upgrade levels from the Potential screen: each level raises the card's base damage by 2%. Basic Card Upgrade: Basic cards. Signature Card Upgrade (Prydwen: Unique Card Upgrade): the character's other cards, generated ones too; not Ego skills. Stat potentials are in the stats screen. Below: the nodes that change cards or damage; switch off the ones you haven't unlocked.">
       <div className="grid2">
         {field('Basic Card Upgrade', 'basicLevel')}
         {field('Signature Card Upgrade', 'signatureLevel')}
@@ -135,11 +139,14 @@ function PotentialSection() {
   )
 }
 
-/** Switches for the Potential nodes that change a card's text (e.g. 3-1: Strike gains 1 Ember). Missing = on. */
+/** Switches for the Potential nodes that change a card or give an effect (e.g. 3-1: Strike gains 1 Ember; 5-1: +5% to Strike). Missing = on. */
 function PotentialNodes() {
   const { name, build, updateBuild } = useCharacter()!
   const ch = findCharacter(PRESETS, name)
-  const used = new Set((ch?.cards ?? []).flatMap((c) => textNodes(c.text)))
+  const used = new Set([
+    ...(ch?.cards ?? []).flatMap((c) => [...textNodes(c.text), ...Object.keys(c.nodeTags ?? {}), ...Object.keys(c.nodeCard ?? {}), ...(c.effects ?? []).flatMap((e) => e.node ?? [])]),
+    ...(ch?.effects ?? []).flatMap((e) => e.node ?? []),
+  ])
   const nodes = (ch?.potentials ?? []).filter((p) => used.has(p.node))
   if (!nodes.length) return null
   return (
@@ -357,14 +364,42 @@ function BoostsSection() {
   )
 }
 
-function EnemySection() {
-  const { build, updateBuild } = useCharacter()!
+/** The saved fights: shared by every character and build, so builds are compared against the same enemy. One target for now. */
+function FightSection() {
+  const { data, update } = useStore()
+  const fight = activeFight(data)
+  const enemy = fight.enemies[0]
+  const upd = (fn: (f: Fight) => void) => update((d) => {
+    const f = d.fights.find((x) => x.id === fight.id)
+    if (f) fn(f)
+  })
   return (
-    <Section title="Enemy">
+    <Section title="Fight" help="The enemy every build is computed against. Shared by all characters and builds: save one per boss or stage, then pick it here.">
+      <div className="field-stack">
+      <SelectField label="Fight" value={fight.id} options={data.fights.map((f) => ({ value: f.id, label: f.name || 'Unnamed fight' }))}
+        onChange={(id) => update((d) => { d.activeFight = id })} />
+      <div className="inline-row">
+        <TextField label="Name" value={fight.name} onChange={(v) => upd((f) => { f.name = v })} />
+        <button className="btn" onClick={() => update((d) => {
+          const copy = newFight(`${fight.name} copy`, enemy)
+          d.fights.push(copy)
+          d.activeFight = copy.id
+        })}>Duplicate</button>
+        {data.fights.length > 1 && (
+          <button className="btn danger" onClick={() => {
+            if (!confirm(`Delete ${fight.name || 'this fight'}?`)) return
+            update((d) => {
+              d.fights = d.fights.filter((f) => f.id !== fight.id)
+              d.activeFight = d.fights[0].id
+            })
+          }}>Delete</button>
+        )}
+      </div>
       <div className="grid2">
-        <NumberField label="DEF multiplier" value={build.enemyDefMult} onChange={(v) => updateBuild((b) => { b.enemyDefMult = v })}
+        <NumberField label="DEF multiplier" value={enemy.defMult} onChange={(v) => upd((f) => { f.enemies[0].defMult = v })}
           help="1 = none. No known formula yet; back-solve it from an in-game hit (Mei Lin test: about 0.387)." />
-        <NumberField label="Damage reduction" pct value={build.enemyDr} onChange={(v) => updateBuild((b) => { b.enemyDr = v })} />
+        <NumberField label="Damage reduction" pct value={enemy.dr} onChange={(v) => upd((f) => { f.enemies[0].dr = v })} />
+      </div>
       </div>
     </Section>
   )

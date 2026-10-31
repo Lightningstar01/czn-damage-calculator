@@ -5,7 +5,7 @@
 // Each discarded Dirge Bullet's Extra Attack is set off by a number on the play, for any play of the team (owner, 2026-10-30).
 // Ballad III's Mark is the Mark keyword, here Renoa's own 100% Extra Attack; Flower III boosts Renoa's next card only (owner, 2026-10-30).
 import type { CardPreset, CharacterAdditions } from '../../engine/types'
-import { cardBuff } from '../helpers'
+import { cardBuff, EGO_POTENTIALS_PLUS_3 } from '../helpers'
 
 const DISCARDED = 'Dirge Bullets discarded'
 const FINALES = 'Dirge Bullets: Finale discarded'
@@ -32,6 +32,7 @@ const inHand = (value: string, card: string) =>
 const creates = ['card-29']
 
 export default {
+  verified: { date: '2026-10-30', gameVersion: '841' },
   notes: 'Card upgrades are set on the Setup tab. Per play (Cards tab): Dirge Bullets discarded on any play by anyone (each adds the 168% '
     + 'Extra Attack; also Last-Ditch Assault\'s and Instant Judgment\'s bonus), Dirge Bullets in hand (Ballad of Pitch Black, I), Dirge '
     + 'Bullets exhausted (Ballad V), Ballad IV (on for that turn\'s plays), Cost discarded (Flower III), Mark (Ballad III), Rose\'s '
@@ -43,23 +44,32 @@ export default {
     '5-1': { text: "+5% Damage Amount to Renoa's Annihilation Shot\nIf Renoa's Critical Chance is 20% or higher, add an additional +5% to the modifier" },
     '7': { text: "+5% Damage Amount to Dirge Bullet\nIf Renoa's Critical Chance is 60% or higher, add an additional +10% to the modifier" },
   },
+  // Manifest Ego in the game's wording (owner's screenshots, 2026-10-31)
+  ego: {
+    1: { text: "+20% Damage Amount to the Last-Ditch Assault card's Damage Amount added for each Dirge Bullet Discarded effect" },
+    2: { text: 'For every 4 Dirge Bullet Cards created, create 1 Dirge Bullet: Finale Card.' },
+    3: { text: '+200% Damage Amount to Black Thorn.' },
+    4: { text: "Each time the Dirge Bullet card is Discarded, gain 1 Rose's Resolve.\nRose's Resolve: +10% to Renoa's Damage Amount, and on Shuffle, remove Rose's Resolve (max 4 stacks)" },
+    5: { text: EGO_POTENTIALS_PLUS_3 },
+    6: { text: 'Each time the Dirge Bullet card is Drawn, inflict 50% Extra Attack to a random enemy.' },
+  },
   effects: [
     // 3-1 Signature Card Proficiency (in game): "+40% Damage Amount to Dirge Bullet, +20% Damage Amount to Extra Attacks". The +20% shows on
     // Dirge Bullet's Extra Attack only: Instant Judgment IV's is 290% = 250% x 1.16, Finale's 191% = (160% + 5%) x 1.16
-    { kind: 'Buff', id: 'p3-1-bullet', name: 'Signature Card Proficiency', category: 'Potential', type: 'Card +', value: '+40%',
+    { kind: 'Buff', id: 'p3-1-bullet', node: '3-1', name: 'Signature Card Proficiency', category: 'Potential', type: 'Card +', value: '+40%',
       appliesTo: 'Dirge Bullet', hitScope: 'All hits', condition: 'Always' },
-    { kind: 'Buff', id: 'p3-1-extra', name: 'Signature Card Proficiency: Extra Attack', category: 'Potential', type: 'Card +', value: '+20%',
+    { kind: 'Buff', id: 'p3-1-extra', node: '3-1', name: 'Signature Card Proficiency: Extra Attack', category: 'Potential', type: 'Card +', value: '+20%',
       appliesTo: 'Dirge Bullet (Discard)', hitScope: 'All hits', condition: 'Always' },
     // 5-1 Basic Card Proficiency (in game): "+5% Damage Amount to Renoa's Annihilation Shot. If Renoa's Critical Chance is 20% or
     // higher, add an additional +5% to the modifier" (locked for the owner: 110% = 100% x 1.1)
-    { kind: 'Buff', id: 'p5-1-shot', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
+    { kind: 'Buff', id: 'p5-1-shot', node: '5-1', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
       appliesTo: 'Annihilation Shot', hitScope: 'All hits', condition: 'Always', thresholdStat: 'Critical Chance',
-      attackBonus: { above: 0.2, value: '+5%', orEqual: true } },
+      thresholdBonus: { above: 0.2, value: '+5%', orEqual: true } },
     // 7 (in game): "+5% Damage Amount to Dirge Bullet. If Renoa's Critical Chance is 60% or higher, add an additional +10% to the
     // modifier". Shows on both hits of Dirge Bullet and of Finale, at the owner's Critical Chance of 53.6% without the +10%
-    { kind: 'Buff', id: 'p7-bullet', name: 'Unique Stat Upgrade', category: 'Potential', type: 'Card +', value: '+5%',
+    { kind: 'Buff', id: 'p7-bullet', node: '7', name: 'Unique Stat Upgrade', category: 'Potential', type: 'Card +', value: '+5%',
       appliesTo: 'Dirge Bullet/Dirge Bullet: Finale/Dirge Bullet (Discard)/Dirge Bullet: Finale (Discard)', hitScope: 'All hits',
-      condition: 'Always', thresholdStat: 'Critical Chance', attackBonus: { above: 0.6, value: '+10%', orEqual: true } },
+      condition: 'Always', thresholdStat: 'Critical Chance', thresholdBonus: { above: 0.6, value: '+10%', orEqual: true } },
     // E3 Vivid Memory (in game): "+200% Damage Amount to Black Thorn"
     { kind: 'Buff', id: 'e3-black-thorn', name: 'E3 Vivid Memory', category: 'Ego Manifestation', value: '+200%', appliesTo: 'Black Thorn',
       hitScope: 'All hits', condition: 'Always', egoLevel: 3 },

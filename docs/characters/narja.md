@@ -12,7 +12,7 @@ What the owner confirmed about this character's cards. The general rules are in 
     (counters 'Voracity' / 'Predation', 0 or 1), since each hit uses a stack (User, 2026-10-28).
   - Potential 7 (in game): "+10% Damage Amount to Voracity. If Narja's Defense is 300 or higher, +20% Damage Amount to
     Predation" (Prydwen: "greater than 300"): Voracity +40%, Predation +100% at stats-screen Defense 300+ (User, 2026-10-28).
-  - Manifest Ego in-game wording: E4 "+40% Damage Amount to Predation" (Prydwen: +30%); E6 "At the start of the turn, gain 4
+  - Manifest Ego in-game wording: E2 a 40% chance to gain 1 Voracity (Prydwen: 25%; text only); E4 "+40% Damage Amount to Predation" (Prydwen: +30%); E6 "At the start of the turn, gain 4
     Voracity and 2 Predation. At the end of the turn, 50% Defense-Based Damage to random enemies and Heal 1% Health x Predation
     count decreased this turn" (Prydwen lacks the start-of-turn gain). E6's damage is its own card, Liberated Memory, that joins
     the deck from E6 (User, 2026-10-28; `CardPreset.egoLevel`). It gets no Attack Card buffs and no card upgrade (User, 2026-10-28).

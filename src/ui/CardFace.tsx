@@ -5,6 +5,7 @@ import { activeBuffs, findCharacter } from '../engine/buffs'
 import { shownPct } from '../engine/calc'
 import { renderCardText } from '../engine/cardText'
 import { buildNodeOn, presetCard } from '../engine/deck'
+import { withLinkedTeam } from '../engine/team'
 import { ELEMENTS, type Card, type CardPreset, type Teammate } from '../engine/types'
 import { useCharacter, useLinked, useStore } from '../store/store'
 import { pct } from './format'
@@ -19,10 +20,10 @@ function artUrl(image: string): string {
 export function useCardText(teammate?: Teammate): (p: CardPreset) => string {
   const main = useCharacter()!
   const linked = useLinked(teammate)
-  const { data: { settings } } = useStore()
+  const { data: { settings, characters } } = useStore()
   const { name, cs, build } = linked ? { name: teammate!.character, ...linked } : main
   const ch = findCharacter(PRESETS, teammate?.character ?? name)
-  const buffs = useMemo(() => activeBuffs(PRESETS, name, cs, build, settings), [name, cs, build, settings])
+  const buffs = useMemo(() => activeBuffs(PRESETS, name, cs, withLinkedTeam(build, characters), settings), [name, cs, build, settings, characters])
   return (p) => teammate && !linked
     ? renderCardText(p.text, { egoLevel: teammate.egoLevel ?? 0, nodeOn: () => true, pct: (base) => base })
     : renderCardText(p.text, {

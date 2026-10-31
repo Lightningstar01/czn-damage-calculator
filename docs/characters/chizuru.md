@@ -9,7 +9,7 @@ What the owner confirmed about this character's cards. The general rules are in 
     card (+100%), III 120% (100%), V "80%" without "+" and 4 Will-O'-Wisp ("+80%", 3); Potential 3-1 70% x 2 (60% x 2), 7 every 10 Attack
     (every 40); E3 also +200% and +150% per Shadow (+150% only).
   - Moonslash 96% x 2 = (3-1's 70% + 5-1's +5% +5%) x 1.2. Shadow 110% = (80% + 7's +15%) x 1.16, Shadow+ 249% = (180% + E1's +20% +
-    7's +15%) x 1.16 (the Card + buff type, FORMULA.md 2c). A node can change a card's % and hits (`nodeCard`).
+    7's +15%) x 1.16 (the Card + buff type, FORMULA.md, Buff types). A node can change a card's % and hits (`nodeCard`).
   - "+80% Damage Amount for each Bind stack": additive, every stack counts, the first too: Shadow 1/5 +80%, Shadow+ 3/5 +240%,
     5/5 +400% (User, 2026-10-30). Set per play.
   - Oni Hunt's "next Bind card" reaches any ally's Bind card, as it has no "of this unit" (User, 2026-10-30); set per play.

@@ -5,7 +5,7 @@
 // Annoying "40% Fixed Damage for each card in hand": a Cards in hand setting per play (owner, 2026-10-28).
 // Potential 7 "Critical Chance to allies" reaches all allies (owner, 2026-10-28).
 import type { BuffEffect, CharacterAdditions } from '../../engine/types'
-import { cardBuff } from '../helpers'
+import { cardBuff, EGO_POTENTIALS_PLUS_3 } from '../helpers'
 
 // Creation cards evolve (★ -> ★★ -> ★★★), so every card that creates one brings all nine into the deck
 const creations = ['card-149', 'card-150', 'card-151', 'card-152', 'card-153', 'card-154', 'card-155', 'card-156', 'card-157']
@@ -31,6 +31,7 @@ const swiftie = (stars: string, pct: string, retain: number) => ({
 const sturdie = (shield: string, heal: string) => ({ text: `[Exhaust / Retain / Creation]\n{${shield}} Shield\nRetain: Heal {${heal}}` })
 
 export default {
+  verified: { date: '2026-10-30', gameVersion: '841' },
   notes: 'Stat potentials are in the stats screen; card upgrades are set on the Setup tab. Per play (Cards tab): Softie used this '
     + 'turn / turns retained (any ally\'s damage), Swiftie turns retained, Sacred Censer IV on the next Swiftie, Annoying\'s Cards '
     + 'in hand (I and base) or Creations (II, V), E4 Creation in hand. Not counted: E6 Fixed damage when a Creation is used',
@@ -40,9 +41,18 @@ export default {
     '5-1': { text: "+10% Heal Amount to Orlea's Healing of Light" },
     '7': { text: "If Orlea's Attack is 700 or higher, or her Defense is 300 or higher, then at the start of battle, +6% Critical Chance to allies" },
   },
+  // Manifest Ego in the game's wording (owner's screenshots, 2026-10-31)
+  ego: {
+    1: { text: 'Adds Retain to the Will of Light card.' },
+    2: { text: 'When a Creation card evolves into a Creation★★★ card, retain is triggered.' },
+    3: { text: 'Evolved Creation effect is added to Salvation.' },
+    4: { text: 'If there is a Creation Card in hand, increase Damage Amount of allies by 10%.' },
+    5: { text: EGO_POTENTIALS_PLUS_3 },
+    6: { text: 'When Orlea activates a Creation card, deal ★ x 50% Fixed Damage to all enemies.' },
+  },
   effects: [
     // 7 (in game): "If Orlea's Attack is 700 or higher, or her Defense is 300 or higher, then at the start of battle, +6% Critical Chance to allies"
-    { kind: 'Stat', id: 'p7-crit', name: 'Unique Stat Upgrade', category: 'Potential', target: 'allies', stat: 'Crit Rate', value: '6%',
+    { kind: 'Stat', id: 'p7-crit', node: '7', name: 'Unique Stat Upgrade', category: 'Potential', target: 'allies', stat: 'Crit Rate', value: '6%',
       hint: 'ATK 700+ or DEF 300+' },
     // E4 Inner Memory: "If holding Creation Card in hand, increase Damage Amount of allies by 10%"
     { kind: 'Buff', id: 'e4-damage', name: 'E4 Inner Memory', category: 'Ego Manifestation', target: 'allies', value: '10%',

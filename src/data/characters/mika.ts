@@ -4,8 +4,10 @@
 // value, 228% (100% + its 100% Heal, raised by the upgrade); heal buffs aren't added (owner, 2026-10-28).
 // Blessing of Waves IV "Inflict Damage equal to Heal Amount" isn't counted (owner, 2026-10-28).
 import type { CharacterAdditions } from '../../engine/types'
+import { EGO_POTENTIALS_PLUS_3 } from '../helpers'
 
 export default {
+  verified: { date: '2026-10-30', gameVersion: '841' },
   notes: 'Healer: Water Arrow and Whirlpool deal damage. Not counted: Blessing of Waves IV damage equal to its Heal Amount',
   // Card text: the in-game wording (owner's screenshots, 2026-10-28), with tokens for the build's numbers (engine/cardText.ts)
   // Potential nodes in the game's wording (owner's screenshots, 2026-10-30)
@@ -13,6 +15,15 @@ export default {
     '3-1': { text: '+30% Heal Amount to Water Barrier cards.' },
     '5-1': { text: "+5% Heal Amount to Mika's Water Barrier\nIf Mika's Ego Recovery is 30 or higher, add an additional +5% to that value" },
     '7': { text: "If Mika's Ego Recovery is 40 or higher, +10% Recover Amount to Source of Water\nFor every 5 Ego Recovery exceeding 40, add an additional +2% to the modifier\n(additional +20% max)" },
+  },
+  // Manifest Ego in the game's wording (owner's screenshots, 2026-10-31)
+  ego: {
+    1: { text: 'Add Initiation to the Deluge card.' },
+    2: { text: 'When Mika gains Stress during battle, Fixed Heal equal to 200%. This effect activates 1 time per turn.' },
+    3: { text: EGO_POTENTIALS_PLUS_3 },
+    4: { text: 'Add Retain to Source of Water created by the Surge card.' },
+    5: { text: EGO_POTENTIALS_PLUS_3 },
+    6: { text: 'At the start of the battle, gain 2 Wave.' },
   },
   cards: {
     // E4 Inner Memory adds Retain to the created Source of Water

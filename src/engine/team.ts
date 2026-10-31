@@ -1,6 +1,6 @@
 // Teammates linked to their saved builds (owner, 2026-10-28): their Manifest Ego, partner and sets come from that build, and their
 // plays in a team's attack list deal damage with it (their stats, potentials, boosts and buffs, plus the team's ally / enemy effects).
-import { NO_BUILD, type Build, type CharacterSave, type DeckCard, type Switch, type Teammate } from './types'
+import { NO_BUILD, type Build, type CharacterSave, type DeckCard, type LiveBuild, type LiveTeammate, type Switch, type Teammate } from './types'
 
 /** Every character's saved data (SaveData.characters). */
 export type Saves = Record<string, CharacterSave>
@@ -11,7 +11,7 @@ export interface Linked {
 }
 
 /** The saved build a teammate slot uses: its pick, else the character's active build; none when unlinked or nothing is saved. */
-export function linkedBuild(saves: Saves, t: Teammate | undefined): Linked | undefined {
+export function linkedBuild(saves: Saves, t: Pick<Teammate, 'character' | 'build'> | undefined): Linked | undefined {
   if (!t?.character || t.build === NO_BUILD) return undefined
   const cs = saves[t.character]
   if (!cs?.builds?.length) return undefined
@@ -20,26 +20,28 @@ export function linkedBuild(saves: Saves, t: Teammate | undefined): Linked | und
 }
 
 /** The build with each linked teammate slot's Manifest Ego, partner and sets taken from their saved build. */
-export function withLinkedTeam(build: Build, saves: Saves): Build {
+export function withLinkedTeam(build: Build, saves: Saves): LiveBuild {
   if (!(build.team ?? []).some((t) => linkedBuild(saves, t))) return build
   return {
     ...build,
     team: build.team.map((t) => {
       const l = linkedBuild(saves, t)
-      return l ? { ...t, egoLevel: l.build.egoLevel ?? 0, partner: l.build.partner, fragments: l.build.fragments ?? [] } : t
+      return l ? { ...t, egoLevel: l.build.egoLevel ?? 0, partner: l.build.partner, fragments: l.build.fragments ?? [],
+        live: { stats: l.build.stats, potentialNodes: l.build.potentialNodes } } : t
     }),
   }
 }
 
 /** How teammate slot `slot` of a (withLinkedTeam) build plays: their saved build, with the slot's picked cards as their deck and this
  * build's character and other teammate as their team. Their own effects keep their build's switches; the others' follow this build. */
-export function teammateView(charName: string, build: Build, slot: number, saves: Saves): (Linked & { name: string }) | undefined {
+export function teammateView(charName: string, build: LiveBuild, slot: number, saves: Saves): { name: string; cs: CharacterSave; build: LiveBuild } | undefined {
   const t = build.team?.[slot]
   const l = linkedBuild(saves, t)
   if (!t || !l) return undefined
-  const me: Teammate = {
+  const me: LiveTeammate = {
     character: charName, egoLevel: build.egoLevel ?? 0, partner: build.partner, fragments: build.fragments ?? [],
     cards: (build.deck ?? []).flatMap((d) => d.preset ?? []),
+    live: { stats: build.stats, potentialNodes: build.potentialNodes },
   }
   const switches: Record<string, Switch> = {}
   for (const [k, v] of Object.entries(l.build.presetSwitches ?? {})) if (!k.includes('>')) switches[k] = v
