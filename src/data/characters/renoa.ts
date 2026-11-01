@@ -4,18 +4,15 @@
 // its Extra Attack 168% = (120% + 20% + 5%) x 1.16, Finale 238% = (200% + 5%) x 1.16 and 191% = (160% + 5%) x 1.16.
 // Each discarded Dirge Bullet's Extra Attack is set off by a number on the play, for any play of the team (owner, 2026-10-30).
 // Ballad III's Mark is the Mark keyword, here Renoa's own 100% Extra Attack; Flower III boosts Renoa's next card only (owner, 2026-10-30).
-import type { CardPreset, CharacterAdditions } from '../../engine/types'
-import { cardBuff, EGO_POTENTIALS_PLUS_3 } from '../helpers'
+import type { CharacterAdditions } from '../../engine/types'
+import { cardBuff, effectHits, EGO_POTENTIALS_PLUS_3 } from '../helpers'
 
 const DISCARDED = 'Dirge Bullets discarded'
 const FINALES = 'Dirge Bullets: Finale discarded'
 const BULLET_ART = 'cards/renoa/unique_1041_06.webp'
 
 /** A hit from an effect, not a card: Renoa's Extra Attack. Raised by Signature Card Upgrade unless upgrade: null. */
-const extraAttack = (id: string, name: string, pct: number, text: string, extra: Partial<CardPreset> = {}): CardPreset => ({
-  id, base: name, name, category: 'Generated Card', cardType: 'Attack', cost: null, element: 'Void', tags: '', scaling: 'ATK',
-  kind: 'Extra Attack', pct, hits: 1, weaknessApplies: false, notACard: true, text, ...extra,
-})
+const extraAttack = effectHits({ element: 'Void', kind: 'Extra Attack', upgrade: undefined })
 
 /** "Discard ... +X% Damage Amount": per Dirge Bullet (or Finale) discarded on this play. */
 const perDiscard = (value: string, card: string, extra: { egoLevel?: number; idSuffix?: string } = {}) => {

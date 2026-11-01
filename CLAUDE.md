@@ -50,13 +50,13 @@ email, and check that binary files such as spreadsheets carry no author name bef
   - `src/data/characters/<slug>.ts`: our additions per character (character buffs, card buffs,
     notes, corrections such as `targetRavaged`), keyed by the import's card ids (`card-341`).
     Manifest Ego buffs are character effects with `egoLevel` (on from the build's level).
-    Card fields set here override the import; notes are joined. `src/data/helpers.ts` has `cardBuff()`.
+    Card fields set here override the import; notes are joined. `src/data/helpers.ts` has `cardBuff()` and `effectHits()` (hits from effects, not cards).
     Put character `effects` before `cards`.
     Overrides may rename a card (`name`, e.g. Flicker Blade (Amped)); `replaceNotes` drops the import's notes;
     `extraCards` adds cards Prydwen lacks; `potentials: { '3-1': { text } }` replaces a node's wording with the in-game text (`name` too if it differs), `ego: { 2: { text } }` a Manifest Ego level's (wording only; the +3 card upgrade levels stay read from the import).
     `verified: { date, gameVersion }` says when the character was last compared with the game; every additions file has one, characters without it show "Not reviewed".
   - `src/data/merge.ts` combines the two; `checkAdditions()` (run by the tests) catches unknown slugs, card ids, Potential nodes, Ego levels and
-    text references, duplicate effect ids and a missing `verified`; `checkEffects()` catches an "Applies to", trigger or value that can't match anything
+    text references, duplicate effect ids, `playStacks` / `counterHits` counters named nowhere else (likely misspelled; a real lone one lists itself in `playStacks`, at 0 to start off) and a missing `verified`; `checkEffects()` catches an "Applies to", trigger or value that can't match anything
     (`NO_CARD_YET` lists the deliberate ones). `tests/fixtures/card-ids.json` pins every card id to its name: a re-import that moves one fails the tests
     (look at it; `npx vitest -u` accepts it). The importer prints what changed and never deletes a character.
   - Deck per build (`build.deck`, `src/engine/deck.ts`): `{id, preset}` entries resolved live from the presets
@@ -113,19 +113,19 @@ email, and check that binary files such as spreadsheets carry no author name bef
   A play with `by` (slot index) is that teammate's card, computed by `teammateView` as their own build would
   (teammate deck ids = preset ids). `computeBuild(..., saves)` gets every character's save; `byCharacter` splits the totals.
 - Triggers (`triggers` on a character or card; Selena's Mark, Coordinated Attacks): a play matching `on` adds the trigger
-  card's hit, computed with the owner's build (`others`: only other combatants' plays; `weakness`: Weakness Attacks only;
-  `counter`: needs that per-play stack; `perStack`: one hit per stack (Renoa's Dirge Bullets discarded); `chance`: expected value; `egoLevel`). Shown under the play as `triggered`.
-  `notACard` cards (effect hits) don't match card-type words (Attack / Skill / Upgrade) and set off no triggers.
+  card's hit, computed with the owner's build (`others`: only other combatants' plays; `own`: only the owner's; `repeat`: one more hit of the played card itself (Owen's Wind Charge III); `weakness`: Weakness Attacks only;
+  `counter`: needs that per-play stack; `perStack`: one hit per stack (Renoa's Dirge Bullets discarded); `chance`: expected value; `onCrit`: only on a Critical Hit of the played card, expected value x its crit chance (Lucas's Flame Thrower III); `egoLevel`). Shown under the play as `triggered`.
+  `notACard` cards (effect hits) don't match card-type words (Attack / Skill / Upgrade), so a trigger or buff on those words skips them; `ALL`, their name or their tags still match (Amir's Full Metal Hurricane II on Metallization).
 - Attack list (per build, `build.rotation`): each play has optional hits, `cost` (only for `perCost` cards: "X% for
   each Cost of this card", damage = % x Cost), `vulnerable`, a count for `perCount` cards ("X% for each card in
   hand", kept in `stacks` under the card's `perCount` name, default 1; a `counter` of the same name reads that number: Tenebria's Rhythms;
-  a card's `counterHits` adds hits while a counter is above 0: Yuki's Inspiration),
+  a card's `counterHits` adds hits while a counter is above 0: Yuki's Inspiration; a character's `playStacks` are the counters a new play starts with: Rin's Dark Mist Stance),
   `weaknessDebuff` and `stacks` per counter name; buffs with `counter` read the play's stacks
   (capped at max stacks). Buff type `Card %` raises a card's base % like a potential (only on cards
   with an upgrade: "Double all effects"); `Card +` (a Potential node's "+X%", owner 2026-10-30) adds to the base % before the upgrade
   (Shadow 110% = (80% + 15%) x 1.16); `Base %` ("+X% base Damage Amount") adds to the shown card %; `Final` ("final Damage
   Amount") is its own multiplier. Effects: `egoBelow` (off from that Ego level), `thresholdMin`, `thresholdBonus.every`
-  (`thresholdStat: 'Defense'` / `'Health'` / `'Critical Chance'` / `'Extra Damage'` makes both read that stats-screen stat: Adelheid's 7, Cassius's 5-1, Renoa's 7, Selena's 5-1).
+  (`thresholdStat: 'Defense'` / `'Health'` / `'Critical Chance'` / `'Critical Damage'` / `'Extra Damage'` makes both read that stats-screen stat: Adelheid's 7, Cassius's 5-1, Renoa's 7, Lucas's 5-1, Selena's 5-1).
   Thresholds read the effect owner's stats (`LiveTeammate.live`, filled while computing by `withLinkedTeam`; a `LiveBuild` can't be assigned into a saved `Build`).
   A play's `ravaged` overrides the card's `targetRavaged` (On Ravage cards start on), on Cards tab > a play.
 - Fights (`SaveData.fights`, `activeFight`, owner 2026-10-31): the enemy (`defMult`, `dr`) is shared by every character and build, not in the build. One target for now (`enemies[0]`). `computeBuild(..., saves, fight)`.
@@ -194,7 +194,7 @@ wording, and read only the files you need. File names are listed in the `card-re
 - Decided for later (owner, 2026-10-31):
   - DoT damage: when a character uses it. No card has `kind: 'DoT'` yet, so the DoT DMG stat and Sanguine Thorn's DoT buff do nothing. Ask the owner for the mechanics before reviewing a DoT character such as Tressa.
   - An official, reusable way to model extra and additional damage sources, to think through carefully first. Today there are `triggers`, `followUp`, `extraCards` with `notACard` and per-play counters; the question is whether one
-    "damage parts on a card" model should replace them. Not to be started without the owner. Damage waiting for it, shown as text only: Mei Lin E6 (100% Fixed), Orlea E6 (★ x 50% Fixed), Tenebria E2 (200% x Cost),
+    "damage parts on a card" model should replace them. Not to be started without the owner. Damage waiting for it, shown as text only: Mei Lin E6 (100% Fixed), Orlea E6 (★ x 50% Fixed), Tenebria E2 (200% x Cost), Nine E6 (25% of a Hew card's damage as Fixed),
     Rossweisse's Radiant Sword Flow / I discard damage, Lucas's "70% to another enemy". Each character's `notes` and docs/characters/<slug>.md list what else isn't counted.
   - Match "for every X above Y" thresholds to the game's math (`every` in presetBuffValue, floats on % stats: 69% gives +8%, not +9%): needs the in-game test threshold-every-rounding.
   - Fights with several targets (`Fight.enemies` is a list for this).

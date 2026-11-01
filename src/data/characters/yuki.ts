@@ -4,14 +4,11 @@
 // and Trickery Strike III's hits are effect hits of normal damage, unraised by the Signature level and skipped by Attack Card buffs (owner, 2026-10-30).
 // Potential 7 adds to the base % before the upgrade (Card +), measured at Attack 830: Flash Slash 258% = (220% + 10%) x 1.12,
 // Iceberg Cleave 213% = (180% + 10%) x 1.12.
-import type { CardPreset, CharacterAdditions } from '../../engine/types'
-import { cardBuff, EGO_POTENTIALS_PLUS_3 } from '../helpers'
+import type { CharacterAdditions } from '../../engine/types'
+import { cardBuff, effectHits, EGO_POTENTIALS_PLUS_3 } from '../helpers'
 
 /** A hit from an effect, not a card: unraised by card upgrades. */
-const effectHit = (id: string, name: string, pct: number, hits: number, text: string): CardPreset => ({
-  id, base: name, name, category: 'Generated Card', cardType: 'Attack', cost: null, element: 'Order', tags: '', scaling: 'ATK',
-  kind: 'Normal', pct, hits, weaknessApplies: false, upgrade: null, notACard: true, text,
-})
+const effectHit = effectHits({ element: 'Order' })
 
 const inspiration = { counter: 'Inspiration', maxStacks: 1 }
 const addHit = { counterHits: { counter: 'Inspiration', hits: 1 } }
@@ -179,9 +176,9 @@ export default {
     'card-774': { ...addHit, text: `{180%} Damage to all enemies\n{E1:${singleTarget}}\nInspiration: Add 1 Hit` },
   },
   extraCards: [
-    effectHit('freezing-hit', 'Freezing Blade (hit)', 1.2, 1, '120% Damage to all enemies'),
-    effectHit('freezing-hit-i', 'Freezing Blade I (hit)', 1.6, 1, '160% Damage to all enemies'),
-    effectHit('freezing-hit-iii', 'Freezing Blade III (hit)', 1.2, 2, '120% Damage × 2 to a random enemy'),
-    effectHit('trickery-hit', 'Trickery Strike III (hit)', 1, 1, '100% Damage to a random enemy'),
+    effectHit('freezing-hit', 'Freezing Blade (hit)', 1.2, '120% Damage to all enemies'),
+    effectHit('freezing-hit-i', 'Freezing Blade I (hit)', 1.6, '160% Damage to all enemies'),
+    effectHit('freezing-hit-iii', 'Freezing Blade III (hit)', 1.2, '120% Damage × 2 to a random enemy', { hits: 2 }),
+    effectHit('trickery-hit', 'Trickery Strike III (hit)', 1, '100% Damage to a random enemy'),
   ],
 } satisfies CharacterAdditions

@@ -7,14 +7,11 @@
 // Target Spotted I's Attunement 300% (Prydwen 200%) is its own unraised play (owner, 2026-10-28).
 // Effect hits (Mark, Coordinated, Attunement) get no Attack / Skill card buffs; Passion Weakness makes Coordinated Attacks Weakness
 // Attacks too; Target Spotted V hits a Ravaged target (owner, 2026-10-28).
-import type { CardPreset, CharacterAdditions } from '../../engine/types'
-import { cardBuff, EGO_POTENTIALS_PLUS_3 } from '../helpers'
+import type { CharacterAdditions } from '../../engine/types'
+import { cardBuff, effectHits, EGO_POTENTIALS_PLUS_3 } from '../helpers'
 
 /** A hit from an effect, not a card: Selena's Extra Attack, unraised by card upgrades. */
-const effectHit = (id: string, name: string, pct: number, tags: string, text: string, extra: Partial<CardPreset> = {}): CardPreset => ({
-  id, base: name, name, category: 'Generated Card', cardType: 'Attack', cost: null, element: 'Passion', tags, scaling: 'ATK',
-  kind: 'Extra Attack', pct, hits: 1, weaknessApplies: false, upgrade: null, notACard: true, text, ...extra,
-})
+const effectHit = effectHits({ element: 'Passion', kind: 'Extra Attack' })
 
 // Passion Weakness keyword (in game): "Apply Weakness Attack to Passion Cards. When another Attribute Weakness is applied, remove
 // Passion Weakness": a debuff on the target for every ally's Passion cards, switched on per play
@@ -127,17 +124,17 @@ export default {
     },
   },
   extraCards: [
-    effectHit('mark', 'Mark', 1, 'Mark',
-      'When an Attack Card is activated, inflict 100% Extra Attack, inflict Tenacity Damage equal to 0 Cost, and decrease Mark by 1'),
-    effectHit('mark-e6', 'Mark (E6 Extra Attack)', 1, '',
+    effectHit('mark', 'Mark', 1,
+      'When an Attack Card is activated, inflict 100% Extra Attack, inflict Tenacity Damage equal to 0 Cost, and decrease Mark by 1', { tags: 'Mark' }),
+    effectHit('mark-e6', 'Mark (E6 Extra Attack)', 1,
       "When Selena's Mark is activated, she has a 30% chance to inflict 100% Extra Attack on the target"),
-    effectHit('coordinated', 'Coordinated Attack', 1, 'Coordinated Attack', '100% Coordinated Attack to the target'),
-    effectHit('coordinated-50', 'Coordinated Attack (Drone Bombing V)', 0.5, 'Coordinated Attack', '50% Coordinated Attack to the target'),
+    effectHit('coordinated', 'Coordinated Attack', 1, '100% Coordinated Attack to the target', { tags: 'Coordinated Attack' }),
+    effectHit('coordinated-50', 'Coordinated Attack (Drone Bombing V)', 0.5, '50% Coordinated Attack to the target', { tags: 'Coordinated Attack' }),
     // Target Spotted V: one play per Ravage
-    effectHit('ts-ravage', 'Coordinated Attack (On Ravage)', 2, 'Coordinated Attack', 'On Ravage, 200% Coordinated Attack to the target',
-      { targetRavaged: true, image: 'cards/selena/unique_1005_02.webp', notes: 'One play per Ravage' }),
+    effectHit('ts-ravage', 'Coordinated Attack (On Ravage)', 2, 'On Ravage, 200% Coordinated Attack to the target',
+      { tags: 'Coordinated Attack', targetRavaged: true, image: 'cards/selena/unique_1005_02.webp', notes: 'One play per Ravage' }),
     // Target Spotted I: the Attunement damage when the card is drawn, a play of its own
-    effectHit('ts-attunement', 'Target Spotted I (Attunement)', 3, '', 'Attunement: 300% Damage to a random enemy',
+    effectHit('ts-attunement', 'Target Spotted I (Attunement)', 3, 'Attunement: 300% Damage to a random enemy',
       { kind: 'Normal', image: 'cards/selena/unique_1005_02.webp', notes: 'One play per draw' }),
   ],
 } satisfies CharacterAdditions

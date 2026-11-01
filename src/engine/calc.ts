@@ -99,8 +99,11 @@ export interface Triggered {
   card: Card
   /** Whose hit it is (the trigger's owner). */
   by: string
+  /** Chance it happens; with onCrit, the played card's crit chance. */
   chance: number
-  /** Its hits at full value (the totals below are x chance). */
+  /** It happens only on a Critical Hit of the played card. */
+  onCrit?: boolean
+  /** Its hits at full value. The totals below are x chance; with onCrit: nonCrit 0, crit in full (what it adds when the card crits), expected x chance. */
   hits: Hit[]
   nonCrit: number
   crit: number
@@ -277,17 +280,18 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
     [...new Set(triggers.map((x) => x.owner))].flatMap((o) => o.dmg?.caps ?? []))
 
   let k = 0
-  // The hits of one card played by m, with the play's debuffs and counter stacks
-  const cardHits = (m: Member, card: Card, play: RotationPlay) => {
+  // The hits of one card played by m, with the play's debuffs and counter stacks; added: only that many hits after the card's own (no first-hit buffs)
+  const cardHits = (m: Member, card: Card, play: RotationPlay, added = 0) => {
     const d = m.dmg!
-    const counters = d.caps.map(({ name, max }) => ({ name, stacks: capped(play, name, max) }))
+    const counters = playCaps(d.caps, card).map(({ name, max }) => ({ name, stacks: capped(play, name, max) }))
     const live: ActiveBuff[] = d.counterBuffs.map((b) => ({ ...b, stacks: counters.find((c) => c.name === b.counter)?.stacks ?? 0 }))
     const cb = cardBuffs([...d.fixedBuffs, ...live], card)
     const upgradable = !(card.scaling === 'Fixed' && !settings.potentialFixed)
     const potential = upgradable ? potentialFactor(card.upgrade, d.build, m.ch, settings) : null
     const hits: Hit[] = []
     const stats = { ...d.stats, elemDmg: cardElement(m, d, card) }
-    for (let h = 1; h <= Math.max(0, Math.floor(card.hits)); h++) hits.push(computeHit(card, h, ++k, cb, potential, stats, enemy, play, settings))
+    const own = Math.max(0, Math.floor(card.hits))
+    for (let h = added ? own + 1 : 1; h <= own + added; h++) hits.push(computeHit(card, h, ++k, cb, potential, stats, enemy, play, settings))
     return { hits, counters, cb, ...totals(hits) }
   }
 
@@ -303,7 +307,7 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
   ;(team.rotation ?? []).forEach((play, index) => {
     const m = play.by === undefined ? main : members[play.by]
     const base = m?.cards.get(play.cardId)
-    counterOptions[index] = mergeCaps(m?.dmg?.caps ?? [], triggerCaps)
+    counterOptions[index] = mergeCaps(playCaps(m?.dmg?.caps ?? [], base), triggerCaps)
     if (!m || !base) {
       warnings.push(`Play ${index + 1}: its card is no longer in the deck, so it's left out.`)
       return
@@ -327,21 +331,27 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
     // Hits the team's triggers add (Selena's Mark): the trigger owner's, with this play's counters and Vulnerable
     const triggered: Triggered[] = []
     for (const { t, owner, slot } of triggers) {
-      if (!owner.dmg || (t.others && slot === play.by)) continue
+      if (!owner.dmg || (t.others && slot === play.by) || (t.own && slot !== play.by)) continue
       if (t.counter && capped(play, t.counter, t.maxStacks) <= 0) continue
       if (!buffMatches({ appliesTo: t.on, condition: 'Always' }, card)) continue
       if (t.weakness && !card.weaknessApplies && !own.cb?.weaknessAttack.length) continue
+      // One more hit of a play that hits nothing is no hit either
+      if (t.repeat && Math.floor(card.hits) < 1) continue
       const tp = owner.ch?.cards?.find((x) => x.id === t.card)
       if (!tp) continue
-      const tcard = presetCard(tp, owner.ch!.element, `trigger:${tp.id}`, buildNodeOn(owner.dmg.build))
+      const tcard = t.repeat ? { ...card, id: `trigger:${card.id}` } : presetCard(tp, owner.ch!.element, `trigger:${tp.id}`, buildNodeOn(owner.dmg.build))
       if (t.perStack) tcard.hits *= capped(play, t.counter!, t.maxStacks)
       // Same target, same moment (Unconfirmed; in-game test ravaged-triggered-hits): Ravaged on the play is Ravaged on the hit it sets off,
       // and a play switched off is off for that hit too
       tcard.targetRavaged = play.ravaged ?? (tcard.targetRavaged || card.targetRavaged)
-      const r = cardHits(owner, tcard, { cardId: tcard.id, vulnerable: play.vulnerable, stacks: play.stacks })
-      const chance = t.chance ?? 1
-      const hit = { nonCrit: r.nonCrit * chance, crit: r.crit * chance, expected: r.expected * chance }
-      triggered.push({ card: tcard, by: owner.name, chance, hits: r.hits, ...hit })
+      const r = t.repeat ? cardHits(owner, tcard, play, 1) : cardHits(owner, tcard, { cardId: tcard.id, vulnerable: play.vulnerable, stacks: play.stacks })
+      // onCrit: one roll per play, on its first hit (Flame Thrower III has one hit, and on all enemies it crits or doesn't: owner, 2026-11-01;
+      // more hits set on the play: in-game test lucas-readings)
+      const chance = t.onCrit ? own.hits[0]?.critRate ?? 0 : t.chance ?? 1
+      const hit = t.onCrit
+        ? { nonCrit: 0, crit: r.crit, expected: r.expected * chance }
+        : { nonCrit: r.nonCrit * chance, crit: r.crit * chance, expected: r.expected * chance }
+      triggered.push({ card: tcard, by: owner.name, chance, ...(t.onCrit ? { onCrit: true } : {}), hits: r.hits, ...hit })
       credit(owner, hit)
     }
     const trig = totals(triggered)
@@ -416,6 +426,12 @@ function mergeCaps(a: { name: string; max: number | null }[], b: { name: string;
     out.set(name, prev === undefined ? max : prev === null ? max : max === null ? prev : Math.min(prev, max))
   }
   return [...out].map(([name, max]) => ({ name, max }))
+}
+
+/** The counters a play of this card has: the ones its player's buffs read, plus the one that adds hits to it, even when no buff reads
+ * that one (Annihilation's Dark Mist Stance, Yuki's Inspiration with 3-1 off). */
+function playCaps(caps: { name: string; max: number | null }[], card: Card | undefined) {
+  return card?.counterHits ? mergeCaps(caps, [{ name: card.counterHits.counter, max: 1 }]) : caps
 }
 
 function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof cardBuffs>, potential: Factor | null,

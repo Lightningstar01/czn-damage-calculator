@@ -2,7 +2,7 @@
 
 Written from `tests/ingame/checks.ts` by the tests; change it there, not here.
 
-29 to run, 4 measured. Send the numbers under **Send** with the game version; they then become tests here and close the question.
+37 to run, 4 measured. Send the numbers under **Send** with the game version; they then become tests here and close the question.
 Use non-crit hits unless the test is about crits, and note anything else that was on.
 
 ## To run
@@ -214,6 +214,21 @@ Closes: docs/FORMULA.md, Target debuffs
 
 Closes: docs/FORMULA.md, Target debuffs
 
+### weakness-debuff-triggered-hits
+
+**Question:** With the Weakness debuff on you, is a hit your play sets off reduced too, and does it use a stack? The calculator says no for a hit of its own (Flame Thrower III's On Critical Hit, Mark), and yes for one more hit of the played card (Wind Charge III's added hit).
+
+**Setup:** Lucas with Flame Thrower III, the same enemy, no other buffs. A way to get 2 or more stacks of the Weakness debuff on him. Then, if you can, Owen with Wind Charge III.
+
+**Steps:**
+1. Without the debuff, play Flame Thrower III until it crits and read both numbers.
+2. With the debuff, do the same, and note the stacks before and after: if the second number is 25% lower too, the debuff reaches it; if the stacks drop by 2, it used a stack.
+3. Same with Owen: an Attack Card with and without the debuff, until Wind Charge III adds its hit.
+
+**Send:** The damage numbers, each time; Weakness debuff stacks before and after; Attack in battle.
+
+Closes: docs/FORMULA.md, Weakness, Vulnerable, Ravaged; src/engine/calc.ts: computeBuild
+
 ### ravaged-extra-damage
 
 **Question:** How much more damage does a Ravaged enemy take by itself?
@@ -401,6 +416,119 @@ Closes: docs/FORMULA.md, Buff types (Card +)
 **Send:** Both card %s; The highest stacks.
 
 Closes: docs/characters/yuki.md
+
+### nine-readings
+
+**Question:** Nine: do Honed Edge and Experienced Strike's and node 3-1's Exhaust card buffs raise allies' cards too? Do several Experienced Strikes stack? Do nodes 3-1 and 5-1 raise Slash before the upgrade?
+
+**Setup:** Nine with a teammate who has an Exhaust Attack card and a Defense-Based Attack card, Counterblade in the deck. For Slash: once 3-1 and 5-1 are unlocked, with a known Basic level.
+
+**Steps:**
+1. Read the teammate's damage on the same enemy with and without Honed Edge, then with and without Experienced Strike.
+2. Play Experienced Strike twice in a turn and read an Exhaust card each time.
+3. Screenshot Slash after unlocking each node.
+
+**Send:** The damage numbers; The Slash %; The Basic level.
+
+Closes: docs/characters/nine.md
+
+### nine-e3
+
+**Question:** Nine's E3 "+150 Damage Amount to Reflection: Zero" has no % sign: is the card 400%, with multipliers raising the extra too?
+
+**Setup:** Once Nine has E3: the Ego skill with known Attack, Defense and combined Cost, and a multiplicative buff that reaches it.
+
+**Steps:**
+1. Read the card text.
+2. Read its damage with and without the buff.
+
+**Send:** The picture; Both numbers; Attack and Defense in battle; The combined Cost.
+
+Closes: docs/characters/nine.md
+
+### owen-readings
+
+**Question:** Owen: do two Wind Charge II / V before the same Attack Card stack their decrease? Is Break Armor I's Fortitude +80% added like "+" buffs, and does its own hit get it? Do Attack Card buffs reach his E2 hit, Wind Slash IV's end of turn hit and Wind Riding II's hit, and do card upgrades raise E2's 80%? Do 3-1 and 5-1 raise Downward Cut before the upgrade? Does E6's +20% stack per Wind Charge?
+
+**Setup:** Owen with a known Attack. For 3-1, 5-1 and E6: once they are unlocked.
+
+**Steps:**
+1. Read a Downward Cut with one Wind Charge II before it, then with two.
+2. Read a Downward Cut with and without Break Armor I played first, with a multiplicative buff on and off, and read Break Armor I's own hit.
+3. Read the E2 hit, Wind Slash IV's hit and Wind Riding II's hit with and without a buff to Attack Cards.
+4. Screenshot Downward Cut after unlocking each node.
+5. With E6, play Wind Charge twice in a turn and read a card after each.
+
+**Send:** The damage numbers; The Downward Cut %; The Basic level; Attack in battle.
+
+Closes: docs/characters/owen.md
+
+### lucas-readings
+
+**Question:** Lucas: does R.P.G-7 fire when Ephemeral exhausts a Bullet at the end of the turn? Can Flame Thrower III's On Critical Hit damage crit too? If an effect adds hits to Flame Thrower III, does each crit add the 150%? (The calculator counts one roll per play.) Whose hit is Flashbang IV's Mark, and how big? Do two S.S.S in a turn stack? Does Machine Gun with 3-1 get E2's and S.S.S's Bullet damage? Do 5-1 and 7 raise the card % before the upgrade?
+
+**Setup:** Lucas with a known Attack. For 3-1, 5-1 and 7: once they are unlocked.
+
+**Steps:**
+1. With R.P.G-7 upgraded, end a turn with a Launcher Bullet in hand and read the damage numbers.
+2. Play Flame Thrower III until it crits and read both numbers.
+3. If an effect can add hits to Flame Thrower III, play it so and count the 150% numbers against the crits.
+4. Play Flashbang IV, tap the Mark keyword for its text, then play an Attack Card and read the extra number.
+5. Play a Launcher Bullet after one S.S.S, then another after two.
+6. With 3-1, read a Machine Gun with and without S.S.S played first.
+7. Screenshot Machine Gun and a Launcher Bullet after unlocking 5-1 and 7.
+
+**Send:** The damage numbers; The Mark keyword text; The card %s; Attack and Critical Damage in battle.
+
+Closes: docs/characters/lucas.md
+
+### rin-drawing-slash-own-stance
+
+**Question:** Rin: when she isn't in Dark Mist Stance, does Drawing Slash's own "Gain Dark Mist Stance" already give that same play its +100%? The calculator says yes for now.
+
+**Setup:** A battle with Rin and Drawing Slash, E3 or lower (E4 gives the stance on any card). No other buffs; same target and no Vulnerable for all plays.
+
+**Steps:**
+1. Start a turn outside the stance and play Drawing Slash first.
+2. In another turn, get the stance first (Dark Mist Secret Art: Destruction), then play Drawing Slash.
+3. Compare the two non-crit damage numbers: the same means the card's own gain counts; about double in the second means it needs the stance from before.
+
+**Send:** Both damage numbers; Attack in battle.
+
+Closes: docs/characters/rin.md
+
+### rin-unconfirmed
+
+**Question:** Rin's other readings, none readable at the owner's level 0 and E0: (1) Do Black Dance (Mythic) and Sheathe Sword get the Signature upgrade? (2) Is node 7's Critical Chance on the stats screen? (3) Is E1's +30% part of Black Dance's shown %? (4) What Cost does Drawing Slash III play at in the stance?
+
+**Setup:** Once Signature levels, node 7 and E1 are unlocked; for (4), Drawing Slash III and the stance in battle.
+
+**Steps:**
+1. Read Black Dance and Sheathe Sword with a Signature level above 0.
+2. Read Critical Chance on the stats screen with node 7 on, at Attack 600 or higher.
+3. Read Black Dance after E1.
+4. Read Drawing Slash III's Cost in the stance.
+
+**Send:** The card %s; The Signature level; Critical Chance and Attack; The Cost.
+
+Closes: docs/characters/rin.md
+
+### amir-unconfirmed
+
+**Question:** Amir's readings the screenshots can't settle: (1) Does Steel Resolve's Shield set off a Metallization strike before it removes Metallization? (2) Does a strike's own 80% Shield set off another one? (3) Can a strike crit? (4) Is node 7's +10% additive? (5) Is node 5-1's +5% part of Rapier's shown %?
+
+**Setup:** A battle with Amir. (1) to (3) need some Metallization and a Steel Barrier; (4) and (5) need those nodes unlocked (Promotion required for now).
+
+**Steps:**
+1. With 3 Metallization, play Steel Barrier and count the strikes and how far Metallization drops: 1 strike and 2 left means a strike's Shield sets off nothing.
+2. With some Metallization, use Steel Resolve and count the strikes.
+3. Watch several strikes for a crit, with some Critical Chance.
+4. With node 7 on and a "by X%" buff that reaches strikes, compare a strike with and without the buff: an additive +10% isn't raised by it.
+5. Read Rapier with node 5-1 on: 118% at level 6 means the +5% is in the card's % ((100% + 5%) x 1.12).
+
+**Send:** Strikes and Metallization left, each time; Strike damage, crit and non-crit, with Defense and Attack in battle; Rapier's %.
+
+Closes: docs/characters/amir.md
 
 ## Measured
 

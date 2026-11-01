@@ -87,7 +87,7 @@ How a buff's text decides where it goes:
 
 **"Applies to"** (case-insensitive): `ALL`, an exact card name, a tag, the card's type (Attack, Skill, Upgrade), element, cost (`1-cost`,
 `2+ cost`; Ego skills have no AP cost), kind (`DoT`, `Extra Attack`), `Defense-Based`, `N+ hits` (the play's hit count), joined by `A & B` (all)
-or `A/B` (any). Hits from effects rather than cards (`notACard`) don't match card-type words.
+or `A/B` (any). Hits from effects rather than cards (`notACard`) don't match card-type words, so what names Attack, Skill or Upgrade skips them; `ALL`, their name or their tags still match.
 
 ## Weakness, Vulnerable, Ravaged
 
@@ -95,7 +95,9 @@ or `A/B` (any). Hits from effects rather than cards (`notACard`) don't match car
 - **Weakness Attack on non-active hits:** Prydwen says non-active damage (extra-attack bolts) gets no elemental bonus. The owner ruled that
   Selena's Passion Weakness makes her Coordinated Attacks Weakness Attacks (2026-10-28), which is what's modeled there. As a general rule, **Unconfirmed**.
 - **Vulnerable x1.5, Weakness debuff x0.75 (Sourced).** In the game a stack is used per hit (Vulnerable: Prydwen and owner; Weakness: **Unconfirmed**).
-  The calculator has switches per play, counting on all its hits, instead of tracking stacks.
+  The calculator has switches per play, counting on all its hits, instead of tracking stacks. A hit the play sets off skips the Weakness debuff, unless it's one more hit of
+  the played card (Owen's Wind Charge III, Amir's Full Metal Hurricane II) (**Unconfirmed**, in-game test `weakness-debuff-triggered-hits`).
+- **Decreased Fortitude (User, 2026-11-01):** +20% Damage taken per Fortitude decreased on the target (Owen's Break Armor I: 4 = +80%). Added like a "+" buff, on the plays after it (**Unconfirmed**; in-game test owen-readings).
 - **Ravaged (User):** Ravaged enemies take more damage; the size is **Unconfirmed** (Settings, default 0). Target Ravaged is switched per play on the
   Cards tab; On Ravage cards (`targetRavaged` on the card) start on, and the play can override either way (User, 2026-10-31). "Ravaged only" buffs count
   only with it on, and a hit the play sets off is on the same Ravaged target, or not when the play's switch is off (**Unconfirmed**, in-game test
@@ -174,7 +176,7 @@ The enemy lives in shared fights, not in builds (User, 2026-10-31), so builds co
 - DoT damage: only when a character uses it (owner, 2026-10-31). Sanguine Thorn's `DoT` buff waits for it.
 - Partner Ego skill damage: out of scope, nobody uses it for damage (owner, 2026-10-27).
 - Shields, stress, draw and AP effects: text only.
-- Ego effects that deal damage with no card yet: Mei Lin E6, Orlea E6, Tenebria E2 (they wait for the extra-damage model).
+- Ego effects that deal damage with no card yet: Mei Lin E6, Orlea E6, Tenebria E2, Nine E6 (they wait for the extra-damage model).
 - See CLAUDE.md's backlog for the planned extra-damage model, in-game rounding and what unreviewed characters' imports miss.
 
 ## Evidence log

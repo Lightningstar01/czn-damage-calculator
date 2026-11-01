@@ -32,14 +32,15 @@ export function parseBuffValue(text: string): number {
 }
 
 /** Threshold stats kept as a share (0.6 = 60%), shown as a %. */
-export const thresholdIsPct = (stat: BuffEffect['thresholdStat']) => stat === 'Critical Chance' || stat === 'Extra Damage'
+export const thresholdIsPct = (stat: BuffEffect['thresholdStat']) => stat === 'Critical Chance' || stat === 'Critical Damage' || stat === 'Extra Damage'
 
 /** A preset buff's value for its owner: its own value (0 below thresholdMin), plus its thresholdBonus when the owner's stats-screen Attack
- * (or Defense / Health / Critical Chance / Extra Damage, with thresholdStat) is above the threshold (once, or for every `every` above it up to `max`).
+ * (or Defense / Health / Critical Chance / Critical Damage / Extra Damage, with thresholdStat) is above the threshold (once, or for every `every` above it up to `max`).
  * stats: the owner's ("If Mei Lin's Attack is 500 or higher"), not the receiver's; without them no threshold is met. */
 export function presetBuffValue(e: BuffEffect, stats: ScreenStats | undefined): { value: number; bonus: boolean } {
   const atk = !stats ? -Infinity : e.thresholdStat === 'Defense' ? stats.defense : e.thresholdStat === 'Health' ? stats.health
-    : e.thresholdStat === 'Critical Chance' ? stats.critChance : e.thresholdStat === 'Extra Damage' ? stats.extraDmg : stats.attack
+    : e.thresholdStat === 'Critical Chance' ? stats.critChance : e.thresholdStat === 'Critical Damage' ? stats.critDmg
+    : e.thresholdStat === 'Extra Damage' ? stats.extraDmg : stats.attack
   if (e.thresholdMin !== undefined && atk < e.thresholdMin) return { value: 0, bonus: false }
   const ab = e.thresholdBonus
   const bonus = !!ab && (ab.orEqual ? atk >= ab.above : atk > ab.above)

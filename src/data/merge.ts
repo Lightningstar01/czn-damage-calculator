@@ -35,6 +35,7 @@ export function mergeCharacter(imported: ImportedCharacter, additions: Character
     manifestEgo: imported.manifestEgo.map((m) => ({ ...m, ...additions.ego?.[m.level] })),
     potentialEgo: potentialEgo(imported),
     ...(additions.triggers ? { triggers: additions.triggers } : {}),
+    ...(additions.playStacks ? { playStacks: additions.playStacks } : {}),
   }
 }
 
@@ -92,10 +93,24 @@ export function checkAdditions(imported: Record<string, ImportedCharacter>, addi
       dupes(id, c.effects)
     }
     dupes(ch.name, add.effects)
-    for (const e of [...(add.effects ?? []), ...cards.flatMap(([, c]) => c.effects ?? [])]) {
+    const effects = [...(add.effects ?? []), ...cards.flatMap(([, c]) => c.effects ?? [])]
+    for (const e of effects) {
       if (e.node !== undefined) nodeCheck(e.node, `effect '${e.id}'`)
       egoCheck(e.egoLevel, `effect '${e.id}'`)
       egoCheck(e.egoBelow, `effect '${e.id}'`)
+    }
+    // A starting counter nothing reads does nothing, and a card's hit counter named only there is a switch of its own: both are likely misspelled
+    const read = [
+      ...effects.flatMap((e) => (e.kind === 'Buff' && e.counter ? [e.counter] : [])),
+      ...[...(add.triggers ?? []), ...cards.flatMap(([, c]) => c.triggers ?? [])].flatMap((t) => t.counter ?? []),
+    ]
+    const hitCounters = cards.flatMap(([, c]) => c.counterHits?.counter ?? [])
+    const starting = Object.keys(add.playStacks ?? {})
+    for (const name of starting) {
+      if (!read.includes(name) && !hitCounters.includes(name)) problems.push(`characters/${slug}.ts: playStacks names counter '${name}', which nothing reads`)
+    }
+    for (const name of new Set(hitCounters)) {
+      if (!read.includes(name) && !starting.includes(name)) problems.push(`characters/${slug}.ts: counterHits names counter '${name}', which no buff, trigger or playStacks has`)
     }
   }
   return problems

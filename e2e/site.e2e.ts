@@ -44,18 +44,18 @@ async function setBuff(page: Page, name: string, on: boolean) {
   await expect(toggle).toHaveAttribute('aria-checked', String(on))
 }
 
-/** Picks a card on the Cards tab (its base version, if it has epiphanies) and adds one play of it. */
-async function addAndPlay(page: Page, name: string) {
+/** Picks a card on the Cards tab (its base version, or from base: that base's epiphany) and adds one play of it. */
+async function addAndPlay(page: Page, name: string, who = 'Mei Lin', base = name) {
   await tabButton(page, 'Cards').click()
   const picker = page.locator('section', { has: page.getByRole('heading', { name: 'Add cards' }) })
-  await picker.getByRole('button', { name, exact: true }).first().click()
+  await picker.getByRole('button', { name: base, exact: true }).first().click()
   const confirm = page.getByRole('dialog', { name: `Add ${name}?` })
   if (!await confirm.isVisible()) await picker.getByRole('button', { name, exact: true }).first().click()
   await confirm.getByRole('button', { name: 'Add', exact: true }).click()
   await page.getByRole('button', { name: '+ Play', exact: true }).click()
   const plays = page.getByRole('dialog', { name: 'Add plays' })
   // .last(): the card just added, when the save has an old card of the same name
-  await plays.getByRole('button', { name: `Play Mei Lin's ${name}`, exact: true }).last().click()
+  await plays.getByRole('button', { name: `Play ${who}'s ${name}`, exact: true }).last().click()
   await plays.getByRole('button', { name: 'Done', exact: true }).click()
 }
 
@@ -144,6 +144,16 @@ test('Target Ravaged is switched per play', async ({ page }) => {
   await openPlay()
   await toggle.click()
   expect(await total(page)).toBe(before)
+})
+
+test("a character's starting counter shows only on plays that can set it", async ({ page }) => {
+  await openWithSave(page)
+  await page.getByRole('combobox', { name: 'Character' }).selectOption('Amir')
+  await addAndPlay(page, 'Rapier', 'Amir')
+  await expect(page.locator('.rotation')).toContainText('Rapier')
+  await expect(page.locator('.rotation')).not.toContainText('In Metallization state')
+  await addAndPlay(page, 'Metal Pierce I', 'Amir', 'Metal Pierce')
+  await expect(page.locator('.rotation')).toContainText('In Metallization state 1')
 })
 
 test('a Potential node switched off takes its buff away', async ({ page }) => {

@@ -97,8 +97,9 @@ export interface BuffEffect {
   /** Stats-screen Attack the buff needs: it's worth 0 below it (Rossweisse 7: 'If Attack is 600 or higher'). */
   thresholdMin?: number
   /** 'Defense' / 'Health': thresholdMin and thresholdBonus read that stats-screen stat instead (Adelheid 7: 'If Defense is 300 or
-   * higher'; Cassius 5-1: 'If Health is 600 or higher'; Renoa 7: 'If Critical Chance is 60% or higher', above: 0.6; Selena 7: 'If Extra Damage is 30% or higher', above: 0.3). */
-  thresholdStat?: 'Defense' | 'Health' | 'Critical Chance' | 'Extra Damage'
+   * higher'; Cassius 5-1: 'If Health is 600 or higher'; Renoa 7: 'If Critical Chance is 60% or higher', above: 0.6; Selena 7: 'If Extra Damage is 30% or higher', above: 0.3;
+   * Lucas 5-1: 'If Critical Damage is 160% or higher', above: 1.6). */
+  thresholdStat?: 'Defense' | 'Health' | 'Critical Chance' | 'Critical Damage' | 'Extra Damage'
   /** See StatEffect.hint. */
   hint?: string
 }
@@ -114,6 +115,10 @@ export interface Trigger {
   on: string
   /** Only plays by another combatant ("an Attack Card of another Combatant"). */
   others?: boolean
+  /** Only the owner's own plays ("an Attack Card of this unit"). */
+  own?: boolean
+  /** The hit is one more hit of the played card, not `card`, which is then just the card that gives it (Owen's Wind Charge III: "add 1 Hit(s)"). */
+  repeat?: boolean
   /** Only plays that hit a Weakness (the card applies weakness, or a Weakness Attack buff matches it). */
   weakness?: boolean
   /** Per-play counter that must be above 0 on the play ('Mark' on the target, or a 'for 1 turn' effect): set on each play. */
@@ -123,6 +128,8 @@ export interface Trigger {
   perStack?: boolean
   /** Chance to happen: its damage counts x this (expected value, owner 2026-10-28). */
   chance?: number
+  /** Only on a Critical Hit of the played card (Lucas's Flame Thrower III): expected damage x the card's crit chance, nothing if it doesn't crit, in full if it does. */
+  onCrit?: boolean
   /** Manifest Ego level (1-6) that unlocks it. */
   egoLevel?: number
 }
@@ -149,6 +156,8 @@ export interface CharacterPreset {
   triggers?: Trigger[]
   /** When the character was last compared with the owner's in-game screenshots; missing = not reviewed yet (Prydwen's data only). */
   verified?: Verified
+  /** Per-play counters a new play of this character starts with (Rin's Dark Mist Stance: on); after that they're the play's own. */
+  playStacks?: Record<string, number>
 }
 
 /** The last review of a character against the game: its date and the game version shown in-game. */
@@ -278,6 +287,8 @@ export interface CharacterAdditions {
   effects?: Effect[]
   /** See CharacterPreset.triggers. */
   triggers?: Trigger[]
+  /** See CharacterPreset.playStacks. */
+  playStacks?: Record<string, number>
   /** Per card id: fields to override (in-game name, tags, %, hits, text...), notes (added after the imported ones, or
    * instead of them with replaceNotes) and effects. */
   cards?: Record<string, Partial<Omit<CardPreset, 'id' | 'base'>> & { replaceNotes?: boolean }>

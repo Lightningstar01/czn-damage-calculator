@@ -34,6 +34,11 @@ describe('card presets', () => {
     expect(check({ cards: { 'card-338': { nodeTags: { '9-9': 'X' } } } })).toHaveLength(1)
     expect(check({ cards: { 'card-338': { nodeCard: { '9-9': { hits: 2 } } } } })).toHaveLength(1)
     expect(check({ cards: { 'card-338': { text: '{P9-9:x} {100%@card-0}' } } })).toHaveLength(2)
+    // Per-play counters named only once: a misspelling would do nothing, or split one switch in two
+    expect(check({ playStacks: { Stance: 1 } })).toHaveLength(1)
+    expect(check({ cards: { 'card-338': { counterHits: { counter: 'Stance', hits: 1 } } } })).toHaveLength(1)
+    expect(check({ playStacks: { Stance: 1 }, cards: { 'card-338': { counterHits: { counter: 'Stanse', hits: 1 } } } })).toHaveLength(2)
+    expect(check({ playStacks: { Stance: 1 }, cards: { 'card-338': { counterHits: { counter: 'Stance', hits: 1 } } } })).toEqual([])
     expect(check({ cards: { 'card-338': { text: '{E7:x} {E30:6|4} {E1:x}' } } })).toHaveLength(2)
     expect(check({ cards: { 'card-338': { triggers: [{ card: 'card-338', on: 'Attack', egoLevel: 7 }] } } })).toHaveLength(1)
   })

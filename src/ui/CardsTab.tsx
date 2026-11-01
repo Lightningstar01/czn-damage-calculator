@@ -80,8 +80,10 @@ function toTiles(items: DeckItem[], isCustom: (i: DeckItem) => boolean): Tile[] 
   return out
 }
 
-/** A new play of a card; slot: a teammate's card. */
-const playOf = (cardId: string, slot?: number): RotationPlay => slot === undefined ? { cardId } : { cardId, by: slot }
+/** A new play of a card, with its character's starting counters; slot: a teammate's card. */
+const playOf = (ch: CharacterPreset | undefined, cardId: string, slot?: number): RotationPlay => ({
+  cardId, ...(slot === undefined ? {} : { by: slot }), ...(ch?.playStacks ? { stacks: { ...ch.playStacks } } : {}),
+})
 
 const isEgoCard = (by?: string) => !!by && /^E\d$/.test(by)
 const createdNote = (by?: string) => by === 'Auto' ? 'Comes with every deck'
@@ -187,7 +189,7 @@ function DeckCardSheet({ owner, tile, onClose }: { owner: Owner; tile: Tile; onC
           : `its plays set off this team's effects (Mark...) but deal no damage of their own until ${owner.name} has a saved build (Setup › Team).`}</p>
       )}
       <div className="btn-row">
-        <button className="btn primary" onClick={() => { updateBuild((b) => { b.rotation.push(playOf(item.card.id, owner.slot)) }); setPlayed(played + 1) }}>
+        <button className="btn primary" onClick={() => { updateBuild((b) => { b.rotation.push(playOf(owner.ch, item.card.id, owner.slot)) }); setPlayed(played + 1) }}>
           + Play
         </button>
         {versions.length > 1 && <button className="btn" aria-expanded={changing} onClick={() => setChanging(!changing)}>Change epiphany</button>}
@@ -301,7 +303,7 @@ function PlayPicker({ onClose }: { onClose: () => void }) {
           <div className="card-grid mini">
             {g.items.map((i) => (
               <CardFace key={i.card.id} size="mini" preset={i.preset} card={i.card} label={`Play ${g.owner.name}'s ${i.card.name}`}
-                onClick={() => { updateBuild((b) => { b.rotation.push(playOf(i.card.id, g.owner.slot)) }); setAdded([...added, i.card.name]) }} />
+                onClick={() => { updateBuild((b) => { b.rotation.push(playOf(g.owner.ch, i.card.id, g.owner.slot)) }); setAdded([...added, i.card.name]) }} />
             ))}
           </div>
         </div>
@@ -381,8 +383,9 @@ function RotationSection() {
   )
 }
 
-function playFlags(play: RotationPlay, ravaged: boolean): string {
-  const stacks = Object.entries(play.stacks ?? {}).filter(([, n]) => n > 0).map(([name, n]) => `${name} ${n}`)
+/** What's set on a play. settable: the stacks it can set, so a stack nothing reads (a character's starting counter on another card, a removed card's) doesn't show. */
+function playFlags(play: RotationPlay, ravaged: boolean, settable: string[]): string {
+  const stacks = Object.entries(play.stacks ?? {}).filter(([name, n]) => n > 0 && settable.includes(name)).map(([name, n]) => `${name} ${n}`)
   return [...(play.vulnerable ? ['Vulnerable'] : []), ...(play.weaknessDebuff ? ['Weakness debuff'] : []), ...(ravaged ? ['Target Ravaged'] : []), ...stacks].join(' · ')
 }
 
@@ -394,7 +397,7 @@ function RotationItem({ id, index, play, card, baseHits, baseCost, baseRavaged, 
   open: boolean; onToggle: () => void; onChange: (fn: (p: RotationPlay) => void) => void; onRemove: () => void
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
-  const flags = playFlags(play, !!card?.targetRavaged)
+  const flags = playFlags(play, !!card?.targetRavaged, [...counters.map((c) => c.name), ...(card?.perCount ? [card.perCount] : [])])
   return (
     <li ref={setNodeRef} className={`row col ${isDragging ? 'dragging' : ''}`}
       style={{ transform: CSS.Transform.toString(transform), transition }}>
