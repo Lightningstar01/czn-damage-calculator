@@ -72,4 +72,12 @@ describe('Tenebria', () => {
     expect(r.plays[0].nonCrit).toBeCloseTo(0.4 * 1.2 * 3 * 1.1 * 100 * 0.35)
     expect(r.plays[1].nonCrit).toBeCloseTo(4 * 1.5 * 100 * 0.35)
   })
+
+  it('Performance Buzz stops at 10 stacks', () => {
+    const { cs, a } = ownerBuild()
+    const photo = card('card-1186')
+    addCards(cs, photo)
+    a.rotation = [{ cardId: photo.id, stacks: { 'Performance Buzz': 12 } }]
+    expect(computeBuild(PRESETS, 'Tenebria', cs, a, settings).nonCrit).toBeCloseTo(10 * 1.5 * 100 * 0.35)
+  })
 })

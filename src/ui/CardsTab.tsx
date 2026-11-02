@@ -408,17 +408,19 @@ function RotationItem({ id, index, play, card, baseHits, baseCost, baseRavaged, 
           <div className="row-sub">{card ? cardSummary(card) : 'Card is not in the deck'}</div>
           {play.hits !== undefined && <div className="row-note">Hits set for this play (card: {baseHits})</div>}
           {card?.perCost && <div className="row-note">Damage × Cost {card.cost}{play.cost !== undefined ? ` (card: ${baseCost})` : ''}</div>}
-          {card?.perCount && play.stacks?.[card.perCount] === undefined && <div className="row-note">Damage × {card.perCount} 1</div>}
+          {card?.perCount && play.stacks?.[card.perCount] === undefined && <div className="row-note">{card.countsHits ? 'Hits' : 'Damage'} × {card.perCount} 1</div>}
           {flags && <div className="row-note">{flags}</div>}
         </button>
         <button className="icon-btn" aria-label={`Remove play ${index + 1}`} onClick={onRemove}>×</button>
       </div>
       {open && card && (
         <div className="play-opts">
-          <div className="toggle-field"><span>Hits</span>
-            <Stepper label={`Play ${index + 1} hits`} value={card.hits}
-              onChange={(n) => onChange((p) => { p.hits = n === baseHits ? undefined : n })} />
-          </div>
+          {!card.countsHits && (
+            <div className="toggle-field"><span>Hits</span>
+              <Stepper label={`Play ${index + 1} hits`} value={card.hits}
+                onChange={(n) => onChange((p) => { p.hits = n === baseHits ? undefined : n })} />
+            </div>
+          )}
           {card.perCost && (
             <div className="toggle-field"><span>Cost (damage × Cost)</span>
               <Stepper label={`Play ${index + 1} cost`} value={card.cost ?? 1} min={1} max={9}
@@ -426,8 +428,8 @@ function RotationItem({ id, index, play, card, baseHits, baseCost, baseRavaged, 
             </div>
           )}
           {card.perCount && (
-            <div className="toggle-field"><span>{card.perCount} (damage × count)</span>
-              <Stepper label={`Play ${index + 1} ${card.perCount}`} value={playCount(card.perCount, play)} min={0}
+            <div className="toggle-field"><span>{card.perCount} ({card.countsHits ? 'one hit each' : 'damage × count'})</span>
+              <Stepper label={`Play ${index + 1} ${card.perCount}`} value={playCount(card, play)} min={0} max={card.maxCount}
                 onChange={(n) => onChange((p) => {
                   p.stacks ??= {}
                   if (n !== 1) p.stacks[card.perCount!] = n

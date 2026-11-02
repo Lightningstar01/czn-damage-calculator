@@ -25,13 +25,18 @@ export function SettingsTab() {
       <Section title="Rules to test" help="Rules that aren't confirmed yet. Change one if your in-game tests disagree. Every character updates.">
         <SelectField<MultMode> label="Multiplicative (no '+') buffs combine" value={data.settings.multMode}
           options={[{ value: 'Summed', label: 'Summed: 1 + a + b' }, { value: 'Chained', label: 'Chained: (1 + a) × (1 + b)' }]}
-          help="Summed is your belief (UltimateGacha cites Reddit testing)."
+          help="Summed: measured on Tressa's Shadow Dagger (164%; chained would show 173%)."
           onChange={(v) => update((d) => { d.settings.multMode = v })} />
         <div className="grid2 gap-top">{SETTING_INFO.filter((s) => TO_TEST.includes(s.key)).map(field)}</div>
         <label className="check">
           <input type="checkbox" checked={data.settings.potentialFixed}
             onChange={(e) => update((d) => { d.settings.potentialFixed = e.target.checked })} />
           Card upgrade potentials also raise Fixed damage (Unconfirmed: test in-game)
+        </label>
+        <label className="check">
+          <input type="checkbox" checked={data.settings.roundCardPct}
+            onChange={(e) => update((d) => { d.settings.roundCardPct = e.target.checked })} />
+          Round an upgraded card % to a whole % before buffs: 89.6% counts as 90% (Unconfirmed: test in-game)
         </label>
       </Section>
       <Section title="Game constants" help="Values from guides and the game text. You rarely need to change these."

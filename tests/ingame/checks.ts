@@ -5,11 +5,12 @@
 // `measured` with the values and what the calculator gives for them. If the calculator disagrees: fix the rule or its Setting, then
 // update docs/FORMULA.md or docs/characters/<slug>.md (the "Unconfirmed" there goes).
 import { computeBuild } from '../../src/engine/calc'
+import { AUTO } from '../../src/engine/deck'
 import { PRESETS } from '../../src/data/presets'
 import { migrate } from '../../src/store/migrate'
-import { newBoost, newCharacterSave } from '../../src/store/save'
+import { newBoost, newBuff, newCharacterSave } from '../../src/store/save'
 import fixture from '../fixtures/save-v1.json'
-import { addCards, card, cardFromPreset, plays, setPlays, settings } from '../helpers'
+import { addCards, card, cardFromPreset, gameSettings as settings, plays, setPlays } from '../helpers'
 
 export interface MeasuredValue {
   label: string
@@ -45,6 +46,39 @@ function meiStrikeHit() {
   Object.assign(b.deck[0].custom!, { pct: 1, upgrade: 'Basic' })
   addCards(cs, cardFromPreset(mei.cards!.find((p) => p.id === 'card-340')!, 'Passion'))
   return computeBuild(PRESETS, 'Mei Lin', cs, b, settings).plays[0].hits[0]
+}
+
+// The enemies of the owner's Tressa tests (2026-11-01), back-solved from their hits. The test enemy is the one of Mei Lin's tests, which gave 0.3733 (docs/FORMULA.md, log)
+const TRESSA_TEST_ENEMY = 0.374
+const TRESSA_WEAK_ENEMY = 0.429
+
+/** The owner's Tressa with a known Attack and Damage over Time (Void 7.5%), one play of `cardId` on an enemy of that DEF multiplier. */
+function tressaPlay(cardId: string, attack: number, dot: number, defMult: number, agony: number, vulnerable = false) {
+  const cs = newCharacterSave()
+  const b = cs.builds[0]
+  Object.assign(b, { egoLevel: 6, basicLevel: 5, signatureLevel: 0, potentialNodes: { '5-1': false, 7: false } })
+  Object.assign(b.stats, { attack, critChance: 0, critDmg: 1.25, dotDmg: dot })
+  b.stats.elemDmg.Void = 0.075
+  b.deck = [{ id: 'd', preset: 'card-272' }]
+  b.rotation = [{ cardId, stacks: { 'Agony on target': agony }, vulnerable }]
+  return computeBuild(PRESETS, 'Tressa', cs, b, settings, {}, { enemies: [{ defMult, dr: 0 }] }).plays[0]
+}
+const agonyHit = (attack: number, dot: number, defMult: number, vulnerable = false) => tressaPlay(`${AUTO}agony`, attack, dot, defMult, 8, vulnerable).hits[0]
+
+/** Shadow Dagger at 731 Attack on the test enemy with the owner's equipment (by 12%, +25%) and partner (by 10% on Attack Cards);
+ * exhausted: also the partner's by 12% on Attack Cards and Offering of the Void's by 20%, once a card was Exhausted. */
+function tressaDagger(exhausted: boolean, agony: number) {
+  const cs = newCharacterSave()
+  const b = cs.builds[0]
+  Object.assign(b, { egoLevel: 6, basicLevel: 5, signatureLevel: 0, potentialNodes: { '5-1': false, 7: false } })
+  Object.assign(b.stats, { attack: 731, critChance: 0 })
+  b.stats.elemDmg.Void = 0.075
+  const buff = (value: string, appliesTo: string) => ({ ...newBuff(b.id), value, appliesTo })
+  cs.buffs.push(buff('12%', 'ALL'), buff('+25%', 'ALL'), buff('10%', 'Attack'))
+  if (exhausted) cs.buffs.push(buff('12%', 'Attack'), buff('20%', 'Void'))
+  b.deck = [{ id: 'd', preset: 'card-272' }]
+  b.rotation = [{ cardId: `${AUTO}card-273`, stacks: { 'Agony on target': agony } }]
+  return computeBuild(PRESETS, 'Tressa', cs, b, settings, {}, { enemies: [{ defMult: TRESSA_TEST_ENEMY, dr: 0 }] }).plays[0].hits[0]
 }
 
 function meiBuild(attack: number) {
@@ -154,6 +188,39 @@ export const CHECKS: InGameCheck[] = [
       "If the shown % doesn't change with these buffs, compare the damage of a non-critical hit on the same enemy instead.",
     ],
     record: ['The four card %s (or damage numbers)', "The buffs' wording"],
+    measured: {
+      date: '2026-11-01', gameVersion: '841', source: 'Owner',
+      answer: 'They add up: four "by X%" buffs on Tressa\'s Shadow Dagger show 164%; multiplied they would show 173%. These numbers use the rounded card %: see card-pct-rounding.',
+      values: [
+        { label: 'Shadow Dagger in hand, %', inGame: 135, calculator: () => tressaDagger(false, 0).inHand * 100, tolerance: 0.5 },
+        { label: 'Its hit', inGame: 139, calculator: () => tressaDagger(false, 0).nonCrit, tolerance: 0.5 },
+        { label: 'After an Exhaust, in hand, %', inGame: 164, calculator: () => tressaDagger(true, 0).inHand * 100, tolerance: 0.5 },
+        { label: 'The same card with 4 Agony on the target: E2 only shows on target, so still 164% in hand', inGame: 164, calculator: () => tressaDagger(true, 4).inHand * 100, tolerance: 0.5 },
+        { label: 'On a target with 4 Agony, %', inGame: 184, calculator: () => tressaDagger(true, 4).cardMult * 100, tolerance: 0.5 },
+        { label: 'Its hit', inGame: 189, calculator: () => tressaDagger(true, 4).nonCrit, tolerance: 0.5 },
+      ],
+    },
+  },
+  {
+    id: 'card-pct-rounding',
+    question: 'Does the game round an upgraded card % to a whole number before buffs? The calculator assumes so for every character (owner, 2026-11-01; Settings): Shadow Dagger is 80% x 1.12 = 89.6%, shown as 90%, and 90% fits all its readings (135%, 164%, 184%), where 89.6% is about 1 low on each. It also assumes that an exact .5 rounds up, that a Fixed % raised by the potentialFixed setting rounds the same way, and that a per-Cost or per-count card rounds its % for one unit, then multiplies.',
+    closes: 'Settings: Round an upgraded card %; docs/FORMULA.md, Card upgrades; possibly strike-rounding-gap',
+    setup: "A card whose exact % rounds down: Tressa's Vital Attack II is 120% x 1.12 = 134.4%, shown as 134%. The same buffs as the Shadow Dagger test: by 12%, +25%, by 10% on Attack Cards.",
+    steps: [
+      'Read the card in hand before anything Exhausts: 188% means it is rounded first (134%), 189% means it is not (134.4%).',
+      'Exhaust a card so the by 12% and by 20% buffs start, and read it again: 231% means rounded first, 232% means not.',
+      'Find a card whose exact % ends in .5 with an even number before it, such as a 75% card at Card Upgrade level 5 (82.5%): 83% means .5 rounds up, 82% means it rounds to the even number.',
+      "Compare a per-count card's damage with its shown % x the count: Tenebria's Arpeggio (15% for each Rhythm) at a level that shows 16%, with 6 Rhythms and no other buffs, deals 96% if the shown % is multiplied, 94% if the total is rounded.",
+    ],
+    record: ['Each % shown', 'The .5 card, its level and its %', "The Arpeggio's damage, with Attack in battle"],
+  },
+  {
+    id: 'target-buffs-in-hand',
+    question: "Do buffs that depend on the target show on the card in hand? Tressa's E2 doesn't (164% in hand, 184% on a target in Agony). The calculator leaves her other Agony bonuses out of the in-hand % the same way (Unconfirmed), and still counts other characters' target buffs in hand, such as Owen's Break Armor III and Lucas's Flashbang, until they're read.",
+    closes: 'docs/FORMULA.md, Card % in hand / on target; docs/characters/tressa.md',
+    setup: 'Tressa with Vital Attack and a target in Agony; Owen with Break Armor III and a Vulnerable target, or Lucas with Flashbang and a target with Shield.',
+    steps: ['Read the card in hand while a matching target is on the field.', 'Read it again while aiming at that target.'],
+    record: ['The card, and both %s'],
   },
   {
     id: 'multiplicative-stacks-chained',
@@ -506,6 +573,58 @@ export const CHECKS: InGameCheck[] = [
       "With node 5-1 on, read Launcher: 143% at Basic 7 with Critical Damage below 160% means it's in the card's % ((100% + 20% + 5%) x 1.14). With node 7 on, read Opening Found: 190% at Signature 6 means the same ((160% + 10%) x 1.12).",
     ],
     record: ["The created Charged Shot's %s", "Opening Found's hit count", 'Extra Attack damage with and without Condense', "Launcher's and Opening Found's %s"],
+  },
+  {
+    id: 'agony-tick',
+    question: 'How does an Agony tick hit: one number or one hit per stack, with what factors, and can it crit?',
+    closes: 'docs/FORMULA.md, Crit and Fixed',
+    setup: 'A battle with Tressa, a known Attack in battle and a target with no damage-changing debuffs. Note Void Damage and Damage over Time from Detailed Stats.',
+    steps: [
+      'Put a known Agony count on the target, end the turn and read each hit of the tick.',
+      'Repeat with another Attack, another Damage over Time, another enemy and on a Vulnerable target.',
+      'Play Cursed Gouge and compare it with the end-of-turn tick.',
+    ],
+    record: ['Attack in battle, Void Damage and Damage over Time', 'Each Agony count and its hits', 'Stacks left after each tick'],
+    measured: {
+      date: '2026-11-01', source: 'Owner',
+      answer: 'One hit per stack, each can crit; Attack, Damage over Time and Enemy DEF raise it, Vulnerable does not. Halving rounds down (9 to 4, 1 to 0). Cursed Gouge is the same tick.',
+      values: [
+        { label: 'Hits of a tick at 8 Agony', inGame: 8, calculator: () => tressaPlay(`${AUTO}agony`, 731, 0.032, TRESSA_TEST_ENEMY, 8).hits.length, tolerance: 0 },
+        { label: 'Agony hit, test enemy, 731 Attack', inGame: 53, calculator: () => agonyHit(731, 0.032, TRESSA_TEST_ENEMY).nonCrit, tolerance: 0.6 },
+        { label: 'Its crit, Critical Damage 125%', inGame: 66, calculator: () => agonyHit(731, 0.032, TRESSA_TEST_ENEMY).crit, tolerance: 0.6 },
+        { label: 'Agony hit, test enemy, 747 Attack, Vulnerable target', inGame: 54, calculator: () => agonyHit(747, 0.032, TRESSA_TEST_ENEMY, true).nonCrit, tolerance: 0.6 },
+        { label: 'Agony hit, weak enemy, 731 Attack', inGame: 61, calculator: () => agonyHit(731, 0.032, TRESSA_WEAK_ENEMY).nonCrit, tolerance: 0.6 },
+        { label: 'Agony hit, weak enemy, 559 Attack (Damage over Time taken as 3.2%)', inGame: 47, calculator: () => agonyHit(559, 0.032, TRESSA_WEAK_ENEMY).nonCrit, tolerance: 0.6 },
+        { label: 'Agony hit, weak enemy, 727 Attack, Damage over Time 18.3%', inGame: 69, calculator: () => agonyHit(727, 0.183, TRESSA_WEAK_ENEMY).nonCrit, tolerance: 0.6 },
+      ],
+    },
+  },
+  {
+    id: 'agony-limits',
+    question: "What else touches an Agony hit? Its measured hits leave room for neither Offering of the Void nor Cursed Corpse, and they fit with Void Damage counted, on the enemy of Mei Lin's tests (DEF about 0.374). (1) Does Void Damage raise it, measured directly? (2) Do those sets raise it? (3) Does Enemy damage reduction lower it?",
+    closes: 'docs/characters/tressa.md',
+    setup: 'A battle with Tressa on the test enemy, with a known Attack and Agony at 8 before the end of the turn.',
+    steps: [
+      'Change Void Damage with a fragment, keeping Damage over Time, and read one Agony hit. Without a Void factor the hit moves only with Attack.',
+      "Exhaust a card so Offering of the Void is active at the end of the turn: 53 at 731 Attack means it doesn't raise the hit, 64 means it does.",
+      'Equip Cursed Corpse and read one Agony hit: 53 at 731 Attack means it does not raise it, 58 means it does.',
+      'On a boss or elite with damage reduction, compare an Agony hit with a normal hit.',
+    ],
+    record: ['Attack, Void Damage and Damage over Time', 'Fragment sets on', 'Each Agony hit'],
+  },
+  {
+    id: 'tressa-readings',
+    question: "Tressa's readings the screenshots can't settle: (1) Does E2's +20% reach Advanced Shadow Dagger? One reading (196 at 747 Attack, Agony 1 to 5) can't tell without that build's buffs. (2) Do Advanced Shadow Dagger's own 4 Agony count toward its +10% per Agony? That reading leans yes. (3) Is Wave of Darkness 2 Agony × 2 below E4? (4) Is node 5-1's bonus part of Dagger Throw's shown %? (5) Does node 7's +4% raise Agony ticks, and is it additive?",
+    closes: 'docs/characters/tressa.md',
+    setup: 'A battle with Tressa with Shadow Reload and a target with no Agony. (1) needs E2 or higher; (3) a character below E4, or text from someone who has one; (4) and (5) those nodes unlocked.',
+    steps: [
+      'With Agony on the target, read the numbers of an Advanced Shadow Dagger with a known count: compare with (56% + 10% x count) and (56% + 10% x count + 20%), x Attack x 0.35 x (1 + Void).',
+      'Play an Advanced Shadow Dagger on a target with 0 Agony: damage matching 96% means its own 4 count, 56% means they do not.',
+      'Read Wave of Darkness below E4.',
+      "With node 5-1 on, read Dagger Throw: 128% at Basic level 5 with E6 means it's in the card's % ((100% + 5%) x 1.22).",
+      'With node 7 on, compare an Agony tick of a known count with the same tick before unlocking it, and a Dagger Throw with and without a "by X%" buff.',
+    ],
+    record: ['Damage of each play, with Attack in battle, Void Damage and the Agony count', "Wave of Darkness's text", "Dagger Throw's %", 'The ticks'],
   },
   {
     id: 'anika-readings',

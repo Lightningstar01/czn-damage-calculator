@@ -12,7 +12,7 @@ export interface Source {
   value: number
   /** How the value is shown: '%' (fraction) or 'flat'. */
   unit: '%' | 'flat' | 'x'
-  /** Only counts once the card targets the enemy (a 'Ravaged only' buff such as Ember), so not in the in-hand card %. */
+  /** Only counts once the card targets the enemy (a 'Ravaged only' buff such as Ember, or an onTarget effect), so not in the in-hand card %. */
   onTarget?: boolean
 }
 
@@ -32,15 +32,15 @@ export function parseBuffValue(text: string): number {
 }
 
 /** Threshold stats kept as a share (0.6 = 60%), shown as a %. */
-export const thresholdIsPct = (stat: BuffEffect['thresholdStat']) => stat === 'Critical Chance' || stat === 'Critical Damage' || stat === 'Extra Damage'
+export const thresholdIsPct = (stat: BuffEffect['thresholdStat']) => stat === 'Critical Chance' || stat === 'Critical Damage' || stat === 'Extra Damage' || stat === 'Damage over Time'
 
 /** A preset buff's value for its owner: its own value (0 below thresholdMin), plus its thresholdBonus when the owner's stats-screen Attack
- * (or Defense / Health / Critical Chance / Critical Damage / Extra Damage, with thresholdStat) is above the threshold (once, or for every `every` above it up to `max`).
+ * (or Defense / Health / Critical Chance / Critical Damage / Extra Damage / Damage over Time, with thresholdStat) is above the threshold (once, or for every `every` above it up to `max`).
  * stats: the owner's ("If Mei Lin's Attack is 500 or higher"), not the receiver's; without them no threshold is met. */
 export function presetBuffValue(e: BuffEffect, stats: ScreenStats | undefined): { value: number; bonus: boolean } {
   const atk = !stats ? -Infinity : e.thresholdStat === 'Defense' ? stats.defense : e.thresholdStat === 'Health' ? stats.health
     : e.thresholdStat === 'Critical Chance' ? stats.critChance : e.thresholdStat === 'Critical Damage' ? stats.critDmg
-    : e.thresholdStat === 'Extra Damage' ? stats.extraDmg : stats.attack
+    : e.thresholdStat === 'Extra Damage' ? stats.extraDmg : e.thresholdStat === 'Damage over Time' ? stats.dotDmg : stats.attack
   if (e.thresholdMin !== undefined && atk < e.thresholdMin) return { value: 0, bonus: false }
   const ab = e.thresholdBonus
   const bonus = !!ab && (ab.orEqual ? atk >= ab.above : atk > ab.above)
@@ -86,6 +86,8 @@ export interface ActiveBuff {
   /** Per-play counter that sets the stacks (filled in per play by the engine). */
   counter?: string
   maxStacks?: number
+  /** See BuffEffect.onTarget. */
+  onTarget?: boolean
 }
 
 /** Why a preset effect is (in)active for a build — shown greyed out in the UI. */
@@ -248,7 +250,7 @@ export function activeBuffs(presets: Presets, charName: string, cs: CharacterSav
       type: buffType(e.value, e.type), value: v.value,
       stacks: e.counter ? 0 : e.maxStacks ? Math.min(s.stacks, e.maxStacks) : s.stacks,
       appliesTo: e.appliesTo, hitScope: e.hitScope, condition: e.condition,
-      ...(e.counter ? { counter: e.counter, maxStacks: e.maxStacks } : {}) })
+      ...(e.counter ? { counter: e.counter, maxStacks: e.maxStacks } : {}), ...(e.onTarget ? { onTarget: true } : {}) })
   }
   for (const b of cs.buffs) {
     const st = switchStacks(b.switches[build.id])
@@ -353,7 +355,7 @@ export function cardBuffs(buffs: ActiveBuff[], card: Card): CardBuffs {
     const bucket = group[buff.hitScope === 'First hit only' ? 'first' : 'all']
     bucket.value += v
     bucket.sources.push({ label: buff.hitScope === 'First hit only' ? `${label} (first hit)` : label, value: v, unit: '%',
-      ...(buff.condition === 'Ravaged only' ? { onTarget: true } : {}) })
+      ...(buff.condition === 'Ravaged only' || buff.onTarget ? { onTarget: true } : {}) })
   }
   return out
 }

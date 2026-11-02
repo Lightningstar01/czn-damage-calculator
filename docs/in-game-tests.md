@@ -2,7 +2,7 @@
 
 Written from `tests/ingame/checks.ts` by the tests; change it there, not here.
 
-41 to run, 4 measured. Send the numbers under **Send** with the game version; they then become tests here and close the question.
+44 to run, 6 measured. Send the numbers under **Send** with the game version; they then become tests here and close the question.
 Use non-crit hits unless the test is about crits, and note anything else that was on.
 
 ## To run
@@ -23,22 +23,35 @@ Use non-crit hits unless the test is about crits, and note anything else that wa
 
 Closes: docs/FORMULA.md, Buff types
 
-### multiplicative-summed-or-chained
+### card-pct-rounding
 
-**Question:** Do two multiplicative buffs add up (1 + a + b) or multiply ((1 + a) x (1 + b))?
+**Question:** Does the game round an upgraded card % to a whole number before buffs? The calculator assumes so for every character (owner, 2026-11-01; Settings): Shadow Dagger is 80% x 1.12 = 89.6%, shown as 90%, and 90% fits all its readings (135%, 164%, 184%), where 89.6% is about 1 low on each. It also assumes that an exact .5 rounds up, that a Fixed % raised by the potentialFixed setting rounds the same way, and that a per-Cost or per-count card rounds its % for one unit, then multiplies.
 
-**Setup:** A card at a known %, two different "by X%" buffs, as large as you can find (the gap is small with small buffs).
+**Setup:** A card whose exact % rounds down: Tressa's Vital Attack II is 120% x 1.12 = 134.4%, shown as 134%. The same buffs as the Shadow Dagger test: by 12%, +25%, by 10% on Attack Cards.
 
 **Steps:**
-1. Read the card % with neither.
-2. Read it with each one alone.
-3. Read it with both.
-4. Compare: a 100% card with buffs of 50% and 30% is 180% if they add up, 195% if they multiply.
-5. If the shown % doesn't change with these buffs, compare the damage of a non-critical hit on the same enemy instead.
+1. Read the card in hand before anything Exhausts: 188% means it is rounded first (134%), 189% means it is not (134.4%).
+2. Exhaust a card so the by 12% and by 20% buffs start, and read it again: 231% means rounded first, 232% means not.
+3. Find a card whose exact % ends in .5 with an even number before it, such as a 75% card at Card Upgrade level 5 (82.5%): 83% means .5 rounds up, 82% means it rounds to the even number.
+4. Compare a per-count card's damage with its shown % x the count: Tenebria's Arpeggio (15% for each Rhythm) at a level that shows 16%, with 6 Rhythms and no other buffs, deals 96% if the shown % is multiplied, 94% if the total is rounded.
 
-**Send:** The four card %s (or damage numbers); The buffs' wording.
+**Send:** Each % shown; The .5 card, its level and its %; The Arpeggio's damage, with Attack in battle.
 
-Closes: Settings: Multiplicative buffs combine
+Closes: Settings: Round an upgraded card %; docs/FORMULA.md, Card upgrades; possibly strike-rounding-gap
+
+### target-buffs-in-hand
+
+**Question:** Do buffs that depend on the target show on the card in hand? Tressa's E2 doesn't (164% in hand, 184% on a target in Agony). The calculator leaves her other Agony bonuses out of the in-hand % the same way (Unconfirmed), and still counts other characters' target buffs in hand, such as Owen's Break Armor III and Lucas's Flashbang, until they're read.
+
+**Setup:** Tressa with Vital Attack and a target in Agony; Owen with Break Armor III and a Vulnerable target, or Lucas with Flashbang and a target with Shield.
+
+**Steps:**
+1. Read the card in hand while a matching target is on the field.
+2. Read it again while aiming at that target.
+
+**Send:** The card, and both %s.
+
+Closes: docs/FORMULA.md, Card % in hand / on target; docs/characters/tressa.md
 
 ### multiplicative-stacks-chained
 
@@ -563,6 +576,39 @@ Closes: docs/characters/maribell.md
 
 Closes: docs/characters/beryl.md
 
+### agony-limits
+
+**Question:** What else touches an Agony hit? Its measured hits leave room for neither Offering of the Void nor Cursed Corpse, and they fit with Void Damage counted, on the enemy of Mei Lin's tests (DEF about 0.374). (1) Does Void Damage raise it, measured directly? (2) Do those sets raise it? (3) Does Enemy damage reduction lower it?
+
+**Setup:** A battle with Tressa on the test enemy, with a known Attack and Agony at 8 before the end of the turn.
+
+**Steps:**
+1. Change Void Damage with a fragment, keeping Damage over Time, and read one Agony hit. Without a Void factor the hit moves only with Attack.
+2. Exhaust a card so Offering of the Void is active at the end of the turn: 53 at 731 Attack means it doesn't raise the hit, 64 means it does.
+3. Equip Cursed Corpse and read one Agony hit: 53 at 731 Attack means it does not raise it, 58 means it does.
+4. On a boss or elite with damage reduction, compare an Agony hit with a normal hit.
+
+**Send:** Attack, Void Damage and Damage over Time; Fragment sets on; Each Agony hit.
+
+Closes: docs/characters/tressa.md
+
+### tressa-readings
+
+**Question:** Tressa's readings the screenshots can't settle: (1) Does E2's +20% reach Advanced Shadow Dagger? One reading (196 at 747 Attack, Agony 1 to 5) can't tell without that build's buffs. (2) Do Advanced Shadow Dagger's own 4 Agony count toward its +10% per Agony? That reading leans yes. (3) Is Wave of Darkness 2 Agony × 2 below E4? (4) Is node 5-1's bonus part of Dagger Throw's shown %? (5) Does node 7's +4% raise Agony ticks, and is it additive?
+
+**Setup:** A battle with Tressa with Shadow Reload and a target with no Agony. (1) needs E2 or higher; (3) a character below E4, or text from someone who has one; (4) and (5) those nodes unlocked.
+
+**Steps:**
+1. With Agony on the target, read the numbers of an Advanced Shadow Dagger with a known count: compare with (56% + 10% x count) and (56% + 10% x count + 20%), x Attack x 0.35 x (1 + Void).
+2. Play an Advanced Shadow Dagger on a target with 0 Agony: damage matching 96% means its own 4 count, 56% means they do not.
+3. Read Wave of Darkness below E4.
+4. With node 5-1 on, read Dagger Throw: 128% at Basic level 5 with E6 means it's in the card's % ((100% + 5%) x 1.22).
+5. With node 7 on, compare an Agony tick of a known count with the same tick before unlocking it, and a Dagger Throw with and without a "by X%" buff.
+
+**Send:** Damage of each play, with Attack in battle, Void Damage and the Agony count; Wave of Darkness's text; Dagger Throw's %; The ticks.
+
+Closes: docs/characters/tressa.md
+
 ### anika-readings
 
 **Question:** Anika's readings the screenshots can't settle: (1) Does Rampage Trigger's Destroy add +100% to each of its 4 hits? (2) Does Warming Up IV count the hand when it's activated, or as the hand changes? (3) Is node 5-1's bonus part of Blaster Swing's shown %? (4) Does E4 show 300% on Buffalo Dive, and is its +50% additive?
@@ -607,3 +653,16 @@ Each row is checked against the calculator on every test run.
 | weakness-no-extra-factor | Strike on target, % | 290 | 290.02 | 2026-10-20 (Owner) | No: 204.24% x 1.42 = 290%. |
 | strike-in-hand-and-on-target | In hand, % | 251 | 250.64 | 2026-10-25 (Owner) | In hand yes; on target about 0.3% low: see strike-rounding-gap. |
 | strike-in-hand-and-on-target | On target, % | 357 | 355.91 | 2026-10-25 (Owner) | In hand yes; on target about 0.3% low: see strike-rounding-gap. |
+| multiplicative-summed-or-chained | Shadow Dagger in hand, % | 135 | 134.8 | 2026-11-01, game 841 (Owner) | They add up: four "by X%" buffs on Tressa's Shadow Dagger show 164%; multiplied they would show 173%. These numbers use the rounded card %: see card-pct-rounding. |
+| multiplicative-summed-or-chained | Its hit | 139 | 138.66 | 2026-11-01, game 841 (Owner) | They add up: four "by X%" buffs on Tressa's Shadow Dagger show 164%; multiplied they would show 173%. These numbers use the rounded card %: see card-pct-rounding. |
+| multiplicative-summed-or-chained | After an Exhaust, in hand, % | 164 | 163.6 | 2026-11-01, game 841 (Owner) | They add up: four "by X%" buffs on Tressa's Shadow Dagger show 164%; multiplied they would show 173%. These numbers use the rounded card %: see card-pct-rounding. |
+| multiplicative-summed-or-chained | The same card with 4 Agony on the target: E2 only shows on target, so still 164% in hand | 164 | 163.6 | 2026-11-01, game 841 (Owner) | They add up: four "by X%" buffs on Tressa's Shadow Dagger show 164%; multiplied they would show 173%. These numbers use the rounded card %: see card-pct-rounding. |
+| multiplicative-summed-or-chained | On a target with 4 Agony, % | 184 | 183.6 | 2026-11-01, game 841 (Owner) | They add up: four "by X%" buffs on Tressa's Shadow Dagger show 164%; multiplied they would show 173%. These numbers use the rounded card %: see card-pct-rounding. |
+| multiplicative-summed-or-chained | Its hit | 189 | 188.86 | 2026-11-01, game 841 (Owner) | They add up: four "by X%" buffs on Tressa's Shadow Dagger show 164%; multiplied they would show 173%. These numbers use the rounded card %: see card-pct-rounding. |
+| agony-tick | Hits of a tick at 8 Agony | 8 | 8 | 2026-11-01 (Owner) | One hit per stack, each can crit; Attack, Damage over Time and Enemy DEF raise it, Vulnerable does not. Halving rounds down (9 to 4, 1 to 0). Cursed Gouge is the same tick. |
+| agony-tick | Agony hit, test enemy, 731 Attack | 53 | 53.08 | 2026-11-01 (Owner) | One hit per stack, each can crit; Attack, Damage over Time and Enemy DEF raise it, Vulnerable does not. Halving rounds down (9 to 4, 1 to 0). Cursed Gouge is the same tick. |
+| agony-tick | Its crit, Critical Damage 125% | 66 | 66.35 | 2026-11-01 (Owner) | One hit per stack, each can crit; Attack, Damage over Time and Enemy DEF raise it, Vulnerable does not. Halving rounds down (9 to 4, 1 to 0). Cursed Gouge is the same tick. |
+| agony-tick | Agony hit, test enemy, 747 Attack, Vulnerable target | 54 | 54.24 | 2026-11-01 (Owner) | One hit per stack, each can crit; Attack, Damage over Time and Enemy DEF raise it, Vulnerable does not. Halving rounds down (9 to 4, 1 to 0). Cursed Gouge is the same tick. |
+| agony-tick | Agony hit, weak enemy, 731 Attack | 61 | 60.88 | 2026-11-01 (Owner) | One hit per stack, each can crit; Attack, Damage over Time and Enemy DEF raise it, Vulnerable does not. Halving rounds down (9 to 4, 1 to 0). Cursed Gouge is the same tick. |
+| agony-tick | Agony hit, weak enemy, 559 Attack (Damage over Time taken as 3.2%) | 47 | 46.56 | 2026-11-01 (Owner) | One hit per stack, each can crit; Attack, Damage over Time and Enemy DEF raise it, Vulnerable does not. Halving rounds down (9 to 4, 1 to 0). Cursed Gouge is the same tick. |
+| agony-tick | Agony hit, weak enemy, 727 Attack, Damage over Time 18.3% | 69 | 69.41 | 2026-11-01 (Owner) | One hit per stack, each can crit; Attack, Damage over Time and Enemy DEF raise it, Vulnerable does not. Halving rounds down (9 to 4, 1 to 0). Cursed Gouge is the same tick. |

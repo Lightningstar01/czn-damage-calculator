@@ -30,5 +30,6 @@ export const DEFAULT_SETTINGS: Settings = {
   moraleMax: 20,
   potentialPerLevel: 0.02,
   potentialFixed: false,
+  roundCardPct: true,
   fixedAtkCoef: 0.35,
 }

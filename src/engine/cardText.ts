@@ -16,6 +16,9 @@ export interface CardTextContext {
 
 const TOKEN = /\{([^{}]*)\}/g
 
+/** A fraction to a whole % (0.896 -> 0.9), half up (Unconfirmed; in-game test card-pct-rounding). An exact .5 comes out of float math a hair to either side (125% x 1.02), so it's nudged first. */
+export const wholePct = (v: number) => Math.round(v * 100 + 1e-9) / 100
+
 export function renderCardText(text: string, ctx: CardTextContext): string {
   // Innermost tokens first, so a condition can hold % tokens: 'Heal {P3-1:{70%}|{100%}}'
   let out = text
@@ -29,7 +32,7 @@ export function renderCardText(text: string, ctx: CardTextContext): string {
 function replaceTokens(text: string, ctx: CardTextContext): string {
   return text.replace(TOKEN, (whole, body: string) => {
     const pct = /^(F?)(\d+(?:\.\d+)?)%(?:\+(\d+(?:\.\d+)?)%)?(?:@(.+))?$/.exec(body)
-    if (pct) return `${Math.round((ctx.pct(Number(pct[2]) / 100, !!pct[1], pct[4]) + Number(pct[3] ?? 0) / 100) * 100)}%`
+    if (pct) return `${Math.round(wholePct(ctx.pct(Number(pct[2]) / 100, !!pct[1], pct[4]) + Number(pct[3] ?? 0) / 100) * 100)}%`
     const cond = /^(E|P)([\d-]+):(.*)$/s.exec(body)
     if (!cond) return whole
     const [, kind, key, rest] = cond

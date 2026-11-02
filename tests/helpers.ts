@@ -20,7 +20,10 @@ export const presets: Presets = {
     ] },
   ],
 }
-export const settings = DEFAULT_SETTINGS
+/** The site's settings, for tests against what the game shows. */
+export const gameSettings = DEFAULT_SETTINGS
+/** For tests of the formula: the exact card %, so their numbers aren't rounded away. */
+export const settings = { ...DEFAULT_SETTINGS, roundCardPct: false }
 /** Switch off Mei Lin's potential 5-1 (Strike card %), for tests about something else. */
 export const noStrikeNode = (b: Build) => { b.presetSwitches['Mei Lin|p5-1-strike'] = false }
 

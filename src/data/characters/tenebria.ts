@@ -157,7 +157,7 @@ export default {
     // Photo Time: its Performance Buzz damage, "At the end of the turn, 100% (E1 150%) Damage x Performance Buzz count to random
     // enemies (max 10 stacks)"
     'card-1186': {
-      pct: 1, hits: 1, upgrade: null, perCount: 'Performance Buzz', replaceNotes: true,
+      pct: 1, hits: 1, upgrade: null, perCount: 'Performance Buzz', maxCount: 10, replaceNotes: true,
       notes: 'Damage: its Performance Buzz at the end of the turn, 100% (E1 150%) x Buzz (set per play, max 10)',
       text: '[Unique / Retain]\n+1 Performance Buzz\nIf a Rhythm card is activated or moved to hand, increase Performance Buzz by 1 '
         + 'until this card is activated (max 9 times)',

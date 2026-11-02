@@ -58,8 +58,7 @@ describe('card presets', () => {
     expect(checkEffects(mei2([{ ...buff, thresholdBonus: { above: 1, value: '+5%', every: 10, max: '10 percent' } }]), [])).toHaveLength(1)
     expect(checkEffects([{ ...mei, effects: [], triggers: [{ card: 'c', on: 'Nothing' }] }], [])).toHaveLength(1)
     expect(checkEffects(mei2([]), [{ name: 'P', effects: [{ ...buff, appliesTo: 'Nothing' }] }])).toHaveLength(1)
-    // Effects waiting for a mechanic that isn't modeled yet are listed on purpose
-    expect(checkEffects(mei2([{ ...buff, appliesTo: 'DoT' }]), [])).toEqual([])
+    expect(checkEffects(mei2([{ ...buff, appliesTo: 'DoT' }]), [])).toHaveLength(1)
   })
 
   it('card ids keep pointing at the same cards (a re-import that moves them must be looked at: saves and additions use them)', async () => {

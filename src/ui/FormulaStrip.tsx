@@ -1,7 +1,7 @@
 // Color-coded formula of one hit: each multiplier is a chip; tap a chip to see where it comes from.
 import { useState, type ReactNode } from 'react'
 import type { Source } from '../engine/buffs'
-import type { Factor, Hit } from '../engine/calc'
+import { isFixedDot, isPlainFixed, type Factor, type Hit } from '../engine/calc'
 import type { Card } from '../engine/types'
 import { num, pct, times } from './format'
 
@@ -31,8 +31,8 @@ interface Chip {
   close?: boolean
 }
 
-const HAND_NOTE = 'Card % as shown on the card in your hand: (card % × Mult + Add), without the buffs that need a target (Ember, vs Ravaged).'
-const TARGET_NOTE = 'Card % when you target the enemy: in hand plus Ember / vs Ravaged buffs, × Weakness DMG, Vulnerable, enemy damage reduction, Weakness debuff and Ravaged.'
+const HAND_NOTE = 'Card % as shown on the card in your hand: (card % × Mult + Add), without the buffs that need a target (Ember, vs Ravaged, in Agony).'
+const TARGET_NOTE = 'Card % when you target the enemy: in hand plus the buffs that need a target, × Weakness DMG, Vulnerable, enemy damage reduction, Weakness debuff and Ravaged.'
 
 function sourceText(s: Source): string {
   if (s.unit === '%') return `${s.value >= 0 ? '+' : ''}${pct(s.value)}`
@@ -42,6 +42,13 @@ function sourceText(s: Source): string {
 
 function factorChip(key: string, group: ChipGroup, label: string, f: Factor | null, note?: string): Chip | null {
   return f ? { key, op: '×', group, label, value: times(f.value), sources: f.sources, note } : null
+}
+
+/** The upgraded % the game shows: for one unit on a per-Cost or per-count card, and whether it was rounded (Settings). */
+function upgradedNote(hit: Hit, card: Card): string {
+  const units = card.pctUnits || 1
+  const exact = hit.cardPct * hit.potential!.value
+  return `In-game card %: ${pct(hit.upgradedPct / units, 2)}${units !== 1 ? ` × ${units}` : ''}${Math.abs(exact - hit.upgradedPct) > 1e-9 ? ` (${pct(exact / units, 2)} rounded, Settings)` : ''}.`
 }
 
 function potentialChip(f: Factor, note: string): Chip {
@@ -57,22 +64,27 @@ function flatChip(f: Factor, raised: number, note: string): Chip {
   return { key: 'flat', op: '+', group: 'card', label: 'Flat', value: `+${num(f.value * raised, 1)}`, sources: f.sources, note }
 }
 
-function chipsFor(hit: Hit, card: Card): { inner: Chip[]; outer: Chip[] } {
+export function chipsFor(hit: Hit, card: Card): { inner: Chip[]; outer: Chip[] } {
   if (card.scaling === 'Fixed') {
-    const inner: Chip[] = [{ key: 'fixed', op: '', group: 'card', label: 'Fixed', value: pct(hit.cardPct, 2), note: 'Fixed damage ignores every multiplier and crit.',
+    const dot = isFixedDot(card)
+    const inner: Chip[] = [{ key: 'fixed', op: '', group: 'card', label: 'Fixed', value: pct(hit.cardPct, 2),
+      note: dot ? 'Fixed DoT: one hit per stack, and each can crit. The element and DoT stats and Enemy DEF raise it; Vulnerable does not.' : 'Fixed damage ignores every multiplier and crit.',
       ...(hit.cardAdd.length ? { sources: hit.cardAdd } : {}) }]
-    if (hit.potential) inner.push(potentialChip(hit.potential, 'Potential upgrades apply to Fixed damage (Settings).'))
+    if (hit.potential) inner.push(potentialChip(hit.potential, `Potential upgrades apply to Fixed damage (Settings). ${upgradedNote(hit, card)}`))
     if (hit.basePct) inner.push(baseChip(hit.basePct, 'Added to the Fixed % after the potential.'))
     return { inner, outer: [
       { key: 'stat', op: '×', group: 'stat', label: card.fixedOf ?? 'ATK', value: num(hit.stat.value, 1), sources: hit.stat.sources },
       ...(card.fixedOf ? [] : [{ key: 'const', op: '×', group: 'const', label: 'Const', value: String(hit.constant), note: 'Fixed damage constant (Settings, Unconfirmed).' } satisfies Chip]),
-      ...(hit.flat ? [flatChip(hit.flat, 1, 'Damage, not a %, added as it is.')] : []),
+      ...(hit.flat ? [dot
+        ? { ...flatChip(hit.flat, 1, 'Damage, not a %: the factors after the bracket raise it, not the stat or Const.'), close: true }
+        : flatChip(hit.flat, 1, 'Damage, not a %, added as it is.')] : []),
+      ...(dot ? [factorChip('elem', 'elem', 'Element', hit.elemDmg), factorChip('mech', 'elem', 'DoT', hit.mechDmg), factorChip('def', 'enemy', 'Enemy DEF', hit.enemyDef)].filter((c): c is Chip => c !== null) : []),
     ] }
   }
   const inner: Chip[] = [{ key: 'card', op: '', group: 'card', label: card.name || 'Card', value: pct(hit.cardPct, 2),
     ...(hit.cardAdd.length ? { sources: hit.cardAdd } : {}),
     note: hit.potential ? 'Base damage % of the card (without potentials).' : 'Damage % as shown on the card in-game.' }]
-  if (hit.potential) inner.push(potentialChip(hit.potential, `In-game card %: ${pct(hit.cardPct * hit.potential.value, 2)}.`))
+  if (hit.potential) inner.push(potentialChip(hit.potential, upgradedNote(hit, card)))
   if (hit.basePct) {
     inner.push(baseChip(hit.basePct, '"+X% base Damage Amount" is added to the card % after the potential, so Mult raises it too.'))
     if (hit.multFactor.sources.length) { inner[0].open = true; inner[inner.length - 1].close = true }
@@ -141,8 +153,8 @@ export function FormulaStrip({ hit, card, showCrit = true }: { hit: Hit; card: C
     </span>
   )
   const paren = inner.length > 1
-  // A Fixed card's Flat damage is added at the end, with nothing after it to bracket
-  const flatBracket = !!hit.flat && card.scaling !== 'Fixed'
+  // Plain Fixed damage adds its Flat damage at the end, with nothing after it to bracket
+  const flatBracket = !!hit.flat && !isPlainFixed(card)
   return (
     <div className="strip-wrap">
       <div className="strip">
@@ -152,7 +164,7 @@ export function FormulaStrip({ hit, card, showCrit = true }: { hit: Hit; card: C
         {result('Hit', hit.nonCrit)}
       </div>
       {cardPcts.length > 0 && <div className="strip">{cardPcts.map((c) => chip(c))}</div>}
-      {showCrit && card.scaling !== 'Fixed' && (
+      {showCrit && !isPlainFixed(card) && (
         <div className="strip crit-line">
           {chip({ ...critChip, op: '' })}
           {result('Crit', hit.crit)}

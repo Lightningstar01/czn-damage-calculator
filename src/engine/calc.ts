@@ -1,4 +1,5 @@
 // The damage formula (docs/FORMULA.md). Pure functions: inputs in, numbers and their sources out.
+import { wholePct } from './cardText'
 import { buildDeck, buildNodeOn, deckPresets, presetCard, teammateDeck, type DeckItem } from './deck'
 import { activeBuffs, activeCounters, activeStats, buffMatches, cardBuffs, findCharacter, findFragmentSet, findPartner, type ActiveBuff, type ActiveStat, type PlayCounter, type Source } from './buffs'
 import { teammateView, withLinkedTeam, type Saves } from './team'
@@ -37,9 +38,11 @@ export interface Hit {
   cardAdd: Source[]
   /** Basic / Signature Card Upgrade potential (card % x this); null for cards without one. */
   potential: Factor | null
+  /** The card % after the potential, as the game shows it (rounded with the roundCardPct setting). */
+  upgradedPct: number
   /** Base % buffs, added to the card % after the potential (null: none). */
   basePct: Factor | null
-  /** Flat buffs (null: none): damage, not a % of the stat. Mult and every factor but the stat and constant raise it; on a Fixed card, nothing does. */
+  /** Flat buffs (null: none): damage, not a % of the stat. Mult and every factor but the stat and constant raise it; on plain Fixed damage nothing does, on a Fixed DoT its factors do. */
   flat: Factor | null
   multFactor: Factor
   additive: Factor
@@ -76,7 +79,7 @@ export interface Play {
   /** Position in the build's attack list (0-based). */
   index: number
   hits: Hit[]
-  /** Per-play counter stacks (Ember, Spirit of the Aromata...) set on this play, capped by max stacks; only those above 0. */
+  /** Per-play counter stacks (Ember, Spirit of the Aromata...) set on this play, capped by max stacks, and the card's own count in full; only those above 0. */
   counters: { name: string; stacks: number }[]
   vulnerable: boolean
   weaknessDebuff: boolean
@@ -204,19 +207,29 @@ export function shownPct(base: number, card: Card, build: LiveBuild, ch: Charact
   return (base + cardAdd) * potential.value * (1 + cardPct)
 }
 
-/** A per-count card's count on this play (Card.perCount; kept in the play's stacks, default 1). */
-export const playCount = (name: string, play: RotationPlay) => play.stacks?.[name] ?? 1
+/** A per-count card's count on this play (Card.perCount; kept in the play's stacks, default 1), up to its Card.maxCount. */
+export const playCount = (card: Pick<Card, 'perCount' | 'maxCount'>, play: RotationPlay) =>
+  Math.min(Math.max(0, play.stacks?.[card.perCount!] ?? 1), card.maxCount ?? Infinity)
 
-/** The card's hits on this play before the play's own hit count: with the hits its counter adds (Card.counterHits). */
+/** A Fixed DoT (Agony, measured in game, owner 2026-11-01): Fixed damage that the element and DoT DMG stats and Enemy DEF raise and that crits, but Vulnerable doesn't. */
+export const isFixedDot = (card: Pick<Card, 'scaling' | 'kind'>) => card.scaling === 'Fixed' && card.kind === 'DoT'
+
+/** Plain Fixed damage: ignores every multiplier and can't crit (Unconfirmed). */
+export const isPlainFixed = (card: Pick<Card, 'scaling' | 'kind'>) => card.scaling === 'Fixed' && card.kind !== 'DoT'
+
+/** The card's hits on this play before the play's own hit count: the count if it sets the hits (Card.countsHits), with the hits its
+ * counter adds (Card.counterHits). */
 export const playBaseHits = (card: Card, play: RotationPlay) =>
-  card.hits + (card.counterHits && (play.stacks?.[card.counterHits.counter] ?? 0) > 0 ? card.counterHits.hits : 0)
+  (card.countsHits && card.perCount ? playCount(card, play) : card.hits)
+  + (card.counterHits && (play.stacks?.[card.counterHits.counter] ?? 0) > 0 ? card.counterHits.hits : 0)
 
 /** The card as played: the play's own hit count and Cost, if set, replace the card's. A per-Cost card's % is its % x the Cost;
- * a per-count card's, its % x the play's count. */
+ * a per-count card's, its % x the play's count (unless the count is its hits). */
 export function playCard(card: Card, play: RotationPlay): Card {
-  const played = { ...card, hits: play.hits ?? playBaseHits(card, play), cost: play.cost ?? card.cost, targetRavaged: play.ravaged ?? card.targetRavaged }
-  if (card.perCost) played.pct = card.pct * (played.cost ?? 1)
-  if (card.perCount) played.pct = card.pct * playCount(card.perCount, play)
+  const played: Card = { ...card, hits: play.hits ?? playBaseHits(card, play), cost: play.cost ?? card.cost, targetRavaged: play.ravaged ?? card.targetRavaged }
+  if (card.perCost) played.pctUnits = played.cost ?? 1
+  if (card.perCount && !card.countsHits) played.pctUnits = playCount(card, play)
+  if (played.pctUnits !== undefined) played.pct = card.pct * played.pctUnits
   return played
 }
 
@@ -256,6 +269,14 @@ function memberTriggers(ch: CharacterPreset | undefined, ego: number, deck: Deck
 const capped = (play: RotationPlay, name: string, max: number | null | undefined) =>
   Math.min(Math.max(0, play.stacks?.[name] ?? 0), max ?? Infinity)
 
+/** A counter as a card's buffs read it: a counter named like the card's count is that number, the one its stepper shows (default 1). */
+const counterOn = (card: Card, play: RotationPlay, name: string, max: number | null | undefined) =>
+  (name === card.perCount ? Math.min(playCount(card, play), max ?? Infinity) : capped(play, name, max))
+
+/** A play's counters as shown: the ones its buffs read, with the card's own count in full, read by a buff or not (E2's "in Agony" stops at 1, the tick doesn't). */
+const shownCounters = (card: Card, play: RotationPlay, read: { name: string; stacks: number }[]) =>
+  [...(card.perCount ? [{ name: card.perCount, stacks: playCount(card, play) }] : []), ...read.filter((c) => c.name !== card.perCount)].filter((c) => c.stacks > 0)
+
 /** Damage of every hit of every play in the build's attack list: the build's character's plays and (with `saves`, for teammates
  * linked to a saved build) their teammates', plus the hits the team's triggers add. fight: the enemy everyone hits (none: no modifiers). */
 export function computeBuild(presets: Presets, charName: string, cs: CharacterSave, build: Build, settings: Settings,
@@ -285,7 +306,7 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
   // The hits of one card played by m, with the play's debuffs and counter stacks; added: only that many hits after the card's own (no first-hit buffs)
   const cardHits = (m: Member, card: Card, play: RotationPlay, added = 0) => {
     const d = m.dmg!
-    const counters = playCaps(d, card).map(({ name, max }) => ({ name, stacks: capped(play, name, max) }))
+    const counters = playCaps(d, card).map(({ name, max }) => ({ name, stacks: counterOn(card, play, name, max) }))
     const live: ActiveBuff[] = d.counterBuffs.map((b) => {
       const stacks = counters.find((c) => c.name === b.counter)?.stacks ?? 0
       return { ...b, stacks: b.maxStacks ? Math.min(stacks, b.maxStacks) : stacks }
@@ -362,7 +383,7 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
       credit(owner, hit)
     }
     const trig = totals(triggered)
-    plays.push({ card, index, hits: own.hits, counters: own.counters.filter((c) => c.stacks > 0),
+    plays.push({ card, index, hits: own.hits, counters: shownCounters(card, play, own.counters),
       vulnerable: !!play.vulnerable, weaknessDebuff: !!play.weaknessDebuff, ravaged: card.targetRavaged, followUp, triggered,
       ...(play.by !== undefined ? { slot: play.by, by: m.name, ...(m.dmg ? {} : { noBuild: true }) } : {}),
       nonCrit: own.nonCrit + (followUp?.nonCrit ?? 0) + trig.nonCrit, crit: own.crit + (followUp?.crit ?? 0) + trig.crit,
@@ -483,7 +504,12 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
   const flat: Factor | null = flatSources.length ? { value: total(flatSources), sources: flatSources } : null
   const baseSources = both(cb.basePct)
   const basePct: Factor | null = baseSources.length ? { value: total(baseSources), sources: baseSources } : null
-  const pct = cardPct * (potential?.value ?? 1) + (basePct?.value ?? 0)
+  // The card's upgraded %, as the game shows it: rounded to a whole % before buffs (Settings; owner, 2026-11-01; Unconfirmed).
+  // The game shows a per-Cost or per-count card's % for one unit (16% for each Rhythm), so that's what's rounded (Unconfirmed)
+  const raised = cardPct * (potential?.value ?? 1)
+  const units = card.pctUnits || 1
+  const upgradedPct = potential && settings.roundCardPct ? wholePct(raised / units) * units : raised
+  const pct = upgradedPct + (basePct?.value ?? 0)
   const finalSources = both(cb.final)
   const final: Factor | null = finalSources.length ? { value: 1 + total(finalSources), sources: finalSources } : null
   const multSources = [...cb.multiplicative.all.sources, ...(first ? cb.multiplicative.first.sources : [])]
@@ -537,19 +563,16 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
   }
 
   const fixedConstant = fixedOf ? 1 : settings.fixedAtkCoef
-  let nonCrit: number, crit: number, expected: number
-  if (card.scaling === 'Fixed') {
-    // Fixed damage: % x Final ATK x its constant (owner thinks ATK-based, 2026-10-28; Unconfirmed), or % x the amount the card names (fixedOf);
-    // ignores every multiplier and can't crit (Unconfirmed)
-    nonCrit = crit = expected = pct * stat.value * fixedConstant + (flat?.value ?? 0)
-  } else {
-    nonCrit = (cardMult * stat.value * settings.atkConstant + (flat?.value ?? 0) * multValue * onTarget)
-      * (elemDmg?.value ?? 1) * (mechDmg?.value ?? 1) * (enemyDef?.value ?? 1) * (final?.value ?? 1)
-    crit = nonCrit * critDmg
-    expected = nonCrit * (1 + critRate * (critDmg - 1))
-  }
+  // Fixed damage: % x Final ATK x its constant (owner thinks ATK-based, 2026-10-28; Unconfirmed), or % x the amount the card names (fixedOf)
+  const fixedDamage = pct * stat.value * fixedConstant + (flat?.value ?? 0)
+  const scaled = (elemDmg?.value ?? 1) * (mechDmg?.value ?? 1) * (enemyDef?.value ?? 1)
+  const nonCrit = isPlainFixed(card) ? fixedDamage
+    : isFixedDot(card) ? fixedDamage * scaled
+      : (cardMult * stat.value * settings.atkConstant + (flat?.value ?? 0) * multValue * onTarget) * scaled * (final?.value ?? 1)
+  const crit = isPlainFixed(card) ? nonCrit : nonCrit * critDmg
+  const expected = isPlainFixed(card) ? nonCrit : nonCrit * (1 + critRate * (critDmg - 1))
   return {
-    globalHit: k, hitNo, cardPct, cardAdd, potential, basePct, flat, multFactor: { value: multValue, sources: multSources }, additive,
+    globalHit: k, hitNo, cardPct, cardAdd, potential, upgradedPct, basePct, flat, multFactor: { value: multValue, sources: multSources }, additive,
     weakness, vulnerable, enemyDr, weaknessDebuff, ravaged, inHand, cardMult, stat,
     constant: card.scaling === 'Fixed' ? fixedConstant : settings.atkConstant,
     elemDmg, mechDmg, enemyDef, final, critDmg, critRate, critDmgSources, critRateSources, nonCrit, crit, expected,

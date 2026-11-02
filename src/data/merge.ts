@@ -133,9 +133,6 @@ function tokens(text: string): { nodes: string[]; egos: number[]; refs: string[]
   }
 }
 
-/** "Applies to" words that no card matches on purpose: effects waiting for a mechanic that's not modeled yet (DoT: Sanguine Thorn). */
-const NO_CARD_YET = new Set(['DoT'])
-
 const VALUE = /^[+-]?\d+(\.\d+)?%?$/
 
 /** Problems that make an effect silently do nothing: an "Applies to" (or trigger, or follow-up) no card matches, a value that doesn't parse.
@@ -144,7 +141,7 @@ export function checkEffects(characters: CharacterPreset[], others: { name: stri
   const cardsOf = (ch: CharacterPreset): Card[] => (ch.cards ?? []).map((p) => presetCard(p, ch.element ?? ELEMENTS[0], p.id, allNodesOn))
   const everyCard = characters.flatMap(cardsOf)
   const problems: string[] = []
-  const matches = (appliesTo: string, cards: Card[]) => NO_CARD_YET.has(appliesTo) || cards.some((c) => buffMatches({ appliesTo, condition: 'Always' }, c))
+  const matches = (appliesTo: string, cards: Card[]) => cards.some((c) => buffMatches({ appliesTo, condition: 'Always' }, c))
   const check = (owner: string, e: Effect, own: Card[]) => {
     const value = (v: string) => { if (!VALUE.test(v.trim()) && v.trim().toUpperCase() !== 'WEAKNESS ATTACK') problems.push(`${owner}: effect '${e.id}' has the value '${v}', which can't be read`) }
     value(e.value)

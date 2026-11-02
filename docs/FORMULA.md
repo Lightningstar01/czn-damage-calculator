@@ -24,6 +24,7 @@ Damage    = Card mult x Stat x 0.35 x (1 + card element's DMG%) x (1 + Extra or 
 Stat      = Final ATK; DEF cards: Final ATK x 0.3 + Final DEF x 2.1
 
 Fixed     = Card % x Final ATK x 0.35, and no other factor (Unconfirmed); "of Shield owned" cards: Card % x the play's Shield owned
+Fixed DoT = one hit per stack: Card % x Final ATK x 0.35 x (1 + card element's DMG%) x (1 + DoT DMG%) x Enemy DEF mult, can crit (measured on Agony)
 
 Crit hit  = Damage x Crit DMG                                 (Crit DMG is the total multiplier; Crit Chance capped at 100%)
 Expected  = Damage x (1 + Crit Chance x (Crit DMG - 1))       per hit; each hit crits separately
@@ -73,8 +74,8 @@ How a buff's text decides where it goes:
 
 - **The "+" rule (User):** after a localization update, "+" means additive and no "+" means multiplicative. No public source; **Unconfirmed**
   in a test, and also that it covers partner passives. Prydwen says English can't tell them apart without testing.
-- **Summed vs Chained (User belief, 2026-10-31; in-game test `multiplicative-summed-or-chained`):** multiplicative buffs add up, supported by
-  UltimateGacha citing Reddit tests; Prydwen's formula is ambiguous. Settings toggle, Summed by default. Chained treats a buff with stacks as one source (3 stacks of 10% = x1.3, not x1.331): **Unconfirmed**.
+- **Summed vs Chained (measured by the owner, 2026-11-01; in-game test `multiplicative-summed-or-chained`):** multiplicative buffs add up. Tressa's Shadow Dagger with four "by X%" buffs shows 164%; chained it would show 173%. UltimateGacha citing Reddit tests agrees.
+  Settings toggle, Summed by default. Chained treats a buff with stacks as one source (3 stacks of 10% = x1.3, not x1.331): **Unconfirmed**.
 - **Morale (Sourced, Game8 + User):** +20% per stack in the additive group, max 20 stacks. UltimateGacha calls it a late multiplier; that
   conflicts with Game8 and the owner and was rejected.
 - **Card + (User, 2026-10-30):** measured on Chizuru's Shadow of the Moon, whose base isn't 100%: 110% = (80% + 15%) x 1.16. Multiplying
@@ -82,7 +83,7 @@ How a buff's text decides where it goes:
   Cassius's 5-1 on Wild Card, both locked for the owner.
 - **Thresholds:** in game every threshold is "X or higher" (Prydwen often "greater than"), so buffs count exactly at X
   (`thresholdMin`, `thresholdBonus` with `orEqual`). `thresholdStat` picks the stats-screen stat read (Attack by default; Defense, Health,
-  Critical Chance, Extra Damage). A threshold reads the effect owner's stats ("If Mei Lin's Attack is 500 or higher"), not the receiver's
+  Critical Chance, Critical Damage, Extra Damage, Damage over Time). A threshold reads the effect owner's stats ("If Mei Lin's Attack is 500 or higher"), not the receiver's
   (User, 2026-10-31); a teammate without a linked build has no stats, so their thresholds aren't met. Battle-only Crit Chance isn't read
   (**Unconfirmed**, Renoa). How the game rounds "for every X above Y" is an in-game test.
 
@@ -104,7 +105,7 @@ or `A/B` (any). Hits from effects rather than cards (`notACard`) don't match car
   only with it on, and a hit the play sets off is on the same Ravaged target, or not when the play's switch is off (**Unconfirmed**, in-game test
   `ravaged-triggered-hits`). Ember stacks with it off do nothing, and the Results tab says so.
 - **Card % in hand / on target (User):** Results shows both per hit. In hand: Card % x Mult + Add, without the buffs that need a Ravaged target
-  (Ember, Marianne's and E4's vs Ravaged). On target: the full card mult.
+  (Ember, Marianne's and E4's vs Ravaged) or are marked `onTarget` (Tressa's E2, measured: 164% in hand, 184% on a target in Agony; her other Agony bonuses, **Unconfirmed**). Other characters' target buffs still count in hand until they're read (in-game test `target-buffs-in-hand`). On target: the full card mult.
 
 ## Crit and Fixed
 
@@ -113,12 +114,18 @@ or `A/B` (any). Hits from effects rather than cards (`notACard`) don't match car
 - **Fixed damage ignores every multiplier (Sourced)**, with rare exceptions stated on the card. Fixed % x Final ATK x 0.35: the owner thinks it's ATK-based (2026-10-28), **Unconfirmed**.
   Whether it crits: **Unconfirmed**, assumed not. Upgrades raising it: **Unconfirmed**, Settings toggle, default off (Orlea's Annoying I in hand shows Fixed 40% unraised
   and its Heal raised; text token `{F40%}`; Maribell's Shelter Strike 150% and Oh... I see. IV 50% are unraised at level 6 too). With the toggle on, an Ego's added Fixed % stays unraised: (100% x upgrade) + 50% for Shelter Strike, in the damage and the card text alike (**Unconfirmed**).
+- **Fixed DoT (measured by the owner, 2026-11-01, Tressa's Agony; in-game test `agony-tick`):** "50% Fixed DoT x Agony count" is one hit per stack, each 50% x Final ATK x 0.35 x (1 + element's DMG%) x (1 + DoT DMG%) x Enemy DEF mult.
+  Each hit can crit, so Crit DMG buffs on DoT count (Sanguine Thorn). Attack, the DoT stat and Enemy DEF were measured; Vulnerable doesn't raise it, and card upgrades don't either (the keyword shows 50% at Unique 6). The stacks halve, rounding down (the guide found, LDShop, says one stack: the game disagrees).
+  The hits fit at Enemy DEF about 0.374, on the enemy of Mei Lin's tests, which back-solved to 0.3733 (2026-10-25, see the log). **Unconfirmed**, in-game test `agony-limits`: the element factor (it fits only with it, at that DEF), "damage dealt" buffs (not applied) and Enemy DR (not applied). A tick is a play with the count typed in; the owner adds and halves the count.
 - **Fixed damage "of Shield owned" (User, 2026-11-01; Maribell):** % x the Shield owned set on the play, with no ATK and no 0.35. Shield isn't computed: read it in game.
-- **"Damage Amount equal to X% of Shield owned" without the word Fixed (User, 2026-11-01; **Unconfirmed**, in-game test `maribell-readings`):** added under the multipliers (buff type `Flat`), so Vulnerable, element and crit raise it, whatever the stat is. On a Fixed card, nothing raises it.
+- **"Damage Amount equal to X% of Shield owned" without the word Fixed (User, 2026-11-01; **Unconfirmed**, in-game test `maribell-readings`):** added under the multipliers (buff type `Flat`), so Vulnerable, element and crit raise it, whatever the stat is. On plain Fixed damage, nothing raises it; on a Fixed DoT, it goes under the DoT's factors like the rest of the hit (**Unconfirmed**, no such buff yet).
 
 ## Card upgrades
 
 **Sourced + User (2026-10-25):** Card % = base % x (1 + 2% x level) (Settings). Levels 0-10 per build.
+
+**Rounded to a whole % before buffs (User, 2026-11-01; **Unconfirmed**, in-game test `card-pct-rounding`; Settings, on by default):** the owner chose to apply this to every character from one card's readings: Tressa's Shadow Dagger, 80% x 1.12 = 89.6%, shown as 90%, reads 135%, 164% and 184% with buffs, which fit 90% and not 89.6%. It applies only to cards with an upgrade, and `Base %` buffs are added after it.
+Three parts of it follow from "as the game shows it" and aren't read yet (**Unconfirmed**, same test): an exact .5 rounds up; a per-Cost or per-count card rounds its % for one unit, then multiplies (Arpeggio's 15% x 1.04 shows 16%, so 6 Rhythms are 96%, not 94%); a Fixed % raised by the `potentialFixed` setting rounds the same way, as its card text does.
 
 - **Basic Card Upgrade** raises Basic cards. **Signature Card Upgrade** (Prydwen: "Unique Card Upgrade") raises the character's other cards: the non-basic
   starting card, the 4 others, their epiphanies and what they generate, whatever the Unique tag says. Not Ego skills. Common/Neutral Card Upgrade isn't modeled.
@@ -176,7 +183,7 @@ The enemy lives in shared fights, not in builds (User, 2026-10-31), so builds co
 
 ## Not modeled yet
 
-- DoT damage: only when a character uses it (owner, 2026-10-31). Sanguine Thorn's `DoT` buff waits for it.
+- DoT damage other than Tressa's Agony: only when a character uses it (owner, 2026-10-31). Other characters' Agony (Lucas) has no tick of its own yet.
 - Partner Ego skill damage: out of scope, nobody uses it for damage (owner, 2026-10-27).
 - Shields, stress, draw and AP effects: text only.
 - Ego effects that deal damage with no card yet: Mei Lin E6, Orlea E6, Tenebria E2, Nine E6 (they wait for the extra-damage model).
@@ -192,6 +199,7 @@ Dated measurements behind the rules. In-game numbers are also tests in [in-game-
 - **2026-10-20, community sheet (CZNRedditSheet.xlsx):** its Final ATK leaves Partner ATK out of the % layer (an older formula; ours matches the in-game 1121). Its card mult and damage lines match ours.
 - **2026-10-20, enemy DEF (User):** a non-crit 500 with Final ATK 1272.28 back-solves to 0.387 (first enemy targeted).
 - **2026-10-25, enemy DEF (User, DEF guessed):** Strike 592 and Rising Dragon Spire V 641 (crit 1070) fit 0.3733 (0.3735 if the game rounds down).
+- **2026-11-01, enemy DEF (User):** Tressa's hits on the enemy of Mei Lin's tests back-solve to about 0.374 (Agony 53 at 731 Attack; Shadow Dagger 139 and 189, docs/characters/tressa.md), and her Agony hits to about 0.429 on a weaker enemy (61, 47, 69).
 - **Enemy DEF idea (that sheet's note):** Lv50 Stage 3 Kentris, Nebula event, 255 DEF -> 0.392.
 - **2026-10-25, stats screen (User):** Mei Lin's 637 base = 622 (character + partner) + 15 affinity; fragment Attack % multiply only the 622 (622 x 56.7% + 43 flat = +396; removing the 25% piece drops 156). In battle 1198 + 74 equipment = 1272.
 - **2026-10-25, card % (User):** Strike with Basic Card Upgrade 10, 5-1, Jewel, 1 Morale, Scarab, Obsidian Sword, Emblem shows 251% in hand, 357% on target; the calculator 250.6% and 355.9% (x 142% Weakness DMG). The ~0.3% on target is unexplained (rounding or hidden decimals?). Strike's 132% = (100% + 10%) x 1.2.

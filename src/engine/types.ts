@@ -100,8 +100,10 @@ export interface BuffEffect {
   thresholdMin?: number
   /** 'Defense' / 'Health': thresholdMin and thresholdBonus read that stats-screen stat instead (Adelheid 7: 'If Defense is 300 or
    * higher'; Cassius 5-1: 'If Health is 600 or higher'; Renoa 7: 'If Critical Chance is 60% or higher', above: 0.6; Selena 7: 'If Extra Damage is 30% or higher', above: 0.3;
-   * Lucas 5-1: 'If Critical Damage is 160% or higher', above: 1.6). */
-  thresholdStat?: 'Defense' | 'Health' | 'Critical Chance' | 'Critical Damage' | 'Extra Damage'
+   * Lucas 5-1: 'If Critical Damage is 160% or higher', above: 1.6; Tressa 7: 'If Damage over Time is 30% or higher', above: 0.3). */
+  thresholdStat?: 'Defense' | 'Health' | 'Critical Chance' | 'Critical Damage' | 'Extra Damage' | 'Damage over Time'
+  /** It needs a target, so it isn't in the in-hand card % (Tressa's E2: 164% in hand, 184% on a target in Agony). */
+  onTarget?: boolean
   /** See StatEffect.hint. */
   hint?: string
 }
@@ -217,6 +219,10 @@ export interface CardPreset {
   perCost?: boolean
   /** See Card.perCount. */
   perCount?: string
+  /** See Card.maxCount. */
+  maxCount?: number
+  /** See Card.countsHits. */
+  countsHits?: boolean
   /** See Card.counterHits. */
   counterHits?: { counter: string; hits: number }
   /** See Card.fixedOf. */
@@ -329,6 +335,8 @@ export interface Settings {
   potentialPerLevel: number
   /** Whether those upgrades also raise Fixed damage (Unconfirmed). */
   potentialFixed: boolean
+  /** An upgraded card % is rounded to a whole % before buffs (owner, 2026-11-01; Unconfirmed, in-game test card-pct-rounding). */
+  roundCardPct: boolean
   /** Fixed damage = % x Final ATK x this (Unconfirmed). */
   fixedAtkCoef: number
 }
@@ -472,6 +480,12 @@ export interface Card {
   /** "X% for each <thing>" (Orlea's Annoying: 'Cards in hand'): pct is per thing; each play sets the count in its stacks
    * under this name (default 1). */
   perCount?: string
+  /** The most perCount can be (Agony: 'max 20 stacks'). */
+  maxCount?: number
+  /** Set on a card as played: its pct is the % the game shows x this (the play's Cost or count), so the shown % can be rounded on its own. */
+  pctUnits?: number
+  /** The count of perCount is the card's hits, not a multiple of its % (Agony: each stack is its own hit, and each can crit). */
+  countsHits?: boolean
   /** Hits added on plays with this counter above 0 (Yuki's "Inspiration: Add 1 Hit"), unless the play sets its own hits. */
   counterHits?: { counter: string; hits: number }
   /** A Fixed card's "Fixed Damage equal to X% of Shield owned" (Maribell's Shelter Strike): damage = % x this per-play counter, not x ATK. */
