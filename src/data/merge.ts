@@ -99,18 +99,26 @@ export function checkAdditions(imported: Record<string, ImportedCharacter>, addi
       egoCheck(e.egoLevel, `effect '${e.id}'`)
       egoCheck(e.egoBelow, `effect '${e.id}'`)
     }
-    // A starting counter nothing reads does nothing, and a card's hit counter named only there is a switch of its own: both are likely misspelled
+    // A starting counter nothing reads does nothing, and a card's hit or Fixed damage counter named only there is a switch of its own: all are likely misspelled
     const read = [
       ...effects.flatMap((e) => (e.kind === 'Buff' && e.counter ? [e.counter] : [])),
       ...[...(add.triggers ?? []), ...cards.flatMap(([, c]) => c.triggers ?? [])].flatMap((t) => t.counter ?? []),
     ]
     const hitCounters = cards.flatMap(([, c]) => c.counterHits?.counter ?? [])
+    const fixedCounters = cards.flatMap(([, c]) => c.fixedOf ?? [])
     const starting = Object.keys(add.playStacks ?? {})
     for (const name of starting) {
-      if (!read.includes(name) && !hitCounters.includes(name)) problems.push(`characters/${slug}.ts: playStacks names counter '${name}', which nothing reads`)
+      if (!read.includes(name) && !hitCounters.includes(name) && !fixedCounters.includes(name)) problems.push(`characters/${slug}.ts: playStacks names counter '${name}', which nothing reads`)
     }
     for (const name of new Set(hitCounters)) {
       if (!read.includes(name) && !starting.includes(name)) problems.push(`characters/${slug}.ts: counterHits names counter '${name}', which no buff, trigger or playStacks has`)
+    }
+    for (const name of new Set(fixedCounters)) {
+      if (!read.includes(name) && !starting.includes(name)) problems.push(`characters/${slug}.ts: fixedOf names counter '${name}', which no buff, trigger or playStacks has`)
+    }
+    // fixedOf only counts on a Fixed card
+    for (const [id, c] of cards) {
+      if (c.fixedOf && (c.scaling ?? ch.cards.find((x) => x.id === id)?.scaling) !== 'Fixed') problems.push(`characters/${slug}.ts: card '${id}' has fixedOf but isn't a Fixed card`)
     }
   }
   return problems

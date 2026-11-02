@@ -40,7 +40,7 @@ export function presetCard(p: CardPreset, element: Element, id: string, nodeOn: 
     id, name: p.name, cardType: p.cardType, element: p.element ?? element, cost: p.cost ?? null, tags: presetTags(p, nodeOn),
     scaling: p.scaling ?? 'ATK', kind: p.kind ?? 'Normal', pct: p.pct, hits: p.hits, ...Object.assign({}, ...changed), weaknessApplies: !!p.weaknessApplies,
     targetRavaged: !!p.targetRavaged, upgrade: cardUpgrade(p), preset: p.id, ...(p.perCost ? { perCost: true } : {}),
-    ...(p.perCount ? { perCount: p.perCount } : {}), ...(p.counterHits ? { counterHits: p.counterHits } : {}), ...(p.notACard ? { notACard: true } : {}),
+    ...(p.perCount ? { perCount: p.perCount } : {}), ...(p.counterHits ? { counterHits: p.counterHits } : {}), ...(p.fixedOf ? { fixedOf: p.fixedOf } : {}), ...(p.notACard ? { notACard: true } : {}),
   }
 }
 

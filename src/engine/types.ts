@@ -25,8 +25,10 @@ export type Condition = 'Always' | 'Ravaged only'
  * like a potential (shown in the in-game card %), so it only counts on cards entered at base % (with an upgrade).
  * Card + (a Potential node's "+15% Damage Amount") adds to the base % before the upgrade: (80% + 15%) x 1.16 = 110%; also only with an upgrade.
  * Base % ("+80% base Damage Amount") is added to the card % after the potential, so the multiplicative buffs raise it too.
- * Final ("final Damage Amount") is its own multiplier: x (1 + the sum of the final buffs), after everything else. */
-export type BuffType = 'Additive' | 'Multiplicative' | 'Weakness Attack' | 'Crit Chance' | 'Crit DMG' | 'Card %' | 'Card +' | 'Base %' | 'Final'
+ * Final ("final Damage Amount") is its own multiplier: x (1 + the sum of the final buffs), after everything else.
+ * Flat ("Damage Amount equal to 30% of Shield owned") is damage, not a %: value x its counter's number, added under the multipliers (Maribell's Resolute Blitz IV).
+ * It reads a counter, so it isn't among the types the owner's own buffs can pick. */
+export type BuffType = 'Additive' | 'Multiplicative' | 'Weakness Attack' | 'Crit Chance' | 'Crit DMG' | 'Card %' | 'Card +' | 'Base %' | 'Final' | 'Flat'
 export const BUFF_TYPES: BuffType[] = ['Additive', 'Multiplicative', 'Weakness Attack', 'Crit Chance', 'Crit DMG', 'Card %', 'Card +', 'Base %', 'Final']
 export type MultMode = 'Summed' | 'Chained'
 
@@ -88,7 +90,7 @@ export interface BuffEffect {
   /** See StatEffect.node. */
   node?: string
   /** Per-play stacks (e.g. 'Ember'): the stacks are set on each play of the attack list (default 0), instead of
-   * by the switch, which is then on/off only. Buffs with the same counter share the play's number; maxStacks caps it. */
+   * by the switch, which is then on/off only. Buffs with the same counter share the play's number; maxStacks caps it for this buff. */
   counter?: string
   /** Extra value added automatically while the build's stats-screen Attack is above `above` (Mei Lin 5-1: +5% more above 500);
    * `orEqual`: from `above` on ('500 or higher'). With `every`, the value is added for every full `every` Attack above
@@ -217,6 +219,8 @@ export interface CardPreset {
   perCount?: string
   /** See Card.counterHits. */
   counterHits?: { counter: string; hits: number }
+  /** See Card.fixedOf. */
+  fixedOf?: string
   /** Ids of the cards it creates (shards, Sword Tassel): they join the deck with it (src/engine/deck.ts). */
   creates?: string[]
   /** A Manifest Ego effect that deals damage (Narja's E6): joins the deck by itself from this Ego level, like the Ego skill. */
@@ -470,6 +474,8 @@ export interface Card {
   perCount?: string
   /** Hits added on plays with this counter above 0 (Yuki's "Inspiration: Add 1 Hit"), unless the play sets its own hits. */
   counterHits?: { counter: string; hits: number }
+  /** A Fixed card's "Fixed Damage equal to X% of Shield owned" (Maribell's Shelter Strike): damage = % x this per-play counter, not x ATK. */
+  fixedOf?: string
   /** Damage from an effect, not a card being played (Mark, Coordinated Attacks, Attunement damage): the card type words (Attack /
    * Skill / Upgrade) don't match it, so Attack Card buffs and Attack Card triggers skip it. */
   notACard?: boolean

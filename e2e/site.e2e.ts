@@ -156,6 +156,44 @@ test("a character's starting counter shows only on plays that can set it", async
   await expect(page.locator('.rotation')).toContainText('In Metallization state 1')
 })
 
+test("Maribell's Shield owned is typed in per play, and its Fixed damage follows it", async ({ page }) => {
+  await openWithSave(page)
+  await page.getByRole('combobox', { name: 'Character' }).selectOption('Maribell')
+  await addAndPlay(page, 'Shelter Strike', 'Maribell')
+  await page.locator('.rotation').getByRole('button', { name: /Shelter Strike/ }).click()
+  await page.locator('.rotation').getByLabel('Shield owned', { exact: true }).fill('400')
+  await page.locator('.rotation').getByLabel('Shield owned', { exact: true }).blur()
+  await expect(page.locator('.rotation')).toContainText('Shield owned 400')
+  await expect(page.getByRole('tablist', { name: 'Builds' })).toContainText('400')
+})
+
+test("Maribell's Flat damage gets its own chip in the formula", async ({ page }) => {
+  await openWithSave(page)
+  await page.getByRole('combobox', { name: 'Character' }).selectOption('Maribell')
+  await addAndPlay(page, 'Resolute Blitz IV', 'Maribell', 'Resolute Blitz')
+  await page.locator('.rotation').getByRole('button', { name: /Resolute Blitz IV/ }).click()
+  await page.locator('.rotation').getByLabel('Shield owned', { exact: true }).fill('400')
+  await page.locator('.rotation').getByLabel('Shield owned', { exact: true }).blur()
+  await total(page)
+  const results = page.locator('.play', { hasText: 'Resolute Blitz IV' }).first()
+  await expect(results.locator('.chip', { hasText: 'Flat' }).first()).toContainText('+120')
+})
+
+test("Shelter Strike's formula shows E1's +50% apart from the card's Fixed %", async ({ page }) => {
+  await openWithSave(page)
+  await page.getByRole('combobox', { name: 'Character' }).selectOption('Maribell')
+  await addAndPlay(page, 'Shelter Strike', 'Maribell')
+  await page.locator('.rotation').getByRole('button', { name: /Shelter Strike/ }).click()
+  await page.locator('.rotation').getByLabel('Shield owned', { exact: true }).fill('400')
+  await page.locator('.rotation').getByLabel('Shield owned', { exact: true }).blur()
+  await tabButton(page, 'Setup').click()
+  await page.getByRole('combobox', { name: 'Level', exact: true }).selectOption('1')
+  expect(await total(page, 'Non-crit')).toBe(600)
+  const results = page.locator('.play', { hasText: 'Shelter Strike' }).first()
+  await expect(results.locator('.chip', { hasText: 'Fixed' })).toContainText('100%')
+  await expect(results.locator('.chip', { hasText: 'Base' })).toContainText('+50%')
+})
+
 test('a Potential node switched off takes its buff away', async ({ page }) => {
   await openWithSave(page)
   await addAndPlay(page, 'Strike')
@@ -175,7 +213,7 @@ test('characters not reviewed yet say so', async ({ page }) => {
   await openWithSave(page)
   const badge = page.locator('.not-reviewed')
   await expect(badge).toHaveCount(0)
-  await page.getByRole('combobox', { name: 'Character' }).selectOption('Beryl')
+  await page.getByRole('combobox', { name: 'Character' }).selectOption('Fei')
   await expect(badge).toHaveText('Not reviewed')
 })
 

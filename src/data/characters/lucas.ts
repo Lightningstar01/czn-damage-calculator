@@ -131,9 +131,9 @@ export default {
       effects: [targetShield('shield-all', 'When hitting a target that has Shield', '30%', 'ALL')],
     },
 
-    // Prydwen: "40 Fixed Damage"; 50% in game at E1. With the potentialFixed setting the text raises the whole 50%, the hit only the 40%.
+    // Prydwen: "40 Fixed Damage"; 50% in game at E1
     'card-302': {
-      text: 'When Bullet cards are Exhausted, {E1:{F50%}|{F40%}} Fixed Damage',
+      text: 'When Bullet cards are Exhausted, {E1:{F40%+10%}|{F40%}} Fixed Damage',
       triggers: [
         { card: 'rpg-hit', on: 'Bullet & Exhaust' },
         { card: 'rpg-hit', on: 'Flame Thrower IV', counter: 'Bullets Exhausted', maxStacks: 2, perStack: true },

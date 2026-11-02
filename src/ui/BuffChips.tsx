@@ -34,6 +34,7 @@ export function buffPill(value: string, type: BuffType): Pill {
     case 'Card +': return { text: `${value} card`, group: 'card' }
     case 'Base %': return { text: `${value} base`, group: 'card' }
     case 'Final': return { text: `${value} Final`, group: 'mult' }
+    case 'Flat': return { text: `${value} of the number, as damage`, group: 'card' }
     default: return { text: `${value} ${type}`, group: 'crit' }
   }
 }

@@ -17,10 +17,13 @@ npm run lint       # oxlint
 npm run screenshot # phone (390px) + desktop PNGs of every tab -> screenshots/ (see scripts/screenshot.mjs:
                    # --tab Buffs, --phone, --tap "text", --save file); read them to check design changes
 # Re-import every character (cards, potentials, Manifest Ego) from Prydwen (after a game update;
-# review the git diff). One page per character (plus its cznmetadecks page for card art); --cache <folder> keeps
+# review the git diff). Prydwen's characters page for the list, one page per character for their cards (older pages lag behind
+# on a new character), plus its cznmetadecks page for card art; --cache <folder> keeps
 # them for re-runs; card art already in public/cards/ is kept (--refresh-art downloads it again).
 # Python is not on PATH on the owner's PC; use the project venv:
 .venv\Scripts\python.exe scripts/import_prydwen.py
+# A new character only, leaving the others as they are:
+.venv\Scripts\python.exe scripts/import_prydwen.py --only <slug>
 ```
 After any change: ask before committing. If the owner agrees to commit, run `npm run check`, then commit. After UI changes, also run `npm run test:e2e` and `npm run screenshot` and
 look at the phone pictures (the owner plays on an Android phone, and also on desktop) for layout, readability and ease of use. Deploy to GitHub Pages only when the
@@ -96,7 +99,7 @@ email, and check that binary files such as spreadsheets carry no author name bef
   `upgrade: null` turns off its potential upgrade (Mei Lin's Jewel V). Tokens nest: `Heal {P3-1:{70%}|{100%}}`.
   A node that adds a keyword also adds the tag: `nodeTags: { '3-1': 'Blessing' }` (only while the node is on; teammates: on).
   A node that changes a card's numbers: `nodeCard: { '3-1': { pct: 0.7, hits: 2 } }` (Chizuru's Moonslash).
-  `{F40%}` is a Fixed damage % (raised only with the potentialFixed setting). `{120%@id}` is another card preset's base %, raised by that
+  `{F40%}` is a Fixed damage % (raised only with the potentialFixed setting). `{F100%+50%}` adds a part after the raise (a `Base %` buff such as Maribell's E1), so the text follows the damage. `{120%@id}` is another card preset's base %, raised by that
   card's buffs (the Extra Attack on Renoa's Dirge Bullet).
   The step-by-step process is the `card-review` skill (.claude/skills/card-review).
 - Card upgrade potentials: build `basicLevel` / `signatureLevel`, card `upgrade`
@@ -121,10 +124,11 @@ email, and check that binary files such as spreadsheets carry no author name bef
   hand", kept in `stacks` under the card's `perCount` name, default 1; a `counter` of the same name reads that number: Tenebria's Rhythms;
   a card's `counterHits` adds hits while a counter is above 0: Yuki's Inspiration; a character's `playStacks` are the counters a new play starts with: Rin's Dark Mist Stance),
   `weaknessDebuff` and `stacks` per counter name; buffs with `counter` read the play's stacks
-  (capped at max stacks). Buff type `Card %` raises a card's base % like a potential (only on cards
+  (each capped at its own max stacks, so Charged Shot IV's 1 leaves Beryl's other Times Retained cards alone). Buff type `Card %` raises a card's base % like a potential (only on cards
   with an upgrade: "Double all effects"); `Card +` (a Potential node's "+X%", owner 2026-10-30) adds to the base % before the upgrade
   (Shadow 110% = (80% + 15%) x 1.16); `Base %` ("+X% base Damage Amount") adds to the shown card %; `Final` ("final Damage
-  Amount") is its own multiplier. Effects: `egoBelow` (off from that Ego level), `thresholdMin`, `thresholdBonus.every`
+  Amount") is its own multiplier; `Flat` ("Damage Amount equal to 30% of Shield owned") is value x its counter's number as damage, added under the multipliers (not offered for own buffs).
+  A card's `fixedOf` makes its Fixed damage % x that per-play counter, not x ATK (Maribell's Shelter Strike). Counters that hold an amount (`PlayCounter.amount`: read by a `Flat` buff or a card's `fixedOf`) get a typed number on the Cards tab, not a stepper. Effects: `egoBelow` (off from that Ego level), `thresholdMin`, `thresholdBonus.every`
   (`thresholdStat: 'Defense'` / `'Health'` / `'Critical Chance'` / `'Critical Damage'` / `'Extra Damage'` makes both read that stats-screen stat: Adelheid's 7, Cassius's 5-1, Renoa's 7, Lucas's 5-1, Selena's 5-1).
   Thresholds read the effect owner's stats (`LiveTeammate.live`, filled while computing by `withLinkedTeam`; a `LiveBuild` can't be assigned into a saved `Build`).
   A play's `ravaged` overrides the card's `targetRavaged` (On Ravage cards start on), on Cards tab > a play.

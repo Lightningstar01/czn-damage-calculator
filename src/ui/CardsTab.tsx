@@ -6,14 +6,14 @@ import { CSS } from '@dnd-kit/utilities'
 import { useState } from 'react'
 import { PRESETS } from '../data/presets'
 import { playBaseHits, playCard, playCount } from '../engine/calc'
-import { findCharacter } from '../engine/buffs'
+import { findCharacter, type PlayCounter } from '../engine/buffs'
 import { buildDeck, changeEpiphany, deckItems, prunePlays, pruneTeamPlays, teammateDeck, type DeckItem } from '../engine/deck'
 import { TEAM_SIZE, type Card, type CardPreset, type CharacterPreset, type RotationPlay, type Teammate } from '../engine/types'
 import { newId } from '../store/save'
 import { useCharacter, useLinked, useStore } from '../store/store'
 import { CardFace, customText, useCardText } from './CardFace'
 import { pct } from './format'
-import { Section, SelectField, Sheet, Stepper, Toggle } from './inputs'
+import { NumberField, Section, SelectField, Sheet, Stepper, Toggle } from './inputs'
 
 export function CardsTab() {
   return (
@@ -393,7 +393,7 @@ function playFlags(play: RotationPlay, ravaged: boolean, settable: string[]): st
  * (shown once the list has teammates' plays). */
 function RotationItem({ id, index, play, card, baseHits, baseCost, baseRavaged, by, counters, open, onToggle, onChange, onRemove }: {
   id: string; index: number; play: RotationPlay; card?: Card; baseHits?: number; baseCost?: number | null; baseRavaged: boolean; by?: string
-  counters: { name: string; max: number | null }[]
+  counters: PlayCounter[]
   open: boolean; onToggle: () => void; onChange: (fn: (p: RotationPlay) => void) => void; onRemove: () => void
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
@@ -446,17 +446,21 @@ function RotationItem({ id, index, play, card, baseHits, baseCost, baseRavaged, 
             <Toggle label="Target Ravaged" checked={card.targetRavaged} onChange={(v) => onChange((p) => { if (v === baseRavaged) delete p.ravaged; else p.ravaged = v })} />
           </div>
           {/* A counter named like the card's per-count setting (Tenebria's Rhythms) is that same number: shown once, above */}
-          {counters.filter((c) => c.name !== card.perCount).map((c) => (
-            <div key={c.name} className="toggle-field"><span>{c.name}</span>
-              <Stepper label={`Play ${index + 1} ${c.name} stacks`} value={play.stacks?.[c.name] ?? 0} max={c.max ?? undefined}
-                onChange={(n) => onChange((p) => {
-                  p.stacks ??= {}
-                  if (n > 0) p.stacks[c.name] = n
-                  else delete p.stacks[c.name]
-                  if (!Object.keys(p.stacks).length) delete p.stacks
-                })} />
-            </div>
-          ))}
+          {counters.filter((c) => c.name !== card.perCount).map((c) => {
+            const set = (n: number) => onChange((p) => {
+              p.stacks ??= {}
+              if (n > 0) p.stacks[c.name] = n
+              else delete p.stacks[c.name]
+              if (!Object.keys(p.stacks).length) delete p.stacks
+            })
+            return c.amount
+              ? <NumberField key={c.name} label={c.name} value={play.stacks?.[c.name] ?? 0} min={0} onChange={set} />
+              : (
+                <div key={c.name} className="toggle-field"><span>{c.name}</span>
+                  <Stepper label={`Play ${index + 1} ${c.name} stacks`} value={play.stacks?.[c.name] ?? 0} max={c.max ?? undefined} onChange={set} />
+                </div>
+              )
+          })}
         </div>
       )}
     </li>

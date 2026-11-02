@@ -1,15 +1,16 @@
 """Import every character and their cards from Prydwen into the website's presets.
 
-    .venv\\Scripts\\python.exe scripts/import_prydwen.py [--cache folder]
+    .venv\\Scripts\\python.exe scripts/import_prydwen.py [--cache folder] [--only slug]
 
 Writes src/data/prydwen/<character-slug>.json (one file per character) and _meta.json.
 These files are generated: never edit them by hand. Our own additions (buffs, notes, corrections)
 go in src/data/characters/<slug>.ts, keyed by the card ids here, so re-importing never
 overwrites them. Run it again after a game update and review the git diff.
 
-Prydwen has no card list page, but every character page embeds the full card list (Next.js
-server data). Each character's own page adds their Potential and Manifest Ego (dupes) text, so
-one page per character is fetched (--cache keeps the pages, to re-run without downloading). Card text keeps Prydwen's wording, including the "+"
+Prydwen's characters page lists everyone. Prydwen has no card list page, but every character page embeds a card list (Next.js
+server data); older pages lag behind on a new character (Mei Lin's had 11 of Khalipe's 29 cards and didn't list Khalipe, 2026-11-01), so
+each character's cards come from their own page, which also has their Potential and Manifest Ego (dupes) text. That's the list page plus
+one page per character (--cache keeps the pages, to re-run without downloading). Card text keeps Prydwen's wording, including the "+"
 that marks additive buffs (owner's rule, docs/FORMULA.md).
 
 Card art (art only: the site draws the frame) is copied into public/cards/<slug>/ and each card's `image` points there
@@ -24,6 +25,7 @@ import html
 import json
 import re
 import sys
+import urllib.error
 import urllib.request
 from pathlib import Path
 
@@ -31,6 +33,7 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "src" / "data" / "prydwen"
 ART = ROOT / "public" / "cards"
 URL = "https://www.prydwen.gg/chaos-zero-nightmare/characters/{slug}"
+LIST_URL = "https://www.prydwen.gg/chaos-zero-nightmare/characters"
 META_URL = "https://cznmetadecks.com/characters/{slug}"
 META_ART = "https://cdn.czndecksmeta.com/thumbnails/{art}@2x.webp"
 ROMAN = r"(?:I|II|III|IV|V)"
@@ -175,6 +178,20 @@ def find_lists(rows):
     raise SystemExit("Card list not found: Prydwen's page layout changed; update rsc_rows/find_lists")
 
 
+def all_characters(cache=None):
+    """Everyone, from Prydwen's characters page: its section list, without the cards a character page has."""
+    stack = list(rsc_rows(fetch("_list", cache, LIST_URL)).values())
+    while stack:
+        o = stack.pop()
+        if isinstance(o, dict):
+            if isinstance(o.get("characters"), list) and o["characters"] and isinstance(o["characters"][0], dict):
+                return o["characters"]
+            stack.extend(o.values())
+        elif isinstance(o, list):
+            stack.extend(o)
+    raise SystemExit("Character list not found: Prydwen's page layout changed; update all_characters")
+
+
 def plain(text):
     text = re.sub(r"<br\s*/?>", "\n", text)
     text = re.sub(r"</p>\s*<p[^>]*>", "\n", text)
@@ -270,13 +287,32 @@ def changes(old, doc):
     return sorted(out)
 
 
-def build(cache=None, refresh_art=False):
-    characters, cards = find_lists(rsc_rows(fetch("mei-lin", cache)))
+def only_character(slug, cache=None):
+    """The list from the character's own page, which has them before older pages do (Mei Lin's lacked Khalipe, 2026-11-01). Stops if there's nothing to import."""
+    try:
+        page = fetch(slug, cache)
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            raise SystemExit(f"{slug} has no page on Prydwen: check the spelling (it's the end of the page's address, e.g. mei-lin). Nothing imported")
+        raise
+    characters = find_lists(rsc_rows(page))[0]
+    me = next((c for c in characters if c["slug"] == slug), None)
+    if not me:
+        raise SystemExit(f"{slug} is not in Prydwen's list. Nothing imported")
+    if me.get("upcoming"):
+        raise SystemExit(f"{slug} is marked upcoming on Prydwen. Nothing imported")
+    return characters
+
+
+def build(cache=None, refresh_art=False, only=None):
+    characters = only_character(only, cache) if only else all_characters(cache)
     OUT.mkdir(parents=True, exist_ok=True)
     written = set()
     for ch in sorted(characters, key=lambda c: c["slug"]):
-        if ch.get("upcoming"):
+        if ch.get("upcoming") or (only and ch["slug"] != only):
             continue
+        page = fetch(ch["slug"], cache)
+        cards = find_lists(rsc_rows(page))[1]
         own = sorted((c for c in cards if c["combatant"] == ch["name"]), key=lambda c: c["cardId"])
         names = {c["name"] for c in own}
         bases = {}
@@ -290,7 +326,6 @@ def build(cache=None, refresh_art=False):
                        bases[c["slug"]] in with_epiphanies)
             for c in own
         ]
-        page = fetch(ch["slug"], cache)
         pictures, fallback = copy_art(ch["slug"], entries, fetch(ch["slug"], cache, META_URL, "meta-"), refresh_art)
         ego = kit_section(page, "Manifest Ego", "level")
         for e in ego:
@@ -315,9 +350,13 @@ def build(cache=None, refresh_art=False):
               f"{pictures} pictures" + (f", {fallback} cards with Prydwen's art" if fallback else ""))
     # A character missing from the list is never deleted: saves, additions and tests may depend on it, and it may be a slip on the site
     kept = [old.name for old in OUT.glob("*.json") if old.name not in written and old.name != "_meta.json"]
-    for name in kept:
+    for name in () if only else kept:
         print(f"WARNING: {name} is not in Prydwen's list any more (or is marked upcoming): kept as it was. Check it, and delete it by hand if it's really gone")
-    meta = {"source": URL.format(slug="<slug>"), "imported": datetime.date.today().isoformat(), "characters": len(written) + len(kept)}
+    # "imported" is when everyone was last imported, so --only keeps it, if there is one yet
+    imported = datetime.date.today().isoformat()
+    if only and (OUT / "_meta.json").exists():
+        imported = json.loads((OUT / "_meta.json").read_text(encoding="utf-8"))["imported"]
+    meta = {"source": URL.format(slug="<slug>"), "imported": imported, "characters": len(written) + len(kept)}
     (OUT / "_meta.json").write_text(json.dumps(meta, indent=1) + "\n", encoding="utf-8", newline="\n")
 
 
@@ -325,7 +364,8 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--cache", help="folder for the downloaded pages: reused if there, saved if not")
     ap.add_argument("--refresh-art", action="store_true", help="download the card art again, even pictures already copied")
+    ap.add_argument("--only", metavar="SLUG", help="import just this character (a new one), leaving the others as they are")
     args = ap.parse_args()
     # Card names have characters a piped Windows console can't encode (Diana's "、"): a print must not stop the import halfway
     sys.stdout.reconfigure(errors="backslashreplace")
-    build(args.cache, args.refresh_art)
+    build(args.cache, args.refresh_art, args.only)

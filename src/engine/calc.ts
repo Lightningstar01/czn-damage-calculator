@@ -1,6 +1,6 @@
 // The damage formula (docs/FORMULA.md). Pure functions: inputs in, numbers and their sources out.
 import { buildDeck, buildNodeOn, deckPresets, presetCard, teammateDeck, type DeckItem } from './deck'
-import { activeBuffs, activeCounters, activeStats, buffMatches, cardBuffs, findCharacter, findFragmentSet, findPartner, type ActiveBuff, type ActiveStat, type Source } from './buffs'
+import { activeBuffs, activeCounters, activeStats, buffMatches, cardBuffs, findCharacter, findFragmentSet, findPartner, type ActiveBuff, type ActiveStat, type PlayCounter, type Source } from './buffs'
 import { teammateView, withLinkedTeam, type Saves } from './team'
 import { NO_ENEMY } from './types'
 import type { Build, Card, CharacterPreset, CharacterSave, Enemy, Fight, LiveBuild, PotentialUpgrade, Presets, RotationPlay, Settings, StatName, Trigger } from './types'
@@ -39,6 +39,8 @@ export interface Hit {
   potential: Factor | null
   /** Base % buffs, added to the card % after the potential (null: none). */
   basePct: Factor | null
+  /** Flat buffs (null: none): damage, not a % of the stat. Mult and every factor but the stat and constant raise it; on a Fixed card, nothing does. */
+  flat: Factor | null
   multFactor: Factor
   additive: Factor
   weakness: Factor | null
@@ -131,7 +133,7 @@ export interface BuildResult extends Totals {
   /** Each team member's damage (own plays, follow-ups and the hits their triggers add), the build's character first. */
   byCharacter: (Totals & { name: string })[]
   /** Per attack list play (same index): the per-play counters it can set (its player's counter buffs and the team's triggers). */
-  counterOptions: { name: string; max: number | null }[][]
+  counterOptions: PlayCounter[][]
   /** Things in the save the calculation had to leave out or that likely don't do what they seem to (shown on the Results tab). */
   warnings: string[]
 }
@@ -229,7 +231,7 @@ interface Member {
     stats: FinalStats
     fixedBuffs: ActiveBuff[]
     counterBuffs: ActiveBuff[]
-    caps: { name: string; max: number | null }[]
+    caps: PlayCounter[]
   }
 }
 
@@ -283,8 +285,11 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
   // The hits of one card played by m, with the play's debuffs and counter stacks; added: only that many hits after the card's own (no first-hit buffs)
   const cardHits = (m: Member, card: Card, play: RotationPlay, added = 0) => {
     const d = m.dmg!
-    const counters = playCaps(d.caps, card).map(({ name, max }) => ({ name, stacks: capped(play, name, max) }))
-    const live: ActiveBuff[] = d.counterBuffs.map((b) => ({ ...b, stacks: counters.find((c) => c.name === b.counter)?.stacks ?? 0 }))
+    const counters = playCaps(d, card).map(({ name, max }) => ({ name, stacks: capped(play, name, max) }))
+    const live: ActiveBuff[] = d.counterBuffs.map((b) => {
+      const stacks = counters.find((c) => c.name === b.counter)?.stacks ?? 0
+      return { ...b, stacks: b.maxStacks ? Math.min(stacks, b.maxStacks) : stacks }
+    })
     const cb = cardBuffs([...d.fixedBuffs, ...live], card)
     const upgradable = !(card.scaling === 'Fixed' && !settings.potentialFixed)
     const potential = upgradable ? potentialFactor(card.upgrade, d.build, m.ch, settings) : null
@@ -307,7 +312,7 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
   ;(team.rotation ?? []).forEach((play, index) => {
     const m = play.by === undefined ? main : members[play.by]
     const base = m?.cards.get(play.cardId)
-    counterOptions[index] = mergeCaps(playCaps(m?.dmg?.caps ?? [], base), triggerCaps)
+    counterOptions[index] = mergeCaps(playCaps(m?.dmg, base), triggerCaps)
     if (!m || !base) {
       warnings.push(`Play ${index + 1}: its card is no longer in the deck, so it's left out.`)
       return
@@ -316,6 +321,8 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
     const card = playCard(base, play)
     const own = m.dmg ? cardHits(m, card, play) : { hits: [], counters: [], cb: undefined, nonCrit: 0, crit: 0, expected: 0 }
     if (m.dmg && !card.targetRavaged) warnings.push(...ravagedOnly(m.dmg.counterBuffs, card, play, index))
+    const fixedOf = fixedAmountOf(card)
+    if (m.dmg && fixedOf && capped(play, fixedOf, null) <= 0) warnings.push(`Play ${index + 1} (${card.name}): its damage is a share of ${fixedOf}, which is 0 on this play.`)
     // Fixed damage set up by an earlier play of the same character: a share of this play's damage (crit or not), on the next matching card
     let followUp: FollowUp | undefined
     const p = pending.get(m)
@@ -419,19 +426,28 @@ function totals(xs: Totals[]): Totals {
 }
 
 /** Counters from two lists, once each (the smaller max wins). */
-function mergeCaps(a: { name: string; max: number | null }[], b: { name: string; max: number | null }[]) {
-  const out = new Map<string, number | null>()
-  for (const { name, max } of [...a, ...b]) {
-    const prev = out.get(name)
-    out.set(name, prev === undefined ? max : prev === null ? max : max === null ? prev : Math.min(prev, max))
+function mergeCaps(a: PlayCounter[], b: PlayCounter[]): PlayCounter[] {
+  const out = new Map<string, PlayCounter>()
+  for (const c of [...a, ...b]) {
+    const prev = out.get(c.name)
+    const max = !prev || prev.max === null ? c.max : c.max === null ? prev.max : Math.min(prev.max, c.max)
+    out.set(c.name, { name: c.name, max, ...(prev?.amount || c.amount ? { amount: true } : {}) })
   }
-  return [...out].map(([name, max]) => ({ name, max }))
+  return [...out.values()]
 }
 
+/** The amount counter a Fixed card's damage is a share of (Card.fixedOf). */
+const fixedAmountOf = (card: Card | undefined) => (card?.scaling === 'Fixed' ? card.fixedOf : undefined)
+
 /** The counters a play of this card has: the ones its player's buffs read, plus the one that adds hits to it, even when no buff reads
- * that one (Annihilation's Dark Mist Stance, Yuki's Inspiration with 3-1 off). */
-function playCaps(caps: { name: string; max: number | null }[], card: Card | undefined) {
-  return card?.counterHits ? mergeCaps(caps, [{ name: card.counterHits.counter, max: 1 }]) : caps
+ * that one (Annihilation's Dark Mist Stance, Yuki's Inspiration with 3-1 off). A counter stops where the card's own buffs stop reading it. */
+function playCaps(d: Member['dmg'], card: Card | undefined) {
+  const fixedOf = fixedAmountOf(card)
+  return mergeCaps(d?.caps ?? [], [
+    ...(card?.counterHits ? [{ name: card.counterHits.counter, max: 1 }] : []),
+    ...(fixedOf ? [{ name: fixedOf, max: null, amount: true }] : []),
+    ...activeCounters(card ? (d?.counterBuffs ?? []).filter((b) => buffMatches({ appliesTo: b.appliesTo, condition: 'Always' }, card)) : []),
+  ])
 }
 
 function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof cardBuffs>, potential: Factor | null,
@@ -449,6 +465,22 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
   const total = (sources: Source[]) => sources.reduce((a, s) => a + s.value, 0)
   const cardAdd = potential ? both(cb.cardAdd) : []
   const cardPct = card.pct + total(cardAdd)
+  const fixedOf = fixedAmountOf(card)
+  const amount = fixedOf ? capped(play, fixedOf, null) : 0
+  const stat: Factor = card.scaling === 'DEF'
+    ? {
+      value: stats.atk.value * settings.defCardAtkCoef + stats.def.value * settings.defCardDefCoef,
+      sources: [
+        { label: `Final ATK ${round(stats.atk.value)} x ${settings.defCardAtkCoef}`, value: stats.atk.value * settings.defCardAtkCoef, unit: 'flat' },
+        { label: `Final DEF ${round(stats.def.value)} x ${settings.defCardDefCoef}`, value: stats.def.value * settings.defCardDefCoef, unit: 'flat' },
+      ],
+    }
+    : fixedOf
+      ? { value: amount, sources: [{ label: `${fixedOf} (this play)`, value: amount, unit: 'flat' }] }
+      : stats.atk
+  // Flat damage is a number of its own, whatever the stat and its constant are; the multipliers raise it (owner, 2026-11-01; Unconfirmed)
+  const flatSources = both(cb.flat).map((s) => ({ ...s, unit: 'flat' as const }))
+  const flat: Factor | null = flatSources.length ? { value: total(flatSources), sources: flatSources } : null
   const baseSources = both(cb.basePct)
   const basePct: Factor | null = baseSources.length ? { value: total(baseSources), sources: baseSources } : null
   const pct = cardPct * (potential?.value ?? 1) + (basePct?.value ?? 0)
@@ -485,18 +517,9 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
   const ravaged = card.targetRavaged && settings.ravaged
     ? { value: 1 + settings.ravaged, sources: [{ label: 'Ravaged target (Settings)', value: settings.ravaged, unit: '%' as const }] }
     : null
-  const cardMult = (pct * multValue + additive.value) * (weakness?.value ?? 1) * (vulnerable?.value ?? 1)
-    * (enemyDr?.value ?? 1) * (weaknessDebuff?.value ?? 1) * (ravaged?.value ?? 1)
+  const onTarget = (weakness?.value ?? 1) * (vulnerable?.value ?? 1) * (enemyDr?.value ?? 1) * (weaknessDebuff?.value ?? 1) * (ravaged?.value ?? 1)
+  const cardMult = (pct * multValue + additive.value) * onTarget
 
-  const stat: Factor = card.scaling === 'DEF'
-    ? {
-      value: stats.atk.value * settings.defCardAtkCoef + stats.def.value * settings.defCardDefCoef,
-      sources: [
-        { label: `Final ATK ${round(stats.atk.value)} x ${settings.defCardAtkCoef}`, value: stats.atk.value * settings.defCardAtkCoef, unit: 'flat' },
-        { label: `Final DEF ${round(stats.def.value)} x ${settings.defCardDefCoef}`, value: stats.def.value * settings.defCardDefCoef, unit: 'flat' },
-      ],
-    }
-    : stats.atk
   const elemDmg = stats.elemDmg.value ? { value: 1 + stats.elemDmg.value, sources: stats.elemDmg.sources } : null
   const mech = card.kind === 'Extra Attack' ? stats.extraDmg : card.kind === 'DoT' ? stats.dotDmg : null
   const mechDmg = mech && mech.value ? { value: 1 + mech.value, sources: mech.sources } : null
@@ -513,21 +536,22 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
     critRate = settings.critCap
   }
 
+  const fixedConstant = fixedOf ? 1 : settings.fixedAtkCoef
   let nonCrit: number, crit: number, expected: number
   if (card.scaling === 'Fixed') {
-    // Fixed damage: % x Final ATK x its constant (owner thinks ATK-based, 2026-10-28; Unconfirmed); ignores every
-    // multiplier and can't crit (Unconfirmed)
-    nonCrit = crit = expected = pct * stats.atk.value * settings.fixedAtkCoef
+    // Fixed damage: % x Final ATK x its constant (owner thinks ATK-based, 2026-10-28; Unconfirmed), or % x the amount the card names (fixedOf);
+    // ignores every multiplier and can't crit (Unconfirmed)
+    nonCrit = crit = expected = pct * stat.value * fixedConstant + (flat?.value ?? 0)
   } else {
-    nonCrit = cardMult * stat.value * settings.atkConstant * (elemDmg?.value ?? 1) * (mechDmg?.value ?? 1) * (enemyDef?.value ?? 1)
-      * (final?.value ?? 1)
+    nonCrit = (cardMult * stat.value * settings.atkConstant + (flat?.value ?? 0) * multValue * onTarget)
+      * (elemDmg?.value ?? 1) * (mechDmg?.value ?? 1) * (enemyDef?.value ?? 1) * (final?.value ?? 1)
     crit = nonCrit * critDmg
     expected = nonCrit * (1 + critRate * (critDmg - 1))
   }
   return {
-    globalHit: k, hitNo, cardPct, cardAdd, potential, basePct, multFactor: { value: multValue, sources: multSources }, additive,
+    globalHit: k, hitNo, cardPct, cardAdd, potential, basePct, flat, multFactor: { value: multValue, sources: multSources }, additive,
     weakness, vulnerable, enemyDr, weaknessDebuff, ravaged, inHand, cardMult, stat,
-    constant: card.scaling === 'Fixed' ? settings.fixedAtkCoef : settings.atkConstant,
+    constant: card.scaling === 'Fixed' ? fixedConstant : settings.atkConstant,
     elemDmg, mechDmg, enemyDef, final, critDmg, critRate, critDmgSources, critRateSources, nonCrit, crit, expected,
   }
 }

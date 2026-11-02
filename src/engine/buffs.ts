@@ -260,15 +260,25 @@ export function activeBuffs(presets: Presets, charName: string, cs: CharacterSav
   return out
 }
 
-/** Per-play counters of the switched-on buffs, with the smallest max stacks of the buffs reading each. */
-export function activeCounters(buffs: ActiveBuff[]): { name: string; max: number | null }[] {
-  const caps = new Map<string, number | null>()
+/** A number set on each play. amount: it holds an amount the damage is worked out from (Maribell's Shield owned), typed in, not a few stacks. */
+export interface PlayCounter {
+  name: string
+  max: number | null
+  amount?: boolean
+}
+
+/** Per-play counters of the switched-on buffs, with the highest max stacks of the buffs reading each (none if one of them has no max):
+ * each buff still stops at its own (Beryl's Times Retained: Charged Shot IV at 1, the others go on). A Flat buff's counter is an amount. */
+export function activeCounters(buffs: ActiveBuff[]): PlayCounter[] {
+  const out = new Map<string, PlayCounter>()
   for (const b of buffs) {
     if (!b.counter) continue
-    const prev = caps.has(b.counter) ? caps.get(b.counter)! : null
-    caps.set(b.counter, b.maxStacks ? Math.min(prev ?? Infinity, b.maxStacks) : prev)
+    const prev = out.get(b.counter)
+    const own = b.maxStacks || null
+    const max = !prev ? own : prev.max === null || own === null ? null : Math.max(prev.max, own)
+    out.set(b.counter, { name: b.counter, max, ...(prev?.amount || b.type === 'Flat' ? { amount: true } : {}) })
   }
-  return [...caps].map(([name, max]) => ({ name, max }))
+  return [...out.values()]
 }
 
 const norm = (s: string) => s.replace(/\s/g, '').toLowerCase()
@@ -320,6 +330,8 @@ export interface CardBuffs {
   basePct: { all: Bucket; first: Bucket }
   /** Final damage buffs (their own multiplier). */
   final: { all: Bucket; first: Bucket }
+  /** Flat buffs: damage, not fractions (value x the counter's number). */
+  flat: { all: Bucket; first: Bucket }
 }
 
 /** Sum the buffs that match a card into additive / multiplicative buckets (all hits vs first hit only). */
@@ -327,7 +339,7 @@ export function cardBuffs(buffs: ActiveBuff[], card: Card): CardBuffs {
   const b = (): Bucket => ({ value: 0, sources: [] })
   const out: CardBuffs = { additive: { all: b(), first: b() }, multiplicative: { all: b(), first: b() }, weaknessAttack: [],
     critRate: { all: b(), first: b() }, critDmg: { all: b(), first: b() }, cardPct: { all: b(), first: b() },
-    cardAdd: { all: b(), first: b() }, basePct: { all: b(), first: b() }, final: { all: b(), first: b() } }
+    cardAdd: { all: b(), first: b() }, basePct: { all: b(), first: b() }, final: { all: b(), first: b() }, flat: { all: b(), first: b() } }
   for (const buff of buffs) {
     if (buff.stacks <= 0 || !buffMatches(buff, card)) continue
     const label = buff.stacks !== 1 ? `${buff.label} x${buff.stacks}` : buff.label
@@ -337,7 +349,7 @@ export function cardBuffs(buffs: ActiveBuff[], card: Card): CardBuffs {
     }
     const v = buff.value * buff.stacks
     const group = { Additive: out.additive, Multiplicative: out.multiplicative, 'Crit Chance': out.critRate, 'Crit DMG': out.critDmg,
-      'Card %': out.cardPct, 'Card +': out.cardAdd, 'Base %': out.basePct, Final: out.final }[buff.type]
+      'Card %': out.cardPct, 'Card +': out.cardAdd, 'Base %': out.basePct, Final: out.final, Flat: out.flat }[buff.type]
     const bucket = group[buff.hitScope === 'First hit only' ? 'first' : 'all']
     bucket.value += v
     bucket.sources.push({ label: buff.hitScope === 'First hit only' ? `${label} (first hit)` : label, value: v, unit: '%',

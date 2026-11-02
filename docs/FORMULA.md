@@ -23,7 +23,7 @@ Mult      = 1 + the sum of the multiplicative buffs (Summed, default), or the pr
 Damage    = Card mult x Stat x 0.35 x (1 + card element's DMG%) x (1 + Extra or DoT DMG%, by card kind) x Enemy DEF mult x (1 + Final buffs)
 Stat      = Final ATK; DEF cards: Final ATK x 0.3 + Final DEF x 2.1
 
-Fixed     = Card % x Final ATK x 0.35, and no other factor (Unconfirmed)
+Fixed     = Card % x Final ATK x 0.35, and no other factor (Unconfirmed); "of Shield owned" cards: Card % x the play's Shield owned
 
 Crit hit  = Damage x Crit DMG                                 (Crit DMG is the total multiplier; Crit Chance capped at 100%)
 Expected  = Damage x (1 + Crit Chance x (Crit DMG - 1))       per hit; each hit crits separately
@@ -66,6 +66,7 @@ How a buff's text decides where it goes:
 | "+X%" from a Potential node or Ego, part of the card's shown % | Card + | added to the base %, before the upgrade |
 | "Double all effects", "for each X" of the card's own % | Card % | x (1 + the sum), with the upgrade |
 | "+X% base Damage Amount" | Base % | added to the shown % after the upgrade; Mult raises it too (**Unconfirmed**) |
+| "Damage Amount equal to X% of Shield owned" | Flat | X% x the play's number, as damage: Mult and the other multipliers raise it, the stat and constant don't (**Unconfirmed**) |
 | "final Damage Amount" | Final | its own multiplier, x (1 + the sum), after everything else |
 | Crit Chance / Crit DMG on some cards | Crit Chance / Crit DMG | added to those cards' crit stats, before the cap |
 | Weakness Attack | Weakness Attack | Weakness DMG applies to matching cards, on all hits |
@@ -111,7 +112,9 @@ or `A/B` (any). Hits from effects rather than cards (`notACard`) don't match car
 - Crit cap 100%: **Unconfirmed** (Settings).
 - **Fixed damage ignores every multiplier (Sourced)**, with rare exceptions stated on the card. Fixed % x Final ATK x 0.35: the owner thinks it's ATK-based (2026-10-28), **Unconfirmed**.
   Whether it crits: **Unconfirmed**, assumed not. Upgrades raising it: **Unconfirmed**, Settings toggle, default off (Orlea's Annoying I in hand shows Fixed 40% unraised
-  and its Heal raised; text token `{F40%}`).
+  and its Heal raised; text token `{F40%}`; Maribell's Shelter Strike 150% and Oh... I see. IV 50% are unraised at level 6 too). With the toggle on, an Ego's added Fixed % stays unraised: (100% x upgrade) + 50% for Shelter Strike, in the damage and the card text alike (**Unconfirmed**).
+- **Fixed damage "of Shield owned" (User, 2026-11-01; Maribell):** % x the Shield owned set on the play, with no ATK and no 0.35. Shield isn't computed: read it in game.
+- **"Damage Amount equal to X% of Shield owned" without the word Fixed (User, 2026-11-01; **Unconfirmed**, in-game test `maribell-readings`):** added under the multipliers (buff type `Flat`), so Vulnerable, element and crit raise it, whatever the stat is. On a Fixed card, nothing raises it.
 
 ## Card upgrades
 

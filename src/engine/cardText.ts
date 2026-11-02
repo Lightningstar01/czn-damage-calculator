@@ -1,6 +1,7 @@
 // Card text as the game shows it for a build. Card texts in characters/<slug>.ts can hold tokens:
 //   {100%}        a base %, shown raised by the card's potential and Card % buffs (Strike: 132%)
 //   {F40%}        a Fixed damage %, raised only with the potentialFixed setting
+//   {F100%+50%}   a base % raised as above, plus a part added after the raise (a Base % buff, like Maribell's E1): what the damage does
 //   {120%@id}     a base % of another card preset, raised by that card's buffs (the Extra Attack on Renoa's Dirge Bullet)
 //   {E1:text}     only from Manifest Ego level 1; {E3:6|4} shows 6 from E3, 4 below
 //   {P3-1:text}   only while Potential node 3-1 is switched on (Setup tab; missing switches count as on)
@@ -27,8 +28,8 @@ export function renderCardText(text: string, ctx: CardTextContext): string {
 
 function replaceTokens(text: string, ctx: CardTextContext): string {
   return text.replace(TOKEN, (whole, body: string) => {
-    const pct = /^(F?)(\d+(?:\.\d+)?)%(?:@(.+))?$/.exec(body)
-    if (pct) return `${Math.round(ctx.pct(Number(pct[2]) / 100, !!pct[1], pct[3]) * 100)}%`
+    const pct = /^(F?)(\d+(?:\.\d+)?)%(?:\+(\d+(?:\.\d+)?)%)?(?:@(.+))?$/.exec(body)
+    if (pct) return `${Math.round((ctx.pct(Number(pct[2]) / 100, !!pct[1], pct[4]) + Number(pct[3] ?? 0) / 100) * 100)}%`
     const cond = /^(E|P)([\d-]+):(.*)$/s.exec(body)
     if (!cond) return whole
     const [, kind, key, rest] = cond

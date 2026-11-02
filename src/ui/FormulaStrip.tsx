@@ -48,13 +48,25 @@ function potentialChip(f: Factor, note: string): Chip {
   return { key: 'pot', op: '×', group: 'card', label: 'Potential', value: times(f.value), sources: f.sources, note }
 }
 
+function baseChip(f: Factor, note: string): Chip {
+  return { key: 'base', op: '+', group: 'card', label: 'Base', value: `+${pct(f.value)}`, sources: f.sources, note }
+}
+
+/** Flat damage as it reaches the bracket: raised: its value x the multipliers already inside. */
+function flatChip(f: Factor, raised: number, note: string): Chip {
+  return { key: 'flat', op: '+', group: 'card', label: 'Flat', value: `+${num(f.value * raised, 1)}`, sources: f.sources, note }
+}
+
 function chipsFor(hit: Hit, card: Card): { inner: Chip[]; outer: Chip[] } {
   if (card.scaling === 'Fixed') {
-    return { inner: [], outer: [
-      { key: 'fixed', op: '', group: 'card', label: 'Fixed', value: pct(card.pct, 2), note: 'Fixed damage ignores every multiplier and crit.' },
-      ...(hit.potential ? [potentialChip(hit.potential, 'Potential upgrades apply to Fixed damage (Settings).')] : []),
-      { key: 'stat', op: '×', group: 'stat', label: 'ATK', value: num(hit.stat.value, 1), sources: hit.stat.sources },
-      { key: 'const', op: '×', group: 'const', label: 'Const', value: String(hit.constant), note: 'Fixed damage constant (Settings, Unconfirmed).' },
+    const inner: Chip[] = [{ key: 'fixed', op: '', group: 'card', label: 'Fixed', value: pct(hit.cardPct, 2), note: 'Fixed damage ignores every multiplier and crit.',
+      ...(hit.cardAdd.length ? { sources: hit.cardAdd } : {}) }]
+    if (hit.potential) inner.push(potentialChip(hit.potential, 'Potential upgrades apply to Fixed damage (Settings).'))
+    if (hit.basePct) inner.push(baseChip(hit.basePct, 'Added to the Fixed % after the potential.'))
+    return { inner, outer: [
+      { key: 'stat', op: '×', group: 'stat', label: card.fixedOf ?? 'ATK', value: num(hit.stat.value, 1), sources: hit.stat.sources },
+      ...(card.fixedOf ? [] : [{ key: 'const', op: '×', group: 'const', label: 'Const', value: String(hit.constant), note: 'Fixed damage constant (Settings, Unconfirmed).' } satisfies Chip]),
+      ...(hit.flat ? [flatChip(hit.flat, 1, 'Damage, not a %, added as it is.')] : []),
     ] }
   }
   const inner: Chip[] = [{ key: 'card', op: '', group: 'card', label: card.name || 'Card', value: pct(hit.cardPct, 2),
@@ -62,8 +74,7 @@ function chipsFor(hit: Hit, card: Card): { inner: Chip[]; outer: Chip[] } {
     note: hit.potential ? 'Base damage % of the card (without potentials).' : 'Damage % as shown on the card in-game.' }]
   if (hit.potential) inner.push(potentialChip(hit.potential, `In-game card %: ${pct(hit.cardPct * hit.potential.value, 2)}.`))
   if (hit.basePct) {
-    inner.push({ key: 'base', op: '+', group: 'card', label: 'Base', value: `+${pct(hit.basePct.value)}`, sources: hit.basePct.sources,
-      note: '"+X% base Damage Amount" is added to the card % after the potential, so Mult raises it too.' })
+    inner.push(baseChip(hit.basePct, '"+X% base Damage Amount" is added to the card % after the potential, so Mult raises it too.'))
     if (hit.multFactor.sources.length) { inner[0].open = true; inner[inner.length - 1].close = true }
   }
   if (hit.multFactor.sources.length) {
@@ -74,14 +85,22 @@ function chipsFor(hit: Hit, card: Card): { inner: Chip[]; outer: Chip[] } {
     inner.push({ key: 'add', op: '+', group: 'add', label: 'Add', value: `+${pct(hit.additive.value)}`, sources: hit.additive.sources,
       note: '"+X%" buffs and Morale are added to the card %.' })
   }
-  const outer = [
+  const onTarget = [
     factorChip('weak', 'weak', 'Weakness', hit.weakness),
     factorChip('vuln', 'enemy', 'Vulnerable', hit.vulnerable),
     factorChip('dr', 'enemy', 'Enemy DR', hit.enemyDr),
     factorChip('wdebuff', 'enemy', 'Weak debuff', hit.weaknessDebuff),
     factorChip('rav', 'enemy', 'Ravaged', hit.ravaged),
-    { key: 'stat', op: '×' as const, group: 'stat' as const, label: card.scaling === 'DEF' ? 'DEF stat' : 'ATK', value: num(hit.stat.value, 1), sources: hit.stat.sources },
-    { key: 'const', op: '×' as const, group: 'const' as const, label: 'Const', value: String(hit.constant), note: 'ATK damage constant (Settings).' },
+  ]
+  const scale: Chip[] = [
+    { key: 'stat', op: '×', group: 'stat', label: card.scaling === 'DEF' ? 'DEF stat' : 'ATK', value: num(hit.stat.value, 1), sources: hit.stat.sources },
+    { key: 'const', op: '×', group: 'const', label: 'Const', value: String(hit.constant), note: 'ATK damage constant (Settings).' },
+  ]
+  // Flat damage skips the stat and constant, so they move inside a bracket with it: [(...) x stat x const + Flat] x the rest
+  const outer = [
+    ...(hit.flat
+      ? [...scale, { ...flatChip(hit.flat, hit.multFactor.value, 'Damage, not a %: Mult (included here) and the factors after the bracket raise it, not the stat or Const.'), close: true }, ...onTarget]
+      : [...onTarget, ...scale]),
     factorChip('elem', 'elem', 'Element', hit.elemDmg),
     factorChip('mech', 'elem', card.kind === 'DoT' ? 'DoT' : 'Extra', hit.mechDmg),
     factorChip('def', 'enemy', 'Enemy DEF', hit.enemyDef),
@@ -122,12 +141,14 @@ export function FormulaStrip({ hit, card, showCrit = true }: { hit: Hit; card: C
     </span>
   )
   const paren = inner.length > 1
+  // A Fixed card's Flat damage is added at the end, with nothing after it to bracket
+  const flatBracket = !!hit.flat && card.scaling !== 'Fixed'
   return (
     <div className="strip-wrap">
       <div className="strip">
-        {inner.map((c, i) => chip(c, <>{paren && i === 0 && <span className="paren">(</span>}{c.open && <span className="paren">(</span>}</>,
+        {inner.map((c, i) => chip(c, <>{flatBracket && i === 0 && <span className="paren">(</span>}{paren && i === 0 && <span className="paren">(</span>}{c.open && <span className="paren">(</span>}</>,
           <>{c.close && <span className="paren">)</span>}{paren && i === inner.length - 1 && <span className="paren">)</span>}</>))}
-        {outer.map((c) => chip(c))}
+        {outer.map((c) => chip(c, undefined, c.close && <span className="paren">)</span>))}
         {result('Hit', hit.nonCrit)}
       </div>
       {cardPcts.length > 0 && <div className="strip">{cardPcts.map((c) => chip(c))}</div>}

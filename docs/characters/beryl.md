@@ -1,0 +1,18 @@
+# Beryl
+
+What the owner confirmed about this character's cards. The general rules are in [FORMULA.md](../FORMULA.md).
+
+- **Beryl** (owner's screenshots, 2026-11-01; level 50, Attack 483, Defense 131, Health 324, Critical Chance 4.5%, Critical Damage 125%, Extra Damage 2.4%, E6; Basic and Common upgrades 7/16 (level 1 + E3's and E5's 6), Signature 6/16 (level 0 + 6); 3-1 unlocked, 5-1, 5-2 and 7 locked):
+  every in-game % is Prydwen's base x 1.14 (Basic) or x 1.12 (Signature), except where listed below. `gameVersion` 841 is taken from Maribell's review the same day: the screenshots don't show it.
+  - Prydwen corrections: the Ego skill is Max Output Charged Shot (Prydwen Maximum Output). Charged Shot II's bonus is Streak (Prydwen Combo). Opening Found V's text is "When a card of this unit is Retained" and the card now deals its 150% (the import read 0%). E6 is a 50% Extra Attack x Condense count (Prydwen "+50% additional damage per Condense stack"). Node 7 raises Opening Found (Prydwen "Expose Weakness Damage"). Nodes 5-1 and 7 are "or higher" (Prydwen "greater than").
+  - Node 3-1's +20% is part of the shown % (`Card +`): Launcher 137% = (100% + 20%) x 1.14, Charge Launcher 274% = (220% + 20%) x 1.14. Nodes 5-1 and 7 are read the same way. **Unconfirmed**, both are locked; in-game test `beryl-readings`.
+  - Not raised at Signature level 6: Opening Found V's 150% (no upgrade, like Mei Lin's Jewel V). The Retain and Streak bonuses and E6's 50% are written as they are. The Ego skill's 400% is 350% + E4's 50%.
+  - **Retain bonus** (User, 2026-11-01): "Retain: +X% Damage Amount" (Charged Shot, I, V; Opening Found IV) adds up each time the card is Retained and lasts until it's played; Charged Shot IV stops at 1 time. Each play sets Times Retained, and Guilty Pleasure IV's activation counts in it.
+  - **Created cards** (User, 2026-11-01): Heavy Weapons Specialist's cards have the normal cards' numbers, raised by Signature level. The game's Related Card shows Opening Found 179% = 160% x 1.12, where Prydwen lists 120%; Charged Shot follows it, 270% with +135%, where Prydwen lists 200% with +80%. They're named "(created)" and join the deck with Heavy Weapons Specialist. Epiphanies aren't copied to them. Whether the created Charged Shot really shows 302%: **Unconfirmed**, no screenshot of it; in-game test `beryl-readings`.
+  - **Unlimited Firepower IV** (User, 2026-11-01): reaches Beryl's own next Attack Card only, though its text lacks "of this unit" (unlike Owen's Wind Charge II).
+  - Opening Found's and III's added hits are set on the play's hits (1 or 2 per Retain that turn), so more than one Retain in a turn can be entered. Whether they add up: **Unconfirmed**; in-game test `beryl-readings`.
+  - E2's +20% is additive ("+" rule) on cards with the Retain keyword, so it skips Opening Found V, the Launchers and the Ego skill.
+  - E6's Condense is set on each Attack Card's play (0 to 3): a triggered 50% Extra Attack per stack, not raised by card upgrades, with Attack Card buffs left out as it isn't a card. Whether Guilty Pleasure IV's activation gives Condense, and whether the Extra Attack rolls one crit or one per stack (the expected damage is the same): **Unconfirmed**; in-game test `beryl-readings`.
+  - Opening Found V counts one play per card Retained: "random enemies" doesn't say how many, and a fight has one target. As an Upgrade it gets no Attack Card buff and spends no Condense.
+  - Heavy Weapons Specialist's cost stays the import's 1 on the card picture; in game it's 0 from E1. No damage depends on it.
+  - Not counted: Shields, draws, cost changes, other enemies (all-enemy damage counts one target). Guilty Pleasure I's Morale is added on the Buffs tab.
