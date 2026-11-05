@@ -52,7 +52,7 @@ export default {
     { kind: 'Buff', id: 'e1-black-dance', name: 'E1 Sleeping Memory', category: 'Ego Manifestation', type: 'Card +', value: '+30%',
       appliesTo: 'Dark Mist Secret Art: Black Dance', hitScope: 'All hits', condition: 'Always', egoLevel: 1 },
     // E3 Vivid Memory (the +3 Vulnerable only changes the Ego skill's text: Vulnerable is set per play)
-    { kind: 'Buff', id: 'e3-slash', name: 'E3 Vivid Memory', category: 'Ego Manifestation', value: '+100%',
+    { kind: 'Buff', id: 'e3-slash', name: 'E3 Vivid Memory', category: 'Ego Manifestation', type: 'Base %', value: '+100%',
       appliesTo: 'Dark Mist Secret Art: Slash', hitScope: 'All hits', condition: 'Always', egoLevel: 3 },
   ],
   // Card text: the in-game wording (owner's screenshots, 2026-11-01), with tokens for the build's numbers (engine/cardText.ts)

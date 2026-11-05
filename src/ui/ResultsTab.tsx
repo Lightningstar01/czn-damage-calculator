@@ -56,7 +56,7 @@ export function ResultsTab() {
           </ul>
         )}
         <ol className="plays">
-          {r.plays.map((p) => <PlayRow key={p.index} play={p} />)}
+          {r.plays.map((p) => <PlayRow key={`${build.id}|${p.index}`} play={p} />)}
         </ol>
       </Section>
     </>

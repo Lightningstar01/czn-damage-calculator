@@ -44,7 +44,7 @@ export default {
     { kind: 'Buff', id: 'p7-vulture', node: '7', name: 'Unique Stat Upgrade', category: 'Potential', type: 'Card +', value: '+10%', appliesTo: VULTURE,
       hitScope: 'All hits', condition: 'Always', thresholdBonus: { above: 700, value: '+20%', orEqual: true } },
     // E3 Vivid Memory (350% on the card, as Selena's E4)
-    { kind: 'Buff', id: 'e3-ego-skill', name: 'Charisma of Resolve Damage', category: 'Ego Manifestation', value: '+50%', appliesTo: 'Charisma of Resolve',
+    { kind: 'Buff', id: 'e3-ego-skill', name: 'Charisma of Resolve Damage', category: 'Ego Manifestation', type: 'Base %', value: '+50%', appliesTo: 'Charisma of Resolve',
       hitScope: 'All hits', condition: 'Always', egoLevel: 3 },
     // E4 Inner Memory: stacks set per play, as they depend on how many Silver Veils have gone off
     { kind: 'Buff', id: 'e4-deploy-veil', name: 'Deploy Veil: Damage Amount', category: 'Ego Manifestation', value: '+30%', appliesTo: 'ALL',

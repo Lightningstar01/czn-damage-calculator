@@ -7,8 +7,9 @@ import { useState } from 'react'
 import { PRESETS } from '../data/presets'
 import { playBaseHits, playCard, playCount } from '../engine/calc'
 import { findCharacter, type PlayCounter } from '../engine/buffs'
-import { buildDeck, changeEpiphany, deckItems, prunePlays, pruneTeamPlays, teammateDeck, type DeckItem } from '../engine/deck'
-import { TEAM_SIZE, type Card, type CardPreset, type CharacterPreset, type RotationPlay, type Teammate } from '../engine/types'
+import { buildDeck, changeEpiphany, changeTeammateEpiphany, deckItems, prunePlays, pruneTeamPlays, teammateDeck, type DeckItem } from '../engine/deck'
+import { withLinkedTeam } from '../engine/team'
+import { TEAM_SIZE, type Card, type CardPreset, type CharacterPreset, type LiveTeammate, type RotationPlay } from '../engine/types'
 import { newId } from '../store/save'
 import { useCharacter, useLinked, useStore } from '../store/store'
 import { CardFace, customText, useCardText } from './CardFace'
@@ -16,9 +17,11 @@ import { pct } from './format'
 import { NumberField, Section, SelectField, Sheet, Stepper, Toggle } from './inputs'
 
 export function CardsTab() {
+  const { name, build } = useCharacter()!
   return (
     <>
-      <RotationSection />
+      {/* Another build or character starts with no play open (an index would open another play there) */}
+      <RotationSection key={`${name}|${build.id}`} />
       <DeckSection />
       <AddCardsSection />
     </>
@@ -37,14 +40,17 @@ interface Owner {
   ch?: CharacterPreset
   /** Teammate slot and teammate, for a teammate's cards. */
   slot?: number
-  teammate?: Teammate
+  teammate?: LiveTeammate
 }
 
 const OTHER: Owner = { key: 'other', name: 'Other' }
 
 function useOwners(): Owner[] {
   const { name, build } = useCharacter()!
-  const team = Array.from({ length: TEAM_SIZE }, (_, i) => build.team?.[i])
+  const { data: { characters } } = useStore()
+  // Linked teammates: their saved build's Manifest Ego (its cards) and Potential nodes, as computeBuild has them
+  const live = withLinkedTeam(build, characters)
+  const team = Array.from({ length: TEAM_SIZE }, (_, i) => live.team?.[i])
   return [
     { key: 'main', name, ch: findCharacter(PRESETS, name) },
     ...team.map((t, i): Owner => t?.character
@@ -143,6 +149,7 @@ function DeckGroup({ owner, tiles, onOpen }: { owner: Owner; tiles: Tile[]; onOp
 /** A deck card, large: + Play (the build's character), Change epiphany, Remove (one copy). Cards that come with others: + Play only. */
 function DeckCardSheet({ owner, tile, onClose }: { owner: Owner; tile: Tile; onClose: () => void }) {
   const { build, updateBuild } = useCharacter()!
+  const { data: { characters } } = useStore()
   const text = useCardText(owner.teammate)
   const [changing, setChanging] = useState(false)
   const [played, setPlayed] = useState(0)
@@ -162,19 +169,13 @@ function DeckCardSheet({ owner, tile, onClose }: { owner: Owner; tile: Tile; onC
     } else {
       // The last copy takes its plays along
       if (plays && tile.entries.length === 1 && !confirm(`Remove ${item.card.name}? ${goes}`)) return
-      updateBuild((b) => { b.team[owner.slot!].cards.splice(Number(entry), 1); pruneTeamPlays(owner.ch, b, owner.slot!) })
+      updateBuild((b) => { b.team[owner.slot!].cards.splice(Number(entry), 1); pruneTeamPlays(owner.ch, b, owner.slot!, characters) })
     }
     onClose()
   }
   const change = (to: CardPreset) => {
-    if (isMain) updateBuild((b) => changeEpiphany(owner.ch, b, entry, to.id))
-    else updateBuild((b) => {
-      // Plays follow the card when no other copy keeps the old version
-      const old = b.team[owner.slot!].cards[Number(entry)]
-      b.team[owner.slot!].cards[Number(entry)] = to.id
-      if (!b.team[owner.slot!].cards.includes(old)) for (const x of b.rotation) if (x.by === owner.slot && x.cardId === old) x.cardId = to.id
-      pruneTeamPlays(owner.ch, b, owner.slot!)
-    })
+    updateBuild((b) => isMain ? changeEpiphany(owner.ch, b, entry, to.id)
+      : changeTeammateEpiphany(owner.ch, b, owner.slot!, Number(entry), to.id, characters))
     onClose()
   }
   return (

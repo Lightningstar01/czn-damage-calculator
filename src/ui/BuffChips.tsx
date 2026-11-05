@@ -1,5 +1,5 @@
 // One line of small chips for a buff or stat boost, in the formula strip's colors (value) and grey (what it applies to, conditions).
-import { buffType, parseStatValue } from '../engine/buffs'
+import { buffType, parseStatValue, statIsPct } from '../engine/buffs'
 import type { BuffType, Condition, EffectTarget, HitScope, StatName } from '../engine/types'
 import type { ChipGroup } from './FormulaStrip'
 import { num, pct } from './format'
@@ -20,8 +20,8 @@ const STAT_LABEL: Partial<Record<StatName, string>> = {
 const TARGET_PILL: Record<EffectTarget, string> = { self: '', allies: 'all allies', enemy: 'on the enemy' }
 
 export function statPill(stat: StatName, value: string): Pill {
-  const v = parseStatValue(value)
-  const shown = value.includes('%') ? pct(v) : `+${num(v, 1)}`
+  const v = parseStatValue(stat, value)
+  const shown = statIsPct(stat) ? pct(v) : `+${num(v, 1)}`
   return { text: `${shown} ${STAT_LABEL[stat] ?? stat}`, group: STAT_GROUP[stat] }
 }
 

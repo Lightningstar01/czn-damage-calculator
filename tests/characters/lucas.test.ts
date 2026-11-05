@@ -114,6 +114,12 @@ describe('Lucas', () => {
     expect(p.nonCrit).toBeCloseTo(2.7 * up * atk)
     expect(p.crit).toBeCloseTo((2.7 + 1.5) * up * atk * 1.25)
     expect(p.expected).toBeCloseTo(2.7 * up * atk * avg + 0.03 * 1.5 * up * atk * avg)
+    // A play set to 0 hits can't crit, so no Critical Hit damage either; the trigger's hits take no hit number in the list
+    expect(p.triggered[0].hits[0].globalHit).toBe(0)
+    a.rotation = [{ cardId: 'ft', hits: 0 }]
+    const none = run(cs, a).plays[0]
+    expect(none.triggered).toEqual([])
+    expect(none.crit).toBe(0)
   })
 
   it('Flame Thrower IV raises its card %: 302% to 604% with 2 Bullets, no more than 2', () => {
@@ -159,5 +165,26 @@ describe('Lucas', () => {
     expect(r.plays[0].triggered).toEqual([])
     expect(r.plays[1].triggered[0].nonCrit).toBeCloseTo(atk)
     expect(r.plays[2].triggered).toEqual([])
+  })
+
+  it('S.S.S I / II add +40% to Bullet plays; Flashbang I / IV and Armor-Piercing Rounds add on a Shield target; E4 raises Full Burst', () => {
+    const { cs, a } = ownerBuild()
+    a.deck.push({ id: 's1', preset: 'card-285' }, { id: 's2', preset: 'card-286' }, { id: 'em', preset: 'card-278' },
+      { id: 'f1', preset: 'card-297' }, { id: 'f4', preset: 'card-300' }, { id: 'fb', preset: 'card-275' })
+    const shield = { 'Target has Shield': 1 }
+    a.rotation = [
+      { cardId: 'auto:card-307', stacks: { 'S.S.S I': 1 } }, { cardId: 'auto:card-307', stacks: { 'S.S.S II': 1 } },
+      { cardId: 'f1', stacks: shield }, { cardId: 'f4', stacks: shield }, { cardId: 'auto:card-303', stacks: shield }, { cardId: 'auto:card-303' },
+      { cardId: 'fb' },
+    ]
+    const r = run(cs, a)
+    expect(r.plays[0].nonCrit).toBeCloseTo((1.4 * up + 0.2 + 0.4) * atk)
+    expect(r.plays[1].nonCrit).toBeCloseTo((1.4 * up + 0.2 + 0.4) * atk)
+    expect(r.plays[2].nonCrit).toBeCloseTo((1.8 * up + 0.75) * atk)
+    expect(r.plays[3].nonCrit).toBeCloseTo((1.8 * up + 0.5) * atk)
+    expect(r.plays[4].nonCrit).toBeCloseTo((1.4 * up + 0.2 + 0.3) * atk)
+    expect(r.plays[5].nonCrit).toBeCloseTo((1.4 * up + 0.2) * atk)
+    // An Ego skill has no upgrade: 250% + 50%
+    expect(r.plays[6].nonCrit).toBeCloseTo(3 * atk)
   })
 })

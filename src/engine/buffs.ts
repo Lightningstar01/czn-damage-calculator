@@ -16,20 +16,44 @@ export interface Source {
   onTarget?: boolean
 }
 
-/** Stat value as typed: '16%' -> 0.16, '74' -> 74, '+5%' -> 0.05. */
-export function parseStatValue(text: string): number {
+/** A typed number: a comma between digits separates thousands ('1,272' -> 1272, as the game shows it), a dot is the decimal point
+ * (owner, 2026-11-03); undefined if it isn't one ('12,5', 'abc', ''). */
+export function readNumber(text: string): number | undefined {
   const t = text.trim()
-  if (!t) return 0
-  const n = Number(t.replace(/[+%\s]/g, ''))
-  if (!Number.isFinite(n)) return 0
-  return t.includes('%') ? n / 100 : n
+  if (!/\d/.test(t) || !/^[+-]?(\d{1,3}(,\d{3})+|\d*)(\.\d*)?$/.test(t)) return undefined
+  return Number(t.replace(/,/g, ''))
 }
 
-/** Buff value as typed: '+30%' -> 0.3, '30%' -> 0.3, '30' -> 0.3; 'Weakness Attack' -> 0. */
-export function parseBuffValue(text: string): number {
-  const n = Number(text.trim().replace(/[+%\s]/g, ''))
-  return text.trim() && Number.isFinite(n) ? n / 100 : 0
+/** A value's number without its leading '+' and trailing '%'. */
+const valueNumber = (text: string) => readNumber(text.trim().replace(/^\+/, '').replace(/%$/, ''))
+
+/** Stats kept as a share (0.16 = 16%): all but Flat ATK / Flat DEF. */
+export const statIsPct = (stat: StatName) => !stat.startsWith('Flat')
+
+/** Stat value as typed, undefined if it can't be read. A % stat reads a plain number as a % too (owner, 2026-11-03): '16%' and '16'
+ * -> 0.16 for ATK%; a flat stat: '74' -> 74, and a '%' can't be read there. */
+export function readStatValue(stat: StatName, text: string): number | undefined {
+  const pct = statIsPct(stat)
+  if (!pct && text.includes('%')) return undefined
+  const n = valueNumber(text)
+  return n === undefined ? undefined : pct ? n / 100 : n
 }
+
+export const parseStatValue = (stat: StatName, text: string): number => readStatValue(stat, text) ?? 0
+
+/** Buff value as typed, undefined if it can't be read: '+30%' -> 0.3, '30%' -> 0.3, '30' -> 0.3. */
+export const readBuffValue = (text: string): number | undefined => {
+  const n = valueNumber(text)
+  return n === undefined ? undefined : n / 100
+}
+
+/** 'Weakness Attack' -> 0, like a value that can't be read. */
+export const parseBuffValue = (text: string): number => readBuffValue(text) ?? 0
+
+/** Whether a typed value can be read (an empty one is a plain 0). */
+export const statReadable = (stat: StatName, text: string) => !text.trim() || readStatValue(stat, text) !== undefined
+export const buffReadable = (text: string, override: BuffType | '' = '') =>
+  !text.trim() || buffType(text, override) === 'Weakness Attack' || readBuffValue(text) !== undefined
 
 /** Threshold stats kept as a share (0.6 = 60%), shown as a %. */
 export const thresholdIsPct = (stat: BuffEffect['thresholdStat']) => stat === 'Critical Chance' || stat === 'Critical Damage' || stat === 'Extra Damage' || stat === 'Damage over Time'
@@ -56,7 +80,7 @@ export function presetBuffValue(e: BuffEffect, stats: ScreenStats | undefined): 
 export function buffType(text: string, override: BuffType | '' = ''): BuffType {
   if (override) return override
   const t = text.trim()
-  if (t.toUpperCase() === 'WEAKNESS ATTACK') return 'Weakness Attack'
+  if (t.replace(/\s+/g, ' ').toUpperCase() === 'WEAKNESS ATTACK') return 'Weakness Attack'
   return t.startsWith('+') ? 'Additive' : 'Multiplicative'
 }
 
@@ -106,7 +130,7 @@ export interface PresetState {
   /** The stats of whoever owns the effect, read by its thresholds; missing for a teammate without a linked build. */
   ownerStats?: ScreenStats
   stacks: number
-  /** Card preset id, for effects of a library card. */
+  /** Card preset id, for effects of a deck card. */
   cardId?: string
   /** Team slot (0-based) for a teammate's effect; undefined = the build's own character. */
   teammate?: number
@@ -221,16 +245,27 @@ export function activeStats(presets: Presets, charName: string, cs: CharacterSav
   for (const s of presetStates(presets, charName, build)) {
     if (s.effect.kind !== 'Stat' || s.stacks <= 0) continue
     const e = s.effect as StatEffect
-    out.push({ label: `${stateLabel(s)}: ${e.name}`, stat: e.stat, value: parseStatValue(e.value), stacks: s.stacks,
-      unit: e.value.includes('%') ? '%' : 'flat' })
+    out.push({ label: `${stateLabel(s)}: ${e.name}`, stat: e.stat, value: parseStatValue(e.stat, e.value), stacks: s.stacks,
+      unit: statIsPct(e.stat) ? '%' : 'flat' })
   }
   for (const b of cs.boosts) {
     const stacks = switchStacks(b.switches[build.id])
     if (stacks <= 0) continue
-    out.push({ label: b.source || b.stat, stat: b.stat, value: parseStatValue(b.value), stacks,
-      unit: b.value.includes('%') ? '%' : 'flat' })
+    out.push({ label: b.source || b.stat, stat: b.stat, value: parseStatValue(b.stat, b.value), stacks,
+      unit: statIsPct(b.stat) ? '%' : 'flat' })
   }
   return out
+}
+
+/** The owner's switched-on boosts and buffs whose value can't be read, so they count as 0 (shown on the Results tab). */
+export function unreadableValues(cs: CharacterSave, build: Pick<Build, 'id'>): string[] {
+  const on = (switches: Record<string, Switch>) => switchStacks(switches[build.id]) > 0
+  return [
+    ...cs.boosts.filter((b) => on(b.switches) && !statReadable(b.stat, b.value))
+      .map((b) => `My stat boost ${b.source || b.stat}: its value '${b.value}' can't be read, so it counts as 0.`),
+    ...cs.buffs.filter((b) => on(b.switches) && !buffReadable(b.value, b.typeOverride))
+      .map((b) => `My buff ${b.source || b.value}: its text '${b.value}' can't be read, so it counts as 0.`),
+  ]
 }
 
 /** Buffs active for the build: Morale, preset buffs, then the owner's own buffs (max stacks applied). */

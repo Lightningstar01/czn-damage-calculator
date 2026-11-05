@@ -1,5 +1,6 @@
 // What the game itself says: open questions as in-game tests to run, and the results measured so far.
-// ingame.test.ts turns measured results into tests, and writes this list to docs/in-game-tests.md (never edit that file by hand).
+// ingame.test.ts turns measured results into tests, and checks that docs/in-game-tests.md matches this list (never edit that file by hand:
+// after a change here, rewrite it with `npx vitest run -u tests/ingame`).
 //
 // New open question: add a 'todo' entry here, in the words of someone holding the game. When the owner reports the numbers, fill in
 // `measured` with the values and what the calculator gives for them. If the calculator disagrees: fix the rule or its Setting, then
@@ -255,6 +256,14 @@ export const CHECKS: InGameCheck[] = [
     record: ['The four card %s'],
   },
   {
+    id: 'ego-skill-bonus',
+    question: 'Does a "by X%" buff raise the part of an Ego skill\'s % that a Manifest Ego level adds (Rei E4: 300% -> 400%)? The calculator says yes: the whole 400% is raised.',
+    closes: 'docs/FORMULA.md, Buff types (Ego skill bonuses)',
+    setup: 'A character at or above the Ego level that raises their Ego skill (Beryl, Lucas, Owen, Rei or Selena at E4), a "by X%" buff on them, the same enemy each time.',
+    steps: ['Use the Ego skill without the buff, non-crit.', 'Repeat with the buff.', 'Read the Manifest Ego level\'s text: does it say "base" (Beryl\'s E4)?'],
+    record: ['Both damage numbers', "The Ego skill's % on the card", 'The buff', "The Ego level's wording"],
+  },
+  {
     id: 'crit-cap',
     question: 'Is Crit Chance capped at 100%?',
     closes: 'Settings: Crit cap',
@@ -273,7 +282,7 @@ export const CHECKS: InGameCheck[] = [
   {
     id: 'threshold-every-rounding',
     question: 'How does the game round "for every X above Y" thresholds, on stats with decimals (Attack, and % stats such as Critical Chance)?',
-    closes: 'src/engine/buffs.ts: presetBuffValue (a float such as 0.69 can come out one step short); backlog item 15',
+    closes: 'src/engine/buffs.ts: presetBuffValue (a float such as 0.69 can come out one step short); CLAUDE.md, Status / backlog: "for every X above Y"',
     setup: 'Rossweisse node 7 ("for every 20 Attack exceeding 600") or Mei Lin node 7, with Attack just below and just on a step.',
     steps: ['Read the card % or Weakness Damage with Attack one point under a step, on the step, and one over.'],
     record: ['Attack (with decimals if shown)', 'The node\'s value at each point'],
@@ -281,10 +290,26 @@ export const CHECKS: InGameCheck[] = [
   {
     id: 'card-other-element',
     question: "Does a card of another element than its character use that element's Elemental DMG on the stats screen, and do battle boosts to Elemental DMG% reach it? The calculator says yes to the first, no to the second.",
-    closes: 'docs/FORMULA.md, Final stats; src/engine/calc.ts: cardElement',
+    closes: 'docs/FORMULA.md, Stats (Elemental DMG%); src/engine/calc.ts: cardElement',
     setup: "Only if the game lets a character hold a card of another element (neutral or seasonal cards, say), and a battle boost to Elemental DMG%. The same enemy, not weak to either element.",
     steps: ['Hit with that card and with one of the character\'s own element, non-crit, without the boost.', 'Repeat with the boost.'],
     record: ['The four damage numbers', 'Both cards\' %', 'Elemental DMG of both elements on Detailed Stats', 'The boost'],
+  },
+  {
+    id: 'extra-damage-attack-cards',
+    question: "Does Extra Damage on the stats screen raise plain Attack Card hits too? The calculator gives it to Extra Attacks only (and Damage over Time to DoT hits only); the other player's sheet gives it to every hit.",
+    closes: 'docs/FORMULA.md, Stats (Mechanic DMG%)',
+    setup: 'Two fragment setups that differ in Extra Damage (swap one piece with an Extra Damage substat), the same enemy each time.',
+    steps: ['Hit with a plain Attack Card, non-crit, with each setup.'],
+    record: ['Both damage numbers', 'Extra Damage and Attack in battle with each setup'],
+  },
+  {
+    id: 'seth-scarab-wording',
+    question: "Does Seth's Scarab's 2-piece bonus say Basic Attack Cards, or all Basic Cards? The calculator gives the 20% to Basic Attack Cards only.",
+    closes: "src/data/fragmentSets.ts (Seth's Scarab)",
+    setup: "The Memory Fragment screen, on a Seth's Scarab piece.",
+    steps: ['Read the 2-piece set bonus.'],
+    record: ['Its wording'],
   },
 
   // ------------------------------------------------------------------ fixed damage
@@ -317,7 +342,7 @@ export const CHECKS: InGameCheck[] = [
   {
     id: 'vulnerable-per-hit',
     question: 'Is one stack of Vulnerable used per hit, or per card? The calculator switches it per play, on all its hits.',
-    closes: 'docs/FORMULA.md, Target debuffs',
+    closes: 'docs/FORMULA.md, Weakness, Vulnerable, Ravaged',
     setup: 'A multi-hit card, a target with 1 stack of Vulnerable.',
     steps: ['Play the card; compare the numbers of its first and later hits, and the stacks left.'],
     record: ['The numbers of each hit', 'Stacks before and after'],
@@ -325,7 +350,7 @@ export const CHECKS: InGameCheck[] = [
   {
     id: 'weakness-debuff-per-hit',
     question: 'Same for the Weakness debuff on you: per hit, or per card?',
-    closes: 'docs/FORMULA.md, Target debuffs',
+    closes: 'docs/FORMULA.md, Weakness, Vulnerable, Ravaged',
     setup: 'A multi-hit card while you have 1 stack of the Weakness debuff.',
     steps: ['Play the card; compare its hits and the stacks left.'],
     record: ['The numbers of each hit', 'Stacks before and after'],
@@ -378,7 +403,7 @@ export const CHECKS: InGameCheck[] = [
   // ------------------------------------------------------------------ the enemy
   {
     id: 'enemy-def-formula',
-    question: 'Is the enemy DEF multiplier 100 / enemy DEF? One data point so far: Lv50 Kentris (255 DEF) = 0.392; Mei Lin\'s tests back-solve to 0.387 and 0.3733.',
+    question: 'Is the enemy DEF multiplier 100 / enemy DEF? One data point so far: Lv50 Kentris (255 DEF) = 0.392; Mei Lin\'s tests back-solve to 0.387 and 0.3733. The formula puts the enemy of Mei Lin\'s tests at about 268 DEF and the weaker enemy of the Tressa tests (0.429) at about 233: what do their info pages show?',
     closes: 'Setup: Fight, DEF multiplier',
     setup: 'A known card, Attack and Weakness, and enemies whose DEF you can read on their info page.',
     steps: ['Hit each enemy, non-crit, with no debuffs.'],
@@ -401,6 +426,14 @@ export const CHECKS: InGameCheck[] = [
     setup: 'Chizuru with Oni Hunt IV; E3 once reached.',
     steps: ['Screenshot the created Moonslash and a normal one.', 'Screenshot the Ego skill at E3.'],
     record: ['The pictures'],
+  },
+  {
+    id: 'adelheid-truth-stacking',
+    question: 'Can Truth Behind A Story and Truth Behind A Story I both be in one deck, and does playing both in a turn make "+100% Damage Amount taken by the target" +200%? The calculator counts it once (on or off).',
+    closes: 'src/data/characters/adelheid.ts (truthDebuff)',
+    setup: 'Adelheid, if the game lets the deck hold both.',
+    steps: ['Play one, then an Attack Card, and read its % on the target.', 'Play both in one turn, then the same Attack Card.'],
+    record: ['Whether both fit in the deck', 'The Attack Card\'s % on the target each time'],
   },
   {
     id: 'haru-decrease-in-sum',
@@ -441,6 +474,25 @@ export const CHECKS: InGameCheck[] = [
     setup: 'Rossweisse E2 (the owner has it). Extra Damage and Signature level known; ideally two Extra Damage values, and with and without an Attack Card buff.',
     steps: ['Read the Afterimage number each way.'],
     record: ['Numbers', 'Extra Damage', 'Signature level', 'Attack in battle'],
+  },
+  {
+    id: 'rossweisse-brand-and-justice',
+    question: 'Rossweisse: (1) Brand of the Cycle says "Increase Damage Amount taken from Rossweisse by 20%", with no "+": does it multiply like "by X%" buffs, or add like other damage-taken debuffs? The calculator multiplies. (2) Is node 7\'s "+5% Justice Attribute Damage Amount" additive, as the calculator counts it?',
+    closes: 'docs/characters/rossweisse.md; docs/FORMULA.md, Teams (debuffs on the enemy are additive)',
+    setup: 'Rossweisse with a card of 200% or more, a target with Brand of the Cycle and one without. (2) needs node 7 and Attack 600 or higher.',
+    steps: [
+      'Read the card % on each target: 200% becoming 240% means it multiplies; 220% means it adds.',
+      'Read a Justice card\'s % with node 7 on and off (or Attack just under 600): 5 points higher means additive; the same % with 5% more damage means it works like Elemental DMG.',
+    ],
+    record: ['The card %s on both targets', 'The Justice card\'s % and damage both ways'],
+  },
+  {
+    id: 'orlea-softie-cap',
+    question: 'Softie★★\'s Retain bonus is 20% per Retain, "max 350%". Does it stop at 340% (17 Retains), or add the last 10%? The calculator stops at 340%.',
+    closes: 'src/data/characters/orlea.ts (softie)',
+    setup: 'Orlea with Softie★★, Retained 18 times or more.',
+    steps: ['Read the next Attack Card\'s % after 17 and after 18 Retains.'],
+    record: ['Both %s'],
   },
   {
     id: 'rei-cassius-card-plus',

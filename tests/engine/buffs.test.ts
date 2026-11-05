@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { computeBuild } from '../../src/engine/calc'
-import { buffMatches, buffType, fragmentPiecesUsed, parseBuffValue, parseStatValue } from '../../src/engine/buffs'
+import { buffMatches, buffReadable, buffType, fragmentPiecesUsed, parseBuffValue, parseStatValue, readBuffValue, readNumber, readStatValue, statReadable, unreadableValues } from '../../src/engine/buffs'
 import { PRESETS } from '../../src/data/presets'
-import { newBuff, newBuild, newCharacterSave } from '../../src/store/save'
+import { newBoost, newBuff, newBuild, newCharacterSave } from '../../src/store/save'
 import { type Card } from '../../src/engine/types'
 import { addCards, card, plays, presets, setPlays, settings } from '../helpers'
 
@@ -97,9 +97,26 @@ describe('real fragment set presets', () => {
 })
 
 describe('parsing', () => {
+  it('typed numbers: thousands commas, a plain number on a % stat is a %, unreadable values are undefined', () => {
+    expect(readNumber('1,272')).toBe(1272)
+    expect(readNumber('12.5')).toBe(12.5)
+    for (const bad of ['12,5', '1,27', 'abc', '', ' ']) expect(readNumber(bad)).toBeUndefined()
+    expect(readStatValue('ATK%', '16')).toBeCloseTo(0.16)
+    expect(readStatValue('Crit DMG', '+30%')).toBeCloseTo(0.3)
+    expect(readStatValue('Flat ATK', '1,272')).toBe(1272)
+    expect(readStatValue('Flat ATK', '5%')).toBeUndefined()
+    expect(readBuffValue('12,5%')).toBeUndefined()
+    expect(buffType('weakness  attack')).toBe('Weakness Attack')
+    expect(buffReadable('Weakness Attack')).toBe(true)
+    expect(statReadable('ATK%', '')).toBe(true)
+    const cs = { ...newCharacterSave(), boosts: [{ ...newBoost('b'), stat: 'ATK%' as const, value: '1 6' }], buffs: [{ ...newBuff('b'), value: '+x%' }] }
+    expect(unreadableValues(cs, { id: 'b' })).toHaveLength(2)
+    expect(unreadableValues(cs, { id: 'other' })).toEqual([])
+  })
+
   it('values and buff types', () => {
-    expect(parseStatValue('16%')).toBeCloseTo(0.16)
-    expect(parseStatValue('74')).toBe(74)
+    expect(parseStatValue('ATK%', '16%')).toBeCloseTo(0.16)
+    expect(parseStatValue('Flat ATK', '74')).toBe(74)
     expect(parseBuffValue('+30%')).toBeCloseTo(0.3)
     expect(parseBuffValue('Weakness Attack')).toBe(0)
     expect(buffType('+30%')).toBe('Additive')

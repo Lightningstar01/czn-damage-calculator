@@ -41,7 +41,7 @@ export default {
     { kind: 'Buff', id: 'e2-stampede-anika', name: 'Stampede: 2x for Anika', category: 'Ego Manifestation', value: '+5%', appliesTo: 'Attack', hitScope: 'All hits',
       condition: 'Always', counter: 'Stampede', maxStacks: 5, egoLevel: 2 },
     // E4 Inner Memory: the same wording as Selena's E4, additive under the "+" rule (Unconfirmed: locked for the owner)
-    { kind: 'Buff', id: 'e4-ego-skill', name: 'Damage Amount of Buffalo Dive', category: 'Ego Manifestation', value: '+50%', appliesTo: 'Buffalo Dive', hitScope: 'All hits',
+    { kind: 'Buff', id: 'e4-ego-skill', name: 'Damage Amount of Buffalo Dive', category: 'Ego Manifestation', type: 'Base %', value: '+50%', appliesTo: 'Buffalo Dive', hitScope: 'All hits',
       condition: 'Always', egoLevel: 4 },
   ],
   // Card text: the in-game wording (owner's screenshots, 2026-11-01), with tokens for the build's numbers (engine/cardText.ts)

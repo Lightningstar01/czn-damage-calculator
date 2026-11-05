@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { computeBuild, shownPct } from '../../src/engine/calc'
 import { renderCardText } from '../../src/engine/cardText'
-import { AUTO, buildDeck, changeEpiphany, prunePlays } from '../../src/engine/deck'
-import { activeBuffs } from '../../src/engine/buffs'
+import { allNodesOn, AUTO, buildDeck, changeEpiphany, presetCard, prunePlays } from '../../src/engine/deck'
+import { activeBuffs, buffMatches } from '../../src/engine/buffs'
 import { ADDITIONS, IMPORTED, PARTNERS, PRESETS } from '../../src/data/presets'
 import { checkAdditions, checkEffects, checkPartnersAndSets, mergeCharacter } from '../../src/data/merge'
 import { newBuild, newCharacterSave } from '../../src/store/save'
@@ -37,7 +37,8 @@ describe('card presets', () => {
     // Per-play counters named only once: a misspelling would do nothing, or split one switch in two
     expect(check({ playStacks: { Stance: 1 } })).toHaveLength(1)
     expect(check({ cards: { 'card-338': { counterHits: { counter: 'Stance', hits: 1 } } } })).toHaveLength(1)
-    expect(check({ playStacks: { Stance: 1 }, cards: { 'card-338': { counterHits: { counter: 'Stanse', hits: 1 } } } })).toHaveLength(2)
+    // ...and the two are one letter apart
+    expect(check({ playStacks: { Stance: 1 }, cards: { 'card-338': { counterHits: { counter: 'Stanse', hits: 1 } } } })).toHaveLength(3)
     expect(check({ playStacks: { Stance: 1 }, cards: { 'card-338': { counterHits: { counter: 'Stance', hits: 1 } } } })).toEqual([])
     const fixedOf = (name: string) => ({ scaling: 'Fixed', fixedOf: name })
     expect(check({ cards: { 'card-338': fixedOf('Shield') } })).toHaveLength(1)
@@ -45,6 +46,43 @@ describe('card presets', () => {
     expect(check({ playStacks: { Shield: 0 }, cards: { 'card-338': { ...fixedOf('Shield'), scaling: 'ATK' } } })).toHaveLength(1)
     expect(check({ cards: { 'card-338': { text: '{E7:x} {E30:6|4} {E1:x}' } } })).toHaveLength(2)
     expect(check({ cards: { 'card-338': { triggers: [{ card: 'card-338', on: 'Attack', egoLevel: 7 }] } } })).toHaveLength(1)
+  })
+
+  it('the additions checks catch fields that would quietly count wrong', () => {
+    const verified = { date: '2026-10-30', gameVersion: '841' }
+    const check = (add: object) => checkAdditions(IMPORTED, { 'mei-lin': { verified, ...add } })
+    const buff = { kind: 'Buff', id: 'x', name: 'X', category: 'Character', value: '+5%', appliesTo: 'ALL', hitScope: 'All hits', condition: 'Always' } as const
+    const trigger = (t: object) => ({ cards: { 'card-338': { triggers: [{ card: 'card-338', on: 'Attack', ...t }] } } })
+    // tokens that don't read show as braces
+    expect(check({ cards: { 'card-338': { text: '{100 %} Damage' } } })).toHaveLength(1)
+    expect(check({ cards: { 'card-338': { text: '{E3 :6|4} Ember' } } })).toHaveLength(1)
+    expect(check({ cards: { 'card-338': { text: '{P3-1:{100%}|{80%}} Damage' } } })).toEqual([])
+    // an override that drops an imported tag; a tag kept without its number is fine
+    expect(check({ cards: { 'card-338': { tags: 'Basic Attack' } } })).toHaveLength(1)
+    expect(check({ cards: { 'card-338': { tags: 'Basic, Basic Attack, Ember' } } })).toEqual([])
+    expect(checkAdditions(IMPORTED, ADDITIONS).some((p) => p.includes('card-820'))).toBe(false)   // Chizuru: 'Bind 1' as 'Bind'
+    // trigger chance is a fraction; onCrit takes the crit chance; perStack needs a counter
+    expect(check(trigger({ chance: 30 }))).toHaveLength(1)
+    expect(check(trigger({ chance: 0.3 }))).toEqual([])
+    expect(check(trigger({ chance: 0.3, onCrit: true }))).toHaveLength(1)
+    expect(check(trigger({ perStack: true }))).toHaveLength(1)
+    // Ego and Potential effects need their level and node
+    expect(check({ effects: [{ ...buff, category: 'Ego Manifestation' }] })).toHaveLength(1)
+    expect(check({ effects: [{ ...buff, category: 'Ego Manifestation', egoLevel: 2 }] })).toEqual([])
+    expect(check({ effects: [{ ...buff, category: 'Potential' }] })).toHaveLength(1)
+    expect(check({ effects: [{ ...buff, maxStacks: 2, defaultStacks: 3 }] })).toHaveLength(1)
+    // thresholds: % stats as fractions, Attack as the stat
+    expect(check({ effects: [{ ...buff, thresholdStat: 'Critical Damage' }] })).toHaveLength(1)
+    expect(check({ effects: [{ ...buff, thresholdStat: 'Critical Damage', thresholdMin: 160 }] })).toHaveLength(1)
+    expect(check({ effects: [{ ...buff, thresholdStat: 'Critical Damage', thresholdMin: 1.6 }] })).toEqual([])
+    expect(check({ effects: [{ ...buff, thresholdBonus: { above: 0.5, value: '+5%' } }] })).toHaveLength(1)
+    expect(check({ cards: { 'card-338': { followUp: { appliesTo: 'ALL', share: 0.5, ego: { level: 7, share: 1 } } } } })).toHaveLength(1)
+    // same-name cards with the same effect id share one switch
+    expect(check({ cards: { 'card-338': { effects: [buff] }, 'card-339': { name: 'Strike', effects: [buff] } } })).toHaveLength(1)
+    expect(check({ cards: { 'card-338': { effects: [buff] }, 'card-339': { effects: [buff] } } })).toEqual([])
+    // counters one letter apart; epiphanies of one card aren't
+    expect(check({ playStacks: { Ember: 0, Embers: 0 }, effects: [{ ...buff, counter: 'Ember' }, { ...buff, id: 'y', counter: 'Embers' }] })).toHaveLength(1)
+    expect(check({ playStacks: { 'Oni Hunt I': 0, 'Oni Hunt II': 0 }, effects: [{ ...buff, counter: 'Oni Hunt I' }, { ...buff, id: 'y', counter: 'Oni Hunt II' }] })).toEqual([])
   })
 
   it('no effect silently does nothing: every "Applies to", trigger and value reads', () => {
@@ -67,6 +105,19 @@ describe('card presets', () => {
     await expect(`${JSON.stringify(ids, null, 1)}\n`).toMatchFileSnapshot('../fixtures/card-ids.json')
   })
 
+  it("each buff matches the same cards of its character (a re-import that changes tags, or a new card, must be looked at)", async () => {
+    // checkEffects only needs one match: this pins them all. "ALL" buffs are left out (every card)
+    const matched = Object.fromEntries([...PRESETS.characters].sort((a, b) => a.slug!.localeCompare(b.slug!)).map((ch) => {
+      const own = (ch.cards ?? []).map((p) => presetCard(p, ch.element ?? 'Passion', p.id, allNodesOn))
+      const owners = [{ name: ch.name, effects: ch.effects }, ...(ch.cards ?? []).map((p) => ({ name: p.name, effects: p.effects ?? [] }))]
+      const rows = owners.flatMap((o) => o.effects.flatMap((e) => e.kind !== 'Buff' || e.appliesTo.trim().toUpperCase() === 'ALL' ? [] : [[
+        `${o.name}|${e.id}`, `${e.appliesTo}: ${[...new Set(own.filter((c) => buffMatches({ appliesTo: e.appliesTo, condition: 'Always' }, c)).map((c) => c.name))].sort().join(', ')}`,
+      ]]))
+      return [ch.slug, Object.fromEntries(rows)]
+    }).filter(([, rows]) => Object.keys(rows).length))
+    await expect(`${JSON.stringify(matched, null, 1)}\n`).toMatchFileSnapshot('../fixtures/buff-matches.json')
+  })
+
   it('in-game wording replaces the text only: Ego overrides never change what the import says about levels', () => {
     const imported = IMPORTED['mei-lin']
     const before = mergeCharacter(imported)
@@ -80,7 +131,6 @@ describe('card presets', () => {
   it('reviewed characters carry when they were verified, the rest are marked not reviewed', () => {
     expect(mei.verified).toEqual({ date: '2026-10-30', gameVersion: '841' })
     expect(PRESETS.characters.filter((c) => c.verified).map((c) => c.slug).sort()).toEqual(Object.keys(ADDITIONS).sort())
-    expect(PRESETS.characters.some((c) => !c.verified)).toBe(true)
   })
 
   it('partners and fragment sets have default exports, unique names and unique effect ids', () => {

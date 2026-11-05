@@ -1,9 +1,9 @@
 // Brings older saves up to the current format. If the save format changes: bump SAVE_VERSION (save.ts) and add a step here.
 import { PRESETS } from '../data/presets'
-import { DEFAULT_SETTINGS } from '../data/settings'
+import { readSettings } from '../data/settings'
 import { AUTO, cardUpgrade, deckItems } from '../engine/deck'
-import { ELEMENTS, CARD_TYPES, FRAGMENT_SET_PICKS, NO_ENEMY, type Build, type Card, type CharacterPreset, type CharacterSave, type DeckCard, type Element, type Fight, type RotationPlay, type SaveData } from '../engine/types'
-import { defaultFight, defaultSave, newBuild, newFight, newStats, SAVE_VERSION } from './save'
+import { ELEMENTS, CARD_TYPES, FRAGMENT_SET_PICKS, NO_ENEMY, type Build, type Card, type CharacterPreset, type CharacterSave, type DeckCard, type Element, type Fight, type RotationPlay, type SaveData, type Switch } from '../engine/types'
+import { defaultFight, defaultSave, newBoost, newBuff, newBuild, newFight, newStats, newTeammate, SAVE_VERSION } from './save'
 
 /** Fields that older saves had (rotation: removed in v9; the shared card library: removed in v10). */
 type LegacyCharacter = CharacterSave & { rotation?: unknown[]; cards?: Card[] }
@@ -23,7 +23,8 @@ const isObjectList = (x: unknown): x is Record<string, unknown>[] => Array.isArr
 /** What every save version has: characters, each with at least one build with an id. */
 function checkSaveShape(raw: unknown): asserts raw is SaveData {
   if (!isObject(raw) || !isObject(raw.characters)) throw new Error(NOT_A_SAVE)
-  if (raw.version !== undefined && typeof raw.version !== 'number') throw new Error(NOT_A_SAVE)
+  // Every save the site wrote has one (v1 too); read as v1, a newer save without it lost its attack lists in the v9 step
+  if (typeof raw.version !== 'number') throw new Error(`${NOT_A_SAVE} It has no version number.`)
   for (const [name, cs] of Object.entries(raw.characters)) {
     if (!isObject(cs) || !isObjectList(cs.builds) || !cs.builds.length || !cs.builds.every((b) => typeof b.id === 'string')) {
       throw new Error(`${NOT_A_SAVE} ${name} has no builds.`)
@@ -42,6 +43,11 @@ function completeCharacter(name: string, cs: CharacterSave) {
   })
   const lists = [cs.boosts, cs.buffs, ...cs.builds.flatMap((b) => [b.team, b.deck, b.rotation])]
   if (!lists.every(isObjectList) || !cs.builds.every((b) => isObject(b.presetSwitches))) throw new Error(`${NOT_A_SAVE} ${name} has unreadable builds.`)
+  // Rows and teammates missing a field the page reads (switches, cards) blanked the page
+  const switches = (x: unknown) => (isObject(x) ? x as Record<string, Switch> : {})
+  cs.boosts = cs.boosts.map((r) => ({ ...newBoost(''), ...r, switches: switches(r.switches) }))
+  cs.buffs = cs.buffs.map((r) => ({ ...newBuff(''), ...r, switches: switches(r.switches) }))
+  for (const b of cs.builds) b.team = b.team.map((t) => ({ ...newTeammate(), ...t, cards: Array.isArray(t.cards) ? t.cards : [] }))
 }
 
 /** A fight the site could read: a string id if any, enemies whose numbers are numbers (a null DEF multiplier would turn all damage into 0).
@@ -70,8 +76,8 @@ function completeFights(data: SaveData) {
 export function migrate(raw: unknown): SaveData {
   checkSaveShape(raw)
   const data = raw
-  if ((data.version ?? 0) > SAVE_VERSION) throw new Error('This save is from a newer version of the calculator.')
-  if ((data.version ?? 1) <= 1) {
+  if (data.version > SAVE_VERSION) throw new Error('This save is from a newer version of the calculator.')
+  if (data.version <= 1) {
     // v2: memory fragment set picks per build
     for (const cs of Object.values(data.characters ?? {})) {
       for (const b of cs.builds ?? []) b.fragments ??= Array(FRAGMENT_SET_PICKS).fill('')
@@ -239,7 +245,7 @@ export function migrate(raw: unknown): SaveData {
   return {
     ...defaultSave(),
     ...data,
-    settings: { ...DEFAULT_SETTINGS, ...data.settings },
+    settings: readSettings(data.settings),
     version: SAVE_VERSION,
   }
 }

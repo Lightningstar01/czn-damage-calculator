@@ -63,7 +63,7 @@ export default {
     // Manifest Ego (dupes): on from the build's level. E1 (Kyrken's Aegis) is on Kyrken's Apostle; E5 is the +3 upgrade levels.
     { kind: 'Buff', id: 'e2-final', name: 'E2 Awakening Memory', category: 'Ego Manifestation', type: 'Final', value: '20%',
       appliesTo: 'ALL', hitScope: 'All hits', condition: 'Always', egoLevel: 2 },
-    { kind: 'Buff', id: 'e3-ego', name: 'E3 Vivid Memory', category: 'Ego Manifestation', value: '+400%',
+    { kind: 'Buff', id: 'e3-ego', name: 'E3 Vivid Memory', category: 'Ego Manifestation', type: 'Base %', value: '+400%',
       appliesTo: 'Flickering White Night', hitScope: 'All hits', condition: 'Always', egoLevel: 3 },
     // E4 "Each time the effect of Rossweisse's Light or Dark cards activate, gain 1 Precious Name" (1 at the start of battle)
     { kind: 'Buff', id: 'e4-name', name: 'E4 Precious Name', category: 'Ego Manifestation', value: '8%', appliesTo: 'ALL',

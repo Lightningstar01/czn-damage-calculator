@@ -1,8 +1,8 @@
 // The damage formula (docs/FORMULA.md). Pure functions: inputs in, numbers and their sources out.
 import { wholePct } from './cardText'
 import { buildDeck, buildNodeOn, deckPresets, presetCard, teammateDeck, type DeckItem } from './deck'
-import { activeBuffs, activeCounters, activeStats, buffMatches, cardBuffs, findCharacter, findFragmentSet, findPartner, type ActiveBuff, type ActiveStat, type PlayCounter, type Source } from './buffs'
-import { teammateView, withLinkedTeam, type Saves } from './team'
+import { activeBuffs, activeCounters, activeStats, buffMatches, cardBuffs, findCharacter, findFragmentSet, findPartner, unreadableValues, type ActiveBuff, type ActiveStat, type PlayCounter, type Source } from './buffs'
+import { deletedLinks, teammateView, withLinkedTeam, type Saves } from './team'
 import { NO_ENEMY } from './types'
 import type { Build, Card, CharacterPreset, CharacterSave, Enemy, Fight, LiveBuild, PotentialUpgrade, Presets, RotationPlay, Settings, StatName, Trigger } from './types'
 
@@ -29,7 +29,7 @@ export interface Factor {
 
 /** Every factor of one hit, so the UI can draw the formula. A null factor doesn't apply to this hit. */
 export interface Hit {
-  /** 1-based hit number across the build's whole attack list. */
+  /** 1-based hit number across the build's whole attack list (the played cards' own hits); 0 on a hit a trigger adds. */
   globalHit: number
   hitNo: number
   /** The card's %: the base (with Card + buffs) when a potential upgrade applies, otherwise as shown in-game. */
@@ -285,6 +285,8 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
   const team = withLinkedTeam(build, saves)
   const ch = findCharacter(presets, charName)
   const warnings = setupWarnings(presets, charName, ch, team)
+  warnings.push(...deletedLinks(build, saves), ...unreadableValues(cs, build))
+  if (enemy.defMult <= 0) warnings.push("The fight's enemy DEF multiplier is 0, so every hit deals 0 (Setup tab, Fight).")
   const mainDeck = buildDeck(ch, team)
   const main = member(presets, charName, mainDeck.map((i) => i.card), { cs, build: team }, settings)
   const members: (Member | undefined)[] = []
@@ -303,8 +305,9 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
     [...new Set(triggers.map((x) => x.owner))].flatMap((o) => o.dmg?.caps ?? []))
 
   let k = 0
-  // The hits of one card played by m, with the play's debuffs and counter stacks; added: only that many hits after the card's own (no first-hit buffs)
-  const cardHits = (m: Member, card: Card, play: RotationPlay, added = 0) => {
+  // The hits of one card played by m, with the play's debuffs and counter stacks; added: only that many hits after the card's own (no first-hit buffs);
+  // listed: they're numbered across the attack list (a trigger's hits aren't)
+  const cardHits = (m: Member, card: Card, play: RotationPlay, added = 0, listed = true) => {
     const d = m.dmg!
     const counters = playCaps(d, card).map(({ name, max }) => ({ name, stacks: counterOn(card, play, name, max) }))
     const live: ActiveBuff[] = d.counterBuffs.map((b) => {
@@ -317,13 +320,13 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
     const hits: Hit[] = []
     const stats = { ...d.stats, elemDmg: cardElement(m, d, card) }
     const own = Math.max(0, Math.floor(card.hits))
-    for (let h = added ? own + 1 : 1; h <= own + added; h++) hits.push(computeHit(card, h, ++k, cb, potential, stats, enemy, play, settings))
+    for (let h = added ? own + 1 : 1; h <= own + added; h++) hits.push(computeHit(card, h, listed ? ++k : 0, cb, potential, stats, enemy, play, settings))
     return { hits, counters, cb, ...totals(hits) }
   }
 
   const plays: Play[] = []
   const counterOptions: BuildResult['counterOptions'] = []
-  const pending = new Map<Member, { from: string; appliesTo: string; share: number }>()
+  const pending = new Map<Member, { from: string; index: number; appliesTo: string; share: number }>()
   const byMember = new Map<Member, Totals>()
   const credit = (m: Member, t: Totals) => {
     const sum = byMember.get(m) ?? { nonCrit: 0, crit: 0, expected: 0 }
@@ -335,7 +338,9 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
     const base = m?.cards.get(play.cardId)
     counterOptions[index] = mergeCaps(playCaps(m?.dmg, base), triggerCaps)
     if (!m || !base) {
-      warnings.push(`Play ${index + 1}: its card is no longer in the deck, so it's left out.`)
+      warnings.push(!m
+        ? `Play ${index + 1}: it's a card of teammate ${play.by! + 1}, and that slot has no teammate now, so it's left out.`
+        : `Play ${index + 1}: its card is no longer in the deck, so it's left out.`)
       return
     }
     // A per-play hit count also counts for '2+ hits' buffs, so it's buffed as its own card
@@ -353,7 +358,11 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
     }
     const fu = m.ch?.cards?.find((x) => x.id === base.preset)?.followUp
     const ego = m.dmg?.build.egoLevel ?? (play.by === undefined ? team.egoLevel : team.team[play.by]?.egoLevel) ?? 0
-    if (fu) pending.set(m, { from: card.name, appliesTo: fu.appliesTo, share: fu.ego && ego >= fu.ego.level ? fu.ego.share : fu.share })
+    if (fu) {
+      const left = pending.get(m)
+      if (left) warnings.push(unmatchedFollowUp(left))
+      pending.set(m, { from: card.name, index, appliesTo: fu.appliesTo, share: fu.ego && ego >= fu.ego.level ? fu.ego.share : fu.share })
+    }
     credit(m, { nonCrit: own.nonCrit + (followUp?.nonCrit ?? 0), crit: own.crit + (followUp?.crit ?? 0), expected: own.expected + (followUp?.expected ?? 0) })
 
     // Hits the team's triggers add (Selena's Mark): the trigger owner's, with this play's counters and Vulnerable
@@ -363,8 +372,9 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
       if (t.counter && capped(play, t.counter, t.maxStacks) <= 0) continue
       if (!buffMatches({ appliesTo: t.on, condition: 'Always' }, card)) continue
       if (t.weakness && !card.weaknessApplies && !own.cb?.weaknessAttack.length) continue
-      // One more hit of a play that hits nothing is no hit either
+      // One more hit of a play that hits nothing is no hit either; a play with no hits of its own can't crit
       if (t.repeat && Math.floor(card.hits) < 1) continue
+      if (t.onCrit && !own.hits.length) continue
       const tp = owner.ch?.cards?.find((x) => x.id === t.card)
       if (!tp) continue
       const tcard = t.repeat ? { ...card, id: `trigger:${card.id}` } : presetCard(tp, owner.ch!.element, `trigger:${tp.id}`, buildNodeOn(owner.dmg.build))
@@ -372,7 +382,8 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
       // Same target, same moment (Unconfirmed; in-game test ravaged-triggered-hits): Ravaged on the play is Ravaged on the hit it sets off,
       // and a play switched off is off for that hit too
       tcard.targetRavaged = play.ravaged ?? (tcard.targetRavaged || card.targetRavaged)
-      const r = t.repeat ? cardHits(owner, tcard, play, 1) : cardHits(owner, tcard, { cardId: tcard.id, vulnerable: play.vulnerable, stacks: play.stacks })
+      const r = t.repeat ? cardHits(owner, tcard, play, 1, false)
+        : cardHits(owner, tcard, { cardId: tcard.id, vulnerable: play.vulnerable, stacks: play.stacks }, 0, false)
       // onCrit: one roll per play, on its first hit (Flame Thrower III has one hit, and on all enemies it crits or doesn't: owner, 2026-11-01;
       // more hits set on the play: in-game test lucas-readings)
       const chance = t.onCrit ? own.hits[0]?.critRate ?? 0 : t.chance ?? 1
@@ -389,6 +400,7 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
       nonCrit: own.nonCrit + (followUp?.nonCrit ?? 0) + trig.nonCrit, crit: own.crit + (followUp?.crit ?? 0) + trig.crit,
       expected: own.expected + (followUp?.expected ?? 0) + trig.expected })
   })
+  for (const left of pending.values()) warnings.push(unmatchedFollowUp(left))
   const others = members.filter((x): x is Member => !!x)
   for (const x of others) {
     // byMember: they played a card or one of their triggers fired
@@ -402,6 +414,10 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
   // Two dropdowns naming the same lost set give the same warning: once is enough
   return { stats: main.dmg!.stats, plays, byCharacter, counterOptions, warnings: [...new Set(warnings)], ...totals(plays) }
 }
+
+/** A follow-up (Rossweisse's Ego skill) with no matching play after it before the list ends or the same card is played again. */
+const unmatchedFollowUp = (p: { from: string; index: number; appliesTo: string }) =>
+  `Play ${p.index + 1} (${p.from}): its damage goes on the next ${p.appliesTo} card played, and none follows it, so that part isn't counted.`
 
 /** What the build names but the presets don't have (renamed or removed by an update): it counts for nothing, so say so. */
 function setupWarnings(presets: Presets, charName: string, ch: CharacterPreset | undefined, build: LiveBuild): string[] {

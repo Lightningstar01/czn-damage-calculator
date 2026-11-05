@@ -101,4 +101,14 @@ describe('Renoa', () => {
     expect(r.plays[1].nonCrit).toBeCloseTo(3 * 0.6 * 1.16 * 2 * 35)
     expect(r.plays[2].nonCrit).toBeCloseTo((1.1 + 0.8) * 35 + 35)
   })
+
+  it("Instant Judgment's bonus per Finale discarded counts from E2, where Finale exists", () => {
+    const at = (egoLevel: number) => {
+      const { cs, a } = ownerBuild(egoLevel)
+      a.deck.push({ id: 'ij', preset: 'card-10' })
+      a.rotation = [{ cardId: 'ij', stacks: { 'Dirge Bullets: Finale discarded': 1 } }]
+      return computeBuild(PRESETS, 'Renoa', cs, a, settings).plays[0].hits[0].cardMult
+    }
+    expect(at(0)).toBeCloseTo(at(2) - 1)
+  })
 })

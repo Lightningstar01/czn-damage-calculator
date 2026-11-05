@@ -1,6 +1,7 @@
 // A build's deck: the cards picked on the Cards tab, plus the cards that come with them: the Ego skill, and the cards
 // a picked card creates (CardPreset.creates, e.g. Rossweisse's shards), which no one adds by hand (owner, 2026-10-27).
-import { ELEMENTS, type Build, type Card, type CardPreset, type CharacterPreset, type DeckCard, type Element, type PotentialUpgrade, type Teammate } from './types'
+import { withLinkedTeam, type Saves } from './team'
+import { ELEMENTS, type Build, type Card, type CardPreset, type CharacterPreset, type DeckCard, type Element, type LiveTeammate, type PotentialUpgrade } from './types'
 
 /** Id prefix of the cards that come with others: 'auto:<preset id>', so attack list plays can point at them. */
 export const AUTO = 'auto:'
@@ -22,7 +23,7 @@ export function cardUpgrade(p: CardPreset): PotentialUpgrade | undefined {
   return 'Signature'
 }
 
-/** Whether a Potential node is on: missing switches count as on (teammates have none). */
+/** Whether a Potential node is on: missing switches count as on (unlinked teammates have none). */
 export type NodeOn = (node: string) => boolean
 export const allNodesOn: NodeOn = () => true
 export const buildNodeOn = (build: Pick<Build, 'potentialNodes'>): NodeOn => (node) => build.potentialNodes?.[node] !== false
@@ -86,8 +87,10 @@ export function buildDeck(ch: CharacterPreset | undefined, build: Pick<Build, 'd
 }
 
 /** A teammate's deck: their picked cards (entry = index in Teammate.cards; card id = the preset id, so attack list plays keep
- * pointing at it when another card is removed), Ego skill and created cards. nodeOn: their linked build's Potential nodes. */
-export function teammateDeck(ch: CharacterPreset | undefined, t: Pick<Teammate, 'cards' | 'egoLevel'>, nodeOn: NodeOn = allNodesOn): DeckItem[] {
+ * pointing at it when another card is removed), Ego skill and created cards. nodeOn: their linked build's Potential nodes (a
+ * withLinkedTeam teammate's live ones; all on without). */
+export function teammateDeck(ch: CharacterPreset | undefined, t: Pick<LiveTeammate, 'cards' | 'egoLevel' | 'live'>,
+  nodeOn: NodeOn = buildNodeOn({ potentialNodes: t.live?.potentialNodes })): DeckItem[] {
   return deckItems(ch, (t.cards ?? []).map((preset, i) => ({ id: String(i), preset })), nodeOn, t.egoLevel ?? 0)
     .map((i) => i.entry !== undefined && i.preset ? { ...i, card: { ...i.card, id: i.preset.id } } : i)
 }
@@ -103,9 +106,10 @@ export function prunePlays(ch: CharacterPreset | undefined, build: Build): void 
   build.rotation = (build.rotation ?? []).filter((p) => p.by !== undefined || ids.has(p.cardId))
 }
 
-/** Drop a teammate slot's plays whose card left their deck (all of them when the slot is empty). */
-export function pruneTeamPlays(ch: CharacterPreset | undefined, build: Build, slot: number): void {
-  const t = build.team?.[slot]
+/** Drop a teammate slot's plays whose card left their deck (all of them when the slot is empty). saves: a linked slot's deck has its
+ * saved build's Manifest Ego cards and Potential nodes. */
+export function pruneTeamPlays(ch: CharacterPreset | undefined, build: Build, slot: number, saves: Saves = {}): void {
+  const t = withLinkedTeam(build, saves).team?.[slot]
   const ids = new Set(t?.character ? teammateDeck(ch, t).map((i) => i.card.id) : [])
   build.rotation = (build.rotation ?? []).filter((p) => p.by !== slot || ids.has(p.cardId))
 }
@@ -115,14 +119,33 @@ export function pruneTeamPlays(ch: CharacterPreset | undefined, build: Build, sl
 export function changeEpiphany(ch: CharacterPreset | undefined, build: Build, entryId: string, presetId: string): void {
   const d = build.deck.find((x) => x.id === entryId)
   if (!d) return
-  const find = (id?: string) => ch?.cards?.find((p) => p.id === id)
-  const before = find(d.preset)?.creates ?? []
-  const after = find(presetId)?.creates ?? []
+  const from = d.preset
   d.preset = presetId
   delete d.custom
-  const still = new Set(buildDeck(ch, build).map((i) => i.card.id))
-  const moved = new Map<string, string>()
-  before.forEach((id, i) => { if (after[i] && !still.has(AUTO + id)) moved.set(AUTO + id, AUTO + after[i]) })
-  for (const p of build.rotation ?? []) p.cardId = moved.get(p.cardId) ?? p.cardId
+  const moved = createdMoves(ch, from, presetId, new Set(buildDeck(ch, build).map((i) => i.card.id)))
+  for (const p of build.rotation ?? []) if (p.by === undefined) p.cardId = moved.get(p.cardId) ?? p.cardId
   prunePlays(ch, build)
+}
+
+/** changeEpiphany for a teammate's picked card (index in Teammate.cards): their plays follow it, unless another copy keeps the old
+ * version, and so do the plays of the cards it creates. */
+export function changeTeammateEpiphany(ch: CharacterPreset | undefined, build: Build, slot: number, index: number, presetId: string,
+  saves: Saves = {}): void {
+  const cards = build.team[slot].cards
+  const from = cards[index]
+  cards[index] = presetId
+  const t = withLinkedTeam(build, saves).team[slot]
+  const moved = createdMoves(ch, from, presetId, new Set(teammateDeck(ch, t).map((i) => i.card.id)))
+  if (!cards.includes(from)) moved.set(from, presetId)
+  for (const p of build.rotation ?? []) if (p.by === slot) p.cardId = moved.get(p.cardId) ?? p.cardId
+  pruneTeamPlays(ch, build, slot, saves)
+}
+
+/** Plays of the cards an old epiphany created move to the ones the new one creates, unless another card still creates them (still: the deck's ids now). */
+function createdMoves(ch: CharacterPreset | undefined, from: string | undefined, to: string, still: Set<string>): Map<string, string> {
+  const find = (id?: string) => ch?.cards?.find((p) => p.id === id)
+  const after = find(to)?.creates ?? []
+  const moved = new Map<string, string>()
+  ;(find(from)?.creates ?? []).forEach((id, i) => { if (after[i] && !still.has(AUTO + id)) moved.set(AUTO + id, AUTO + after[i]) })
+  return moved
 }

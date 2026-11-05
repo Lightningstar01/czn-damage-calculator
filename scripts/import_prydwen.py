@@ -18,6 +18,10 @@ Card art (art only: the site draws the frame) is copied into public/cards/<slug>
 card's art id, and every listed picture is copied, so cards added by hand (extraCards) can use them too. A card is matched by
 its name, else its base card's name (epiphanies share their base card's art); unmatched cards copy Prydwen's picture (200x300).
 Pictures already copied are kept (--refresh-art downloads them again).
+
+Every page is read and checked before anything is written: a character whose cards, Potentials, Ego levels or pictures come back
+empty or under half of before stops the import with nothing written (a page layout change, not a game update). Files are written
+whole (a temporary file, then renamed).
 """
 import argparse
 import datetime
@@ -25,6 +29,7 @@ import html
 import json
 import re
 import sys
+import time
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -40,10 +45,27 @@ ROMAN = r"(?:I|II|III|IV|V)"
 AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36"
 
 
-def download(url):
-    req = urllib.request.Request(url, headers={"User-Agent": AGENT})
-    with urllib.request.urlopen(req, timeout=60) as r:
-        return r.read()
+def download(url, tries=3):
+    """The page or picture, tried 3 times with a growing pause: a dropped connection shouldn't stop an import. A 404 isn't tried again."""
+    for attempt in range(tries):
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": AGENT})
+            with urllib.request.urlopen(req, timeout=60) as r:
+                return r.read()
+        except urllib.error.HTTPError as e:  # before URLError, which it is a kind of
+            if (e.code < 500 and e.code != 429) or attempt == tries - 1:
+                raise
+        except (urllib.error.URLError, TimeoutError, ConnectionError):
+            if attempt == tries - 1:
+                raise
+        time.sleep(2 * 3 ** attempt)
+
+
+def write_atomic(path, data):
+    """Write to a temporary file, then rename it: a stopped import never leaves half a file."""
+    tmp = path.with_name(path.name + ".tmp")
+    tmp.write_bytes(data)
+    tmp.replace(path)
 
 
 # Prydwen card name -> cznmetadecks card name, where they differ (checked by comparing the pictures)
@@ -78,18 +100,16 @@ def meta_art(page):
     return arts
 
 
-def copy_art(slug, entries, page, refresh=False):
-    """Save the character's card art in public/cards/<slug>/ and point `image` there. Returns (pictures, cards on Prydwen's)."""
+def plan_art(slug, entries, page, refresh=False):
+    """The character's card art for public/cards/<slug>/, without writing it: {file name: the downloaded picture, or None to keep the
+    copy already there}, and how many cards use Prydwen's art. Points each card's `image` there."""
     folder = ART / slug
-    folder.mkdir(parents=True, exist_ok=True)
     arts = meta_art(page)
-    kept, fallback = set(), 0
+    files, fallback = {}, 0
 
     def save(name, url):
-        path = folder / name
-        if refresh or not path.exists():
-            path.write_bytes(download(url))
-        kept.add(name)
+        if name not in files:
+            files[name] = download(url) if refresh or not (folder / name).exists() else None
         return f"cards/{slug}/{name}"
 
     for art in sorted(set(arts.values())):
@@ -104,10 +124,19 @@ def copy_art(slug, entries, page, refresh=False):
             e["image"] = by_base.get(e["base"]) or save(e["image"].rsplit("/", 1)[1], e["image"])
             by_base[e["base"]] = e["image"]
             fallback += 1
+    return files, fallback
+
+
+def write_art(slug, files):
+    """Write plan_art's new pictures and delete the ones no card uses any more."""
+    folder = ART / slug
+    folder.mkdir(parents=True, exist_ok=True)
+    for name, data in files.items():
+        if data is not None:
+            write_atomic(folder / name, data)
     for old in folder.iterdir():
-        if old.name not in kept:
+        if old.name not in files:
             old.unlink()
-    return len(kept), fallback
 
 
 def fetch(slug, cache=None, url=URL, prefix=""):
@@ -117,7 +146,7 @@ def fetch(slug, cache=None, url=URL, prefix=""):
     page = download(url.format(slug=slug)).decode("utf-8")
     if path:
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(page, encoding="utf-8")
+        write_atomic(path, page.encode("utf-8"))
     return page
 
 
@@ -273,18 +302,53 @@ def card_entry(c, base, is_basic, has_epiphanies):
 
 
 def changes(old, doc):
-    """What a re-import changes that our additions and saves depend on: card ids (saved decks and characters/<slug>.ts point at them) and numbers."""
+    """What a re-import changes that our additions and saves depend on: card ids (saved decks and characters/<slug>.ts point at them),
+    numbers, tags and wording (an override in characters/<slug>.ts hides a change upstream), Potential nodes and Manifest Ego levels."""
     before = {c["id"]: c for c in old["cards"]}
     after = {c["id"]: c for c in doc["cards"]}
     out = [f"card {i} ({before[i]['name']}) is gone: saved decks and our additions may point at it" for i in before if i not in after]
+    out += [f"card {i} ({after[i]['name']}) is new" for i in after if i not in before]
     for i in before.keys() & after.keys():
         a, b = before[i], after[i]
         if a["name"] != b["name"]:
             out.append(f"card {i} was {a['name']}, now {b['name']}: its id may point at another card")
-        for field in ("pct", "hits", "cost"):
+        for field in ("pct", "hits", "cost", "tags", "scaling", "cardType", "element", "category"):
             if a.get(field) != b.get(field):
                 out.append(f"card {i} ({b['name']}): {field} {a.get(field)} -> {b.get(field)}")
+        if a.get("text") != b.get("text"):
+            out.append(f"card {i} ({b['name']}): its text changed (compare its `text` in characters/<slug>.ts)")
+    for key, id_key, label in (("potentials", "node", "Potential "), ("manifestEgo", "level", "Manifest Ego E")):
+        was = {p[id_key]: p for p in old.get(key, [])}
+        now = {p[id_key]: p for p in doc[key]}
+        for k in was.keys() | now.keys():
+            if k not in now:
+                out.append(f"{label}{k} ({was[k]['name']}) is gone")
+            elif k not in was:
+                out.append(f"{label}{k} ({now[k]['name']}) is new")
+            elif was[k] != now[k]:
+                out.append(f"{label}{k} ({now[k]['name']}): its wording changed")
     return sorted(out)
+
+
+def problems(slug, old, doc, files, fallback):
+    """Why not to write a character: cards, Potentials, Ego levels or pictures came back empty or under half of before, or no card
+    found its cznmetadecks art, which is a page layout change rather than a game update."""
+    out = []
+    for key, label in (("cards", "cards"), ("potentials", "Potential nodes"), ("manifestEgo", "Manifest Ego levels")):
+        n, was = len(doc[key]), len(old.get(key, [])) if old else 0
+        if n == 0 or n < was / 2:
+            out.append(f"{n} {label} (had {was})")
+    pictures = sum(1 for _ in (ART / slug).iterdir()) if (ART / slug).exists() else 0
+    if not files or len(files) < pictures / 2:
+        out.append(f"{len(files)} card pictures (had {pictures})")
+    if doc["cards"] and fallback == len(doc["cards"]):
+        out.append("no card matched its art on cznmetadecks (all would use Prydwen's smaller pictures)")
+    return out
+
+
+def several_damage(entries):
+    """Cards whose text has more than one damage phrase: only the first is counted, so a review adds the others by hand."""
+    return [f"{e['id']} ({e['name']})" for e in entries if len(DAMAGE.findall(e["text"])) > 1]
 
 
 def only_character(slug, cache=None):
@@ -304,50 +368,81 @@ def only_character(slug, cache=None):
     return characters
 
 
+def read_character(ch, cache=None, refresh_art=False):
+    """(the character's JSON, their art plan from plan_art, how many cards use Prydwen's art), written by nobody yet."""
+    page = fetch(ch["slug"], cache)
+    cards = find_lists(rsc_rows(page))[1]
+    own = sorted((c for c in cards if c["combatant"] == ch["name"]), key=lambda c: c["cardId"])
+    names = {c["name"] for c in own}
+    bases = {}
+    for c in own:
+        m = re.fullmatch(rf"(.+) {ROMAN}", c["name"])
+        bases[c["slug"]] = m.group(1) if m and m.group(1) in names else c["name"]
+    with_epiphanies = {b for s, b in bases.items() if b != next(c["name"] for c in own if c["slug"] == s)}
+    entries = [
+        card_entry(c, bases[c["slug"]],
+                   c["cardCategory"] == "Starting Card" and not c["isEpiphany"] and c["name"] not in with_epiphanies,
+                   bases[c["slug"]] in with_epiphanies)
+        for c in own
+    ]
+    try:
+        meta = fetch(ch["slug"], cache, META_URL, "meta-")
+    except urllib.error.HTTPError as e:
+        raise SystemExit(f"{ch['name']}: cznmetadecks has no page for their card art ({META_URL.format(slug=ch['slug'])}, error {e.code}). "
+                         "Nothing written: check the address on cznmetadecks.com")
+    files, fallback = plan_art(ch["slug"], entries, meta, refresh_art)
+    ego = kit_section(page, "Manifest Ego", "level")
+    for e in ego:
+        e["level"] = int(e["level"].lstrip("E"))
+    doc = {
+        "name": ch["name"],
+        "slug": ch["slug"],
+        "element": ch["element"],
+        "class": ch["class"],
+        "rarity": ch["rarity"],
+        "cards": entries,
+        "potentials": kit_section(page, "Potential", "node"),
+        "manifestEgo": ego,
+    }
+    return doc, files, fallback
+
+
 def build(cache=None, refresh_art=False, only=None):
+    """Reads every page and checks what came back before writing anything, so a site change or a dropped connection halfway leaves
+    the files as they were."""
     characters = only_character(only, cache) if only else all_characters(cache)
-    OUT.mkdir(parents=True, exist_ok=True)
-    written = set()
+    if cache:
+        print(f"Pages already in {cache} are reused, not downloaded again: empty the folder for fresh ones after a game update")
+    read, refused = [], []
     for ch in sorted(characters, key=lambda c: c["slug"]):
         if ch.get("upcoming") or (only and ch["slug"] != only):
             continue
-        page = fetch(ch["slug"], cache)
-        cards = find_lists(rsc_rows(page))[1]
-        own = sorted((c for c in cards if c["combatant"] == ch["name"]), key=lambda c: c["cardId"])
-        names = {c["name"] for c in own}
-        bases = {}
-        for c in own:
-            m = re.fullmatch(rf"(.+) {ROMAN}", c["name"])
-            bases[c["slug"]] = m.group(1) if m and m.group(1) in names else c["name"]
-        with_epiphanies = {b for s, b in bases.items() if b != next(c["name"] for c in own if c["slug"] == s)}
-        entries = [
-            card_entry(c, bases[c["slug"]],
-                       c["cardCategory"] == "Starting Card" and not c["isEpiphany"] and c["name"] not in with_epiphanies,
-                       bases[c["slug"]] in with_epiphanies)
-            for c in own
-        ]
-        pictures, fallback = copy_art(ch["slug"], entries, fetch(ch["slug"], cache, META_URL, "meta-"), refresh_art)
-        ego = kit_section(page, "Manifest Ego", "level")
-        for e in ego:
-            e["level"] = int(e["level"].lstrip("E"))
-        doc = {
-            "name": ch["name"],
-            "slug": ch["slug"],
-            "element": ch["element"],
-            "class": ch["class"],
-            "rarity": ch["rarity"],
-            "cards": entries,
-            "potentials": kit_section(page, "Potential", "node"),
-            "manifestEgo": ego,
-        }
+        doc, files, fallback = read_character(ch, cache, refresh_art)
         path = OUT / f"{ch['slug']}.json"
-        if path.exists():
-            for line in changes(json.loads(path.read_text(encoding="utf-8")), doc):
+        old = json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+        bad = problems(ch["slug"], old, doc, files, fallback)
+        if bad:
+            refused.append(f"{ch['name']}: {', '.join(bad)}")
+        read.append((ch, path, old, doc, files, fallback))
+    if refused:
+        raise SystemExit("Nothing written: these came back incomplete, which is likely a change in the pages' layout "
+                         "(update the importer) rather than a game update:\n  " + "\n  ".join(refused))
+    OUT.mkdir(parents=True, exist_ok=True)
+    written = set()
+    for ch, path, old, doc, files, fallback in read:
+        if old:
+            for line in changes(old, doc):
                 print(f"CHANGED {ch['name']}: {line}")
-        path.write_text(json.dumps(doc, indent=1, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
+        # Only the first damage phrase is read: a reviewed character's additions handle the rest, so warn about the others
+        new = [e for e in doc["cards"] if not old or e["id"] not in {c["id"] for c in old["cards"]}]
+        reviewed = (ROOT / "src" / "data" / "characters" / f"{ch['slug']}.ts").exists()
+        for card in several_damage(new if reviewed else doc["cards"]):
+            print(f"CHECK {ch['name']}: card {card} has more than one damage phrase; only the first is counted")
+        write_art(ch["slug"], files)
+        write_atomic(path, (json.dumps(doc, indent=1, ensure_ascii=False) + "\n").encode("utf-8"))
         written.add(path.name)
-        print(f"{ch['name']:12} {len(entries):3} cards, {len(doc['potentials'])} potentials, {len(ego)} ego levels, "
-              f"{pictures} pictures" + (f", {fallback} cards with Prydwen's art" if fallback else ""))
+        print(f"{ch['name']:12} {len(doc['cards']):3} cards, {len(doc['potentials'])} potentials, {len(doc['manifestEgo'])} ego levels, "
+              f"{len(files)} pictures" + (f", {fallback} cards with Prydwen's art" if fallback else ""))
     # A character missing from the list is never deleted: saves, additions and tests may depend on it, and it may be a slip on the site
     kept = [old.name for old in OUT.glob("*.json") if old.name not in written and old.name != "_meta.json"]
     for name in () if only else kept:
@@ -357,7 +452,7 @@ def build(cache=None, refresh_art=False, only=None):
     if only and (OUT / "_meta.json").exists():
         imported = json.loads((OUT / "_meta.json").read_text(encoding="utf-8"))["imported"]
     meta = {"source": URL.format(slug="<slug>"), "imported": imported, "characters": len(written) + len(kept)}
-    (OUT / "_meta.json").write_text(json.dumps(meta, indent=1) + "\n", encoding="utf-8", newline="\n")
+    write_atomic(OUT / "_meta.json", (json.dumps(meta, indent=1) + "\n").encode("utf-8"))
 
 
 if __name__ == "__main__":

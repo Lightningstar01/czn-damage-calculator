@@ -1,5 +1,5 @@
 // Pinned top bar: character picker and the build compare bar (which is also the build switcher).
-import type { ReactNode } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 import { PRESETS } from '../data/presets'
 import { findCharacter } from '../engine/buffs'
 import { newBuild } from '../store/save'
@@ -12,8 +12,17 @@ export function Header({ children }: { children?: ReactNode }) {
   const { data, update } = useStore()
   const ch = useCharacter()
   const preset = findCharacter(PRESETS, data.activeCharacter)
+  // The wide layout's Results pane sticks just under this bar, whose height changes with the builds and warnings shown (--topbar-h)
+  const bar = useRef<HTMLElement>(null)
+  useEffect(() => {
+    const el = bar.current
+    if (!el) return
+    const o = new ResizeObserver(() => document.documentElement.style.setProperty('--topbar-h', `${el.offsetHeight}px`))
+    o.observe(el)
+    return () => o.disconnect()
+  }, [])
   return (
-    <header className="topbar">
+    <header className="topbar" ref={bar}>
       <div className="topbar-row">
         <select className="char-select" aria-label="Character" value={data.activeCharacter}
           onChange={(e) => update((d) => selectCharacter(d, e.target.value))}>

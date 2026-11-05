@@ -1,5 +1,6 @@
 // Small form controls, sized for phones.
-import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
+import { readNumber } from '../engine/buffs'
 import type { Switch } from '../engine/types'
 
 function fmtNumber(v: number, pct: boolean): string {
@@ -8,9 +9,10 @@ function fmtNumber(v: number, pct: boolean): string {
   return String(Number(n.toFixed(6)))
 }
 
-/** Number box with the phone number pad. pct: type "45.3" for 45.3% (stored as 0.453). */
-export function NumberField({ label, value, onChange, pct = false, help, min, suffix }: {
-  label?: ReactNode; value: number; onChange: (v: number) => void; pct?: boolean; help?: string; min?: number; suffix?: string
+/** Number box with the phone number pad. pct: type "45.3" for 45.3% (stored as 0.453). Thousands commas are fine ("1,272"); a box
+ * left empty or unreadable keeps the last good value and shows it again on leaving (an empty DEF multiplier made every hit 0). */
+export function NumberField({ label, value, onChange, pct = false, help, min, max, suffix }: {
+  label?: ReactNode; value: number; onChange: (v: number) => void; pct?: boolean; help?: string; min?: number; max?: number; suffix?: string
 }) {
   const id = useId()
   const [text, setText] = useState(() => fmtNumber(value, pct))
@@ -18,23 +20,23 @@ export function NumberField({ label, value, onChange, pct = false, help, min, su
   const [seen, setSeen] = useState(value)
   if (seen !== value) {
     setSeen(value)
-    const parsed = Number(text.replace(',', '.'))
-    const shown = pct ? parsed / 100 : parsed
-    if (text === '' ? value !== 0 : Math.abs(shown - value) > 1e-9) setText(fmtNumber(value, pct))
+    const parsed = readNumber(text)
+    if (parsed === undefined || Math.abs((pct ? parsed / 100 : parsed) - value) > 1e-9) setText(fmtNumber(value, pct))
   }
+  const typed = readNumber(text)
   return (
     <label className="field" htmlFor={id}>
       {label && <span className="field-label">{label}{help && <Help text={help} />}</span>}
       <span className="field-box">
         <input
-          id={id} type="text" inputMode="decimal" value={text}
+          id={id} type="text" inputMode="decimal" value={text} aria-invalid={text.trim() !== '' && typed === undefined}
           onChange={(e) => {
             setText(e.target.value)
-            const n = Number(e.target.value.replace(',', '.'))
-            if (e.target.value.trim() === '') onChange(0)
-            else if (Number.isFinite(n)) onChange(Math.max(min ?? -Infinity, pct ? n / 100 : n))
+            const n = readNumber(e.target.value)
+            if (n !== undefined) onChange(Math.min(max ?? Infinity, Math.max(min ?? -Infinity, pct ? n / 100 : n)))
           }}
           onFocus={(e) => e.target.select()}
+          onBlur={() => setText(fmtNumber(value, pct))}
         />
         {(pct || suffix) && <span className="unit">{pct ? '%' : suffix}</span>}
       </span>
@@ -42,14 +44,15 @@ export function NumberField({ label, value, onChange, pct = false, help, min, su
   )
 }
 
-export function TextField({ label, value, onChange, placeholder, help, list }: {
-  label: ReactNode; value: string; onChange: (v: string) => void; placeholder?: string; help?: string; list?: string[]
+/** invalid: the text can't be read (red border). */
+export function TextField({ label, value, onChange, placeholder, help, list, invalid }: {
+  label: ReactNode; value: string; onChange: (v: string) => void; placeholder?: string; help?: string; list?: string[]; invalid?: boolean
 }) {
   const id = useId()
   return (
     <label className="field" htmlFor={id}>
       <span className="field-label">{label}{help && <Help text={help} />}</span>
-      <input id={id} type="text" value={value} placeholder={placeholder} list={list ? `${id}-list` : undefined}
+      <input id={id} type="text" value={value} placeholder={placeholder} list={list ? `${id}-list` : undefined} aria-invalid={invalid}
         onChange={(e) => onChange(e.target.value)} />
       {list && <datalist id={`${id}-list`}>{list.map((o) => <option key={o} value={o} />)}</datalist>}
     </label>
@@ -118,6 +121,16 @@ export function SwitchControl({ value, onChange, defaultStacks = 1, maxStacks, l
 export function Help({ text }: { text: string }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLSpanElement>(null)
+  const bubble = useRef<HTMLSpanElement>(null)
+  // A "?" near the right edge would push the bubble off a phone screen: slide it back in
+  useLayoutEffect(() => {
+    const b = bubble.current
+    if (!open || !b) return
+    const room = 8
+    const r = b.getBoundingClientRect()
+    const over = r.right - (document.documentElement.clientWidth - room)
+    if (over > 0) b.style.translate = `${-Math.min(over, r.left - room)}px 0`
+  }, [open])
   useEffect(() => {
     if (!open) return
     const close = (e: PointerEvent) => { if (!ref.current?.contains(e.target as Node)) setOpen(false) }
@@ -129,11 +142,11 @@ export function Help({ text }: { text: string }) {
       document.removeEventListener('keydown', esc)
     }
   }, [open])
+  // The "?" sits in a field's label: a tap on the bubble mustn't reach the label, which would focus the box and open the keyboard
   return (
-    <span className="help" ref={ref}>
-      <button type="button" className="help-btn" aria-label="Help" aria-expanded={open}
-        onClick={(e) => { e.preventDefault(); setOpen(!open) }}>?</button>
-      {open && <span className="help-text" role="note">{text}</span>}
+    <span className="help" ref={ref} onClick={(e) => e.preventDefault()}>
+      <button type="button" className="help-btn" aria-label="Help" aria-expanded={open} onClick={() => setOpen(!open)}>?</button>
+      {open && <span className="help-text" role="note" ref={bubble}>{text}</span>}
     </span>
   )
 }

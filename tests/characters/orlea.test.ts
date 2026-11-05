@@ -52,7 +52,7 @@ describe('Orlea', () => {
     a.rotation = [{ cardId: ann.id, stacks: { 'Cards in hand': 5 } }, { cardId: ann.id }]
     const r = computeBuild(PRESETS, 'Orlea', cs, a, settings)
     expect(r.plays[0].nonCrit).toBeCloseTo(5 * r.plays[1].nonCrit)
-    expect(r.plays[1].nonCrit).toBeGreaterThan(0)
+    expect(r.plays[1].nonCrit).toBeCloseTo(0.4 * 100 * 0.35)   // Fixed: % x Final ATK x 0.35, not raised by the upgrade
   })
 
   it('Swiftie: Retain +40% per turn, Softie Retain and Sacred Censer IV multiply', () => {

@@ -3,7 +3,7 @@ import { computeBuild, shownPct } from '../../src/engine/calc'
 import { renderCardText } from '../../src/engine/cardText'
 import { activeBuffs } from '../../src/engine/buffs'
 import { PRESETS } from '../../src/data/presets'
-import { newCharacterSave } from '../../src/store/save'
+import { newBuff, newCharacterSave } from '../../src/store/save'
 import { addCards, cardFromPreset, settings } from '../helpers'
 
 describe('Rei', () => {
@@ -64,6 +64,9 @@ describe('Rei', () => {
     const r = computeBuild(PRESETS, 'Rei', cs, a, settings)
     expect(r.plays[0].nonCrit).toBeCloseTo((1.14 + 0.4 + 0.2) * 100 * 0.35)
     expect(r.plays[1].nonCrit).toBeCloseTo(4 * 100 * 0.35)
+    // The E4 part is in the card's own % (docs/FORMULA.md, Ego skill bonuses), so a "by X%" buff raises all 400%
+    cs.buffs.push({ ...newBuff(a.id), value: '30%', appliesTo: 'Final Shadow' })
+    expect(computeBuild(PRESETS, 'Rei', cs, a, settings).plays[1].nonCrit).toBeCloseTo(4 * 1.3 * 100 * 0.35)
   })
 
   it("Potential 7 raises Predator's Blade's card % from 550 Attack", () => {

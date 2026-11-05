@@ -130,8 +130,17 @@ describe('migrate', () => {
   })
 
   it('migrate fills missing settings and rejects other files', () => {
-    expect(migrate({ characters: {}, settings: {} }).settings.atkConstant).toBe(0.35)
+    expect(migrate({ version: SAVE_VERSION, characters: {}, settings: {} }).settings.atkConstant).toBe(0.35)
     expect(() => migrate({ foo: 1 })).toThrow()
+    // Read as v1, a newer save without a version lost every attack list
+    expect(() => migrate({ characters: {} })).toThrow('no version number')
+  })
+
+  it('migrate fills rows and teammates missing a field the page reads', () => {
+    const cs = migrate({ version: SAVE_VERSION, characters: { X: { builds: [{ id: 'a', team: [{ character: 'Y' }] }], boosts: [{ id: 'b' }], buffs: [{ id: 'c', switches: null }] } } }).characters.X
+    expect(cs.boosts[0].switches).toEqual({})
+    expect(cs.buffs[0].switches).toEqual({})
+    expect(cs.builds[0].team[0].cards).toEqual([])
     expect(migrate(defaultSave()).version).toBe(SAVE_VERSION)
   })
 

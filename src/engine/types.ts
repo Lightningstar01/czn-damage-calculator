@@ -74,7 +74,7 @@ export interface BuffEffect {
   target?: EffectTarget
   /** Buff text as shown in-game: '+30%' = Additive, '30%' = Multiplicative, or 'Weakness Attack'. */
   value: string
-  /** Set for Crit Chance / Crit DMG buffs; otherwise the type comes from the value text. */
+  /** Set for every type but Additive and Multiplicative, which come from the value text ('+30%' / '30%'): Crit Chance, Crit DMG, Card %, Card +, Base %, Final, Flat. */
   type?: BuffType
   /** ALL, a card name, or tags: 'A & B' = all of them, 'A/B' = any of them; also '2+ hits', '2+ cost', DoT, Extra Attack. */
   appliesTo: string
@@ -147,7 +147,7 @@ export interface CharacterPreset {
   rarity?: string
   notes?: string
   effects: Effect[]
-  /** The character's cards (each epiphany is its own entry), copied into the card library when picked. */
+  /** The character's cards (each epiphany is its own entry), put in a build's deck when picked. */
   cards?: CardPreset[]
   /** Reference: Potential nodes are already in the stats screen and the in-game card %. */
   potentials?: PotentialNode[]
@@ -187,9 +187,9 @@ export type PotentialUpgrade = 'Basic' | 'Signature'
 
 export const CARD_CATEGORIES = ['Starting Card', 'Unique Card', 'Epiphany Card', 'Ego Skill', 'Generated Card'] as const
 
-/** A card the owner can copy into the library. Base values (no potentials); the copy can be edited. */
+/** A card the owner can put in a build's deck. Base values (no potentials). */
 export interface CardPreset {
-  /** Unique per character; library copies keep it in Card.preset. */
+  /** Unique per character; deck cards point at it (DeckCard.preset). */
   id: string
   /** The card it's an epiphany of (groups the picker), e.g. 'Rising Dragon Spire'. */
   base: string
@@ -238,7 +238,7 @@ export interface CardPreset {
   /** Base % and hits a Potential node changes the card to while it's on: { '3-1': { pct: 0.7, hits: 2 } } (Chizuru's Moonslash). */
   nodeCard?: Record<string, { pct?: number; hits?: number }>
   notes?: string
-  /** Stat boosts / buffs the card gives while it's in the library (switch per build, default on). */
+  /** Stat boosts / buffs the card gives while it's in the deck (switch per build, default on). */
   effects?: Effect[]
   /** Fixed damage on the next play of a matching card ('Equilux'), as a share of that play's damage (Rossweisse's Ego skill);
    * `ego` raises the share from that Manifest Ego level. */

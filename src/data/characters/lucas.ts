@@ -64,7 +64,7 @@ export default {
     { kind: 'Buff', id: 'e2-bullet', name: 'E2 Awakening Memory', category: 'Ego Manifestation', value: '+20%',
       appliesTo: 'Bullet', hitScope: 'All hits', condition: 'Always', egoLevel: 2 },
     // E4: Full Burst 300% = 250% + 50% (an Ego skill has no upgrade)
-    { kind: 'Buff', id: 'e4-burst', name: 'E4 Inner Memory', category: 'Ego Manifestation', value: '+50%',
+    { kind: 'Buff', id: 'e4-burst', name: 'E4 Inner Memory', category: 'Ego Manifestation', type: 'Base %', value: '+50%',
       appliesTo: 'Full Burst', hitScope: 'All hits', condition: 'Always', egoLevel: 4 },
   ],
   // Card text: the in-game wording (owner's screenshots, 2026-11-01), with tokens for the build's numbers (engine/cardText.ts)

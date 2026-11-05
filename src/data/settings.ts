@@ -16,6 +16,21 @@ export const SETTING_INFO: { key: keyof Settings; label: string; pct: boolean; n
   { key: 'potentialPerLevel', label: 'Card upgrade potential per level', pct: true, note: "Owner and the in-game text: Basic / Signature Card Upgrade raise the card's base damage by 2% per level (max 10 = 20%)" },
 ]
 
+/** The settings that differ from the defaults. A save keeps only these, so a default changed after an in-game test reaches every save
+ * that didn't change that setting (owner, 2026-11-04). */
+export function changedSettings(s: Settings): Partial<Settings> {
+  return Object.fromEntries(Object.entries(s).filter(([k, v]) => v !== DEFAULT_SETTINGS[k as keyof Settings]))
+}
+
+/** Saved settings over the defaults. A value of another type than its default's (a hand-edited file) is left out. */
+export function readSettings(saved: unknown): Settings {
+  const out: Record<string, unknown> = { ...DEFAULT_SETTINGS }
+  if (saved && typeof saved === 'object') {
+    for (const [k, v] of Object.entries(saved)) if (k in DEFAULT_SETTINGS && typeof v === typeof out[k]) out[k] = v
+  }
+  return out as unknown as Settings
+}
+
 export const DEFAULT_SETTINGS: Settings = {
   atkConstant: 0.35,
   defCardAtkCoef: 0.3,

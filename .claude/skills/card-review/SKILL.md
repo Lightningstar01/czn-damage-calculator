@@ -62,12 +62,19 @@ Name (epiphanies can have their own names), cost, type (Attack / Skill / Upgrade
 text line and the `tags`), every line of text, and the numbers. Note what Prydwen gets wrong or lacks (cards to add as
 `extraCards`, created cards, Ego-level numbers shown as base).
 
+The importer reads only a card's first damage phrase and never sets `kind`. For each card, check:
+- Text with more than one damage phrase (the import prints CHECK for these): the others need a correction, an `extraCards` hit or a trigger
+  (Hilde's Homing Arrow, Diana's Cupid Shot with its 60% Extra Attack).
+- Damage in the text but `pct: 0` in the import, or a damage card that is an Extra Attack or a DoT (`kind`).
+
 ## 5. Ask the owner (one AskUserQuestion, up to 4 questions)
 
 Before writing buffs, ask about every mechanic that's ambiguous. CLAUDE.md: never assume. Typical questions:
 - Whose cards a buff reaches: "this unit" = self, "allies" = allies, "next Attack Card" without an owner = ask.
 - How "Double all effects" / "Increase all effects by 100%" / "for each X" scale the card %.
 - Whether a triggered effect is an extra play of a card, Fixed damage, an Extra Attack.
+- DoT (Agony, Burn...): how it ticks (when, per stack, does it halve), what raises it (ATK, element, DoT DMG, Vulnerable, upgrades) and whether it crits.
+  Only Tressa's Agony is modeled (a Fixed DoT, docs/FORMULA.md, Crit and Fixed); ask before modeling another (CLAUDE.md, Status / backlog).
 Offer a recommended reading as the first option. Record the answers as "(User, <date>)" in docs/characters/<slug>.md
 (a rule for every character: docs/FORMULA.md).
 
@@ -94,7 +101,8 @@ Copy the shape of the worked examples. Rules:
   (see `selena.ts`); it's computed with its owner's build, so it works when that character is a teammate.
 - Damage buffs: card buffs via `cardBuff()` in that card's `effects`; character, potential and Ego buffs in `effects`.
   - "+X%" = Additive, "by X%" (no "+") = Multiplicative; "+X% base Damage Amount" = `type: 'Base %'`;
-    "final Damage Amount" = `type: 'Final'`; scaling the card's own % (doubled...) = `type: 'Card %'`; a Potential node or Ego "+X%" that's part of the card's shown % = `type: 'Card +'` (added before the upgrade: Chizuru's Shadow 110% = (80% + 15%) x 1.16).
+    "final Damage Amount" = `type: 'Final'`; scaling the card's own % (doubled...) = `type: 'Card %'`; a Potential node or Ego "+X%" that's part of the card's shown % = `type: 'Card +'` (added before the upgrade: Chizuru's Shadow 110% = (80% + 15%) x 1.16);
+    on a card without an upgrade (Ego skills), that's `type: 'Base %'` (Card + only counts on cards with an upgrade).
   - `target: 'allies'` / `'enemy'` when it reaches the team or is a debuff on the target.
   - Changes per play (stacks, "next card", conditions) = `counter` + `maxStacks`; fight-dependent always-on = `hint`.
   - `hitScope: 'First hit only'`, `egoLevel` / `egoBelow` for Ego versions, `thresholdMin` / `thresholdBonus` for thresholds, `node: '5-1'` on every Potential effect (it goes off with the node).

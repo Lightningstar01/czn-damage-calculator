@@ -85,7 +85,7 @@ describe('Owen', () => {
     a.team = [{ ...newTeammate(), character: 'Mei Lin', cards: ['card-338'] }]
     a.rotation = [{ cardId: 'card-338', by: 0 }, { cardId: 'card-338', by: 0, stacks: { 'Wind Charge II': 1 } }, { cardId: 'card-338', by: 0, stacks: { 'Wind Charge V': 1 } }]
     const r = computeBuild(PRESETS, 'Owen', cs, a, settings, { 'Mei Lin': ml })
-    expect(r.plays[0].nonCrit).toBeGreaterThan(0)
+    expect(r.plays[0].nonCrit).toBeCloseTo(1.05 * 100 * 0.35)   // Mei Lin's Strike: 100% + her 5-1's +5% (Attack under 500)
     expect(r.plays[1].nonCrit).toBeCloseTo(r.plays[0].nonCrit * 0.75)
     expect(r.plays[2].nonCrit).toBeCloseTo(r.plays[0].nonCrit)
   })

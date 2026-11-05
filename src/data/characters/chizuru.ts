@@ -61,7 +61,7 @@ export default {
       appliesTo: 'Shadow of the Moon+', hitScope: 'All hits', condition: 'Always', egoLevel: 1 },
     // E3 Vivid Memory (in game): "+200% Damage Amount to Moonlight of High Tide, and change the +100% Damage Amount for each Shadow of
     // the Moon created to +150%" (Prydwen: +150% only)
-    { kind: 'Buff', id: 'e3-ego-skill', name: 'E3 Vivid Memory', category: 'Ego Manifestation', value: '+200%',
+    { kind: 'Buff', id: 'e3-ego-skill', name: 'E3 Vivid Memory', category: 'Ego Manifestation', type: 'Base %', value: '+200%',
       appliesTo: 'Moonlight of High Tide', hitScope: 'All hits', condition: 'Always', egoLevel: 3 },
     // E4 Inner Memory (in game): "When Shadow of the Moon is created, gain 1 Lunarshard. Lunarshard: +10% Damage Amount to Chizuru's
     // Attack Cards (max 3 stacks)". E6 Liberated Memory: "When Lunarshard stacks to 3, increases Hit Count of Shadow of the Moon+ by 1"

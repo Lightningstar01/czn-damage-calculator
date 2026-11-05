@@ -17,7 +17,7 @@ function artUrl(image: string): string {
 
 /** A card's text for the active build: its card upgrade potentials, Manifest Ego level and Potential nodes (Setup tab).
  * A teammate's cards: those of their linked saved build, else their Ego level and base %. */
-export function useCardText(teammate?: Teammate): (p: CardPreset) => string {
+export function useCardText(teammate?: Pick<Teammate, 'character' | 'build' | 'egoLevel'>): (p: CardPreset) => string {
   const main = useCharacter()!
   const linked = useLinked(teammate)
   const { data: { settings, characters } } = useStore()

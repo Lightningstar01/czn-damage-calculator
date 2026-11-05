@@ -62,11 +62,16 @@ describe('Rossweisse', () => {
     a.egoLevel = 0
     r = computeBuild(PRESETS, 'Rossweisse', cs, a, settings)
     expect(r.plays[2].nonCrit).toBeCloseTo(4.8 * 1.2 * 175 * 1.15)
-    // E3: Fixed 60%, Ego skill +400% additive
+    // E3: Fixed 60%, Ego skill +400% (part of its card %)
     a.egoLevel = 3
     r = computeBuild(PRESETS, 'Rossweisse', cs, a, settings)
     expect(r.plays[0].nonCrit).toBeCloseTo(16 * 175 * 1.2)
     expect(r.plays[1].followUp?.share).toBe(0.6)
+    expect(r.warnings).toEqual([])
+    // With no Equilux play after it, its share is lost: Results says so
+    a.rotation = [{ cardId: blade.id }, { cardId: ego.id }]
+    expect(computeBuild(PRESETS, 'Rossweisse', cs, a, settings).warnings).toEqual([
+      "Play 2 (Flickering White Night): its damage goes on the next Equilux card played, and none follows it, so that part isn't counted."])
   })
 
   it('Potential 7 follows the stats-screen Attack: +5% from 600, +2% per 20 above, max +10% more', () => {

@@ -1,5 +1,6 @@
 // Combines a character imported from Prydwen with our additions (buffs, notes, corrections).
 import { buffMatches } from '../engine/buffs'
+import { renderCardText } from '../engine/cardText'
 import { allNodesOn, presetCard } from '../engine/deck'
 import { ELEMENTS, type Card, type CardPreset, type CharacterAdditions, type CharacterPreset, type Effect, type FragmentSetPreset, type ImportedCharacter, type PartnerPreset } from '../engine/types'
 
@@ -120,8 +121,73 @@ export function checkAdditions(imported: Record<string, ImportedCharacter>, addi
     for (const [id, c] of cards) {
       if (c.fixedOf && (c.scaling ?? ch.cards.find((x) => x.id === id)?.scaling) !== 'Fixed') problems.push(`characters/${slug}.ts: card '${id}' has fixedOf but isn't a Fixed card`)
     }
+    // Counters differing by a letter or by case are two steppers: likely a misspelling ('Ember' / 'Embers')
+    const counters = [...new Set([...read, ...hitCounters, ...fixedCounters, ...starting, ...cards.flatMap(([, c]) => c.perCount ?? [])])]
+    counters.forEach((a, i) => counters.slice(i + 1).forEach((b) => {
+      if (oneApart(a, b)) problems.push(`characters/${slug}.ts: counters '${a}' and '${b}' differ by one letter: likely one counter misspelled`)
+    }))
+    for (const [id, c] of cards) {
+      // A token that doesn't read stays in the card text as braces ({100 %}, {E3 :6|4}); tried at both ends of Ego and nodes
+      const shown = c.text ? [0, 6].flatMap((egoLevel) => [true, false].map((on) => renderCardText(c.text!, { egoLevel, nodeOn: () => on, pct: (v) => v }))) : []
+      const bad = shown.flatMap((s) => s.split('\n')).find((line) => /[{}]/.test(line))
+      if (bad) problems.push(`characters/${slug}.ts: card '${id}' text has a token that doesn't read: '${bad}'`)
+      egoCheck(c.followUp?.ego?.level, `card '${id}' follow-up`)
+      // An override's tags replace the import's: dropping 'Basic' would move the card to the Signature upgrade and out of Basic buffs.
+      // Keeping a tag's keyword without its number is fine (Chizuru's 'Bind 1' as 'Bind', so Bind buffs match it)
+      const was = ch.cards.find((x) => x.id === id)?.tags
+      if (c.tags !== undefined && was) {
+        const now = c.tags.split(',').map((t) => t.trim())
+        const dropped = was.split(',').map((t) => t.trim()).filter((t) => t && !now.some((n) => t === n || t.startsWith(`${n} `)))
+        if (dropped.length) problems.push(`characters/${slug}.ts: card '${id}' tags drop the imported ${dropped.map((t) => `'${t}'`).join(', ')}`)
+      }
+    }
+    for (const t of [...(add.triggers ?? []), ...cards.flatMap(([, c]) => c.triggers ?? [])]) {
+      const what = `the trigger of '${t.card}' on '${t.on}'`
+      if (t.chance !== undefined && !(t.chance > 0 && t.chance <= 1)) problems.push(`characters/${slug}.ts: ${what} has chance ${t.chance}: a fraction, 0.3 for 30%`)
+      if (t.chance !== undefined && t.onCrit) problems.push(`characters/${slug}.ts: ${what} has both chance and onCrit; onCrit uses the crit chance, so chance is left out`)
+      if (t.perStack && !t.counter) problems.push(`characters/${slug}.ts: ${what} is perStack without a counter, so it never hits`)
+    }
+    for (const e of effects) {
+      const what = `characters/${slug}.ts: effect '${e.id}'`
+      if (e.category === 'Ego Manifestation' && e.egoLevel === undefined) problems.push(`${what} is an Ego Manifestation without egoLevel, so it counts at every level`)
+      if (e.category === 'Potential' && e.node === undefined) problems.push(`${what} is a Potential without node, so locking the node leaves it on`)
+      if (e.kind !== 'Buff') continue
+      if (e.defaultStacks !== undefined && e.maxStacks !== undefined && e.defaultStacks > e.maxStacks) problems.push(`${what} starts at ${e.defaultStacks} stacks, over its max of ${e.maxStacks}`)
+      if (e.thresholdStat && e.thresholdMin === undefined && !e.thresholdBonus) problems.push(`${what} has thresholdStat but no threshold`)
+      // % stats are fractions (1.6 for 160%), Attack, Defense and Health whole numbers
+      const pctStat = PCT_STATS.includes(e.thresholdStat ?? '')
+      for (const v of [e.thresholdMin, e.thresholdBonus?.above]) {
+        if (v !== undefined && v !== 0 && (pctStat ? v > 5 : v < 10)) problems.push(`${what} has the threshold ${v} for ${e.thresholdStat ?? 'Attack'}: ${pctStat ? 'a fraction, 1.6 for 160%' : 'the stat itself, e.g. 600'}`)
+      }
+    }
+    // Switches are keyed by card name: same-name cards with the same effect id share one switch ('Charged Shot|id')
+    const named = new Map<string, string[]>()
+    for (const p of mergeCharacter(ch, add).cards ?? []) {
+      for (const e of p.effects ?? []) {
+        const key = `${p.name}|${e.id}`
+        named.set(key, [...(named.get(key) ?? []), p.id])
+      }
+    }
+    for (const [key, owners] of named) if (owners.length > 1) problems.push(`characters/${slug}.ts: cards ${owners.join(', ')} share the switch '${key}' (same name and effect id)`)
   }
   return problems
+}
+
+const PCT_STATS: string[] = ['Critical Chance', 'Critical Damage', 'Extra Damage', 'Damage over Time']
+
+/** Two names that differ only by case, or by one letter added, removed or changed; not epiphanies of one card, which differ by their
+ * Roman numeral, ★ or '+' ('Oni Hunt I' / 'Oni Hunt II', 'Softie ★ used' / 'Softie ★★ used', 'Honed Edge' / 'Honed Edge+'). */
+function oneApart(a: string, b: string): boolean {
+  const [x, y] = [a.toLowerCase(), b.toLowerCase()]
+  if (x === y) return true
+  const card = (s: string) => s.replace(/\b(?:i|ii|iii|iv|v)\b|★|\+/g, '').replace(/\s+/g, ' ').trim()
+  if (card(x) === card(y)) return false
+  if (Math.abs(x.length - y.length) > 1) return false
+  let start = 0
+  while (start < x.length && x[start] === y[start]) start++
+  let end = 0
+  while (end < x.length - start && end < y.length - start && x[x.length - 1 - end] === y[y.length - 1 - end]) end++
+  return x.length - start - end <= 1 && y.length - start - end <= 1
 }
 
 /** Potential nodes ({P3-1:...}), Manifest Ego levels ({E3:...}) and other cards ({120%@id}) named by a card text's tokens (engine/cardText.ts). */

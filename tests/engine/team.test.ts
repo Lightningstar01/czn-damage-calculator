@@ -1,12 +1,41 @@
 import { describe, expect, it } from 'vitest'
 import { computeBuild } from '../../src/engine/calc'
-import { pruneTeamPlays } from '../../src/engine/deck'
-import { withLinkedTeam } from '../../src/engine/team'
+import { AUTO, changeTeammateEpiphany, pruneTeamPlays } from '../../src/engine/deck'
+import { deletedLinks, withLinkedTeam } from '../../src/engine/team'
 import { PRESETS } from '../../src/data/presets'
 import { produce } from 'immer'
 import { newCharacterSave, newTeammate } from '../../src/store/save'
 import { NO_BUILD, type Presets } from '../../src/engine/types'
 import { addCards, card, plays, presets, settings } from '../helpers'
+
+describe('linked teammates', () => {
+  // A character with a card from a Manifest Ego level (Narja E6, Rossweisse E2): a linked teammate has it at their build's level
+  const ch = PRESETS.characters.find((c) => c.cards?.some((p) => p.egoLevel !== undefined))!
+  const egoCard = ch.cards!.find((p) => p.egoLevel !== undefined)!
+  const saves = () => {
+    const theirs = newCharacterSave()
+    theirs.builds[0].egoLevel = egoCard.egoLevel!
+    const mine = newCharacterSave()
+    mine.builds[0].team = [{ ...newTeammate(), character: ch.name, build: theirs.builds[0].id }]
+    mine.builds[0].rotation = [{ cardId: `auto:${egoCard.id}`, by: 0 }]
+    return { [ch.name]: theirs, Me: mine }
+  }
+
+  it("keep their plays of their linked build's Manifest Ego cards", () => {
+    const s = saves()
+    const kept = produce(s.Me.builds[0], (b) => pruneTeamPlays(ch, b, 0, s))
+    expect(kept.rotation).toHaveLength(1)
+    expect(produce(s.Me.builds[0], (b) => pruneTeamPlays(ch, b, 0)).rotation).toHaveLength(0)
+  })
+
+  it('a link to a deleted build uses their active build, with a warning', () => {
+    const s = saves()
+    s[ch.name].builds[0].id = 'renamed'
+    s[ch.name].activeBuild = 'renamed'
+    expect(deletedLinks(s.Me.builds[0], s)).toEqual([`${ch.name}'s linked build was deleted, so their active build (Build A) is used. Pick one on Setup › Team.`])
+    expect(withLinkedTeam(s.Me.builds[0], s).team[0].egoLevel).toBe(egoCard.egoLevel)
+  })
+})
 
 describe('team', () => {
   const buff = (id: string, value: string, extra: object = {}) => ({ kind: 'Buff' as const, id, name: id, category: 'Character' as const,
@@ -143,5 +172,23 @@ describe('Team damage (owner, 2026-10-28)', () => {
     a.team[0].cards = []
     pruneTeamPlays(meiLin, a, 0)
     expect(a.rotation).toEqual([{ cardId: 'ef' }])
+  })
+
+  it('a play of a teammate slot emptied since says so', () => {
+    const { cs, a } = selenaWithMeiLin()
+    a.rotation = [{ cardId: 'card-338', by: 0 }]
+    a.team[0].character = ''
+    expect(computeBuild(PRESETS, 'Selena', cs, a, settings).warnings).toContain(
+      "Play 1: it's a card of teammate 1, and that slot has no teammate now, so it's left out.")
+  })
+
+  it("changing a teammate card's epiphany moves its plays and its shards' plays, as for the main character", () => {
+    const ross = PRESETS.characters.find((c) => c.name === 'Rossweisse')
+    const { a } = selenaWithMeiLin()
+    a.team[0] = { ...newTeammate(), character: 'Rossweisse', cards: ['card-1384'] }
+    a.rotation = [{ cardId: 'ef' }, { cardId: 'card-1384', by: 0 }, { cardId: AUTO + 'card-1414', by: 0 }]
+    changeTeammateEpiphany(ross, a, 0, 0, 'card-1385')
+    expect(a.team[0].cards).toEqual(['card-1385'])
+    expect(a.rotation).toEqual([{ cardId: 'ef' }, { cardId: 'card-1385', by: 0 }, { cardId: AUTO + 'card-1415', by: 0 }])
   })
 })

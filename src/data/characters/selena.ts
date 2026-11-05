@@ -52,7 +52,7 @@ export default {
     { kind: 'Buff', id: 'e2-mark', name: "Selena's Mark damage", category: 'Ego Manifestation', value: '+20%', appliesTo: 'Mark',
       hitScope: 'All hits', condition: 'Always', egoLevel: 2 },
     // E4 Inner Memory (in game): "+50% Damage Amount to Final Shot, and increase Mark by 1" (350% on the card)
-    { kind: 'Buff', id: 'e4-final-shot', name: 'Damage Amount to Final Shot', category: 'Ego Manifestation', value: '+50%',
+    { kind: 'Buff', id: 'e4-final-shot', name: 'Damage Amount to Final Shot', category: 'Ego Manifestation', type: 'Base %', value: '+50%',
       appliesTo: 'Final Shot', hitScope: 'All hits', condition: 'Always', egoLevel: 4 },
   ],
   // Mark on the target: Selena's 100% Extra Attack on every Attack Card play. E6 Liberated Memory (in game): "When Selena's Mark is

@@ -1,7 +1,7 @@
 // Buffs: Morale, preset buffs, the teammates' buffs, and the owner's own buffs.
 import { useState } from 'react'
 import { PRESETS } from '../data/presets'
-import { buffType, findCharacter, hasTeam } from '../engine/buffs'
+import { buffReadable, buffType, findCharacter, hasTeam } from '../engine/buffs'
 import { buildDeck } from '../engine/deck'
 import { BUFF_TYPES, CATEGORIES, type BuffType, type Condition, type HitScope } from '../engine/types'
 import { newBuff } from '../store/save'
@@ -17,7 +17,7 @@ export function BuffsTab() {
   return (
     <>
       <StacksSection />
-      <Section title="Buffs from presets" help="The character's, partner's, memory fragment sets' and preset library cards' buffs. Every buff that's on counts on every play (snapshot). Class-limited partner buffs only work when the partner's class matches the character's. Buffs with per-play stacks (Ember, Spirit of the Aromata) are on/off here: set their stacks on each play (Cards tab).">
+      <Section title="Buffs from presets" help="The character's, partner's, memory fragment sets' and deck cards' buffs. Every buff that's on counts on every play (snapshot). Class-limited partner buffs only work when the partner's class matches the character's. Buffs with per-play stacks (Ember, Spirit of the Aromata) are on/off here: set their stacks on each play (Cards tab).">
         <PresetList kind="Buff" />
       </Section>
       {hasTeam(build) && (
@@ -79,7 +79,8 @@ function MyBuffsSection() {
               {open === x.id && (
                 <div className="editor grid2">
                   <TextField label="Source" value={x.source} placeholder="e.g. Seth's Scarab" onChange={(s) => upd((b) => { b.source = s })} />
-                  <TextField label="Buff text" value={x.value} placeholder="+30% or 30%" onChange={(s) => upd((b) => { b.value = s })} />
+                  <TextField label="Buff text" value={x.value} placeholder="+30% or 30%" invalid={!buffReadable(x.value, x.typeOverride)}
+                    onChange={(s) => upd((b) => { b.value = s })} />
                   <SelectField<BuffType | ''> label="Type" value={x.typeOverride}
                     options={[{ value: '', label: `Auto (${buffType(x.value)})` }, ...BUFF_TYPES]}
                     onChange={(s) => upd((b) => { b.typeOverride = s })} />

@@ -129,4 +129,30 @@ describe('Rin', () => {
     expect(sheathe(0)).toBeCloseTo(0.6 * unit)
     expect(sheathe(3)).toBeCloseTo((0.6 + 0.6) * unit)
   })
+
+  it('5-1 adds before the upgrade on First and Third Form, with +5% more from Attack 500', () => {
+    const at = (attack: number) => (a: ReturnType<typeof ownerBuild>['a']) => { a.potentialNodes = { '5-1': true }; a.stats.attack = attack }
+    expect(damage('card-159', {}, at(100)).nonCrit).toBeCloseTo(1.05 * unit)
+    expect(damage('card-159', {}, at(499)).nonCrit).toBeCloseTo(1.05 * 499 * 0.35)
+    expect(damage('card-159', {}, at(500)).nonCrit).toBeCloseTo(1.1 * 500 * 0.35)
+    expect(damage('card-160', {}, at(100)).nonCrit).toBeCloseTo((2.2 + 0.05) * unit)
+  })
+
+  it('7: +5% Critical Chance from Attack 600, +1% for every 40 above it, up to +10% more', () => {
+    const rate = (attack: number, node = true) =>
+      damage('card-159', {}, (a) => { a.potentialNodes = { '7': node }; a.stats.attack = attack }).hits[0].critRate
+    const base = rate(599)
+    expect(rate(600, false)).toBeCloseTo(base)
+    expect(rate(600) - base).toBeCloseTo(0.05)
+    expect(rate(639) - base).toBeCloseTo(0.05)
+    expect(rate(640) - base).toBeCloseTo(0.06)
+    expect(rate(1000) - base).toBeCloseTo(0.15)
+    expect(rate(2000) - base).toBeCloseTo(0.15)
+  })
+
+  it('E1: +30% on Black Dance before the upgrade, from E1 only', () => {
+    expect(damage('card-186').nonCrit).toBeCloseTo(1.2 * unit)
+    expect(damage('card-186', {}, (a) => { a.egoLevel = 1 }).nonCrit).toBeCloseTo(1.5 * unit)
+    expect(damage('card-186', {}, (a) => { a.egoLevel = 1; a.signatureLevel = 10 }).nonCrit).toBeCloseTo(1.5 * 1.2 * unit)
+  })
 })

@@ -54,7 +54,7 @@ export const FRAGMENT_SETS: FragmentSetPreset[] = [
     name: 'Cursed Corpse', pieces: 2, effects: [
       {
         kind: 'Buff', id: 'agony', name: 'Damage dealt to target inflicted with Agony', category: 'Memory Fragment', value: '10%',
-        appliesTo: 'ALL', hitScope: 'All hits', condition: 'Always',
+        appliesTo: 'ALL', hitScope: 'All hits', condition: 'Always', hint: 'target in Agony',
       },
     ],
   },

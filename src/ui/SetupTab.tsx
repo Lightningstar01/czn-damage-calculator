@@ -1,7 +1,7 @@
 // Setup: build management, partner, Manifest Ego level, memory fragment sets, team, stats-screen values, stat boosts, fight.
 import { useState } from 'react'
 import { PRESETS } from '../data/presets'
-import { findCharacter, findFragmentSet, findPartner, fragmentPiecesUsed, hasTeam } from '../engine/buffs'
+import { findCharacter, findFragmentSet, findPartner, fragmentPiecesUsed, hasTeam, statReadable } from '../engine/buffs'
 import { unlockedPotentialEgo } from '../engine/calc'
 import { pruneTeamPlays } from '../engine/deck'
 import { linkedBuild } from '../engine/team'
@@ -41,17 +41,23 @@ export function SetupTab() {
   )
 }
 
+/** "Crit build (copy)", then "Crit build (copy 2)"... so a copy says where it came from. */
+function copyName(taken: string[], from: string): string {
+  let name = `${from} (copy)`
+  for (let n = 2; taken.includes(name); n++) name = `${from} (copy ${n})`
+  return name
+}
+
 function BuildSection() {
   const { name, cs, build, updateCs, updateBuild } = useCharacter()!
-  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
   const verified = findCharacter(PRESETS, name)?.verified
   return (
-    <Section title="Build" help="Builds share the card library; each build has its own team and attack list. Duplicate a build, then change one thing to compare.">
+    <Section title="Build" help="Each build has its own deck, team and attack list. Duplicate a build, then change one thing to compare.">
       <div className="inline-row">
         <TextField label="Name" value={build.name} onChange={(v) => updateBuild((b) => { b.name = v })} />
         <button className="btn" onClick={() => updateCs((c) => {
           const src = c.builds.find((b) => b.id === c.activeBuild)!
-          const copy = duplicateBuild(c, src, `Build ${letters[c.builds.length] ?? c.builds.length + 1}`)
+          const copy = duplicateBuild(c, src, copyName(c.builds.map((b) => b.name), src.name))
           c.builds.push(copy)
           c.activeBuild = copy.id
         })}>Duplicate</button>
@@ -157,7 +163,7 @@ function PotentialNodes() {
           <li key={p.node} className={`row ${on ? '' : 'off'}`}>
             <div className="row-main">
               <div className="row-title">{p.node} {p.name}</div>
-              <div className="row-sub">{p.text}</div>
+              <div className="row-sub pre-line">{p.text}</div>
             </div>
             <Toggle checked={on} label={`Potential ${p.node} ${p.name}`}
               onChange={(v) => updateBuild((b) => { b.potentialNodes = { ...b.potentialNodes, [p.node]: v } })} />
@@ -245,6 +251,8 @@ function TeamSection() {
         const chars = PRESETS.characters.filter((c) => c.name !== name && !others.includes(c.name))
         const saved = t?.character ? data.characters[t.character]?.builds ?? [] : []
         const linked = linkedBuild(data.characters, t)
+        // Linked to a build deleted since: it uses their active build, and the picker says so
+        const deleted = !!linked && !!t?.build && !saved.some((b) => b.id === t.build)
         return (
           <div key={i} className="team-slot">
             <div className="grid2">
@@ -253,14 +261,15 @@ function TeamSection() {
                 onChange={(v) => updateBuild((b) => {
                   b.team ??= []
                   while (b.team.length <= i) b.team.push(newTeammate())
-                  Object.assign(b.team[i], { character: v, cards: [] })
-                  delete b.team[i].build
+                  // A new character starts afresh: the old one's Ego level, partner, sets, cards and build link don't carry over
+                  b.team[i] = { ...newTeammate(), character: v }
                   pruneTeamPlays(undefined, b, i)
                 })} />
               {t?.character && (
-                <SelectField label="Their build" value={linked ? linked.build.id : NO_BUILD}
+                <SelectField label="Their build" value={deleted ? t.build! : linked ? linked.build.id : NO_BUILD}
                   help={saved.length ? 'Their damage and buffs use this build.' : `${t.character} has no saved build yet: only their buffs count, from the fields below.`}
-                  options={[...saved.map((b) => ({ value: b.id, label: b.name })), { value: NO_BUILD, label: 'None (buffs only)' }]}
+                  options={[...(deleted ? [{ value: t.build!, label: `Deleted (using ${linked!.build.name})` }] : []),
+                    ...saved.map((b) => ({ value: b.id, label: b.name })), { value: NO_BUILD, label: 'None (buffs only)' }]}
                   onChange={(v) => upd(i, (x) => { x.build = v })} />
               )}
               {t?.character && !linked && <TeammateFields t={t} onChange={(fn) => upd(i, fn)} />}
@@ -347,7 +356,8 @@ function BoostsSection() {
                 <div className="editor grid2">
                   <TextField label="Source" value={x.source} placeholder="e.g. Obsidian Sword" onChange={(s) => upd((b) => { b.source = s })} />
                   <SelectField<StatName> label="Stat" value={x.stat} options={STATS} onChange={(s) => upd((b) => { b.stat = s })} />
-                  <TextField label="Value" value={x.value} placeholder="16% or 74" help="Percent stats with %, flat values without." onChange={(s) => upd((b) => { b.value = s })} />
+                  <TextField label="Value" value={x.value} placeholder="16% or 74" invalid={!statReadable(x.stat, x.value)}
+                    help="Percent stats: 16 and 16% both mean 16%. Flat ATK / DEF: a number, without % (1,272 is fine)." onChange={(s) => upd((b) => { b.value = s })} />
                   <SelectField label="Category" value={x.category} options={CATEGORIES} onChange={(s) => upd((b) => { b.category = s })} />
                   <FromField value={x.from} onChange={(s) => upd((b) => { b.from = s })} />
                   <TextField label="Notes" value={x.notes} onChange={(s) => upd((b) => { b.notes = s })} />
@@ -398,7 +408,7 @@ function FightSection() {
       <div className="grid2">
         <NumberField label="DEF multiplier" value={enemy.defMult} onChange={(v) => upd((f) => { f.enemies[0].defMult = v })}
           help="1 = none. No known formula yet; back-solve it from an in-game hit (Mei Lin test: about 0.387)." />
-        <NumberField label="Damage reduction" pct value={enemy.dr} onChange={(v) => upd((f) => { f.enemies[0].dr = v })} />
+        <NumberField label="Damage reduction" pct max={1} value={enemy.dr} onChange={(v) => upd((f) => { f.enemies[0].dr = v })} />
       </div>
       </div>
     </Section>

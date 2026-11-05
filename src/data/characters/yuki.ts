@@ -68,7 +68,7 @@ export default {
       hitScope: 'All hits', condition: 'Always', egoLevel: 1, hint: 'Single target' },
     // E3 Vivid Memory (in game): "+150% Damage Amount to Skyscraper Cleave and change the +100% Damage Amount for each card moved to top
     // of Draw Pile to +150%" (Prydwen: +50% to +80% only)
-    { kind: 'Buff', id: 'e3-cleave', name: 'E3 Vivid Memory', category: 'Ego Manifestation', value: '+150%', appliesTo: 'Skyscraper Cleave',
+    { kind: 'Buff', id: 'e3-cleave', name: 'E3 Vivid Memory', category: 'Ego Manifestation', type: 'Base %', value: '+150%', appliesTo: 'Skyscraper Cleave',
       hitScope: 'All hits', condition: 'Always', egoLevel: 3 },
     // E4 Inner Memory (in game): "Each time a card of this unit is Drawn through an ability, gain 1 Sword Dance. Sword Dance: Increases
     // Damage Amount of Attack Cards of this unit by 10% (max 3 stacks)" (Prydwen: max 2, for 1 turn)

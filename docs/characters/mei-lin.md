@@ -18,6 +18,6 @@ What the owner confirmed about this character's cards. The general rules are in 
   Jewel III, Aromata IV.
 - Jewel's "1 Passion Weakness to the target" is a Weakness Attack buff on all cards.
   **Unconfirmed** whether the first Attack card already gets it.
-- Not modeled: E6 (in game: "Whenever Mei Lin gains Flame Dragon Awakens 2times, 100% Fixed Damage to all enemies and apply 3 Ember"),
-  Embers, Tenacity Damage, shields, draw/cost effects. Jewel V's Ravage hit is a
+- Not modeled: E3 (set the hits per play), E6 (in game: "Whenever Mei Lin gains Flame Dragon Awakens 2times, 100% Fixed Damage to all enemies and apply 3 Ember"),
+  Embers from Jewel IV crits, Sovereignty keeping Embers (the Ember stacks themselves are set per play), Tenacity Damage, shields, draw/cost effects. Jewel V's Ravage hit is a
   300% card with Target Ravaged on; each play is one Ravage.

@@ -11,7 +11,7 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false   # GitHub's Pages template: a deploy halfway is never cancelled
 
 jobs:
   # npm packages and the downloaded browser run here, so this job can't publish

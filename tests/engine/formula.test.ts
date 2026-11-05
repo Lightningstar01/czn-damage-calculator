@@ -11,7 +11,7 @@ import { computeBuild } from '../../src/engine/calc'
 import { PRESETS } from '../../src/data/presets'
 import { migrate } from '../../src/store/migrate'
 import { newBuff, newBuild, newCharacterSave } from '../../src/store/save'
-import { type CharacterSave } from '../../src/engine/types'
+import { type Build, type Card, type CharacterSave } from '../../src/engine/types'
 import { addCards, card, cardFromPreset, cardTotal, plays, presets, setPlays, settings } from '../helpers'
 import fixture from '../fixtures/save-v1.json'
 
@@ -127,7 +127,7 @@ describe('partner presets', () => {
 describe('card % in hand and on target', () => {
   it("matches the owner's Strike: 251% in hand, ~357% on target (owner, 2026-10-25)", () => {
     // The owner's saved Mei Lin (an old save) + Flame Dragon's Jewel, 1 Morale, Strike at base 100% with Basic Card Upgrade 10
-    const save = migrate(fixture)
+    const save = migrate(structuredClone(fixture))   // migrate() changes what it reads, and other tests read the same fixture
     const cs = save.characters['Mei Lin']
     const a = cs.builds[0]
     a.morale = 1
@@ -144,5 +144,42 @@ describe('card % in hand and on target', () => {
     a.rotation[0].stacks = { Ember: 1 }
     expect(hit().inHand).toBeCloseTo(2.5064, 4)
     expect(hit().cardMult).toBeCloseTo((1.32 * 1.67 + 0.5 + 0.3) * 1.42, 4)
+  })
+})
+
+describe('stat factors, and settings off their defaults', () => {
+  // ATK 1000, every card 100% x 1 hit: 350 before the factor under test
+  const run = (c: Card, edit: (b: Build) => void = () => {}, s = settings) => {
+    const cs = newCharacterSave()
+    const [b] = cs.builds
+    b.stats.attack = 1000
+    edit(b)
+    addCards(cs, c)
+    setPlays(cs, plays(c.id))
+    return computeBuild(presets, '', cs, b, s)
+  }
+  const kind = (k: Card['kind']) => ({ ...card('X', '', 1), kind: k })
+
+  it('Extra DMG% raises Extra Attacks only, DoT DMG% DoT cards only', () => {
+    const stats = (b: Build) => { b.stats.extraDmg = 0.2; b.stats.dotDmg = 0.3 }
+    expect(run(kind('Normal'), stats).nonCrit).toBeCloseTo(350)
+    expect(run(kind('Extra Attack'), stats).nonCrit).toBeCloseTo(420)
+    expect(run(kind('DoT'), stats).nonCrit).toBeCloseTo(455)
+  })
+
+  it('the crit rate stops at the cap', () => {
+    const crit = (b: Build) => { b.stats.critChance = 1.5; b.stats.critDmg = 2 }
+    expect(run(kind('Normal'), crit).expected).toBeCloseTo(700)
+    const capped = run(kind('Normal'), crit, { ...settings, critCap: 0.8 })
+    expect(capped.expected).toBeCloseTo(350 * 1.8)
+    expect(capped.plays[0].hits[0].critRateSources.map((s) => s.label)).toContain('Capped (Settings)')
+  })
+
+  it('Ravaged and the extra weakness factor count once set', () => {
+    const ravaged = card('R', '', 1, false, true), weak = card('W', '', 1, true)
+    expect(run(ravaged).nonCrit).toBeCloseTo(350)
+    expect(run(ravaged, undefined, { ...settings, ravaged: 0.3 }).nonCrit).toBeCloseTo(455)
+    expect(run(weak).nonCrit).toBeCloseTo(437.5)
+    expect(run(weak, undefined, { ...settings, extraWeakness: 0.1 }).nonCrit).toBeCloseTo(350 * 1.25 * 1.1)
   })
 })

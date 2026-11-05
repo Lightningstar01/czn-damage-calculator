@@ -59,15 +59,25 @@ email, and check that binary files such as spreadsheets carry no author name bef
     `extraCards` adds cards Prydwen lacks; `potentials: { '3-1': { text } }` replaces a node's wording with the in-game text (`name` too if it differs), `ego: { 2: { text } }` a Manifest Ego level's (wording only; the +3 card upgrade levels stay read from the import).
     `verified: { date, gameVersion }` says when the character was last compared with the game; every additions file has one, characters without it show "Not reviewed".
   - `src/data/merge.ts` combines the two; `checkAdditions()` (run by the tests) catches unknown slugs, card ids, Potential nodes, Ego levels and
-    text references, duplicate effect ids, `playStacks` / `counterHits` counters named nowhere else (likely misspelled; a real lone one lists itself in `playStacks`, at 0 to start off) and a missing `verified`; `checkEffects()` catches an "Applies to", trigger or value that can't match anything.
-    `tests/fixtures/card-ids.json` pins every card id to its name: a re-import that moves one fails the tests
-    (look at it; `npx vitest -u` accepts it). The importer prints what changed and never deletes a character.
+    text references, duplicate effect ids, `playStacks` / `counterHits` counters named nowhere else (likely misspelled; a real lone one lists itself in `playStacks`, at 0 to start off) and a missing `verified`;
+    also counters one letter apart (not epiphanies: Oni Hunt I / II), card text tokens that don't read (left as braces), an override's `tags` dropping an imported tag
+    (keeping the keyword without its number is fine: Chizuru's 'Bind 1' as 'Bind'), a trigger `chance` over 1 or with `onCrit`, `perStack` without `counter`,
+    'Ego Manifestation' effects without `egoLevel`, 'Potential' effects without `node`, `defaultStacks` over `maxStacks`, thresholds in the wrong unit (% stats as fractions)
+    and same-name cards sharing a switch. `checkEffects()` catches an "Applies to", trigger or value that can't match anything; `checkPartnersAndSets()` a partner or set
+    file without a default export, and repeated names or effect ids.
+    `tests/fixtures/card-ids.json` pins every card id to its name, and `tests/fixtures/buff-matches.json` the cards each buff's "Applies to" matches (not ALL):
+    a re-import that moves one fails the tests (look at it; `npx vitest -u` accepts it). The importer prints what changed (cards, numbers, tags, text,
+    Potential and Ego wording) and never deletes a character. It reads and checks every page before writing anything (pages and pictures are tried 3 times),
+    and stops with nothing written if a character's cards, Potentials, Ego levels or pictures come back empty or under half of before, or no card finds its
+    cznmetadecks art (a page layout change, not a game update). It prints CHECK for cards with several damage phrases (only the first is read) on characters
+    not reviewed yet, and on new cards of reviewed ones.
   - Deck per build (`build.deck`, `src/engine/deck.ts`): `{id, preset}` entries resolved live from the presets
     (old non-preset cards keep `{id, custom}`). The Ego skill and the cards a picked card `creates`
     (`creates: [...]` in `characters/<slug>.ts`, e.g. Rossweisse's shards) join automatically with id `auto:<presetId>`,
     and so do cards with `egoLevel` from that Manifest Ego level (Ego effects that deal damage: Narja's E6, Rossweisse's E2);
     nobody adds them by hand. A deck card's preset effects count while it's in the deck. Teammates' decks
-    (`Teammate.cards`) only add buffs. Cards are picked on the Cards tab as pictures (`src/ui/CardFace.tsx`).
+    (`Teammate.cards`) add their buffs; their plays on the attack list (`by`) add damage. Changing a card's epiphany moves its plays and its created
+    cards' plays to the new version (`changeEpiphany`, `changeTeammateEpiphany` for a teammate's). Cards are picked on the Cards tab as pictures (`src/ui/CardFace.tsx`).
   - Card art (owner, 2026-10-27: copy it, best quality): the import copies every character's art into
     `public/cards/<slug>/` and sets each card's `image`. Source: cznmetadecks.com (420x632, the game's files; matched by
     card or base card name, `ART_NAMES` for names that differ), else Prydwen (200x300). Every picture on the character's
@@ -82,22 +92,29 @@ email, and check that binary files such as spreadsheets carry no author name bef
   wording for keywords, partners and sets); no `notes` on effects. When the switch depends on the fight, set
   `hint` (a few words, e.g. `'ATK > 500'`), shown as a grey chip; other explanations go in code comments.
   Buff rows show colored chips in the formula strip's colors (`src/ui/BuffChips.tsx`).
-- `src/data/settings.ts`: formula constants and rules (defaults + notes); edited on the Settings tab.
+- `src/data/settings.ts`: formula constants and rules (defaults + notes); edited on the Settings tab. Saves keep only the settings the owner changed
+  (`changedSettings` / `readSettings`, owner 2026-11-04), so the rest follow the site's defaults when those change; a changed one shows its default and a Reset link.
 - `src/store/`: `save.ts` (`SAVE_VERSION`, defaults, new objects), `migrate.ts` (older saves), `storage.ts` (localStorage
   autosave, backup export) and the React context (`store.tsx`). A stored save that can't be opened is left untouched, with autosave off,
-  until the owner decides; that and failed autosaves show a warning under the header (`src/ui/SaveWarnings.tsx`). If you change the save format, bump `SAVE_VERSION` and add a step to
+  until the owner decides; that and failed autosaves show a warning under the header (`src/ui/SaveWarnings.tsx`).
+  One undo copy (`keepCopy`/`restoreCopy` in storage.ts; Settings > Backup) is kept before an import, Start fresh, Delete all and the first load after a
+  format change. A tab whose stored save another tab changed stops autosaving and asks to reload (`stale`). A crash shows `src/ui/ErrorBoundary.tsx`.
+  The open character's results are computed once in the provider (`useStore().results`), not per component. A save without `version` is refused.
+  Once there's data, the site asks the browser to keep it (`askToKeepData`, `navigator.storage.persist`), so it isn't cleared to free space.
+  Typed numbers (owner, 2026-11-03): a comma separates thousands ("1,272"); on a % stat a plain "16" is 16%; an empty box keeps its value;
+  boost and buff text that can't be read shows red and warns on Results (`readNumber`, `readStatValue` in buffs.ts). If you change the save format, bump `SAVE_VERSION` and add a step to
   `migrate()` so the owner's saved data keeps working.
 - `tests/`: `engine/` (formula, buffs, cards, plays, team), `migrate.test.ts`, `save.test.ts`, `characters/<slug>.test.ts`, shared
-  `helpers.ts`. `ingame/checks.ts` holds the open questions as in-game tests and the measured results (they run as tests and write `docs/in-game-tests.md`; add new open questions there). `fixtures/save-v1.json` is an old save (Mei Lin with one Strike), also loaded by the browser tests and screenshots.
-- `src/ui/`: tabs Setup, Buffs, Cards (library + ordered rotation), Results (color-coded formula
+  `helpers.ts`. `ingame/checks.ts` holds the open questions as in-game tests and the measured results (they run as tests, and a test checks that `docs/in-game-tests.md` matches: add new open questions there, then rewrite the doc with `npx vitest run -u tests/ingame`). `fixtures/save-v1.json` is an old save (Mei Lin with one Strike), also loaded by the browser tests and screenshots.
+- `src/ui/`: tabs Setup, Buffs, Cards (deck + ordered attack list), Results (color-coded formula
   strip per play, tap for hits), Settings (rules, backup). At 1000px or wider, Results sits beside
-  the other tabs.
+  the other tabs, below the header (its height is the `--topbar-h` CSS variable, kept by Header.tsx).
 - Card text (owner, 2026-10-27): the in-game wording from the owner's screenshots goes in `text` in
   `characters/<slug>.ts`, with tokens for the active build's numbers (`src/engine/cardText.ts`): `{100%}` base %
-  raised by the card's potential and Card % buffs (`shownPct` in calc.ts), `{E1:...}` / `{E3:6|4}` Manifest Ego,
+  raised by the card's potential, Card + and Card % buffs (`shownPct` in calc.ts), `{E1:...}` / `{E3:6|4}` Manifest Ego,
   `{P3-1:...}` Potential node (switch on Setup > Potentials, `build.potentialNodes`, missing = on). A card's
   `upgrade: null` turns off its potential upgrade (Mei Lin's Jewel V). Tokens nest: `Heal {P3-1:{70%}|{100%}}`.
-  A node that adds a keyword also adds the tag: `nodeTags: { '3-1': 'Blessing' }` (only while the node is on; teammates: on).
+  A node that adds a keyword also adds the tag: `nodeTags: { '3-1': 'Blessing' }` (only while the node is on; teammates follow their linked build's nodes).
   A node that changes a card's numbers: `nodeCard: { '3-1': { pct: 0.7, hits: 2 } }` (Chizuru's Moonslash).
   `{F40%}` is a Fixed damage % (raised only with the potentialFixed setting). `{F100%+50%}` adds a part after the raise (a `Base %` buff such as Maribell's E1), so the text follows the damage. `{120%@id}` is another card preset's base %, raised by that
   card's buffs (the Extra Attack on Renoa's Dirge Bullet).
@@ -112,12 +129,13 @@ email, and check that binary files such as spreadsheets carry no author name bef
   `"Teammate>Owner|effectId"` (`teamKey`). Every switched-on buff counts on every hit (snapshot).
   My boosts/buffs have a label-only `from` field (teammate equipment).
   Team damage (owner, 2026-10-28; `src/engine/team.ts`): a slot links a saved build of that character (`Teammate.build`;
-  missing = their active build, `NO_BUILD` = buffs only); `withLinkedTeam` takes the slot's Ego/partner/sets from it.
+  missing = their active build, `NO_BUILD` = buffs only; a deleted one = their active build, with a Results warning, owner 2026-11-03); `withLinkedTeam` takes the slot's Ego/partner/sets from it.
+  The Cards tab and `pruneTeamPlays` use the linked teammate too (their Ego level's cards, their nodes).
   A play with `by` (slot index) is that teammate's card, computed by `teammateView` as their own build would
   (teammate deck ids = preset ids). `computeBuild(..., saves)` gets every character's save; `byCharacter` splits the totals.
 - Triggers (`triggers` on a character or card; Selena's Mark, Coordinated Attacks): a play matching `on` adds the trigger
   card's hit, computed with the owner's build (`others`: only other combatants' plays; `own`: only the owner's; `repeat`: one more hit of the played card itself (Owen's Wind Charge III); `weakness`: Weakness Attacks only;
-  `counter`: needs that per-play stack; `perStack`: one hit per stack (Renoa's Dirge Bullets discarded); `chance`: expected value; `onCrit`: only on a Critical Hit of the played card, expected value x its crit chance (Lucas's Flame Thrower III); `egoLevel`). Shown under the play as `triggered`.
+  `counter`: needs that per-play stack; `perStack`: one hit per stack (Renoa's Dirge Bullets discarded); `chance`: expected value; `onCrit`: only on a Critical Hit of the played card, expected value x its crit chance (Lucas's Flame Thrower III); `egoLevel`). Shown under the play as `triggered`; their hits take no number in the list (`globalHit` 0).
   `notACard` cards (effect hits) don't match card-type words (Attack / Skill / Upgrade), so a trigger or buff on those words skips them; `ALL`, their name or their tags still match (Amir's Full Metal Hurricane II on Metallization).
 - Attack list (per build, `build.rotation`): each play has optional hits, `cost` (only for `perCost` cards: "X% for
   each Cost of this card", damage = % x Cost), `vulnerable`, a count for `perCount` cards ("X% for each card in
@@ -126,14 +144,16 @@ email, and check that binary files such as spreadsheets carry no author name bef
   `weaknessDebuff` and `stacks` per counter name; buffs with `counter` read the play's stacks
   (each capped at its own max stacks, so Charged Shot IV's 1 leaves Beryl's other Times Retained cards alone). Buff type `Card %` raises a card's base % like a potential (only on cards
   with an upgrade: "Double all effects"); `Card +` (a Potential node's "+X%", owner 2026-10-30) adds to the base % before the upgrade
-  (Shadow 110% = (80% + 15%) x 1.16); `Base %` ("+X% base Damage Amount") adds to the shown card %; `Final` ("final Damage
+  (Shadow 110% = (80% + 15%) x 1.16); `Base %` ("+X% base Damage Amount") adds to the shown card %, and is the type for a bonus that's part of the card %
+  on a card without an upgrade (Ego skills' Manifest Ego bonuses: docs/FORMULA.md, Ego skill bonuses); `Final` ("final Damage
   Amount") is its own multiplier; `Flat` ("Damage Amount equal to 30% of Shield owned") is value x its counter's number as damage, added under the multipliers (not offered for own buffs).
   A card's `fixedOf` makes its Fixed damage % x that per-play counter, not x ATK (Maribell's Shelter Strike). Counters that hold an amount (`PlayCounter.amount`: read by a `Flat` buff or a card's `fixedOf`) get a typed number on the Cards tab, not a stepper. Effects: `egoBelow` (off from that Ego level), `thresholdMin`, `thresholdBonus.every`
   (`thresholdStat: 'Defense'` / `'Health'` / `'Critical Chance'` / `'Critical Damage'` / `'Extra Damage'` / `'Damage over Time'` makes both read that stats-screen stat: Adelheid's 7, Cassius's 5-1, Renoa's 7, Lucas's 5-1, Selena's 5-1, Tressa's 5-1).
   Thresholds read the effect owner's stats (`LiveTeammate.live`, filled while computing by `withLinkedTeam`; a `LiveBuild` can't be assigned into a saved `Build`).
   A play's `ravaged` overrides the card's `targetRavaged` (On Ravage cards start on), on Cards tab > a play.
 - Fights (`SaveData.fights`, `activeFight`, owner 2026-10-31): the enemy (`defMult`, `dr`) is shared by every character and build, not in the build. One target for now (`enemies[0]`). `computeBuild(..., saves, fight)`.
-- `BuildResult.warnings`: what the save names but the presets lost, plays without a card, stacks that do nothing without Target Ravaged; shown on the Results tab.
+- `BuildResult.warnings`: what the save names but the presets lost, plays without a card, plays of a teammate slot now empty, stacks that do nothing without
+  Target Ravaged, a follow-up with no matching play after it; shown on the Results tab.
   A card's `followUp` adds Fixed damage (a share of the next matching play's damage), e.g. Rossweisse's Ego skill.
 - Saves are per character: builds (partner, Manifest Ego level, card upgrade levels, 3 fragment set
   picks, stats, team, deck, attack list...), boosts and buffs.
@@ -166,7 +186,7 @@ Final ATK  = Stats-screen Attack (includes partner base ATK + fragments; NOT par
 Card mult  = (Card % (upgraded, rounded to a whole %) x MultFactor + Additive buffs incl. Morale)
              x Weakness DMG (if the card applies weakness or a Weakness Attack buff matches; base 125%)
              x (1 + Vulnerable) x (1 - Enemy DR) x (1 - Weakness debuff) x (1 + Ravaged factor if target Ravaged)
-Damage     = Card mult x Stat x 0.35 x (1 + Elemental DMG%) x (1 + Extra/DoT DMG%) x Enemy DEF mult
+Damage     = Card mult x Stat x 0.35 x (1 + Elemental DMG%) x (1 + Extra/DoT DMG%) x Enemy DEF mult x (1 + Final buffs)
              Stat = Final ATK, or (ATK x 0.3 + DEF x 2.1) for DEF cards; Fixed = % x Final ATK x 0.35 (Unconfirmed), no other factor
              Fixed DoT (Agony) = one hit per stack: Fixed x (1 + Elemental DMG%) x (1 + DoT DMG%) x Enemy DEF mult, can crit (measured)
 Crit       = Damage x Crit DMG (stat is the total multiplier); Expected = Damage x (1 + CritRate x (CritDMG - 1)), per hit
@@ -196,6 +216,28 @@ wording, and read only the files you need. File names are listed in the `card-re
   cloud session; in Claude Code you may be able to fetch them). Another player's calculator sheet
   is in `CZNRedditSheet.xlsx` (on the owner's PC only, never in git: it isn't theirs), to compare against ours line by line.
 - Open mechanics questions are in-game tests for the owner to run: docs/in-game-tests.md (from `tests/ingame/checks.ts`).
+- Open questions from the code review (2026-11-04; the owner will answer them in a later session). The mechanics ones are in-game tests
+  (ego-skill-bonus, adelheid-truth-stacking, rossweisse-brand-and-justice, orlea-softie-cap, seth-scarab-wording, extra-damage-attack-cards, enemy-def-formula); the rest:
+  - Chizuru: is the Bind stacks number on a Shadow of the Moon play the total on the target (today: set at least 1, as every stack counts), or only the stacks
+    on top of the card's own (1, the + version 3), so it could start at 0?
+  - Own Weakness Attack buffs ignore "First hit only", though the buff editor offers it (buffs.ts, Weakness Attack): make it work, or hide the choice?
+  - Switching tabs keeps the scroll position, so a tab can open halfway down: open each tab at the top, or where it was left?
+  - Removing a play, stat boost or buff is one tap with no way back: an Undo bar for a few seconds, or a confirm?
+  - Tap targets (steppers, drag handles, "?") are 18-34px; Android suggests 48px: make them 44px on touch screens (rows get a little taller)?
+  - A new character with no cznmetadecks page yet: the import stops with nothing written (as it always did). Continue with Prydwen's smaller art and a warning instead? (Recommended: continue.)
+  - docs/FORMULA.md's log cites an in-game "1121" for Final ATK: did the owner measure it? If not, cite the 2026-10-25 measurement instead.
+  - Should the Chained setting go, now that Summed is measured?
+  - May a backup of the owner's go in the public repo as an old-save test fixture? It holds their builds, numbers and any names they typed.
+  - Renaming an effect id turns its switch back on (documented above): is that OK?
+- Smaller review notes not done (2026-11-04), for when they matter:
+  - A pure `cardTextContext()` in the engine, shared by the card-text hook and the tests, with a test that `{N%}` matches the hit's upgraded %.
+  - Header.tsx's builds `role="tablist"` holds the Add build button, which isn't a tab.
+  - The crit cap is applied before and after the per-card crit buffs (calc.ts); it gives the same result while no crit buff is negative.
+  - Saved settings and build ids aren't type-checked on load (a setting saved as text, two builds with one id).
+  - The stats-screen Attack field has no help on which number to type when the screen shows a base and a bonus (check a screenshot first).
+  - Autosave writes the whole save on every change (0.9 ms, fine for now); `presetStates` runs twice per team member.
+  - No tests for the Python importer.
+  - The data reviewers didn't reach Haru, Maribell, Mei Lin, Mika, Narja, Selena, Tenebria, Tiphera, Tressa, Yuki and half of Rossweisse.
 - Decided for later (owner, 2026-10-31):
   - DoT damage: when a character uses it. Only Tressa's Agony and Cursed Gouge have `kind: 'DoT'` so far (a Fixed DoT, measured by the owner 2026-11-01; `countsHits` makes each stack a hit). Other characters' Agony (Lucas) has no tick yet. Ask the owner for the mechanics before reviewing another DoT character.
   - An official, reusable way to model extra and additional damage sources, to think through carefully first. Today there are `triggers`, `followUp`, `extraCards` with `notACard` and per-play counters; the question is whether one

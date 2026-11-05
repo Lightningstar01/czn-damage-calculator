@@ -14,12 +14,13 @@ const BULLET_ART = 'cards/renoa/unique_1041_06.webp'
 /** A hit from an effect, not a card: Renoa's Extra Attack. Raised by Signature Card Upgrade unless upgrade: null. */
 const extraAttack = effectHits({ element: 'Void', kind: 'Extra Attack', upgrade: undefined })
 
-/** "Discard ... +X% Damage Amount": per Dirge Bullet (or Finale) discarded on this play. */
+/** "Discard ... +X% Damage Amount": per Dirge Bullet (or Finale) discarded on this play. Finales exist from E2 (card-666). */
 const perDiscard = (value: string, card: string, extra: { egoLevel?: number; idSuffix?: string } = {}) => {
   const { idSuffix = '', ...rest } = extra
   return [
     cardBuff(`discard${idSuffix}`, 'Damage Amount for each Dirge Bullet discarded', value, card, { counter: DISCARDED, ...rest }),
-    cardBuff(`finale${idSuffix}`, 'Damage Amount for each Dirge Bullet: Finale discarded', value, card, { counter: FINALES, ...rest }),
+    cardBuff(`finale${idSuffix}`, 'Damage Amount for each Dirge Bullet: Finale discarded', value, card,
+      { counter: FINALES, ...rest, egoLevel: Math.max(rest.egoLevel ?? 0, 2) }),
   ]
 }
 
@@ -68,7 +69,7 @@ export default {
       appliesTo: 'Dirge Bullet/Dirge Bullet: Finale/Dirge Bullet (Discard)/Dirge Bullet: Finale (Discard)', hitScope: 'All hits',
       condition: 'Always', thresholdStat: 'Critical Chance', thresholdBonus: { above: 0.6, value: '+10%', orEqual: true } },
     // E3 Vivid Memory (in game): "+200% Damage Amount to Black Thorn"
-    { kind: 'Buff', id: 'e3-black-thorn', name: 'E3 Vivid Memory', category: 'Ego Manifestation', value: '+200%', appliesTo: 'Black Thorn',
+    { kind: 'Buff', id: 'e3-black-thorn', name: 'E3 Vivid Memory', category: 'Ego Manifestation', type: 'Base %', value: '+200%', appliesTo: 'Black Thorn',
       hitScope: 'All hits', condition: 'Always', egoLevel: 3 },
     // E4 Inner Memory (in game): "Each time the Dirge Bullet card is Discarded, gain 1 Rose's Resolve. Rose's Resolve: +10% to Renoa's
     // Damage Amount, and on Shuffle, remove Rose's Resolve (max 4 stacks)"

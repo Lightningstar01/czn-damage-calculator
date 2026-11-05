@@ -6,7 +6,7 @@ import { computeBuild, type BuildResult } from '../engine/calc'
 import { linkedBuild, type Linked } from '../engine/team'
 import type { Build, CharacterSave, SaveData, Teammate } from '../engine/types'
 import { activeFight, newCharacterSave } from './save'
-import { loadSave, storeSave, type LoadedSave } from './storage'
+import { askToKeepData, changedElsewhere, loadSave, storeSave, type LoadedSave } from './storage'
 
 interface Store {
   data: SaveData
@@ -17,6 +17,10 @@ interface Store {
   unreadable: LoadedSave['unreadable']
   /** The last autosave failed. */
   saveFailed: boolean
+  /** Another tab (or the home-screen app) saved since this tab loaded: nothing is autosaved, so neither overwrites the other, until a reload. */
+  stale: boolean
+  /** The open character's results per build id, computed once per change for every component (each computing its own was slow on a phone). */
+  results: Map<string, BuildResult>
 }
 
 const Ctx = createContext<Store | null>(null)
@@ -26,16 +30,42 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<SaveData>(loaded.data)
   const [unreadable, setUnreadable] = useState(loaded.unreadable)
   const [saveFailed, setSaveFailed] = useState(false)
+  const [stale, setStale] = useState(false)
   useEffect(() => {
+    if (unreadable || stale) return
+    const saved = storeSave(data)
     // oxlint-disable-next-line react/set-state-in-effect -- the answer from the browser's storage, known only after writing
-    if (!unreadable) setSaveFailed(!storeSave(data))
-  }, [data, unreadable])
+    if (saved === 'changed') setStale(true)
+    // oxlint-disable-next-line react/set-state-in-effect -- same
+    else setSaveFailed(saved === 'failed')
+  }, [data, unreadable, stale])
+  const hasData = Object.keys(data.characters).length > 0
+  useEffect(() => { if (hasData) askToKeepData() }, [hasData])
+  useEffect(() => {
+    // Another tab's save fires a storage event here; a tab the phone froze in the background finds it when it's shown again
+    const check = () => { if (changedElsewhere()) setStale(true) }
+    window.addEventListener('storage', check)
+    document.addEventListener('visibilitychange', check)
+    return () => {
+      window.removeEventListener('storage', check)
+      document.removeEventListener('visibilitychange', check)
+    }
+  }, [])
   const update = useCallback((recipe: (d: SaveData) => void) => setData((d) => produce(d, recipe)), [])
   const replace = useCallback((d: SaveData) => {
     setUnreadable(undefined)
     setData(d)
   }, [])
-  const store = useMemo(() => ({ data, update, replace, unreadable, saveFailed }), [data, update, replace, unreadable, saveFailed])
+  // Every character's saves: teammates linked to their saved builds deal damage with them
+  const results = useMemo(() => {
+    const name = data.activeCharacter
+    const cs = data.characters[name]
+    const m = new Map<string, BuildResult>()
+    if (cs) for (const b of cs.builds) m.set(b.id, computeBuild(PRESETS, name, cs, b, data.settings, data.characters, activeFight(data)))
+    return m
+  }, [data])
+  const store = useMemo(() => ({ data, update, replace, unreadable, saveFailed, stale, results }),
+    [data, update, replace, unreadable, saveFailed, stale, results])
   return <Ctx.Provider value={store}>{children}</Ctx.Provider>
 }
 
@@ -61,23 +91,16 @@ export interface CharacterCtx {
 }
 
 /** The saved build a teammate slot of the open build is linked to (engine/team.ts), if any. */
-export function useLinked(t: Teammate | undefined): Linked | undefined {
+export function useLinked(t: Pick<Teammate, 'character' | 'build'> | undefined): Linked | undefined {
   const { data } = useStore()
   return linkedBuild(data.characters, t)
 }
 
 /** The open character, its active build, and every build's results. Null until a character is picked. */
 export function useCharacter(): CharacterCtx | null {
-  const { data, update } = useStore()
+  const { data, update, results } = useStore()
   const name = data.activeCharacter
   const cs = data.characters[name]
-  const fight = activeFight(data)
-  // Every character's saves: teammates linked to their saved builds deal damage with them
-  const results = useMemo(() => {
-    const m = new Map<string, BuildResult>()
-    if (cs) for (const b of cs.builds) m.set(b.id, computeBuild(PRESETS, name, cs, b, data.settings, data.characters, fight))
-    return m
-  }, [cs, name, data.settings, data.characters, fight])
   const updateCs = useCallback((recipe: (cs: CharacterSave) => void) => update((d) => recipe(d.characters[name])), [update, name])
   const buildId = cs?.activeBuild
   const updateBuild = useCallback((recipe: (b: Build) => void) => update((d) => {

@@ -1,8 +1,8 @@
 # In-game tests
 
-Written from `tests/ingame/checks.ts` by the tests; change it there, not here.
+Made from `tests/ingame/checks.ts`; change it there, not here, then run `npx vitest run -u tests/ingame`.
 
-44 to run, 6 measured. Send the numbers under **Send** with the game version; they then become tests here and close the question.
+50 to run, 6 measured. Send the numbers under **Send** with the game version; they then become tests here and close the question.
 Use non-crit hits unless the test is about crits, and note anything else that was on.
 
 ## To run
@@ -109,6 +109,21 @@ Closes: docs/FORMULA.md, The formula
 
 Closes: docs/FORMULA.md, Buff types (Base %)
 
+### ego-skill-bonus
+
+**Question:** Does a "by X%" buff raise the part of an Ego skill's % that a Manifest Ego level adds (Rei E4: 300% -> 400%)? The calculator says yes: the whole 400% is raised.
+
+**Setup:** A character at or above the Ego level that raises their Ego skill (Beryl, Lucas, Owen, Rei or Selena at E4), a "by X%" buff on them, the same enemy each time.
+
+**Steps:**
+1. Use the Ego skill without the buff, non-crit.
+2. Repeat with the buff.
+3. Read the Manifest Ego level's text: does it say "base" (Beryl's E4)?
+
+**Send:** Both damage numbers; The Ego skill's % on the card; The buff; The Ego level's wording.
+
+Closes: docs/FORMULA.md, Buff types (Ego skill bonuses)
+
 ### crit-cap
 
 **Question:** Is Crit Chance capped at 100%?
@@ -146,7 +161,7 @@ Closes: docs/characters/renoa.md (Potential 7)
 
 **Send:** Attack (with decimals if shown); The node's value at each point.
 
-Closes: src/engine/buffs.ts: presetBuffValue (a float such as 0.69 can come out one step short); backlog item 15
+Closes: src/engine/buffs.ts: presetBuffValue (a float such as 0.69 can come out one step short); CLAUDE.md, Status / backlog: "for every X above Y"
 
 ### card-other-element
 
@@ -160,7 +175,33 @@ Closes: src/engine/buffs.ts: presetBuffValue (a float such as 0.69 can come out 
 
 **Send:** The four damage numbers; Both cards' %; Elemental DMG of both elements on Detailed Stats; The boost.
 
-Closes: docs/FORMULA.md, Final stats; src/engine/calc.ts: cardElement
+Closes: docs/FORMULA.md, Stats (Elemental DMG%); src/engine/calc.ts: cardElement
+
+### extra-damage-attack-cards
+
+**Question:** Does Extra Damage on the stats screen raise plain Attack Card hits too? The calculator gives it to Extra Attacks only (and Damage over Time to DoT hits only); the other player's sheet gives it to every hit.
+
+**Setup:** Two fragment setups that differ in Extra Damage (swap one piece with an Extra Damage substat), the same enemy each time.
+
+**Steps:**
+1. Hit with a plain Attack Card, non-crit, with each setup.
+
+**Send:** Both damage numbers; Extra Damage and Attack in battle with each setup.
+
+Closes: docs/FORMULA.md, Stats (Mechanic DMG%)
+
+### seth-scarab-wording
+
+**Question:** Does Seth's Scarab's 2-piece bonus say Basic Attack Cards, or all Basic Cards? The calculator gives the 20% to Basic Attack Cards only.
+
+**Setup:** The Memory Fragment screen, on a Seth's Scarab piece.
+
+**Steps:**
+1. Read the 2-piece set bonus.
+
+**Send:** Its wording.
+
+Closes: src/data/fragmentSets.ts (Seth's Scarab)
 
 ### fixed-formula
 
@@ -212,7 +253,7 @@ Closes: Settings: Upgrades raise Fixed damage
 
 **Send:** The numbers of each hit; Stacks before and after.
 
-Closes: docs/FORMULA.md, Target debuffs
+Closes: docs/FORMULA.md, Weakness, Vulnerable, Ravaged
 
 ### weakness-debuff-per-hit
 
@@ -225,7 +266,7 @@ Closes: docs/FORMULA.md, Target debuffs
 
 **Send:** The numbers of each hit; Stacks before and after.
 
-Closes: docs/FORMULA.md, Target debuffs
+Closes: docs/FORMULA.md, Weakness, Vulnerable, Ravaged
 
 ### weakness-debuff-triggered-hits
 
@@ -298,7 +339,7 @@ Closes: docs/FORMULA.md, Weakness; src/data/characters/selena.ts
 
 ### enemy-def-formula
 
-**Question:** Is the enemy DEF multiplier 100 / enemy DEF? One data point so far: Lv50 Kentris (255 DEF) = 0.392; Mei Lin's tests back-solve to 0.387 and 0.3733.
+**Question:** Is the enemy DEF multiplier 100 / enemy DEF? One data point so far: Lv50 Kentris (255 DEF) = 0.392; Mei Lin's tests back-solve to 0.387 and 0.3733. The formula puts the enemy of Mei Lin's tests at about 268 DEF and the weaker enemy of the Tressa tests (0.429) at about 233: what do their info pages show?
 
 **Setup:** A known card, Attack and Weakness, and enemies whose DEF you can read on their info page.
 
@@ -335,6 +376,20 @@ Closes: docs/characters/mei-lin.md
 **Send:** The pictures.
 
 Closes: docs/characters/chizuru.md
+
+### adelheid-truth-stacking
+
+**Question:** Can Truth Behind A Story and Truth Behind A Story I both be in one deck, and does playing both in a turn make "+100% Damage Amount taken by the target" +200%? The calculator counts it once (on or off).
+
+**Setup:** Adelheid, if the game lets the deck hold both.
+
+**Steps:**
+1. Play one, then an Attack Card, and read its % on the target.
+2. Play both in one turn, then the same Attack Card.
+
+**Send:** Whether both fit in the deck; The Attack Card's % on the target each time.
+
+Closes: src/data/characters/adelheid.ts (truthDebuff)
 
 ### haru-decrease-in-sum
 
@@ -402,6 +457,33 @@ Closes: docs/characters/renoa.md
 **Send:** Numbers; Extra Damage; Signature level; Attack in battle.
 
 Closes: docs/characters/rossweisse.md
+
+### rossweisse-brand-and-justice
+
+**Question:** Rossweisse: (1) Brand of the Cycle says "Increase Damage Amount taken from Rossweisse by 20%", with no "+": does it multiply like "by X%" buffs, or add like other damage-taken debuffs? The calculator multiplies. (2) Is node 7's "+5% Justice Attribute Damage Amount" additive, as the calculator counts it?
+
+**Setup:** Rossweisse with a card of 200% or more, a target with Brand of the Cycle and one without. (2) needs node 7 and Attack 600 or higher.
+
+**Steps:**
+1. Read the card % on each target: 200% becoming 240% means it multiplies; 220% means it adds.
+2. Read a Justice card's % with node 7 on and off (or Attack just under 600): 5 points higher means additive; the same % with 5% more damage means it works like Elemental DMG.
+
+**Send:** The card %s on both targets; The Justice card's % and damage both ways.
+
+Closes: docs/characters/rossweisse.md; docs/FORMULA.md, Teams (debuffs on the enemy are additive)
+
+### orlea-softie-cap
+
+**Question:** Softie★★'s Retain bonus is 20% per Retain, "max 350%". Does it stop at 340% (17 Retains), or add the last 10%? The calculator stops at 340%.
+
+**Setup:** Orlea with Softie★★, Retained 18 times or more.
+
+**Steps:**
+1. Read the next Attack Card's % after 17 and after 18 Retains.
+
+**Send:** Both %s.
+
+Closes: src/data/characters/orlea.ts (softie)
 
 ### rei-cassius-card-plus
 

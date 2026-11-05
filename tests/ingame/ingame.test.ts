@@ -1,4 +1,5 @@
-// Measured in-game results are tests; the ones still to run are todos. docs/in-game-tests.md is written from the same list.
+// Measured in-game results are tests; the ones still to run are todos. docs/in-game-tests.md must match the same list: after changing
+// checks.ts, rewrite it with `npx vitest run -u tests/ingame`.
 import { describe, expect, it } from 'vitest'
 import { CHECKS, type InGameCheck } from './checks'
 
@@ -26,7 +27,7 @@ function document(): string {
   return [
     '# In-game tests',
     '',
-    'Written from `tests/ingame/checks.ts` by the tests; change it there, not here.',
+    'Made from `tests/ingame/checks.ts`; change it there, not here, then run `npx vitest run -u tests/ingame`.',
     '',
     `${todo.length} to run, ${done.length} measured. Send the numbers under **Send** with the game version; they then become tests here and close the question.`,
     'Use non-crit hits unless the test is about crits, and note anything else that was on.',

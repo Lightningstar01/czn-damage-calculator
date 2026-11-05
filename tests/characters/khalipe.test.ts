@@ -129,4 +129,15 @@ describe('Khalipe', () => {
     expect(khalipe.potentialEgo).toEqual([{ level: 5, levels: 3 }])
     expect(damage('card-64', {}, (a) => { a.egoLevel = 5 })).toBeCloseTo(1.08 * UNIT)
   })
+
+  it("5-1 adds before the upgrade on Lashing and Upward Slash, with +5% more from Defense 250; Greatsword Aquila V's in-hand bonus", () => {
+    const on = (defense: number) => (a: Build) => { a.potentialNodes = {}; a.stats.defense = defense }
+    const unitAt = (defense: number) => (436 * 0.3 + defense * 2.1) * 0.35
+    expect(damage('card-64', {}, on(215))).toBeCloseTo(1.05 * 1.02 * UNIT)
+    expect(damage('card-64', {}, on(249))).toBeCloseTo(1.05 * 1.02 * unitAt(249))
+    expect(damage('card-64', {}, on(250))).toBeCloseTo(1.1 * 1.02 * unitAt(250))
+    expect(damage('card-65', {}, on(215))).toBeCloseTo((1.8 + 0.05) * 1.02 * UNIT)
+    expect(damage('card-78')).toBeCloseTo(1.5 * 1.1 * UNIT)
+    expect(damage('card-78', { stacks: { 'Vulture Ejection in hand': 1 } })).toBeCloseTo((1.5 * 1.1 + 1.2) * UNIT)
+  })
 })

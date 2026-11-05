@@ -64,7 +64,7 @@ How a buff's text decides where it goes:
 | --- | --- | --- |
 | "+X% Damage Amount" | Additive | added to the card mult, after Mult |
 | "by X%", no "+" | Multiplicative | in Mult |
-| "+X%" from a Potential node or Ego, part of the card's shown % | Card + | added to the base %, before the upgrade |
+| "+X%" from a Potential node or Ego, part of the card's shown % | Card + | added to the base %, before the upgrade (cards with an upgrade; on others, such as Ego skills, it is Base %) |
 | "Double all effects", "for each X" of the card's own % | Card % | x (1 + the sum), with the upgrade |
 | "+X% base Damage Amount" | Base % | added to the shown % after the upgrade; Mult raises it too (**Unconfirmed**) |
 | "Damage Amount equal to X% of Shield owned" | Flat | X% x the play's number, as damage: Mult and the other multipliers raise it, the stat and constant don't (**Unconfirmed**) |
@@ -72,6 +72,11 @@ How a buff's text decides where it goes:
 | Crit Chance / Crit DMG on some cards | Crit Chance / Crit DMG | added to those cards' crit stats, before the cap |
 | Weakness Attack | Weakness Attack | Weakness DMG applies to matching cards, on all hits |
 
+- **Ego skill bonuses (owner's screenshots, 2026-11-04):** a Manifest Ego level's "+X% Damage Amount to <Ego skill>" shows in the Ego skill's
+  own number (Beryl E4 400%, Haru E3 800%, Lucas E4 300%, Owen E4 300%, Rei E4 400%, Selena E4 350%), so it is part of the card %: Base %
+  (Card + counts only on cards with an upgrade, and an Ego skill has none), which "by X%" buffs raise. How the game combines it is **Unconfirmed**
+  (in-game test `ego-skill-bonus`). Anika, Chizuru, Khalipe, Nine, Renoa, Rin, Rossweisse and Yuki follow by the same wording (the owner's
+  screenshots are below those levels).
 - **The "+" rule (User):** after a localization update, "+" means additive and no "+" means multiplicative. No public source; **Unconfirmed**
   in a test, and also that it covers partner passives. Prydwen says English can't tell them apart without testing.
 - **Summed vs Chained (measured by the owner, 2026-11-01; in-game test `multiplicative-summed-or-chained`):** multiplicative buffs add up. Tressa's Shadow Dagger with four "by X%" buffs shows 164%; chained it would show 173%. UltimateGacha citing Reddit tests agrees.
@@ -131,7 +136,8 @@ Three parts of it follow from "as the game shows it" and aren't read yet (**Unco
   starting card, the 4 others, their epiphanies and what they generate, whatever the Unique tag says. Not Ego skills. Common/Neutral Card Upgrade isn't modeled.
 - Manifest Ego levels saying "+3 levels" each add 3, read from the import (E5 for most, E3 too for some; max 16 = +32%; Mika's Water Arrow 132% at Basic 10, E6).
 - Exception (User, 2026-10-27): Mei Lin's Jewel V shows 300% while Spire and Sovereignty show their upgrade. The owner thinks damage from a condition instead of an Attack card
-  isn't raised. Only that card is marked (`upgrade: null`); others' non-basic starting cards stay Signature until checked.
+  isn't raised. It's marked `upgrade: null`, as are hits from effects rather than cards that a review found unraised (most Extra Attacks, `effectHits` in
+  src/data/helpers.ts). Other characters' non-basic starting cards stay Signature until checked.
 - A Potential node's effect is off while the node is off on Setup > Potentials (`node` on the effect; missing switch = on). A node can also change card text, tags and numbers
   (`{P3-1:...}`, `nodeTags`, `nodeCard`). Stat nodes stay on the stats screen.
 

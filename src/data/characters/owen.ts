@@ -49,7 +49,7 @@ export default {
     { kind: 'Buff', id: 'e1-gale', name: 'E1 Sleeping Memory', category: 'Ego Manifestation', type: 'Card +', value: '+50%',
       appliesTo: 'Gale Strike', hitScope: 'All hits', condition: 'Always', egoLevel: 1 },
     // E4: Raging Storm 300% = 250% + 50% (an Ego skill has no upgrade)
-    { kind: 'Buff', id: 'e4-storm', name: 'E4 Inner Memory', category: 'Ego Manifestation', value: '+50%',
+    { kind: 'Buff', id: 'e4-storm', name: 'E4 Inner Memory', category: 'Ego Manifestation', type: 'Base %', value: '+50%',
       appliesTo: 'Raging Storm', hitScope: 'All hits', condition: 'Always', egoLevel: 4 },
     // E6: "Each time" = a stack per Wind Charge activated that turn (Unconfirmed; in-game test owen-readings)
     { kind: 'Buff', id: 'e6-charge', name: 'E6 Liberated Memory', category: 'Ego Manifestation', value: '+20%',

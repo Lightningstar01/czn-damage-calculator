@@ -19,6 +19,15 @@ export function linkedBuild(saves: Saves, t: Pick<Teammate, 'character' | 'build
   return { cs, build }
 }
 
+/** Slots linked to a saved build that was deleted since: they use the character's active build (owner, 2026-11-03), and the Results tab says so. */
+export function deletedLinks(build: Pick<Build, 'team'>, saves: Saves): string[] {
+  return (build.team ?? []).flatMap((t) => {
+    const cs = t.character && t.build && t.build !== NO_BUILD ? saves[t.character] : undefined
+    const l = cs && !cs.builds.some((b) => b.id === t.build) ? linkedBuild(saves, t) : undefined
+    return l ? [`${t.character}'s linked build was deleted, so their active build (${l.build.name}) is used. Pick one on Setup › Team.`] : []
+  })
+}
+
 /** The build with each linked teammate slot's Manifest Ego, partner and sets taken from their saved build. */
 export function withLinkedTeam(build: Build, saves: Saves): LiveBuild {
   if (!(build.team ?? []).some((t) => linkedBuild(saves, t))) return build

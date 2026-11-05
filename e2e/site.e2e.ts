@@ -1,5 +1,5 @@
 // The real site in a browser: does what's on screen reach the engine and come back? The math itself: tests/engine/.
-import { readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { expect, test as base, type Page } from 'playwright/test'
 import { STORAGE_KEY } from '../src/store/storageKey.ts'
@@ -9,6 +9,11 @@ const SAVE_FILE = resolve(import.meta.dirname, '../tests/fixtures/save-v1.json')
 const MY_BUFF = 'Emblem of an Exceptional Entity' // in the save, counts on every card
 const PRESET_BUFF = 'Basic Card Proficiency' // Mei Lin's 5-1: only on her Strike from the picker, not the save's old one
 const CARD = "Flame Dragon's Jewel"
+const DATA = resolve(import.meta.dirname, '../src/data')
+/** A character without src/data/characters/<slug>.ts, so not reviewed yet (none once every character is). */
+const UNREVIEWED: string | undefined = readdirSync(resolve(DATA, 'prydwen'))
+  .filter((f) => f.endsWith('.json') && f !== '_meta.json' && !existsSync(resolve(DATA, 'characters', f.replace(/\.json$/, '.ts'))))
+  .map((f) => JSON.parse(readFileSync(resolve(DATA, 'prydwen', f), 'utf8')).name)[0]
 
 // Every test also fails on a console error or a crash in the page
 const test = base.extend<{ problems: string[] }>({
@@ -23,7 +28,7 @@ const test = base.extend<{ problems: string[] }>({
 
 async function openWithSave(page: Page) {
   await loadSaveOnce(page, readFileSync(SAVE_FILE, 'utf8'))
-  await page.goto('/')
+  await page.goto('./')
 }
 
 const tabButton = (page: Page, name: string) => page.getByRole('navigation').getByRole('button', { name, exact: true })
@@ -60,7 +65,7 @@ async function addAndPlay(page: Page, name: string, who = 'Mei Lin', base = name
 }
 
 test('an old backup imports from Settings with its damage', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('./')
   await tabButton(page, 'Settings').click()
   page.on('dialog', (d) => d.accept())
   await page.locator('input[type=file]').setInputFiles(SAVE_FILE)
@@ -101,6 +106,35 @@ test('turning a preset buff off and on changes the damage', async ({ page }) => 
   expect(await total(page)).toBeLessThan(before)
   await setBuff(page, PRESET_BUFF, true)
   expect(await total(page)).toBe(before)
+})
+
+test('card pictures load from the site folder', async ({ page }) => {
+  await openWithSave(page)
+  await tabButton(page, 'Cards').click()
+  // A picture that doesn't load is also a console error, which fails the test
+  const art = page.locator('img.cf-img').first()
+  await expect(art).toBeVisible()
+  await expect.poll(() => art.evaluate((i: HTMLImageElement) => i.complete && i.naturalWidth > 0)).toBe(true)
+})
+
+test('a play moves up the attack list with the keyboard', async ({ page }) => {
+  await openWithSave(page)
+  await addAndPlay(page, CARD)
+  await tabButton(page, 'Cards').click()
+  const plays = page.locator('.rotation .row-title')
+  await expect(plays.nth(1)).toContainText(CARD)
+  // dnd-kit: Space picks the play up, arrows move it, Space drops it
+  await page.getByRole('button', { name: 'Move play 2', exact: true }).focus()
+  await page.keyboard.press('Space')
+  // dnd-kit listens for the arrows a moment after the pick-up: press until play 1 makes room (moves down, a positive y)
+  const first = page.locator('.rotation > li').first()
+  await expect(async () => {
+    await page.keyboard.press('ArrowUp')
+    expect(await first.getAttribute('style')).toMatch(/translate3d\([-\d.]+px, [1-9]/)
+  }).toPass()
+  await page.keyboard.press('Space')
+  await expect(plays.nth(0)).toContainText(CARD)
+  await expect(plays.nth(1)).toContainText('Strike')
 })
 
 test('a card added to the deck and played adds damage', async ({ page }) => {
@@ -210,10 +244,11 @@ test('a Potential node switched off takes its buff away', async ({ page }) => {
 })
 
 test('characters not reviewed yet say so', async ({ page }) => {
+  test.skip(!UNREVIEWED, 'every character is reviewed')
   await openWithSave(page)
   const badge = page.locator('.not-reviewed')
   await expect(badge).toHaveCount(0)
-  await page.getByRole('combobox', { name: 'Character' }).selectOption('Fei')
+  await page.getByRole('combobox', { name: 'Character' }).selectOption(UNREVIEWED!)
   await expect(badge).toHaveText('Not reviewed')
 })
 
@@ -232,7 +267,7 @@ test('changes are still there after a reload', async ({ page }) => {
 test('a stored save that cannot be opened is kept until the owner starts fresh', async ({ page }) => {
   const broken = '{"version":10,"characters":{"Mei Lin":'
   await loadSaveOnce(page, broken)
-  await page.goto('/')
+  await page.goto('./')
   const stored = () => page.evaluate((key) => localStorage.getItem(key), STORAGE_KEY)
   const warning = page.getByRole('alert')
   await expect(warning).toContainText("couldn't be opened")
@@ -263,6 +298,36 @@ test('a warning shows when the browser refuses to save', async ({ page }) => {
   await page.addInitScript(() => {
     Storage.prototype.setItem = () => { throw new DOMException('full', 'QuotaExceededError') }
   })
-  await page.goto('/')
+  await page.goto('./')
   await expect(page.getByRole('alert')).toContainText("isn't saving your changes")
+})
+
+test('a tab stops saving once another tab saved, so it does not overwrite the newer data', async ({ page, context }) => {
+  await openWithSave(page)
+  await total(page)
+  const stored = () => page.evaluate((key) => localStorage.getItem(key), STORAGE_KEY)
+  const other = await context.newPage()
+  await other.goto('./')
+  await setBuff(other, MY_BUFF, false)
+  const newer = await stored()
+  await expect(page.getByRole('alert')).toContainText('changed in another tab')
+  await tabButton(page, 'Cards').click()
+  await setBuff(page, PRESET_BUFF, false)
+  expect(await stored()).toBe(newer)
+  await page.getByRole('alert').getByRole('button', { name: 'Reload' }).click()
+  await expect(page.getByRole('alert')).toBeHidden()
+  await tabButton(page, 'Buffs').click()
+  await expect(page.getByRole('switch', { name: MY_BUFF, exact: true })).toHaveAttribute('aria-checked', 'false')
+})
+
+test('Delete all data can be undone from the Settings tab', async ({ page }) => {
+  await openWithSave(page)
+  const before = await total(page)
+  await tabButton(page, 'Settings').click()
+  page.once('dialog', (d) => d.accept())
+  await page.getByRole('button', { name: 'Delete all data' }).click()
+  await expect(page.getByText(/Undo copy: your data from before deleting all data/)).toBeVisible()
+  page.once('dialog', (d) => d.accept())
+  await page.getByRole('button', { name: 'Restore the undo copy' }).click()
+  await expect.poll(() => total(page)).toBe(before)
 })

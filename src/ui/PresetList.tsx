@@ -1,4 +1,4 @@
-// Preset effects for the active build, as switches: the character's own (with partner, fragment sets, library cards),
+// Preset effects for the active build, as switches: the character's own (with partner, fragment sets, deck cards),
 // or the teammates' ally buffs and enemy debuffs.
 import { PRESETS } from '../data/presets'
 import { buffType, findCharacter, findPartner, presetBuffValue, presetStates, stateLabel, thresholdIsPct, type PresetState } from '../engine/buffs'

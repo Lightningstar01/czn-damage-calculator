@@ -68,7 +68,7 @@ export default {
       hitScope: 'All hits', condition: 'Always', egoLevel: 2, egoBelow: 6, counter: 'AP short of Cost', maxStacks: 2 },
     // E3 Vivid Memory (in game): "+200% Damage Amount to Power Strike and +20% to the Damage Amount for each beneficial effect in possession"
     // (Prydwen: +100%); the max on the card goes up to +800%
-    { kind: 'Buff', id: 'e3-strike', name: 'E3 Vivid Memory', category: 'Ego Manifestation', value: '+200%', appliesTo: 'Power Strike',
+    { kind: 'Buff', id: 'e3-strike', name: 'E3 Vivid Memory', category: 'Ego Manifestation', type: 'Base %', value: '+200%', appliesTo: 'Power Strike',
       hitScope: 'All hits', condition: 'Always', egoLevel: 3 },
     // E4 Inner Memory (in game): "Power Supply: +30% Damage Amount to Haru's Attack Cards (max 3 stacks)" (Prydwen: +20%)
     { kind: 'Buff', id: 'e4-power-supply', name: 'Power Supply', category: 'Ego Manifestation', value: '+30%', appliesTo: 'Attack',
