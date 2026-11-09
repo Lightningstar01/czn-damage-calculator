@@ -218,10 +218,11 @@ export const isFixedDot = (card: Pick<Card, 'scaling' | 'kind'>) => card.scaling
 export const isPlainFixed = (card: Pick<Card, 'scaling' | 'kind'>) => card.scaling === 'Fixed' && card.kind !== 'DoT'
 
 /** The card's hits on this play before the play's own hit count: the count if it sets the hits (Card.countsHits), with the hits its
- * counter adds (Card.counterHits). */
+ * counter adds (Card.counterHits) and those a Ravaged target adds (Card.ravagedHits). */
 export const playBaseHits = (card: Card, play: RotationPlay) =>
   (card.countsHits && card.perCount ? playCount(card, play) : card.hits)
   + (card.counterHits && (play.stacks?.[card.counterHits.counter] ?? 0) > 0 ? card.counterHits.hits : 0)
+  + (card.ravagedHits && (play.ravaged ?? card.targetRavaged) ? card.ravagedHits : 0)
 
 /** The card as played: the play's own hit count and Cost, if set, replace the card's. A per-Cost card's % is its % x the Cost;
  * a per-count card's, its % x the play's count (unless the count is its hits). */
@@ -477,11 +478,14 @@ function mergeCaps(a: PlayCounter[], b: PlayCounter[]): PlayCounter[] {
 const fixedAmountOf = (card: Card | undefined) => (card?.scaling === 'Fixed' ? card.fixedOf : undefined)
 
 /** The counters a play of this card has: the ones its player's buffs read, plus the one that adds hits to it, even when no buff reads
- * that one (Annihilation's Dark Mist Stance, Yuki's Inspiration with 3-1 off). A counter stops where the card's own buffs stop reading it. */
+ * that one (Annihilation's Dark Mist Stance, Yuki's Inspiration with 3-1 off): then it's on/off. A counter that buffs read keeps their
+ * stacks (Hugo's Quick Fix II adds a hit in a Commence the Hunt state, and the +30% per stack still reads the play's number).
+ * A counter stops where the card's own buffs stop reading it. */
 function playCaps(d: Member['dmg'], card: Card | undefined) {
   const fixedOf = fixedAmountOf(card)
+  const hitsCounter = card?.counterHits?.counter
   return mergeCaps(d?.caps ?? [], [
-    ...(card?.counterHits ? [{ name: card.counterHits.counter, max: 1 }] : []),
+    ...(hitsCounter && !d?.caps.some((c) => c.name === hitsCounter) ? [{ name: hitsCounter, max: 1 }] : []),
     ...(fixedOf ? [{ name: fixedOf, max: null, amount: true }] : []),
     ...activeCounters(card ? (d?.counterBuffs ?? []).filter((b) => buffMatches({ appliesTo: b.appliesTo, condition: 'Always' }, card)) : []),
   ])
@@ -539,10 +543,13 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
     + addSources.filter((s) => !s.onTarget).reduce((a, s) => a + s.value, 0)
 
   const weakApplies = card.weaknessApplies || cb.weaknessAttack.length > 0
+  // Weakness DMG buffs (Matrix Overlay's "+15% Weakness Damage Amount taken") add to the stat on this play
+  const weakBuffs = both(cb.weaknessDmg)
   const weakness: Factor | null = weakApplies ? {
-    value: stats.weaknessDmg.value * (1 + settings.extraWeakness),
+    value: (stats.weaknessDmg.value + total(weakBuffs)) * (1 + settings.extraWeakness),
     sources: [
       ...stats.weaknessDmg.sources,
+      ...weakBuffs,
       ...(card.weaknessApplies ? [] : cb.weaknessAttack.map((s) => ({ ...s, label: `Weakness Attack: ${s.label}` }))),
       ...(settings.extraWeakness ? [{ label: 'Extra weakness factor (Settings)', value: settings.extraWeakness, unit: '%' as const }] : []),
     ],

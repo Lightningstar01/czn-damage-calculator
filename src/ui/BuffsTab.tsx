@@ -84,7 +84,7 @@ function MyBuffsSection() {
                   <SelectField<BuffType | ''> label="Type" value={x.typeOverride}
                     options={[{ value: '', label: `Auto (${buffType(x.value)})` }, ...BUFF_TYPES]}
                     onChange={(s) => upd((b) => { b.typeOverride = s })} />
-                  <TextField label="Applies to" value={x.appliesTo} list={targets} help="ALL, a card name, or card tags. 'A & B' = all of them, 'A/B' = any of them. Also the element, '1-cost', '2+ cost', '2+ hits', DoT, Extra Attack."
+                  <TextField label="Applies to" value={x.appliesTo} list={targets} help="ALL, a card name, or card tags. 'A & B' = all of them, 'A/B' = any of them. Also the element, '1-cost', '2+ cost', '2+ hits', DoT, Extra Attack, Single-target, AoE, Random-target."
                     onChange={(s) => upd((b) => { b.appliesTo = s })} />
                   <SelectField<HitScope> label="Hit scope" value={x.hitScope} options={['All hits', 'First hit only']} onChange={(s) => upd((b) => { b.hitScope = s })} />
                   <SelectField<Condition> label="Condition" value={x.condition} options={['Always', 'Ravaged only']} onChange={(s) => upd((b) => { b.condition = s })} />

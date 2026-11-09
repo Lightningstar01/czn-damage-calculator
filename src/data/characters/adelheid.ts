@@ -37,10 +37,8 @@ export default {
   },
   effects: [
     // 7 (in game): "If Adelheid's Defense is 300 or higher, +5% Void-Attribute Damage Amount, and for every 10 Defense exceeding 300,
-    // add an additional 2% to the modifier (additional +10% max)": as Rossweisse's 7, on the stats-screen Defense
-    { kind: 'Buff', id: 'p7-void', node: '7', name: 'Unique Stat Upgrade', category: 'Potential', value: '+5%', appliesTo: 'Void',
-      hitScope: 'All hits', condition: 'Always', thresholdStat: 'Defense', thresholdMin: 300,
-      thresholdBonus: { above: 300, value: '+2%', every: 10, max: '+10%' } },
+    // add an additional 2% to the modifier (additional +10% max)": on the stats screen (Void Damage 15.0% at Defense 417), so nothing is
+    // added on top (owner, 2026-11-08)
     // E2 Awakening Memory (in game): "Gains the Bliss of Dreams effect for each Blessing Adelheid applies or creates. At the start
     // of battle, gain the Bliss of Dreams effect for each Blessing card in Deck. Bliss of Dreams: Increase Damage Amount of allies
     // by 3% (max 10 stacks)". Prydwen: "start of the turn ... in possession"

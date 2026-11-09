@@ -57,9 +57,8 @@ export default {
     { kind: 'Buff', id: 'p5-1-slash', node: '5-1', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
       appliesTo: 'Sword Slash', hitScope: 'All hits', condition: 'Always', thresholdBonus: { above: 500, value: '+5%', orEqual: true } },
     // 7: "If Rossweisse's Attack is 600 or higher, +5% Justice Attribute Damage Amount, and for every 20 Attack exceeding 600,
-    // add an additional +2% to the modifier (additional +10% max)"
-    { kind: 'Buff', id: 'p7-justice', node: '7', name: 'Unique Stat Upgrade', category: 'Potential', value: '+5%', appliesTo: 'Justice',
-      hitScope: 'All hits', condition: 'Always', thresholdMin: 600, thresholdBonus: { above: 600, value: '+2%', every: 20, max: '+10%' } },
+    // add an additional +2% to the modifier (additional +10% max)": on the stats screen (Justice Damage 15.0% at Attack 925), so nothing
+    // is added on top (owner, 2026-11-08)
     // Manifest Ego (dupes): on from the build's level. E1 (Kyrken's Aegis) is on Kyrken's Apostle; E5 is the +3 upgrade levels.
     { kind: 'Buff', id: 'e2-final', name: 'E2 Awakening Memory', category: 'Ego Manifestation', type: 'Final', value: '20%',
       appliesTo: 'ALL', hitScope: 'All hits', condition: 'Always', egoLevel: 2 },

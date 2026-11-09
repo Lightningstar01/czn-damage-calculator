@@ -28,8 +28,8 @@ export type Condition = 'Always' | 'Ravaged only'
  * Final ("final Damage Amount") is its own multiplier: x (1 + the sum of the final buffs), after everything else.
  * Flat ("Damage Amount equal to 30% of Shield owned") is damage, not a %: value x its counter's number, added under the multipliers (Maribell's Resolute Blitz IV).
  * It reads a counter, so it isn't among the types the owner's own buffs can pick. */
-export type BuffType = 'Additive' | 'Multiplicative' | 'Weakness Attack' | 'Crit Chance' | 'Crit DMG' | 'Card %' | 'Card +' | 'Base %' | 'Final' | 'Flat'
-export const BUFF_TYPES: BuffType[] = ['Additive', 'Multiplicative', 'Weakness Attack', 'Crit Chance', 'Crit DMG', 'Card %', 'Card +', 'Base %', 'Final']
+export type BuffType = 'Additive' | 'Multiplicative' | 'Weakness Attack' | 'Weakness DMG' | 'Crit Chance' | 'Crit DMG' | 'Card %' | 'Card +' | 'Base %' | 'Final' | 'Flat'
+export const BUFF_TYPES: BuffType[] = ['Additive', 'Multiplicative', 'Weakness Attack', 'Weakness DMG', 'Crit Chance', 'Crit DMG', 'Card %', 'Card +', 'Base %', 'Final']
 export type MultMode = 'Summed' | 'Chained'
 
 /** On/off switch, or a number of stacks. true = on with the effect's default stacks. */
@@ -74,7 +74,8 @@ export interface BuffEffect {
   target?: EffectTarget
   /** Buff text as shown in-game: '+30%' = Additive, '30%' = Multiplicative, or 'Weakness Attack'. */
   value: string
-  /** Set for every type but Additive and Multiplicative, which come from the value text ('+30%' / '30%'): Crit Chance, Crit DMG, Card %, Card +, Base %, Final, Flat. */
+  /** Set for every type but Additive and Multiplicative, which come from the value text ('+30%' / '30%'): Crit Chance, Crit DMG, Card %, Card +, Base %, Final, Flat.
+   * 'Weakness DMG' adds to the Weakness DMG stat on matching plays that hit a Weakness (Hilde's Matrix Overlay: "+15% Weakness Damage Amount taken"). */
   type?: BuffType
   /** ALL, a card name, or tags: 'A & B' = all of them, 'A/B' = any of them; also '2+ hits', '2+ cost', DoT, Extra Attack. */
   appliesTo: string
@@ -96,14 +97,17 @@ export interface BuffEffect {
    * `orEqual`: from `above` on ('500 or higher'). With `every`, the value is added for every full `every` Attack above
    * `above`, up to `max` (Rossweisse 7: +2% for every 20 Attack exceeding 600, max +10%). */
   thresholdBonus?: { above: number; value: string; orEqual?: boolean; every?: number; max?: string }
-  /** Stats-screen Attack the buff needs: it's worth 0 below it (Rossweisse 7: 'If Attack is 600 or higher'). */
+  /** Stats-screen Attack the buff needs: it's worth 0 below it (Rei 7: 'If Attack is 550 or higher'). */
   thresholdMin?: number
-  /** 'Defense' / 'Health': thresholdMin and thresholdBonus read that stats-screen stat instead (Adelheid 7: 'If Defense is 300 or
-   * higher'; Cassius 5-1: 'If Health is 600 or higher'; Renoa 7: 'If Critical Chance is 60% or higher', above: 0.6; Selena 7: 'If Extra Damage is 30% or higher', above: 0.3;
-   * Lucas 5-1: 'If Critical Damage is 160% or higher', above: 1.6; Tressa 7: 'If Damage over Time is 30% or higher', above: 0.3). */
+  /** 'Defense' / 'Health': thresholdMin and thresholdBonus read that stats-screen stat instead (Narja 7: 'If Defense is 300 or
+   * higher'; Cassius 5-1: 'If Health is 600 or higher'; Renoa 7: 'If Critical Chance is 60% or higher', above: 0.6; Selena 5-1: 'If Extra Damage is 15% or higher', above: 0.15;
+   * Lucas 5-1: 'If Critical Damage is 160% or higher', above: 1.6; Tressa 5-1: 'If Damage over Time is 15% or higher', above: 0.15). */
   thresholdStat?: 'Defense' | 'Health' | 'Critical Chance' | 'Critical Damage' | 'Extra Damage' | 'Damage over Time'
   /** It needs a target, so it isn't in the in-hand card % (Tressa's E2: 164% in hand, 184% on a target in Agony). */
   onTarget?: boolean
+  /** Its value counts once for each Cost of the card it raises (the play's Cost on a per-Cost card; nothing on a card without a Cost):
+   * Rita's Fate Distortion, "an additional 10% for each Cost of that card" (owner, 2026-11-08). */
+  perCardCost?: boolean
   /** See StatEffect.hint. */
   hint?: string
 }
@@ -225,8 +229,12 @@ export interface CardPreset {
   countsHits?: boolean
   /** See Card.counterHits. */
   counterHits?: { counter: string; hits: number }
+  /** See Card.ravagedHits. */
+  ravagedHits?: number
   /** See Card.fixedOf. */
   fixedOf?: string
+  /** See Card.targets; missing = read from the text's first Damage line (cardTargets in deck.ts). */
+  targets?: CardTargets
   /** Ids of the cards it creates (shards, Sword Tassel): they join the deck with it (src/engine/deck.ts). */
   creates?: string[]
   /** A Manifest Ego effect that deals damage (Narja's E6): joins the deck by itself from this Ego level, like the Ego skill. */
@@ -488,12 +496,21 @@ export interface Card {
   countsHits?: boolean
   /** Hits added on plays with this counter above 0 (Yuki's "Inspiration: Add 1 Hit"), unless the play sets its own hits. */
   counterHits?: { counter: string; hits: number }
+  /** Hits added on plays with Target Ravaged on (Sereniel's Homing Laser I "Destroy: Add 1 Hit(s)", Destroy = on Ravage or on a
+   * Ravaged target, owner 2026-11-08), unless the play sets its own hits. */
+  ravagedHits?: number
   /** A Fixed card's "Fixed Damage equal to X% of Shield owned" (Maribell's Shelter Strike): damage = % x this per-play counter, not x ATK. */
   fixedOf?: string
+  /** Who the card's damage hits (owner, 2026-11-08: Hugo's Commence the Hunt is set off by single-target Attack Cards): matched by
+   * 'Single-target', 'AoE' (all enemies) and 'Random-target' in "Applies to". Missing = Single. */
+  targets?: CardTargets
   /** Damage from an effect, not a card being played (Mark, Coordinated Attacks, Attunement damage): the card type words (Attack /
    * Skill / Upgrade) don't match it, so Attack Card buffs and Attack Card triggers skip it. */
   notACard?: boolean
 }
+
+/** Who a card's damage hits: one target, all enemies, or random enemies. */
+export type CardTargets = 'Single' | 'All' | 'Random'
 
 /** Labels for UserBoost.from / UserBuff.from. */
 export const FROM_OPTIONS = ['', 'Teammate 1', 'Teammate 2'] as const

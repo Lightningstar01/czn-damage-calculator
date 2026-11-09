@@ -52,8 +52,7 @@ export default {
       appliesTo: 'Exhaust', hitScope: 'All hits', condition: 'Always', maxStacks: 2, counter: 'Slash (Exhaust cards)' },
     { kind: 'Buff', id: 'p5-1-slash', node: '5-1', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
       appliesTo: 'Slash', hitScope: 'All hits', condition: 'Always', thresholdStat: 'Defense', thresholdBonus: { above: 250, value: '+5%', orEqual: true } },
-    { kind: 'Buff', id: 'p7-order', node: '7', name: 'Unique Stat Upgrade', category: 'Potential', value: '+5%', appliesTo: 'Order',
-      hitScope: 'All hits', condition: 'Always', thresholdStat: 'Defense', thresholdMin: 300, thresholdBonus: { above: 300, value: '+2%', every: 10, max: '+10%' } },
+    // 7's Order Damage is on the stats screen, as every character's attribute node 7 is, so nothing is added on top (owner, 2026-11-08)
     // E3: Base %, as Card + only reaches cards with an upgrade and the Ego skill has none
     { kind: 'Buff', id: 'e3-ego', name: 'E3 Vivid Memory', category: 'Ego Manifestation', type: 'Base %', value: '+150%',
       appliesTo: 'Reflection: Zero', hitScope: 'All hits', condition: 'Always', egoLevel: 3 },

@@ -2,9 +2,9 @@ import { describe, expect, it } from 'vitest'
 import { computeBuild, shownPct } from '../../src/engine/calc'
 import { renderCardText } from '../../src/engine/cardText'
 import { buildDeck } from '../../src/engine/deck'
-import { activeBuffs, presetBuffValue } from '../../src/engine/buffs'
+import { activeBuffs } from '../../src/engine/buffs'
 import { PRESETS } from '../../src/data/presets'
-import { newBuild, newCharacterSave } from '../../src/store/save'
+import { newCharacterSave } from '../../src/store/save'
 import { addCards, cardFromPreset, settings } from '../helpers'
 
 describe('Adelheid', () => {
@@ -91,13 +91,7 @@ describe('Adelheid', () => {
     }
   })
 
-  it('Potential 7 follows the stats-screen Defense: +5% from 300, +2% per 10 above, max +10% more', () => {
-    const p7 = adel.effects.find((e) => e.id === 'p7-void')!
-    if (p7.kind !== 'Buff') throw new Error('p7 is a buff')
-    const at = (defense: number) => presetBuffValue(p7, { ...newBuild('x').stats, attack: 1000, defense }).value
-    expect(at(299)).toBe(0)
-    expect(at(300)).toBeCloseTo(0.05)
-    expect(at(325)).toBeCloseTo(0.05 + 0.04)
-    expect(at(1000)).toBeCloseTo(0.15)
+  it("Potential 7's Void Damage is on the stats screen (15.0% at Defense 417), so nothing is added on top", () => {
+    expect(adel.effects.some((e) => e.node === '7')).toBe(false)
   })
 })

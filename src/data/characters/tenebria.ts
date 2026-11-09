@@ -52,9 +52,8 @@ export default {
     { kind: 'Buff', id: 'p5-1-rhythm', node: '5-1', name: 'Basic Card Proficiency', category: 'Potential', value: '10%', appliesTo: 'Rhythm Card',
       hitScope: 'All hits', condition: 'Always' },
     // 7 (in game): "If Tenebria's Attack is 600 or higher, +5% Passion Attribute Damage Amount, and for every 20 Attack exceeding 600,
-    // add an additional +1% (additional +10% max)" (Prydwen: +2%): as Rossweisse's 7
-    { kind: 'Buff', id: 'p7-passion', node: '7', name: 'Unique Stat Upgrade', category: 'Potential', value: '+5%', appliesTo: 'Passion',
-      hitScope: 'All hits', condition: 'Always', thresholdMin: 600, thresholdBonus: { above: 600, value: '+1%', every: 20, max: '+10%' } },
+    // add an additional +1% (additional +10% max)" (Prydwen: +2%): on the stats screen (Passion Damage 15.0% at Attack 1092), so nothing
+    // is added on top (owner, 2026-11-08)
     // E1 Sleeping Memory: "Increases Damage Amount of Performance Buzz for the Photo Time card from 100% to 150%" (x1.5)
     { kind: 'Buff', id: 'e1-buzz', name: 'E1 Sleeping Memory', category: 'Ego Manifestation', type: 'Final', value: '50%',
       appliesTo: 'Photo Time', hitScope: 'All hits', condition: 'Always', egoLevel: 1 },

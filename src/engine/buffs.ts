@@ -112,6 +112,8 @@ export interface ActiveBuff {
   maxStacks?: number
   /** See BuffEffect.onTarget. */
   onTarget?: boolean
+  /** See BuffEffect.perCardCost. */
+  perCardCost?: boolean
 }
 
 /** Why a preset effect is (in)active for a build — shown greyed out in the UI. */
@@ -285,7 +287,8 @@ export function activeBuffs(presets: Presets, charName: string, cs: CharacterSav
       type: buffType(e.value, e.type), value: v.value,
       stacks: e.counter ? 0 : e.maxStacks ? Math.min(s.stacks, e.maxStacks) : s.stacks,
       appliesTo: e.appliesTo, hitScope: e.hitScope, condition: e.condition,
-      ...(e.counter ? { counter: e.counter, maxStacks: e.maxStacks } : {}), ...(e.onTarget ? { onTarget: true } : {}) })
+      ...(e.counter ? { counter: e.counter, maxStacks: e.maxStacks } : {}), ...(e.onTarget ? { onTarget: true } : {}),
+      ...(e.perCardCost ? { perCardCost: true } : {}) })
   }
   for (const b of cs.buffs) {
     const st = switchStacks(b.switches[build.id])
@@ -329,6 +332,9 @@ function termMatches(term: string, card: Card, tags: string[]): boolean {
   if (CARD_TYPES.some((t) => term === norm(t))) return !card.notACard && term === norm(card.cardType ?? '')
   if (card.kind !== 'Normal' && term === norm(card.kind)) return true
   if (term === 'defense-based') return card.scaling === 'DEF'
+  if (term === 'single-target') return (card.targets ?? 'Single') === 'Single'
+  if (term === 'aoe') return card.targets === 'All'
+  if (term === 'random-target') return card.targets === 'Random'
   const cost = /^(\d+)-cost$/.exec(term)
   if (cost) return card.cost === Number(cost[1])
   const min = /^(\d+)\+(hits?|cost)$/.exec(term)
@@ -356,6 +362,8 @@ export interface CardBuffs {
   additive: { all: Bucket; first: Bucket }
   multiplicative: { all: Bucket; first: Bucket }
   weaknessAttack: Source[]
+  /** Weakness DMG buffs (added to the Weakness DMG stat when the play hits a Weakness). */
+  weaknessDmg: { all: Bucket; first: Bucket }
   /** Crit Chance / Crit DMG buffs on this card only (fractions added to the final stat). */
   critRate: { all: Bucket; first: Bucket }
   critDmg: { all: Bucket; first: Bucket }
@@ -374,19 +382,22 @@ export interface CardBuffs {
 /** Sum the buffs that match a card into additive / multiplicative buckets (all hits vs first hit only). */
 export function cardBuffs(buffs: ActiveBuff[], card: Card): CardBuffs {
   const b = (): Bucket => ({ value: 0, sources: [] })
-  const out: CardBuffs = { additive: { all: b(), first: b() }, multiplicative: { all: b(), first: b() }, weaknessAttack: [],
+  const out: CardBuffs = { additive: { all: b(), first: b() }, multiplicative: { all: b(), first: b() }, weaknessAttack: [], weaknessDmg: { all: b(), first: b() },
     critRate: { all: b(), first: b() }, critDmg: { all: b(), first: b() }, cardPct: { all: b(), first: b() },
     cardAdd: { all: b(), first: b() }, basePct: { all: b(), first: b() }, final: { all: b(), first: b() }, flat: { all: b(), first: b() } }
   for (const buff of buffs) {
     if (buff.stacks <= 0 || !buffMatches(buff, card)) continue
-    const label = buff.stacks !== 1 ? `${buff.label} x${buff.stacks}` : buff.label
+    // perCardCost: x the played card's Cost (the play's Cost on a per-Cost card); a card without a Cost gets nothing
+    const cost = buff.perCardCost ? Math.max(0, card.cost ?? 0) : 1
+    if (cost <= 0) continue
+    const label = `${buff.stacks !== 1 ? `${buff.label} x${buff.stacks}` : buff.label}${buff.perCardCost ? ` x Cost ${cost}` : ''}`
     if (buff.type === 'Weakness Attack') {
       out.weaknessAttack.push({ label, value: 0, unit: 'x' })
       continue
     }
-    const v = buff.value * buff.stacks
+    const v = buff.value * buff.stacks * cost
     const group = { Additive: out.additive, Multiplicative: out.multiplicative, 'Crit Chance': out.critRate, 'Crit DMG': out.critDmg,
-      'Card %': out.cardPct, 'Card +': out.cardAdd, 'Base %': out.basePct, Final: out.final, Flat: out.flat }[buff.type]
+      'Weakness DMG': out.weaknessDmg, 'Card %': out.cardPct, 'Card +': out.cardAdd, 'Base %': out.basePct, Final: out.final, Flat: out.flat }[buff.type]
     const bucket = group[buff.hitScope === 'First hit only' ? 'first' : 'all']
     bucket.value += v
     bucket.sources.push({ label: buff.hitScope === 'First hit only' ? `${label} (first hit)` : label, value: v, unit: '%',

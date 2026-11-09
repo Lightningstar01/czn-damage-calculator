@@ -110,7 +110,7 @@ describe('Team damage (owner, 2026-10-28)', () => {
     const [a] = cs.builds
     Object.assign(a, { egoLevel: 6 })
     a.stats.attack = 100
-    for (const id of ['p5-1-fire', 'p7-passion']) a.presetSwitches[`Selena|${id}`] = false
+    a.presetSwitches['Selena|p5-1-fire'] = false
     a.deck.push({ id: 'ef', preset: 'card-395' }, { id: 'hps4', preset: 'card-401' })
     a.team = [{ ...newTeammate(), character: 'Mei Lin', cards: ['card-338'] }]
     return { cs, a }
@@ -159,8 +159,8 @@ describe('Team damage (owner, 2026-10-28)', () => {
     sel.builds[0].stats.attack = 300
     const r = computeBuild(PRESETS, 'Mei Lin', ml, b, settings, { Selena: sel })
     expect(r.plays[0].triggered.map((t) => t.card.name)).toEqual(['Mark'])
-    // 100% + Sniper's Domain +80% (E2 not unlocked) + Selena's 7 (+4% Passion; her Extra Damage is below 30%), with Selena's 300 Attack
-    expect(r.plays[0].triggered[0].nonCrit).toBeCloseTo((1 + 0.8 + 0.04) * 300 * 0.35)
+    // 100% + Sniper's Domain +80% (E2 not unlocked), with Selena's 300 Attack (her 7 is on her stats screen)
+    expect(r.plays[0].triggered[0].nonCrit).toBeCloseTo((1 + 0.8) * 300 * 0.35)
   })
 
   it('removing a teammate card drops its plays; emptying the slot drops all of theirs', () => {

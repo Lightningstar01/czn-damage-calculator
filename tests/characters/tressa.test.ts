@@ -229,7 +229,7 @@ describe('Tressa', () => {
     expect(play('card-261', {}, undefined, 3).nonCrit).toBeCloseTo(3 * 0.8 * 1.12 * ATK)
   })
 
-  it('5-1 and 7 read the Damage over Time stat, at "or higher"', () => {
+  it('5-1 reads the Damage over Time stat, at "or higher"; 7 is on the stats screen, so it adds nothing', () => {
     const throwAt = (dot: number) => play('card-246', {}, (a) => { a.stats.dotDmg = dot; a.potentialNodes = { 7: false } }).nonCrit
     expect(throwAt(0.149)).toBeCloseTo(1.05 * 1.22 * ATK)
     expect(throwAt(0.15)).toBeCloseTo(1.1 * 1.22 * ATK)
@@ -240,7 +240,6 @@ describe('Tressa', () => {
       a.rotation = [{ cardId: `${AUTO}card-273` }]
       return computeBuild(PRESETS, 'Tressa', cs, a, settings).nonCrit
     }
-    expect(seven(0.299)).toBeCloseTo((0.8 * 1.12 + 0.04) * ATK)
-    expect(seven(0.3)).toBeCloseTo((0.8 * 1.12 + 0.08) * ATK)
+    expect(seven(0.3)).toBeCloseTo(0.8 * 1.12 * ATK)
   })
 })

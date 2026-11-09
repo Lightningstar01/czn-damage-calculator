@@ -13,8 +13,8 @@ What the owner confirmed about this character's cards. The general rules are in 
     cards played after it, not its own hit (User, 2026-10-28).
   - Truth Behind A Story III's "Doggie and Teddy" reaches Doggie, Doggie (Pack) and Doggie (Morphed) (User, 2026-10-28).
   - Fairy's Protection showed 121% Shield: a partner's effect, 110% without it (User, 2026-10-28).
-  - Potential 7 reads the stats-screen Defense (`thresholdStat: 'Defense'`): +5% additive on Void cards from 300 Defense,
-    +2% per 10 above 300, max +10% more (User, 2026-10-28: add Defense thresholds), like Rossweisse's 7.
+  - Potential 7's Void Damage is already in the stats screen's Void Damage (15.0% at 417 Defense), so it isn't added again
+    (User, 2026-11-08; see FORMULA.md, Stats). It was a +5% Void buff from 300 Defense until then.
   - Multiplicative: Truth IV's 30% per Blessing card in hand, Doggie (Pack)'s 50% per Doggie in hand, Truth III's 100%,
     Protect Us V's 60% on the drawn Blessing cards, E2 Bliss of Dreams 3% per stack (max 10) on allies, E6 8% (max 5).
     Additive: Friends I's +20% per Blessing card in All Piles (max 15) on Doggie.

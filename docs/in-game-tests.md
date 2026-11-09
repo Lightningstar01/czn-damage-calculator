@@ -2,7 +2,7 @@
 
 Made from `tests/ingame/checks.ts`; change it there, not here, then run `npx vitest run -u tests/ingame`.
 
-50 to run, 6 measured. Send the numbers under **Send** with the game version; they then become tests here and close the question.
+57 to run, 6 measured. Send the numbers under **Send** with the game version; they then become tests here and close the question.
 Use non-crit hits unless the test is about crits, and note anything else that was on.
 
 ## To run
@@ -154,7 +154,7 @@ Closes: docs/characters/renoa.md (Potential 7)
 
 **Question:** How does the game round "for every X above Y" thresholds, on stats with decimals (Attack, and % stats such as Critical Chance)?
 
-**Setup:** Rossweisse node 7 ("for every 20 Attack exceeding 600") or Mei Lin node 7, with Attack just below and just on a step.
+**Setup:** Rossweisse node 7 ("for every 20 Attack exceeding 600") or Mei Lin node 7, with Attack just below and just on a step. A hint: Hugo's node 7 (+4% Extra Damage at 700 Attack, +1% for every 50 above) shows Extra Damage 7.5% at Attack 877, which is 4% + 177/50 = 7.54%, not rounded down to 7% (owner's screenshot, 2026-11-08).
 
 **Steps:**
 1. Read the card % or Weakness Damage with Attack one point under a step, on the step, and one over.
@@ -460,15 +460,14 @@ Closes: docs/characters/rossweisse.md
 
 ### rossweisse-brand-and-justice
 
-**Question:** Rossweisse: (1) Brand of the Cycle says "Increase Damage Amount taken from Rossweisse by 20%", with no "+": does it multiply like "by X%" buffs, or add like other damage-taken debuffs? The calculator multiplies. (2) Is node 7's "+5% Justice Attribute Damage Amount" additive, as the calculator counts it?
+**Question:** Rossweisse: (1) Brand of the Cycle says "Increase Damage Amount taken from Rossweisse by 20%", with no "+": does it multiply like "by X%" buffs, or add like other damage-taken debuffs? The calculator multiplies. (Node 7's Justice Damage is on the stats screen: User, 2026-11-08.)
 
-**Setup:** Rossweisse with a card of 200% or more, a target with Brand of the Cycle and one without. (2) needs node 7 and Attack 600 or higher.
+**Setup:** Rossweisse with a card of 200% or more, a target with Brand of the Cycle and one without.
 
 **Steps:**
 1. Read the card % on each target: 200% becoming 240% means it multiplies; 220% means it adds.
-2. Read a Justice card's % with node 7 on and off (or Attack just under 600): 5 points higher means additive; the same % with 5% more damage means it works like Elemental DMG.
 
-**Send:** The card %s on both targets; The Justice card's % and damage both ways.
+**Send:** The card %s on both targets.
 
 Closes: docs/characters/rossweisse.md; docs/FORMULA.md, Teams (debuffs on the enemy are additive)
 
@@ -641,6 +640,21 @@ Closes: docs/characters/amir.md
 
 Closes: docs/characters/maribell.md
 
+### magna-readings
+
+**Question:** Magna's readings the screenshots can't settle: (1) Is Ice Wall IV's Fixed Damage exactly the Shield held, whatever else is on (Vulnerable, Justice Damage)? (2) Is Absolute Zero x(1 + 20% x Counterattacks), as the calculator counts it, or 20% compounded per Counterattack? (3) Do Ice Fragment III's 30%, Ice Fragment V's 100% and E6's 30% each multiply a Counterattack on their own?
+
+**Setup:** A battle with Magna holding a Shield you can read. (2) needs several Counterattacks on Magna; (3) Ice Fragment III or V in the deck.
+
+**Steps:**
+1. Play Ice Wall IV with a known Shield, on a Vulnerable target and on one without: the same number, equal to the Shield, means nothing raises it.
+2. Play Absolute Zero with 5 Counterattacks and with none: x2.0 (20% x 5 added) or x2.49 (1.2 x 1.2 x ...) between them.
+3. Read a Counterattack with Ice Fragment III played and without (x1.3 means it multiplies); the one right after Ice Fragment V (x2).
+
+**Send:** The damage of each play, with Shield, Defense and Attack in battle; The Counterattacks on Magna when Absolute Zero was played; Counterattack damage, non-crit.
+
+Closes: docs/characters/magna.md
+
 ### beryl-readings
 
 **Question:** Beryl's readings the screenshots can't settle: (1) Does the created Charged Shot have the normal 270% and +135%? (2) Do Opening Found's added hits add up when it's Retained and Guilty Pleasure IV activates it in the same turn? (3) Does Guilty Pleasure IV's activation give Condense? (4) Does Condense's Extra Attack roll one crit or one per stack? (5) Are nodes 5-1's and 7's bonuses part of the shown card %?
@@ -676,16 +690,15 @@ Closes: docs/characters/tressa.md
 
 ### tressa-readings
 
-**Question:** Tressa's readings the screenshots can't settle: (1) Does E2's +20% reach Advanced Shadow Dagger? One reading (196 at 747 Attack, Agony 1 to 5) can't tell without that build's buffs. (2) Do Advanced Shadow Dagger's own 4 Agony count toward its +10% per Agony? That reading leans yes. (3) Is Wave of Darkness 2 Agony × 2 below E4? (4) Is node 5-1's bonus part of Dagger Throw's shown %? (5) Does node 7's +4% raise Agony ticks, and is it additive?
+**Question:** Tressa's readings the screenshots can't settle: (1) Does E2's +20% reach Advanced Shadow Dagger? One reading (196 at 747 Attack, Agony 1 to 5) can't tell without that build's buffs. (2) Do Advanced Shadow Dagger's own 4 Agony count toward its +10% per Agony? That reading leans yes. (3) Is Wave of Darkness 2 Agony × 2 below E4? (4) Is node 5-1's bonus part of Dagger Throw's shown %?
 
-**Setup:** A battle with Tressa with Shadow Reload and a target with no Agony. (1) needs E2 or higher; (3) a character below E4, or text from someone who has one; (4) and (5) those nodes unlocked.
+**Setup:** A battle with Tressa with Shadow Reload and a target with no Agony. (1) needs E2 or higher; (3) a character below E4, or text from someone who has one; (4) node 5-1 unlocked.
 
 **Steps:**
 1. With Agony on the target, read the numbers of an Advanced Shadow Dagger with a known count: compare with (56% + 10% x count) and (56% + 10% x count + 20%), x Attack x 0.35 x (1 + Void).
 2. Play an Advanced Shadow Dagger on a target with 0 Agony: damage matching 96% means its own 4 count, 56% means they do not.
 3. Read Wave of Darkness below E4.
 4. With node 5-1 on, read Dagger Throw: 128% at Basic level 5 with E6 means it's in the card's % ((100% + 5%) x 1.22).
-5. With node 7 on, compare an Agony tick of a known count with the same tick before unlocking it, and a Dagger Throw with and without a "by X%" buff.
 
 **Send:** Damage of each play, with Attack in battle, Void Damage and the Agony count; Wave of Darkness's text; Dagger Throw's %; The ticks.
 
@@ -723,6 +736,93 @@ Closes: docs/characters/anika.md
 **Send:** Both Greatsword Aquila II plays, and the next card played; Silver Veil damage, crit and non-crit, with Attack, Defense and Extra Damage in battle; Vulture Ejection damage with one and two Retains; The created card's text; Lashing's and Vulture Ejection's %s.
 
 Closes: docs/characters/khalipe.md
+
+### veronica-readings
+
+**Question:** Veronica's readings the screenshots can't settle: (1) Is Piercing Ballista's "Piercing Damage" raised by Extra Damage like the other Ballistas' Extra Attacks? The calculator says no. (2) Do Ballistas proccing at the end of the turn still get that turn's Reload (removed at the end of the turn)? The calculator says yes. (3) Is node 5-1's bonus part of Rapid Fire's shown %?
+
+**Setup:** A battle with Veronica with Firing Preparation II (Piercing Ballista) and plain Ballistas, no Reload at first. (3) needs node 5-1 unlocked.
+
+**Steps:**
+1. End a turn with a Piercing Ballista and a Ballista, no Reload, and read both damage numbers. Compare each with its % x Attack x 0.35 x (1 + Passion Damage): a Ballista about (1 + Extra Damage) higher than that and Piercing Ballista not means Piercing isn't an Extra Attack.
+2. In another turn, gain 1 Reload, then end the turn and read the Ballista: about 1.5x the first means the Reload counts.
+3. With node 5-1 on, read Rapid Fire: 114% at Basic level 2 means the +10% is in the card's % ((100% + 10%) x 1.04).
+
+**Send:** Both Ballista damage numbers, with and without Reload; Attack, Passion Damage and Extra Damage in battle; Rapid Fire's %.
+
+Closes: docs/characters/veronica.md
+
+### rita-readings
+
+**Question:** Rita's readings the screenshots can't settle: (1) Is Chrono Archon II's "100% Damage to a random enemy for each Chronal Ascension" one 100% hit per Chronal Ascension (the calculator), or one bigger hit? (2) Does Fate Distortion's "additional 10% for each Cost of that card" read the Cost the card is played at (a Fate Imprint raised to 4 gets 40%; the calculator), or its base Cost?
+
+**Setup:** A battle with Rita with Chrono Archon II. (2) needs E2 (Fate Distortion) and a Fate Imprint whose Cost went up.
+
+**Steps:**
+1. End a turn holding several Chronal Ascension and count the damage numbers from Chrono Archon II: one number per Chronal Ascension means separate hits.
+2. With a Fate Distortion, play a Fate Imprint at Cost 4 and read its damage; compare with the same Fate Imprint at Cost 4 without Fate Distortion: 1.7x means the play's Cost counts (30% + 4 x 10%), 1.5x the base Cost of 2.
+
+**Send:** Chrono Archon II damage numbers and the Chronal Ascension held; Both Fate Imprint damage numbers, with Attack in battle.
+
+Closes: docs/characters/rita.md
+
+### sereniel-readings
+
+**Question:** Sereniel's readings the screenshots can't settle: (1) Does Instinct Weakness make her Instinct hits Weakness Attacks (x Weakness DMG), as Passion Weakness does for Selena? (2) Does Afterglow's +100% also count on an enemy without Tenacity that isn't Ravaged? (3) Is E1's +100% on Pale Shooting Star additive, outside its shown %? (4) Does E3 show Death Halo at 650%? (5) Is E6's On Ravage hit (80% x max Tenacity) left unraised by her upgrades, and not raised by Extra Damage?
+
+**Setup:** A battle with Sereniel with Plasma Missile III and Homing Laser. (3) needs E1, (4) E3 (or its preview), (5) E6.
+
+**Steps:**
+1. Play Plasma Missile III, then a Homing Laser on that target, and the same Homing Laser on a target without Instinct Weakness: 1.25x (your Weakness DMG) more means it is a Weakness Attack.
+2. Play a Homing Laser (Afterglow), then another Attack Card on an enemy without Tenacity that is not Ravaged: about +100% of its card % more than without Afterglow means it counts.
+3. At E1, read Pale Shooting Star's % on the card: 180% at Unique 10 means the +100% isn't in it; then play it with a "by X%" buff: additive means the buff raises only the 180%.
+4. Read Death Halo's % at E3: 650% means the +150% is part of it.
+5. At E6, Ravage a target with a known max Tenacity and read the hit: 80% x Tenacity x Attack x 0.35 x (1 + Instinct Damage) means no upgrade and no Extra Damage.
+
+**Send:** Homing Laser damage with and without Instinct Weakness; Damage with and without Afterglow on the enemy without Tenacity; Pale Shooting Star's % and damage; Death Halo's %; The E6 hit with the max Tenacity, and Attack, Instinct Damage and Extra Damage in battle.
+
+Closes: docs/characters/sereniel.md
+
+### hilde-readings
+
+**Question:** Hilde's readings the screenshots can't settle: (1) Does Matrix Overlay's "+15% Weakness Damage Amount taken" add to the Weakness DMG stat (125% -> 140%; the calculator), or multiply the hit by 1.15? (2) Is E1's "+60% Damage Amount" to Vortex Arrow part of its shown % ((120% + 60%) x the upgrade; the calculator)?
+
+**Setup:** A battle with Hilde against an enemy weak to Instinct, with Homing Arrows in the deck. (2) needs E1 (or its preview).
+
+**Steps:**
+1. Proc a Homing Arrow drawn by Matrix Overlay and read its damage; compare with a Homing Arrow with Weakness Attack but without Matrix Overlay that turn: 140% / 125% = 1.12x means it adds to Weakness DMG, 1.15x a multiplier of its own.
+2. At E1, read Vortex Arrow's %: 205% at Unique 7 means the +60% is part of it.
+
+**Send:** Both Homing Arrow damage numbers, and Weakness Damage on the stats screen; Vortex Arrow's % at E1.
+
+Closes: docs/characters/hilde.md
+
+### hugo-single-target
+
+**Question:** Is every Attack Card whose text doesn't say "all enemies" or "random enemies" a Targeting card for Hugo's Commence the Hunt? Fan of Daggers II ("99% x 3 Damage", no "random enemies") is taken as one.
+
+**Setup:** A battle with Hugo holding Commence the Hunt, with Fan of Daggers II (or another Attack Card that names no target), and two enemies.
+
+**Steps:**
+1. Play Fan of Daggers II with Commence the Hunt: an Extra Attack and one less Commence the Hunt means it is a Targeting card; also see whether its 3 hits all land on one enemy.
+
+**Send:** Whether the Extra Attack came and Commence the Hunt went down; Which enemies the hits landed on.
+
+Closes: docs/FORMULA.md, "Applies to" (Single-target); src/engine/deck.ts: cardTargets
+
+### hugo-readings
+
+**Question:** Hugo's readings the screenshots can't settle: (1) How long does Last Resort's "Increase Damage of Commence the Hunt by 30%" last (the calculator switches it on per play)? (2) Does it add to Fixer's Approach's 40% (x1.7 together, the calculator's reading) or multiply with it (x1.82)? (3) Does Commence the Hunt's Extra Attack use the stacks before it goes down (3 stacks: 50% + 90%), as the calculator does?
+
+**Setup:** A battle with Hugo, Fixer's Approach played, Commence the Hunt at 3, then Last Resort.
+
+**Steps:**
+1. Play Knife Toss with 3 Commence the Hunt before Last Resort: the Extra Attack should be (50% + 90%) x 1.4 x Attack x 0.35 x (1 + Order Damage) x (1 + Extra Damage) (non-crit).
+2. Use Last Resort, then the same play: x1.7 / 1.4 means the 30% adds to the 40%, x1.3 means it multiplies. Repeat next turn and the turn after to see whether it lasts.
+
+**Send:** The Extra Attack damage numbers (non-crit) with their Commence the Hunt stacks; Attack, Order Damage and Extra Damage in battle.
+
+Closes: docs/characters/hugo.md
 
 ## Measured
 

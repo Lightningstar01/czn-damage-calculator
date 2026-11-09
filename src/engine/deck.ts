@@ -1,7 +1,7 @@
 // A build's deck: the cards picked on the Cards tab, plus the cards that come with them: the Ego skill, and the cards
 // a picked card creates (CardPreset.creates, e.g. Rossweisse's shards), which no one adds by hand (owner, 2026-10-27).
 import { withLinkedTeam, type Saves } from './team'
-import { ELEMENTS, type Build, type Card, type CardPreset, type CharacterPreset, type DeckCard, type Element, type LiveTeammate, type PotentialUpgrade } from './types'
+import { ELEMENTS, type Build, type Card, type CardPreset, type CardTargets, type CharacterPreset, type DeckCard, type Element, type LiveTeammate, type PotentialUpgrade } from './types'
 
 /** Id prefix of the cards that come with others: 'auto:<preset id>', so attack list plays can point at them. */
 export const AUTO = 'auto:'
@@ -13,6 +13,15 @@ export interface DeckItem {
   entry?: string
   /** For cards that come with others: the card that creates it, 'Auto' for the Ego skill, 'E6' for a Manifest Ego card. */
   createdBy?: string
+}
+
+/** Who a card's damage hits, from its text's first line with "Damage" in it (owner, 2026-11-08: "reviewed from card text"): 'to all
+ * enemies' = All, 'random enemy/enemies' = Random, anything else (or no damage line) = Single. CardPreset.targets overrides it. */
+export function cardTargets(text: string): CardTargets {
+  const line = text.split('\n').find((l) => /damage/i.test(l)) ?? ''
+  if (/all enemies/i.test(line)) return 'All'
+  if (/random enem/i.test(line)) return 'Random'
+  return 'Single'
 }
 
 /** Potential that raises a preset card: Basic cards Basic, Ego skills none, the rest (generated too) Signature. */
@@ -37,11 +46,13 @@ export function presetTags(p: CardPreset, nodeOn: NodeOn = allNodesOn): string {
 /** The card a preset plays as; element: the character's (unless the preset sets its own). */
 export function presetCard(p: CardPreset, element: Element, id: string, nodeOn: NodeOn = allNodesOn): Card {
   const changed = Object.entries(p.nodeCard ?? {}).filter(([node]) => nodeOn(node)).map(([, fields]) => fields)
+  const targets = p.targets ?? cardTargets(p.text ?? '')
   return {
     id, name: p.name, cardType: p.cardType, element: p.element ?? element, cost: p.cost ?? null, tags: presetTags(p, nodeOn),
     scaling: p.scaling ?? 'ATK', kind: p.kind ?? 'Normal', pct: p.pct, hits: p.hits, ...Object.assign({}, ...changed), weaknessApplies: !!p.weaknessApplies,
     targetRavaged: !!p.targetRavaged, upgrade: cardUpgrade(p), preset: p.id, ...(p.perCost ? { perCost: true } : {}),
-    ...(p.perCount ? { perCount: p.perCount } : {}), ...(p.maxCount ? { maxCount: p.maxCount } : {}), ...(p.countsHits ? { countsHits: true } : {}), ...(p.counterHits ? { counterHits: p.counterHits } : {}), ...(p.fixedOf ? { fixedOf: p.fixedOf } : {}), ...(p.notACard ? { notACard: true } : {}),
+    ...(p.perCount ? { perCount: p.perCount } : {}), ...(p.maxCount ? { maxCount: p.maxCount } : {}), ...(p.countsHits ? { countsHits: true } : {}), ...(p.counterHits ? { counterHits: p.counterHits } : {}), ...(p.ravagedHits ? { ravagedHits: p.ravagedHits } : {}), ...(p.fixedOf ? { fixedOf: p.fixedOf } : {}), ...(p.notACard ? { notACard: true } : {}),
+    ...(targets !== 'Single' ? { targets } : {}),
   }
 }
 

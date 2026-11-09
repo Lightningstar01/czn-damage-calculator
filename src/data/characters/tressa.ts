@@ -49,10 +49,8 @@ export default {
     { kind: 'Buff', id: 'p5-1-throw', node: '5-1', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
       appliesTo: 'Dagger Throw', hitScope: 'All hits', condition: 'Always', thresholdStat: 'Damage over Time',
       thresholdBonus: { above: 0.15, value: '+5%', orEqual: true } },
-    // 7 (in game): "+4% Void Attribute Damage Amount. If Tressa's Damage over Time is 30% or higher, add an additional +4%": as Selena's 7, so a
-    // Fixed tick doesn't get it (locked for the owner; in-game test tressa-readings)
-    { kind: 'Buff', id: 'p7-void', node: '7', name: 'Unique Stat Upgrade', category: 'Potential', value: '+4%', appliesTo: 'Void',
-      hitScope: 'All hits', condition: 'Always', thresholdStat: 'Damage over Time', thresholdBonus: { above: 0.3, value: '+4%', orEqual: true } },
+    // 7 (in game): "+4% Void Attribute Damage Amount. If Tressa's Damage over Time is 30% or higher, add an additional +4%": on the stats screen
+    // (Void Damage), as every character's attribute node 7 is, so nothing is added on top (owner, 2026-11-08; locked for the owner)
     // E2 Awakening Memory (in game): "+20% Damage Amount to the Shadow Dagger card when activated against targets in a Agony state".
     // The card's name only: Advanced Shadow Dagger is an in-game test (tressa-readings)
     { kind: 'Buff', id: 'e2-dagger', name: 'E2 Awakening Memory', category: 'Ego Manifestation', value: '+20%', appliesTo: 'Shadow Dagger',

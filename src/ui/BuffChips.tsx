@@ -30,6 +30,7 @@ export function buffPill(value: string, type: BuffType): Pill {
     case 'Additive': return { text: `${value} Add`, group: 'add' }
     case 'Multiplicative': return { text: `${value} Mult`, group: 'mult' }
     case 'Weakness Attack': return { text: 'Weakness DMG applies', group: 'weak' }
+    case 'Weakness DMG': return { text: `${value} Weakness DMG`, group: 'weak' }
     case 'Card %': return { text: `${value} Card %`, group: 'card' }
     case 'Card +': return { text: `${value} card`, group: 'card' }
     case 'Base %': return { text: `${value} base`, group: 'card' }

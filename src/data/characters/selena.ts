@@ -45,9 +45,8 @@ export default {
     { kind: 'Buff', id: 'p5-1-fire', node: '5-1', name: 'Basic Card Proficiency', category: 'Potential', type: 'Card +', value: '+5%',
       appliesTo: 'Engagement Fire', hitScope: 'All hits', condition: 'Always', thresholdStat: 'Extra Damage',
       thresholdBonus: { above: 0.15, value: '+5%', orEqual: true } },
-    // 7 (in game): "+4% Passion Attribute Damage Amount. If Selena's Extra Damage (stat) is 30% or higher, add an additional +4%": as Tenebria's 7
-    { kind: 'Buff', id: 'p7-passion', node: '7', name: 'Unique Stat Upgrade', category: 'Potential', value: '+4%', appliesTo: 'Passion',
-      hitScope: 'All hits', condition: 'Always', thresholdStat: 'Extra Damage', thresholdBonus: { above: 0.3, value: '+4%', orEqual: true } },
+    // 7 (in game): "+4% Passion Attribute Damage Amount. If Selena's Extra Damage (stat) is 30% or higher, add an additional +4%": on the stats
+    // screen (Passion Damage 4.0% at Extra Damage 18.1%), so nothing is added on top (owner, 2026-11-08)
     // E2 Awakening Memory (in game): "Selena's Mark damage is increased by +20%"
     { kind: 'Buff', id: 'e2-mark', name: "Selena's Mark damage", category: 'Ego Manifestation', value: '+20%', appliesTo: 'Mark',
       hitScope: 'All hits', condition: 'Always', egoLevel: 2 },

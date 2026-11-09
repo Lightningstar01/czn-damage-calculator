@@ -25,6 +25,6 @@ What the owner confirmed about this character's cards. The general rules are in 
     They all need a target, so they're left out of the In hand chip (`onTarget`): measured on E2, **Unconfirmed** on the others (in-game test target-buffs-in-hand).
   - A tick stops at 20 Agony, the keyword's "max 20 stacks", typed or not.
   - Vital Attack IV's extra hit has its own switch, Target has 3+ Agony. Shadow Reload I: set Hits to 1 + the Shadow Daggers it exhausts.
-  - 5-1's +5% (+5% more at Damage over Time 15%, stats screen) adds before the upgrade (`Card +`), following the owner's rule for Potential nodes. 7's +4% (+4% more at 30%) is additive on Void cards, as Selena's 7 is, so
-    it doesn't raise a Fixed tick. Both are locked, so neither has been seen (**Unconfirmed**, in-game test tressa-readings).
+  - 5-1's +5% (+5% more at Damage over Time 15%, stats screen) adds before the upgrade (`Card +`), following the owner's rule for Potential nodes. It's locked, so it hasn't been seen (**Unconfirmed**, in-game test tressa-readings).
+    7's Void Damage would show in the stats screen's Void Damage, so it isn't added (User, 2026-11-08; see FORMULA.md, Stats). The 7.5% Void on her stats screen today comes from elsewhere (7 is locked).
   - Not counted: Agony a card applies (typed), Heals, E1's cost change (the card shows Cost 1, in game 0 from E1), E6's created Shadow Dagger, all enemies and random enemies (one target).

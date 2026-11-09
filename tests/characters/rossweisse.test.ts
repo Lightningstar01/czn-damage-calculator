@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { computeBuild, shownPct } from '../../src/engine/calc'
 import { renderCardText } from '../../src/engine/cardText'
-import { activeBuffs, presetBuffValue } from '../../src/engine/buffs'
+import { activeBuffs } from '../../src/engine/buffs'
 import { PRESETS } from '../../src/data/presets'
-import { newBuild, newCharacterSave } from '../../src/store/save'
+import { newCharacterSave } from '../../src/store/save'
 import { addCards, cardFromPreset, settings } from '../helpers'
 
 describe('Rossweisse', () => {
@@ -74,13 +74,7 @@ describe('Rossweisse', () => {
       "Play 2 (Flickering White Night): its damage goes on the next Equilux card played, and none follows it, so that part isn't counted."])
   })
 
-  it('Potential 7 follows the stats-screen Attack: +5% from 600, +2% per 20 above, max +10% more', () => {
-    const p7 = ross.effects.find((e) => e.id === 'p7-justice')!
-    if (p7.kind !== 'Buff') throw new Error('p7 is a buff')
-    const at = (attack: number) => presetBuffValue(p7, { ...newBuild('x').stats, attack }).value
-    expect(at(599)).toBe(0)
-    expect(at(600)).toBeCloseTo(0.05)
-    expect(at(659)).toBeCloseTo(0.05 + 0.04)
-    expect(at(1000)).toBeCloseTo(0.15)
+  it("Potential 7's Justice Damage is on the stats screen (15.0% at Attack 925), so nothing is added on top", () => {
+    expect(ross.effects.some((e) => e.node === '7')).toBe(false)
   })
 })

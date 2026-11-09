@@ -18,5 +18,5 @@ What the owner confirmed about this character's cards. The general rules are in 
   Extra Attack, gets the Signature upgrade or the Attack-card buffs; the owner has E2 to test.
 - **Brand of the Cycle** ("Increase Damage Amount taken from Rossweisse by 20%"): 20% multiplicative at any number
   of Brands, so a per-play counter that is 1 (on) or 0.
-- **Rossweisse Potential 7**: +5% additive on Justice cards from 600 stats-screen Attack, +2% for every full 20
-  Attack above 600, max +10% more (`thresholdMin`, `thresholdBonus.every`). Not counted: Radiant Sword Flow / I discard damage.
+- **Rossweisse Potential 7**: its Justice Damage is already in the stats screen's Justice Damage (15.0% at 925 Attack), so it
+  isn't added again (User, 2026-11-08; see FORMULA.md, Stats). Not counted: Radiant Sword Flow / I discard damage.

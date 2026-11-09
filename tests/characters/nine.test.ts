@@ -91,12 +91,9 @@ describe('Nine', () => {
     expect(damage('card-899', { stacks: { 'Slash (Exhaust cards)': 2 } }, on)).toBeCloseTo(1.4 * unit(50))
   })
 
-  it('Potential 7 adds Order damage from Defense 300, +2% every 10 up to +10%', () => {
+  it("Potential 7's Order Damage is on the stats screen, so nothing is added on top", () => {
     const on = (a: Build) => { a.potentialNodes = { ...NODES_OFF, '7': true } }
-    expect(damage('card-885', {}, on, 299)).toBeCloseTo(unit(299))
-    expect(damage('card-885', {}, on, 300)).toBeCloseTo(1.05 * unit(300))
-    expect(damage('card-885', {}, on, 330)).toBeCloseTo(1.11 * unit(330))
-    expect(damage('card-885', {}, on, 400)).toBeCloseTo(1.15 * unit(400))
+    expect(damage('card-885', {}, on, 400)).toBeCloseTo(unit(400))
   })
 
   it('Reflection: Zero: +50% per combined Cost; E3 raises the base and the per-Cost bonus', () => {

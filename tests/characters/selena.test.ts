@@ -15,7 +15,7 @@ describe('Selena', () => {
     const [a] = cs.builds
     Object.assign(a, { egoLevel: 6 })
     a.stats.attack = 100
-    for (const id of ['p5-1-fire', 'p7-passion']) a.presetSwitches[`Selena|${id}`] = false
+    a.presetSwitches['Selena|p5-1-fire'] = false
     return { cs, a }
   }
 

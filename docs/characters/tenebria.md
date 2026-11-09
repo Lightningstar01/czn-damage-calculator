@@ -19,7 +19,7 @@ What the owner confirmed about this character's cards. The general rules are in 
     card upgrade (User, 2026-10-28).
   - Everyone's Idol (7%, E3 11%), Encore V's +100% on a drawn Rhythm card, 5-1 (+10%) and E4's at-max +10% are multiplicative on
     Rhythm cards; E4 Everyone's Cheer is 1% per stack (max 20) on all of Tenebria's cards; E6 All Eyes On You is a 40% debuff
-    on the target for Rhythm cards. Potential 7 is read as Rossweisse's (+5% additive on Passion cards from 600 Attack), with +1% per 20 Attack above 600, max +10% more.
+    on the target for Rhythm cards. Potential 7's Passion Damage is already in the stats screen's Passion Damage (15.0% at 1092 Attack), so it isn't added again (User, 2026-11-08; see FORMULA.md, Stats).
     5-1 and 7 are unlocked: on the Potential screen an unlocked node is dark, a lit one (5-2) is still locked (User, 2026-10-28).
     Fermata's 4 Rhythm cards are Rhythm, Crescendo, Staccato and Fortissimo (its Related Cards screen).
   - Not counted: allies' own Rhythm cards (Music, Start! gives each ally 2) and 5-1's buff on them, E2's Ego Skill damage,

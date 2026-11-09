@@ -49,6 +49,9 @@ build. That screen includes the partner's base stats and the fragments, but not 
 equipment, which apply only in battle (slot 1 always gives flat ATK; any piece may give ATK%). Those are added on top, as above.
 
 - Stat nodes of the Potential tree are on the stats screen, so they're reference text (User).
+- Node 7's elemental damage ("+5% Void Damage when Defense is 300 or higher"...) is on the stats screen too, in that element's Damage, so it is
+  never added again (User, 2026-11-08). Seen at 15.0% (5% + the full 10% more) on Adelheid (Defense 417), Rossweisse (Attack 925), Tenebria (1092)
+  and Sereniel; characters with 7 locked show none of it.
 - Partner base stats are on the stats screen and never added again.
 - Memory fragment set stats are on the stats screen (`onStatsScreen`): listed for reference, never added. Set buffs are added like partner buffs.
 - Elemental DMG% is the stat of the card's element. Boosts (Elemental DMG%) count for the character's own element (**Unconfirmed**, in-game
@@ -71,6 +74,7 @@ How a buff's text decides where it goes:
 | "final Damage Amount" | Final | its own multiplier, x (1 + the sum), after everything else |
 | Crit Chance / Crit DMG on some cards | Crit Chance / Crit DMG | added to those cards' crit stats, before the cap |
 | Weakness Attack | Weakness Attack | Weakness DMG applies to matching cards, on all hits |
+| "+X% Weakness Damage Amount taken" (Hilde's Matrix Overlay) | Weakness DMG | added to the Weakness DMG stat on matching plays that hit a Weakness (**Unconfirmed**: in-game test hilde-readings) |
 
 - **Ego skill bonuses (owner's screenshots, 2026-11-04):** a Manifest Ego level's "+X% Damage Amount to <Ego skill>" shows in the Ego skill's
   own number (Beryl E4 400%, Haru E3 800%, Lucas E4 300%, Owen E4 300%, Rei E4 400%, Selena E4 350%), so it is part of the card %: Base %
@@ -94,7 +98,10 @@ How a buff's text decides where it goes:
 
 **"Applies to"** (case-insensitive): `ALL`, an exact card name, a tag, the card's type (Attack, Skill, Upgrade), element, cost (`1-cost`,
 `2+ cost`; Ego skills have no AP cost), kind (`DoT`, `Extra Attack`), `Defense-Based`, `N+ hits` (the play's hit count), joined by `A & B` (all)
-or `A/B` (any). Hits from effects rather than cards (`notACard`) don't match card-type words, so what names Attack, Skill or Upgrade skips them; `ALL`, their name or their tags still match.
+or `A/B` (any). Who a card hits: `Single-target`, `AoE` (all enemies), `Random-target` (random enemies), read from the card text's first line
+with "Damage" in it ("to all enemies", "random enemy/enemies"; anything else is single-target; a card's `targets` overrides it). User, 2026-11-08
+(Hugo's Commence the Hunt is set off by single-target Attack Cards, "reviewed from card text"); whether a card without either phrase always
+hits one target is **Unconfirmed** (in-game test hugo-single-target). Hits from effects rather than cards (`notACard`) don't match card-type words, so what names Attack, Skill or Upgrade skips them; `ALL`, their name or their tags still match.
 
 ## Weakness, Vulnerable, Ravaged
 

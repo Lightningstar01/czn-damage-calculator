@@ -19,5 +19,6 @@ What the owner confirmed about this character's cards. The general rules are in 
     and card upgrades don't raise them (User, 2026-10-28). Passion Weakness (Drone Bombing I / II) is a per-play enemy debuff
     that makes every Passion hit a Weakness Attack (x Weakness DMG), Selena's Coordinated Attacks included (User, 2026-10-28).
     Target Spotted V's hit counts the target as Ravaged (User, 2026-10-28).
-  - 5-1's extra +5% (Extra Damage 15% or higher) and 7's extra +4% (30% or higher) read the stats-screen Extra Damage (User, 2026-10-30).
+  - 5-1's extra +5% (Extra Damage 15% or higher) reads the stats-screen Extra Damage (User, 2026-10-30).
+    7's Passion Damage is already in the stats screen's Passion Damage, so it isn't added again (User, 2026-11-08; see FORMULA.md, Stats).
   - Not counted: Tenacity damage, 3-1's Piercing, Shields, draws.
