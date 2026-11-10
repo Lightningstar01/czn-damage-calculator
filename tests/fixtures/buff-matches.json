@@ -178,6 +178,20 @@
   "Fixer's Approach|cth-40": "Commence the Hunt: Commence the Hunt",
   "Fixer's Approach|cth-50": "Commence the Hunt: Commence the Hunt"
  },
+ "kayron": {
+  "Kayron|p3-1-basic": "Elimination/Sphere: Elimination, Sphere",
+  "Kayron|p5-1-elimination": "Elimination: Elimination",
+  "Kayron|e4-paradox": "Attack: Black Hole, Black Hole I, Black Hole II, Black Hole III, Black Hole IV, Brand of Annihilation, Brand of Annihilation I, Brand of Annihilation II, Brand of Annihilation III, Brand of Annihilation IV, Brand of Annihilation V, Echo of Futility, Echo of Futility I, Echo of Futility II, Echo of Futility III, Echo of Futility IV, Echo of Futility V, Echoes of True Abyss, Elimination, Futility (Oath of Vanity I), Futility (Oath of Vanity III), Futility (Oath of Vanity)",
+  "Rift of Nothingness|exhausted": "Rift of Nothingness: Rift of Nothingness",
+  "Echo of Futility II|exhausted": "Echo of Futility II: Echo of Futility II",
+  "Echo of Futility IV|x": "Echo of Futility IV: Echo of Futility IV",
+  "Echo of Futility V|created": "Echo of Futility V: Echo of Futility V",
+  "Brand of Annihilation IV|exhausted": "Brand of Annihilation IV: Brand of Annihilation IV",
+  "Black Hole|exhausted": "Black Hole: Black Hole",
+  "Black Hole II|exhausted": "Black Hole II: Black Hole II",
+  "Echoes of True Abyss|created": "Echoes of True Abyss: Echoes of True Abyss",
+  "Echoes of True Abyss|created-e1": "Echoes of True Abyss: Echoes of True Abyss"
+ },
  "khalipe": {
   "Khalipe|p5-1-basics": "Lashing/Upward Slash: Lashing, Upward Slash",
   "Khalipe|p7-vulture": "Vulture Ejection: Vulture Ejection, Vulture Ejection I, Vulture Ejection II, Vulture Ejection III, Vulture Ejection IV, Vulture Ejection V",

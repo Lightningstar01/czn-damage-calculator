@@ -868,4 +868,18 @@ export const CHECKS: InGameCheck[] = [
     ],
     record: ["Magnum Shot's % and Luke's Unique level", "Magnum Shot's % with 7 and Luke's Critical Chance", "Single Shot's % with 5-1", 'Game version'],
   },
+  {
+    id: 'kayron-readings',
+    question: "Kayron's readings the screenshots of the locked character can't settle: (1) Is the Futility Oath of Vanity makes (100% / 150% / 200%) raised by the Signature upgrade (the calculator)? (2) Does Echoes of True Abyss' \"+40 base Damage Amount for each created\" count 3 Futility, and 5 from E1 (the calculator: 360%, 440%)? (3) Is Echo of Futility IV's \"+150% Damage Amount for each X\" part of the card's % like his \"base\" bonuses (the calculator)? (4) Does Potential 7's +5% Critical Damage (Attack 600 or higher) show on the stats screen (the calculator adds it in battle, like Rin's 7)? (5) Does E4's Echo of Paradox last the battle (the game names no duration; Prydwen \"for 1 turn\")?",
+    closes: 'docs/characters/kayron.md',
+    setup: 'Once you have Kayron: a battle with Oath of Vanity in the deck, Echoes of True Abyss and Echo of Futility IV. (1) needs a Unique level above 0; (2) needs E1 for its second half; (4) needs Attack 600 and node 7; (5) needs E4.',
+    steps: [
+      "Read a Futility's % in hand with Oath of Vanity: above 100% at a Unique level above 0 means it's raised.",
+      "Read Echoes of True Abyss' % in hand (or compare its damage with 240%): 360% means +40% x 3; at E1, 440% means E1's 2 count.",
+      "Play Echo of Futility IV with X = 2 and compare the damage with 150% + 2 x 150% = 450% of a 100% hit.",
+      'With node 7 on and Attack 600 or higher, read Critical Damage on the stats screen.',
+      'At E4, Exhaust a Futility, end the turn and read whether Echo of Paradox is still on Kayron.',
+    ],
+    record: ["Futility's % and Kayron's Unique level", "Echoes of True Abyss' % at E0 and E1", "Echo of Futility IV's damage with X = 2 (non-crit)", 'Critical Damage with and without node 7', 'Echo of Paradox after the turn ends'],
+  },
 ]
