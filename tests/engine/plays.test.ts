@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { computeBuild, type BuildResult } from '../../src/engine/calc'
 import { PRESETS } from '../../src/data/presets'
 import { newBuff, newBuild, newCharacterSave } from '../../src/store/save'
+import { NO_ENEMY, type Enemy } from '../../src/engine/types'
 import { addCards, card, cardFromPreset, noStrikeNode, plays, presets, setPlays, settings } from '../helpers'
 
 describe('per-play stacks', () => {
@@ -60,6 +61,30 @@ describe('per-play debuffs and per-build attack lists', () => {
     expect(r.plays.map((p) => p.hits.map((h) => h.cardMult))).toEqual(
       [[1.5, 1.5], [0.75, 0.75], [1.125, 1.125], [1, 1]].map((xs) => xs.map((v) => expect.closeTo(v))))
     expect(r.plays[2]).toMatchObject({ vulnerable: true, weaknessDebuff: true })
+  })
+
+  it("a play hits a Weakness when the fight's enemy is weak to its element (or to all); the play's switch overrides it", () => {
+    const cs = newCharacterSave()
+    const [a] = cs.builds
+    a.stats.attack = 1000
+    const x = card('X', '', 1) // Passion
+    addCards(cs, x)
+    a.rotation = [{ cardId: x.id }, { cardId: x.id, weakness: false }, { cardId: x.id, weakness: true }]
+    const run = (weakness?: Enemy['weakness']) => computeBuild(presets, '', cs, a, settings, {}, { enemies: [{ ...NO_ENEMY, weakness }] })
+    const mults = (r: BuildResult) => r.plays.map((p) => p.hits[0].cardMult)
+    // No weakness: only the play switched on
+    let r = run()
+    expect(r.weaknessAuto).toEqual([false, false, false])
+    expect(mults(r)).toEqual([1, 1, 1.25].map((v) => expect.closeTo(v)))
+    expect(r.plays.map((p) => p.weakness)).toEqual([false, false, true])
+    // Weak to Passion, or to all: automatic, but the play switched off stays off
+    for (const w of ['Passion', 'All'] as const) {
+      r = run(w)
+      expect(r.weaknessAuto).toEqual([true, true, true])
+      expect(mults(r)).toEqual([1.25, 1, 1.25].map((v) => expect.closeTo(v)))
+    }
+    // Weak to another element
+    expect(mults(run('Order'))).toEqual([1, 1, 1.25].map((v) => expect.closeTo(v)))
   })
 
   it('each build plays its own list', () => {

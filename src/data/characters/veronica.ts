@@ -5,7 +5,7 @@
 // Reload: "Increase Damage Amount of Ballista cards by 50%" per stack, multiplicative (owner, 2026-11-08).
 // Piercing Ballista's "Piercing Damage" is normal damage, not an Extra Attack (owner, 2026-11-08; Unconfirmed, in-game test veronica-piercing-ballista).
 import type { CharacterAdditions } from '../../engine/types'
-import { cardBuff, effectHits } from '../helpers'
+import { cardBuff, markKeyword } from '../helpers'
 
 /** Every Ballista card (in game, "Ballista Card": Ballista, Piercing, Enhanced, Giant, Shelling and Micro Ballista). */
 const BALLISTAS = 'Ballista/Piercing Ballista/Enhanced Ballista/Giant Ballista/Shelling Ballista/Micro Ballista'
@@ -20,7 +20,8 @@ const MICRO = 'card-455'
 const firing = (ballista: string, extra = '') =>
   `[Unique / Initiation]\nCreate 1 ${ballista} card(s)\nAt the start of the turn, create 1 ${ballista} card(s)${extra}`
 
-const extraAttack = effectHits({ element: 'Passion', kind: 'Extra Attack' })
+/** The Mark keyword (helpers.ts): Veronica's own Extra Attack. */
+const mark = markKeyword('Passion', 'Mark (Veronica)')
 
 export default {
   verified: { date: '2026-11-08', gameVersion: '841' },
@@ -59,7 +60,7 @@ export default {
       hitScope: 'All hits', condition: 'Always', counter: 'Floral Scent', maxStacks: 1, egoLevel: 2 },
   ],
   // E6: 1 Mark at the start of the turn on enemies with Floral Scent; the Mark keyword's Extra Attack on an Attack Card
-  triggers: [{ card: 'mark', on: 'Attack', counter: 'Mark (Veronica)', egoLevel: 6 }],
+  triggers: [{ ...mark.trigger, egoLevel: 6 }],
   // Card text: the in-game wording (owner's screenshots, 2026-11-08), with tokens for the build's numbers (engine/cardText.ts)
   cards: {
     // Ego skill: E3 adds a random Ballista
@@ -138,7 +139,6 @@ export default {
     'card-455': { pct: 0.4, hits: 1, kind: 'Extra Attack', text: '[Ephemeral]\n{40%} Extra Attack to a random enemy\nAt the end of the turn, proc' },
   },
   extraCards: [
-    // The Mark keyword (Selena's in game): "When an Attack Card is activated, inflict 100% Extra Attack, and decrease Mark by 1"
-    extraAttack('mark', 'Mark', 1, 'When an Attack Card is activated, inflict 100% Extra Attack, and decrease Mark by 1', { upgrade: null, tags: 'Mark' }),
+    mark.card,
   ],
 } satisfies CharacterAdditions

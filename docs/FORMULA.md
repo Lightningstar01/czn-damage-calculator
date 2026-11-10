@@ -106,6 +106,10 @@ hits one target is **Unconfirmed** (in-game test hugo-single-target). Hits from 
 ## Weakness, Vulnerable, Ravaged
 
 - **Weakness DMG (User):** the stats-screen stat is the elemental advantage, a total multiplier, base 125%. There's no other x1.25 on top.
+- **Hitting a Weakness (User, 2026-11-09):** a play hits a Weakness when its card applies Weakness (the Weakness Attack tag), a Weakness Attack buff
+  matches it, or the fight's enemy is weak to the card's element (Setup > Fight, "Weak to": one element or all five). The play's "Hits a Weakness"
+  switch (Cards tab) starts at that and can be changed for special cases. A card's "Weakness Attack: ..." line (Luke's Silver Shot "Weakness Attack:
+  Increase Damage Amount by 100%") is a buff that counts only on plays that hit a Weakness.
 - **Weakness Attack on non-active hits:** Prydwen says non-active damage (extra-attack bolts) gets no elemental bonus. The owner ruled that
   Selena's Passion Weakness makes her Coordinated Attacks Weakness Attacks (2026-10-28), which is what's modeled there. As a general rule, **Unconfirmed**.
 - **Vulnerable x1.5, Weakness debuff x0.75 (Sourced).** In the game a stack is used per hit (Vulnerable: Prydwen and owner; Weakness: **Unconfirmed**).
@@ -129,6 +133,8 @@ hits one target is **Unconfirmed** (in-game test hugo-single-target). Hits from 
 - **Fixed DoT (measured by the owner, 2026-11-01, Tressa's Agony; in-game test `agony-tick`):** "50% Fixed DoT x Agony count" is one hit per stack, each 50% x Final ATK x 0.35 x (1 + element's DMG%) x (1 + DoT DMG%) x Enemy DEF mult.
   Each hit can crit, so Crit DMG buffs on DoT count (Sanguine Thorn). Attack, the DoT stat and Enemy DEF were measured; Vulnerable doesn't raise it, and card upgrades don't either (the keyword shows 50% at Unique 6). The stacks halve, rounding down (the guide found, LDShop, says one stack: the game disagrees).
   The hits fit at Enemy DEF about 0.374, on the enemy of Mei Lin's tests, which back-solved to 0.3733 (2026-10-25, see the log). **Unconfirmed**, in-game test `agony-limits`: the element factor (it fits only with it, at that DEF), "damage dealt" buffs (not applied) and Enemy DR (not applied). A tick is a play with the count typed in; the owner adds and halves the count.
+  A buff that names DoT effects directly can reach it: Olga's Shard Erosion ("Increase Damage Amount of Olga's DoT effects by 6%") multiplies her Agony hits (User, 2026-11-09;
+  **Unconfirmed**, in-game test `olga-readings`; the buff's `fixedDot` flag). Other multiplicative buffs still don't.
 - **Fixed damage "of Shield owned" (User, 2026-11-01; Maribell):** % x the Shield owned set on the play, with no ATK and no 0.35. Shield isn't computed: read it in game.
 - **"Damage Amount equal to X% of Shield owned" without the word Fixed (User, 2026-11-01; **Unconfirmed**, in-game test `maribell-readings`):** added under the multipliers (buff type `Flat`), so Vulnerable, element and crit raise it, whatever the stat is. On plain Fixed damage, nothing raises it; on a Fixed DoT, it goes under the DoT's factors like the rest of the hit (**Unconfirmed**, no such buff yet).
 
@@ -165,6 +171,10 @@ Reading of the card text (corrections go in the additions file):
 - "Defense-based" = DEF scaling, "Fixed" = Fixed; Piercing only ignores enemy shields (User; shields aren't modeled, so normal damage).
 - Basic = a starting card with no epiphanies (User; tags Basic and Basic Attack or Basic Skill). One Basic Skill per character, Maribell two (User).
 - The Weakness Attack tag means Weakness DMG applies (User).
+- **Mark** is the same keyword for every character (User, 2026-11-09): "When an Attack Card is activated, inflict 100% Extra Attack, and decrease
+  Mark by 1". It's a trigger on every Attack Card play (anyone's) while the play's Mark counter is above 0: the inflicter's own 100% Extra Attack,
+  computed with their build, not raised by card upgrades. Each inflicter has their own counter (Mark (Luke), Mark (Renoa)...), as each one's Mark
+  is their own. `markKeyword()` in src/data/helpers.ts builds it, so a new character with Mark needs no question.
 - Ego skills are type Skill with tag "Ego Skill" and no AP cost, so damaging ones aren't Attack cards (User). X-cost and unplayable cards have no cost and a tag. Status cards are type Skill with tag "Status".
 
 A card's buffs count while it's in the deck, on by default, with a switch per build. Extra hits are set per play; the hit count also drives `N+ hits`.

@@ -5,7 +5,7 @@
 // Each discarded Dirge Bullet's Extra Attack is set off by a number on the play, for any play of the team (owner, 2026-10-30).
 // Ballad III's Mark is the Mark keyword, here Renoa's own 100% Extra Attack; Flower III boosts Renoa's next card only (owner, 2026-10-30).
 import type { CharacterAdditions } from '../../engine/types'
-import { cardBuff, effectHits, EGO_POTENTIALS_PLUS_3 } from '../helpers'
+import { cardBuff, effectHits, EGO_POTENTIALS_PLUS_3, markKeyword } from '../helpers'
 
 const DISCARDED = 'Dirge Bullets discarded'
 const FINALES = 'Dirge Bullets: Finale discarded'
@@ -13,6 +13,9 @@ const BULLET_ART = 'cards/renoa/unique_1041_06.webp'
 
 /** A hit from an effect, not a card: Renoa's Extra Attack. Raised by Signature Card Upgrade unless upgrade: null. */
 const extraAttack = effectHits({ element: 'Void', kind: 'Extra Attack', upgrade: undefined })
+
+/** The Mark keyword (helpers.ts): Renoa's own Extra Attack. */
+const mark = markKeyword('Void', 'Mark (Renoa)')
 
 /** "Discard ... +X% Damage Amount": per Dirge Bullet (or Finale) discarded on this play. Finales exist from E2 (card-666). */
 const perDiscard = (value: string, card: string, extra: { egoLevel?: number; idSuffix?: string } = {}) => {
@@ -121,7 +124,7 @@ export default {
     'card-18': { text: 'Move up to 3 Dirge Bullet from Draw Pile and Graveyard to hand' },
     'card-19': {
       text: '{60%} Damage × 3\n1 Mark to the target for each Dirge Bullet in hand',
-      triggers: [{ card: 'mark', on: 'Attack', counter: 'Mark (Renoa)' }],
+      triggers: [mark.trigger],
     },
     'card-20': {
       text: "{60%} Damage × 3\nIncrease Damage Amount of Dirge Bullet's Extra Attack by 100% for 1 turn",
@@ -170,7 +173,6 @@ export default {
       { image: 'cards/renoa/unique_1041_05.webp', notes: 'One play per discard' }),
     extraAttack('ij5-end', 'Instant Judgment V (End of turn)', 2, 'At the end of the turn, 200% Extra Attack to the enemy with lowest HP',
       { upgrade: null, image: 'cards/renoa/unique_1041_05.webp', notes: 'One play per turn' }),
-    // The Mark keyword (Selena's in game): "When an Attack Card is activated, inflict 100% Extra Attack ... and decrease Mark by 1"
-    extraAttack('mark', 'Mark', 1, 'When an Attack Card is activated, inflict 100% Extra Attack, and decrease Mark by 1', { upgrade: null, tags: 'Mark' }),
+    mark.card,
   ],
 } satisfies CharacterAdditions

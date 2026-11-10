@@ -26,6 +26,20 @@
   "Warming Up IV|attack-cards": "Attack: Blaster Swing, Ignition Slash, Ignition Slash I, Ignition Slash II, Ignition Slash III, Ignition Slash IV, Rampage Trigger, Shock Gun, Shock Gun I, Shock Gun II, Shock Gun III, Shock Gun V",
   "Rampage Trigger|destroy": "Rampage Trigger: Rampage Trigger"
  },
+ "arabella": {
+  "Arabella|amplification": "Fracture: Fracture",
+  "Arabella|p5-1-slash": "Diagonal Slash: Diagonal Slash",
+  "Arabella|e1-art": "The Art of Unmaking: The Art of Unmaking",
+  "Arabella|e3-ego-skill": "Pathetic End: Pathetic End",
+  "Arabella|e4-analysis": "Fracture: Fracture",
+  "Arabella|e6-analysis": "Fracture: Fracture",
+  "Arabella|e6-crit": "Fracture: Fracture",
+  "Scream For Me II|attack-cards": "Attack: Diagonal Slash, Hollow Verdict, Hollow Verdict I, Hollow Verdict II, Hollow Verdict III, Hollow Verdict IV, Hollow Verdict V, Sadistic Restraint, Sadistic Restraint I, Sadistic Restraint II, Sadistic Restraint III, Sadistic Restraint IV, Sadistic Restraint V, Scream For Me, Scream For Me I, Scream For Me II, Scream For Me III, Scream For Me IV, Scream For Me V, The Art of Unmaking",
+  "Observer’s Pleasure III|attack-cards": "Attack: Diagonal Slash, Hollow Verdict, Hollow Verdict I, Hollow Verdict II, Hollow Verdict III, Hollow Verdict IV, Hollow Verdict V, Sadistic Restraint, Sadistic Restraint I, Sadistic Restraint II, Sadistic Restraint III, Sadistic Restraint IV, Sadistic Restraint V, Scream For Me, Scream For Me I, Scream For Me II, Scream For Me III, Scream For Me IV, Scream For Me V, The Art of Unmaking",
+  "The Art of Unmaking|per-harmful": "The Art of Unmaking: The Art of Unmaking",
+  "The Art of Unmaking|per-harmful-e1": "The Art of Unmaking: The Art of Unmaking",
+  "The Art of Unmaking|amplified": "The Art of Unmaking: The Art of Unmaking"
+ },
  "beryl": {
   "Beryl|p3-1-launchers": "Launcher/Charge Launcher: Charge Launcher, Launcher",
   "Beryl|p5-1-launchers": "Launcher/Charge Launcher: Charge Launcher, Launcher",
@@ -69,6 +83,25 @@
   "Shadow of the Moon|per-bind": "Shadow of the Moon: Shadow of the Moon",
   "Shadow of the Moon+|per-bind": "Shadow of the Moon+: Shadow of the Moon+"
  },
+ "diana": {
+  "Diana|p5-1-disruption": "Disruption Fire: Disruption Fire",
+  "Diana|e1-liberated": "Liberated Feelings: Liberated Feelings",
+  "Diana|e4-extra-attacks": "Extra Attack: Blooming Love IV, Cupid Shot (Extra Attack), Flutters, Flutters at 30 (E6), Heart Breaker (Discarded), Resonance",
+  "Diana|e4-flutters": "Extra Attack: Blooming Love IV, Cupid Shot (Extra Attack), Flutters, Flutters at 30 (E6), Heart Breaker (Discarded), Resonance",
+  "Pistol of Purification IV|discarded": "Pistol of Purification IV: Pistol of Purification IV",
+  "Liberated Feelings|bullets": "Liberated Feelings: Liberated Feelings",
+  "Flutters|flutters": "Flutters: Flutters, Flutters at 30 (E6)",
+  "Flutters|flutters-e6": "Flutters: Flutters, Flutters at 30 (E6)"
+ },
+ "fei": {
+  "Fei|p5-1-azure": "Azure Flame: Azure Flame",
+  "Fei|e4-heavensfall": "Heavensfall: Heavensfall",
+  "Fei|e6-flame-arts": "Flame Arts: Flame Arts",
+  "Heavenscleaver|next-heavensfall": "Heavensfall: Heavensfall",
+  "Exorcist's Formation I|inferno-50": "Inferno Rhapsody: Inferno Rhapsody",
+  "Soulfire Dance III|heavensfall-per-hit": "Heavensfall: Heavensfall",
+  "Blazing War Dance|e1-moved": "Inferno Rhapsody/Inferno Rhapsody: Heaven: Inferno Rhapsody, Inferno Rhapsody: Heaven"
+ },
  "haru": {
   "Haru|pulverize": "Pulverize: Anchor Shot, Anchor Shot I, Anchor Shot II, Anchor Shot III, Anchor Shot IV, Anchor Shot V",
   "Haru|p3-1-anchors": "Anchor/Power Anchor: Anchor, Power Anchor",
@@ -101,6 +134,26 @@
   "Charge Energy V|attack-cards": "Attack: Anchor, Anchor Shot, Anchor Shot I, Anchor Shot II, Anchor Shot III, Anchor Shot IV, Anchor Shot V, Power Anchor, Power Charge, Power Charge I, Power Charge II, Power Charge III, Power Charge IV, Power Charge V",
   "Lift Anchor|in-hand": "Anchor Shot/Anchor Shot I/Anchor Shot II/Anchor Shot III/Anchor Shot IV/Anchor Shot V: Anchor Shot, Anchor Shot I, Anchor Shot II, Anchor Shot III, Anchor Shot IV, Anchor Shot V",
   "Lift Anchor|in-hand-e1": "Anchor Shot/Anchor Shot I/Anchor Shot II/Anchor Shot III/Anchor Shot IV/Anchor Shot V: Anchor Shot, Anchor Shot I, Anchor Shot II, Anchor Shot III, Anchor Shot IV, Anchor Shot V"
+ },
+ "heidemarie": {
+  "Heidemarie|p5-1-flash": "Sword Flash: Sword Flash",
+  "Heidemarie|e1-release": "Effulgent Release: Effulgent Release",
+  "Heidemarie|e3-elysium": "Elysium of Blades: Elysium of Blades",
+  "Heidemarie|e6-crimson": "Crimson Blade: Crimson Blade",
+  "Elysium of Blades|discarded": "Elysium of Blades: Elysium of Blades",
+  "Elysium of Blades|discarded-e3": "Elysium of Blades: Elysium of Blades",
+  "Sword Flash|p3-1-blade": "Effulgent Blade: Effulgent Blade, Effulgent Blade (Discard), Effulgent Blade (Proc)",
+  "Sword Rain V|graveyard": "Sword Rain V: Sword Rain V",
+  "Thread of Light|linked": "Thread of Light: Thread of Light",
+  "Thread of Light I|linked": "Thread of Light I: Thread of Light I",
+  "Thread of Light II|triple": "Thread of Light II: Thread of Light II",
+  "Thread of Light III|linked-cards": "Linked: Effulgent Blade, Effulgent Blade (Discard), Effulgent Blade (Proc), Effulgent Compression, Effulgent Expansion I, Effulgent Expansion III, Effulgent Expansion IV, Hero to All I, Sword Rain, Sword Rain I, Thread of Light, Thread of Light I, Thread of Light II, Thread of Light III, Thread of Light IV, Thread of Light V, Thread of Light V (Discard)",
+  "Effulgent Expansion|blade": "Effulgent Blade: Effulgent Blade, Effulgent Blade (Discard), Effulgent Blade (Proc)",
+  "Effulgent Expansion I|blade": "Effulgent Blade: Effulgent Blade, Effulgent Blade (Discard), Effulgent Blade (Proc)",
+  "Effulgent Expansion II|next-blades": "Effulgent Blade: Effulgent Blade, Effulgent Blade (Discard), Effulgent Blade (Proc)",
+  "Effulgent Expansion V|blade": "Effulgent Blade: Effulgent Blade, Effulgent Blade (Discard), Effulgent Blade (Proc)",
+  "Effulgent Release|exhausted": "Effulgent Release: Effulgent Release",
+  "Effulgent Release|exhausted-e1": "Effulgent Release: Effulgent Release"
  },
  "hilde": {
   "Hilde|p3-1-multishot": "Multishot: Multishot",
@@ -153,6 +206,34 @@
   "Flashbang III|passion-weakness": "Passion: Armor-Piercing Rounds, Cold Shot, Dispersing Shot, Explosive Shot, Extended Magazine, Extended Magazine I, Extended Magazine II, Extended Magazine III, Extended Magazine IV, Extended Magazine V, Flame Shot, Flame Thrower, Flame Thrower I, Flame Thrower II, Flame Thrower III, Flame Thrower III (On Critical Hit), Flame Thrower IV, Flame Thrower V, Flashbang, Flashbang I, Flashbang II, Flashbang III, Flashbang IV, Flashbang V, Full Burst, Machine Gun, Mark (Lucas), R.P.G-7, R.P.G-7 Fixed Damage, S.S.S, S.S.S I, S.S.S II, S.S.S III, S.S.S IV, S.S.S V, S.S.S V Fixed Damage, Shielding Incendiary Bomb",
   "Flashbang IV|shield": "Flashbang IV: Flashbang IV",
   "Armor-Piercing Rounds|shield": "Armor-Piercing Rounds: Armor-Piercing Rounds"
+ },
+ "luke": {
+  "Luke|p5-1-shot": "Single Shot: Single Shot",
+  "Luke|p7-handgun": "Magnum Shot/Silver Shot/Uranium Shot/Tracer Shot: Magnum Shot, Silver Shot, Tracer Shot, Uranium Shot",
+  "Luke|e1-finisher": "Finisher Round: Finisher Round",
+  "Luke|e2-created": "Magnum Shot/Silver Shot/Uranium Shot/Tracer Shot: Magnum Shot, Silver Shot, Tracer Shot, Uranium Shot",
+  "Luke|e3-lethal": "Lethal Design: Lethal Design",
+  "Luke|e4-target-analysis": "Bullet: Chain Fire IV, Finisher Round, High-Velocity Armor Piercing (HVAP) Round, Magnum Shot, Silver Shot, Single Shot, Tracer Shot, Uranium Shot",
+  "Luke|e6-target-analysis": "Bullet: Chain Fire IV, Finisher Round, High-Velocity Armor Piercing (HVAP) Round, Magnum Shot, Silver Shot, Single Shot, Tracer Shot, Uranium Shot",
+  "Lethal Design|per-card": "Lethal Design: Lethal Design",
+  "Lethal Design|per-card-e3": "Lethal Design: Lethal Design",
+  "Chain Fire|crit": "Chain Fire: Chain Fire",
+  "Chain Fire I|crit": "Chain Fire I: Chain Fire I",
+  "Chain Fire II|crit": "Chain Fire II: Chain Fire II",
+  "Chain Fire III|crit": "Chain Fire III: Chain Fire III",
+  "Chain Fire IV|crit": "Chain Fire IV: Chain Fire IV",
+  "Chain Fire V|crit": "Chain Fire V: Chain Fire V",
+  "Stealth Reload I|crit": "Magnum Shot/Silver Shot/Uranium Shot/Tracer Shot: Magnum Shot, Silver Shot, Tracer Shot, Uranium Shot",
+  "Seize the Opportunity|next-bullet": "Bullet: Chain Fire IV, Finisher Round, High-Velocity Armor Piercing (HVAP) Round, Magnum Shot, Silver Shot, Single Shot, Tracer Shot, Uranium Shot",
+  "Seize the Opportunity I|next-bullet": "Bullet: Chain Fire IV, Finisher Round, High-Velocity Armor Piercing (HVAP) Round, Magnum Shot, Silver Shot, Single Shot, Tracer Shot, Uranium Shot",
+  "Seize the Opportunity II|next-bullet": "Bullet: Chain Fire IV, Finisher Round, High-Velocity Armor Piercing (HVAP) Round, Magnum Shot, Silver Shot, Single Shot, Tracer Shot, Uranium Shot",
+  "Seize the Opportunity III|next-bullet": "Bullet: Chain Fire IV, Finisher Round, High-Velocity Armor Piercing (HVAP) Round, Magnum Shot, Silver Shot, Single Shot, Tracer Shot, Uranium Shot",
+  "Seize the Opportunity IV|next-bullet": "Attack: Chain Fire, Chain Fire I, Chain Fire II, Chain Fire III, Chain Fire IV, Chain Fire V, Dance of the Demon, Dance of the Demon I, Dance of the Demon II, Dance of the Demon III, Dance of the Demon IV, Dance of the Demon V, Finisher Round, High-Velocity Armor Piercing (HVAP) Round, Magnum Shot, Silver Shot, Single Shot, Tracer Shot, Uranium Shot",
+  "Seize the Opportunity V|handgun": "Magnum Shot/Silver Shot/Uranium Shot/Tracer Shot: Magnum Shot, Silver Shot, Tracer Shot, Uranium Shot",
+  "Dance of the Demon III|weakness": "Dance of the Demon III: Dance of the Demon III",
+  "Silver Shot|weakness": "Silver Shot: Silver Shot",
+  "Uranium Shot|shield": "Uranium Shot: Uranium Shot",
+  "High-Velocity Armor Piercing (HVAP) Round|crit": "High-Velocity Armor Piercing (HVAP) Round: High-Velocity Armor Piercing (HVAP) Round"
  },
  "magna": {
   "Magna|blocked": "Counterattack: Counterattack",
@@ -226,6 +307,21 @@
   "Counterblade II|honed-edge": "Defense-Based & Attack: Experienced Strike, Experienced Strike I, Experienced Strike II, Experienced Strike III, Experienced Strike IV, Experienced Strike V, Fatal Strike, Fatal Strike I, Fatal Strike II, Fatal Strike V, Hew, Hew (Ambush), Hew (Ambush) Lv. 1, Hew (Ambush) Lv. 2, Hew (Ambush) Lv. 3, Hew (Extreme), Hew (Extreme) Lv. 1, Hew (Extreme) Lv. 2, Hew (Extreme) Lv. 3, Hew (Extreme) Lv. 4, Hew (Extreme) Lv. 5, Hew (Flash), Hew (Flash) Lv. 1, Hew (Flash) Lv. 2, Hew (Flash) Lv. 3, Hew (Ironclad), Hew (Ironclad) Lv. 1, Hew (Ironclad) Lv. 2, Hew (Ironclad) Lv. 3, Hew (Massacre), Hew (Massacre) Lv. 1, Hew (Massacre) Lv. 2, Hew (Massacre) Lv. 3, Hew Lv. 1, Hew Lv. 2, Hew Lv. 3, Slash",
   "Counterblade III|honed-edge": "Defense-Based & Attack: Experienced Strike, Experienced Strike I, Experienced Strike II, Experienced Strike III, Experienced Strike IV, Experienced Strike V, Fatal Strike, Fatal Strike I, Fatal Strike II, Fatal Strike V, Hew, Hew (Ambush), Hew (Ambush) Lv. 1, Hew (Ambush) Lv. 2, Hew (Ambush) Lv. 3, Hew (Extreme), Hew (Extreme) Lv. 1, Hew (Extreme) Lv. 2, Hew (Extreme) Lv. 3, Hew (Extreme) Lv. 4, Hew (Extreme) Lv. 5, Hew (Flash), Hew (Flash) Lv. 1, Hew (Flash) Lv. 2, Hew (Flash) Lv. 3, Hew (Ironclad), Hew (Ironclad) Lv. 1, Hew (Ironclad) Lv. 2, Hew (Ironclad) Lv. 3, Hew (Massacre), Hew (Massacre) Lv. 1, Hew (Massacre) Lv. 2, Hew (Massacre) Lv. 3, Hew Lv. 1, Hew Lv. 2, Hew Lv. 3, Slash",
   "Counterblade IV|honed-edge-plus": "Defense-Based & Attack: Experienced Strike, Experienced Strike I, Experienced Strike II, Experienced Strike III, Experienced Strike IV, Experienced Strike V, Fatal Strike, Fatal Strike I, Fatal Strike II, Fatal Strike V, Hew, Hew (Ambush), Hew (Ambush) Lv. 1, Hew (Ambush) Lv. 2, Hew (Ambush) Lv. 3, Hew (Extreme), Hew (Extreme) Lv. 1, Hew (Extreme) Lv. 2, Hew (Extreme) Lv. 3, Hew (Extreme) Lv. 4, Hew (Extreme) Lv. 5, Hew (Flash), Hew (Flash) Lv. 1, Hew (Flash) Lv. 2, Hew (Flash) Lv. 3, Hew (Ironclad), Hew (Ironclad) Lv. 1, Hew (Ironclad) Lv. 2, Hew (Ironclad) Lv. 3, Hew (Massacre), Hew (Massacre) Lv. 1, Hew (Massacre) Lv. 2, Hew (Massacre) Lv. 3, Hew Lv. 1, Hew Lv. 2, Hew Lv. 3, Slash"
+ },
+ "olga": {
+  "Olga|p5-1-slash": "Reaping Slash: Reaping Slash",
+  "Olga|e1-reckoning": "Reckoning: Reckoning",
+  "Olga|e3-ego-skill": "Maelstrom of Oblivion: Maelstrom of Oblivion",
+  "Olga|e4-shard": "DoT: Agony, End of the Line, Fracture, Reckoning",
+  "Olga|e6-shard": "DoT: Agony, End of the Line, Fracture, Reckoning",
+  "Maelstrom of Oblivion|per-fracture": "Maelstrom of Oblivion: Maelstrom of Oblivion",
+  "Maelstrom of Oblivion|per-fracture-e3": "Maelstrom of Oblivion: Maelstrom of Oblivion",
+  "Maelstrom of Oblivion|per-agony": "Maelstrom of Oblivion: Maelstrom of Oblivion",
+  "Maelstrom of Oblivion|per-agony-e3": "Maelstrom of Oblivion: Maelstrom of Oblivion",
+  "Maelstrom of Oblivion|per-scorched": "Maelstrom of Oblivion: Maelstrom of Oblivion",
+  "Maelstrom of Oblivion|per-scorched-e3": "Maelstrom of Oblivion: Maelstrom of Oblivion",
+  "Reckoning|per-rapacity": "Reckoning: Reckoning",
+  "Reckoning|per-rapacity-e1": "Reckoning: Reckoning"
  },
  "orlea": {
   "Sacred Censer IV|next-swiftie": "Swiftie ★/Swiftie ★★/Swiftie ★★★: Swiftie ★, Swiftie ★★, Swiftie ★★★",

@@ -8,13 +8,16 @@
 // Flashbang IV's Mark is Lucas's own 100% Extra Attack, on a counter apart from Selena's Mark (owner, 2026-11-01).
 // Agony, Impair and Weaken are text only; Agony waits for the DoT work (owner, 2026-11-01).
 import type { CardPreset, CharacterAdditions } from '../../engine/types'
-import { cardBuff, effectHits, EGO_POTENTIALS_PLUS_3 } from '../helpers'
+import { cardBuff, effectHits, EGO_POTENTIALS_PLUS_3, markKeyword } from '../helpers'
 
 const launcherBullets = ['card-303', 'card-304', 'card-305', 'card-306', 'card-307']
 // Not the Bullet tag: Machine Gun gets that from 3-1, and it isn't a Launcher Bullet
 const launcherBullet = ['Armor-Piercing Rounds', 'Explosive Shot', 'Dispersing Shot', 'Cold Shot', 'Flame Shot'].join('/')
 
 const effectHit = effectHits({ element: 'Passion', scaling: 'Fixed', upgrade: undefined })
+
+/** The Mark keyword (helpers.ts): Lucas's own Extra Attack, with Flashbang IV's art. */
+const mark = markKeyword('Passion', 'Mark (Lucas)', { id: 'mark-hit', name: 'Mark (Lucas)', image: 'cards/lucas/unique_1021_04.webp' })
 
 /** A hit a card sets off, with that card's art: a card upgrade counts as on the card (Fixed: only with the potentialFixed setting). */
 const hit = (id: string, name: string, pct: number, art: string, text: string, extra: Partial<CardPreset> = {}) =>
@@ -124,7 +127,7 @@ export default {
     'card-300': {
       text: '{180%} Damage to all enemies\n2 Mark\nIf the target has Shield, +50% Damage',
       effects: [targetShield('shield', 'If the target has Shield', '+50%', 'Flashbang IV')],
-      triggers: [{ card: 'mark-hit', on: 'Attack', counter: 'Mark (Lucas)' }],
+      triggers: [mark.trigger],
     },
     'card-301': {
       text: 'When hitting a target that has Shield, increase Damage Amount by 30%',
@@ -156,7 +159,6 @@ export default {
     hit('sss-v-hit', 'S.S.S V Fixed Damage', 0.5, 'unique_1021_01', 'When a Bullet card is activated, {F50%} Fixed Damage to a random enemy'),
     // Raised like the card's own line: 168% = 150% x 1.12
     hit('flame-crit-hit', 'Flame Thrower III (On Critical Hit)', 1.5, 'unique_1021_05', 'On Critical Hit, {150%} Damage to all enemies', { scaling: 'ATK', kind: 'Normal', notACard: false }),
-    hit('mark-hit', 'Mark (Lucas)', 1, 'unique_1021_04', 'When an Attack Card is activated, inflict 100% Extra Attack and decrease Mark by 1',
-      { scaling: 'ATK', kind: 'Extra Attack', upgrade: null }),
+    mark.card,
   ],
 } satisfies CharacterAdditions

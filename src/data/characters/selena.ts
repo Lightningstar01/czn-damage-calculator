@@ -8,7 +8,11 @@
 // Effect hits (Mark, Coordinated, Attunement) get no Attack / Skill card buffs; Passion Weakness makes Coordinated Attacks Weakness
 // Attacks too; Target Spotted V hits a Ravaged target (owner, 2026-10-28).
 import type { CharacterAdditions } from '../../engine/types'
-import { cardBuff, effectHits, EGO_POTENTIALS_PLUS_3 } from '../helpers'
+import { cardBuff, effectHits, EGO_POTENTIALS_PLUS_3, markKeyword } from '../helpers'
+
+/** The Mark keyword (helpers.ts); Selena's counter is plain 'Mark', and her wording adds the Tenacity Damage. */
+const mark = markKeyword('Passion', 'Mark', {
+  text: 'When an Attack Card is activated, inflict 100% Extra Attack, inflict Tenacity Damage equal to 0 Cost, and decrease Mark by 1' })
 
 /** A hit from an effect, not a card: Selena's Extra Attack, unraised by card upgrades. */
 const effectHit = effectHits({ element: 'Passion', kind: 'Extra Attack' })
@@ -57,7 +61,7 @@ export default {
   // Mark on the target: Selena's 100% Extra Attack on every Attack Card play. E6 Liberated Memory (in game): "When Selena's Mark is
   // activated, she has a 30% chance to inflict 100% Extra Attack on the target"
   triggers: [
-    { card: 'mark', on: 'Attack', counter: 'Mark' },
+    mark.trigger,
     { card: 'mark-e6', on: 'Attack', counter: 'Mark', chance: 0.3, egoLevel: 6 },
   ],
   // Card text: the in-game wording (owner's screenshots, 2026-10-28), with tokens for the build's numbers (engine/cardText.ts)
@@ -123,8 +127,7 @@ export default {
     },
   },
   extraCards: [
-    effectHit('mark', 'Mark', 1,
-      'When an Attack Card is activated, inflict 100% Extra Attack, inflict Tenacity Damage equal to 0 Cost, and decrease Mark by 1', { tags: 'Mark' }),
+    mark.card,
     effectHit('mark-e6', 'Mark (E6 Extra Attack)', 1,
       "When Selena's Mark is activated, she has a 30% chance to inflict 100% Extra Attack on the target"),
     effectHit('coordinated', 'Coordinated Attack', 1, '100% Coordinated Attack to the target', { tags: 'Coordinated Attack' }),

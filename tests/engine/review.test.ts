@@ -139,6 +139,13 @@ describe("thresholds read the effect owner's stats", () => {
     expect(presetBuffValue(buff, { ...newStats(), attack: 500 }).value).toBeCloseTo(0.5)
   })
 
+  it('presetBuffValue: a % stat exactly on a step counts it (0.5 - 0.4 is 0.0999... in floating point)', () => {
+    const every = { ...buff, thresholdStat: 'Critical Chance', value: '+3%', thresholdBonus: { above: 0.4, value: '+2%', every: 0.05, max: '+12%' } } as const
+    const at = (critChance: number) => presetBuffValue(every, { ...newStats(), critChance }).value
+    expect([0.45, 0.5, 0.55, 0.7].map(at)).toEqual([0.05, 0.07, 0.09, 0.15].map((v) => expect.closeTo(v)))
+    expect(at(0.499)).toBeCloseTo(0.05)
+  })
+
   it("a teammate's ally buff reads the teammate's Attack, not the receiver's", () => {
     const main = newBuild('main')
     main.stats.attack = 1000

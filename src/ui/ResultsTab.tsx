@@ -90,9 +90,9 @@ function PlayRow({ play }: { play: Play }) {
           <span className="play-nums-label">expected · {num(play.nonCrit)} non-crit</span>
         </span>
       </div>
-      {(play.counters.length > 0 || play.vulnerable || play.weaknessDebuff || play.ravaged) && (
+      {(play.counters.length > 0 || play.weakness || play.vulnerable || play.weaknessDebuff || play.ravaged) && (
         <div className="muted small">
-          {[...(play.vulnerable ? ['Vulnerable'] : []), ...(play.weaknessDebuff ? ['Weakness debuff'] : []), ...(play.ravaged ? ['Target Ravaged'] : []),
+          {[...(play.weakness ? ['Hits a Weakness'] : []), ...(play.vulnerable ? ['Vulnerable'] : []), ...(play.weaknessDebuff ? ['Weakness debuff'] : []), ...(play.ravaged ? ['Target Ravaged'] : []),
             ...play.counters.map((c) => `${c.name} ${c.stacks}`)].join(' · ')}
         </div>
       )}

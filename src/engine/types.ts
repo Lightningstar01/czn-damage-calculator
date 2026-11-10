@@ -108,6 +108,14 @@ export interface BuffEffect {
   /** Its value counts once for each Cost of the card it raises (the play's Cost on a per-Cost card; nothing on a card without a Cost):
    * Rita's Fate Distortion, "an additional 10% for each Cost of that card" (owner, 2026-11-08). */
   perCardCost?: boolean
+  /** Buffs naming the same `group` share one cap: their summed value on a hit stops at `max`, a fraction (Olga's Maelstrom of Oblivion:
+   * +50% / +20% / +30% base Damage Amount per Fracture / Agony / Scorched activated this turn, max 300%; owner, 2026-11-09). */
+  sharedCap?: { group: string; max: number }
+  /** A Multiplicative buff that also raises Fixed DoT hits (Agony), which other damage buffs don't (Olga's Shard Erosion: "Increase
+   * Damage Amount of Olga's DoT effects"; owner, 2026-11-09; Unconfirmed). */
+  fixedDot?: boolean
+  /** Only on plays that hit a Weakness (Silver Shot's "Weakness Attack: Increase Damage Amount by 100%"; owner, 2026-11-09). */
+  weakness?: boolean
   /** See StatEffect.hint. */
   hint?: string
 }
@@ -228,7 +236,7 @@ export interface CardPreset {
   /** See Card.countsHits. */
   countsHits?: boolean
   /** See Card.counterHits. */
-  counterHits?: { counter: string; hits: number }
+  counterHits?: CounterHits | CounterHits[]
   /** See Card.ravagedHits. */
   ravagedHits?: number
   /** See Card.fixedOf. */
@@ -460,6 +468,10 @@ export interface UserBuff {
   switches: Record<string, Switch>
 }
 
+/** Hits a per-play counter adds to a card (Card.counterHits): `hits` while the counter is above 0, or, with `per`, `hits` for every
+ * `per` stacks, at most `max` hits (Kayron's Black Hole III "Add 1 Hit for each Exhausted Futility (max 5 times)": per 1, max 5). */
+export interface CounterHits { counter: string; hits: number; per?: number; max?: number }
+
 export interface Card {
   id: string
   name: string
@@ -494,8 +506,9 @@ export interface Card {
   pctUnits?: number
   /** The count of perCount is the card's hits, not a multiple of its % (Agony: each stack is its own hit, and each can crit). */
   countsHits?: boolean
-  /** Hits added on plays with this counter above 0 (Yuki's "Inspiration: Add 1 Hit"), unless the play sets its own hits. */
-  counterHits?: { counter: string; hits: number }
+  /** Hits added on plays with this counter above 0 (Yuki's "Inspiration: Add 1 Hit"), unless the play sets its own hits. A list adds
+   * each one whose counter is on (Fei's Heavensfall: Heavenscleaver E3 +2, Judgment Upon the Wicked +3). */
+  counterHits?: CounterHits | CounterHits[]
   /** Hits added on plays with Target Ravaged on (Sereniel's Homing Laser I "Destroy: Add 1 Hit(s)", Destroy = on Ravage or on a
    * Ravaged target, owner 2026-11-08), unless the play sets its own hits. */
   ravagedHits?: number
@@ -531,6 +544,9 @@ export interface RotationPlay {
   weaknessDebuff?: boolean
   /** Whether the target is Ravaged on this play's hits; missing = the card's own flag (on for "On Ravage" cards, off for the rest). */
   ravaged?: boolean
+  /** Whether this play's hits hit a Weakness (Weakness DMG, "Weakness Attack:" bonuses); missing = automatic: the card applies Weakness,
+   * a Weakness Attack buff matches it, or the fight's enemy is weak to its element (owner, 2026-11-09). */
+  weakness?: boolean
   /** Counter name (BuffEffect.counter, e.g. 'Ember') -> stacks for this play. Missing = 0. */
   stacks?: Record<string, number>
 }
@@ -549,6 +565,8 @@ export interface Enemy {
   defMult: number
   /** Enemy damage reduction (fraction). */
   dr: number
+  /** The element the enemy is weak to, or all five; missing = none. Cards of that element hit a Weakness (owner, 2026-11-09). */
+  weakness?: Element | 'All'
 }
 
 /** No enemy modifiers: what the engine uses without a fight. */

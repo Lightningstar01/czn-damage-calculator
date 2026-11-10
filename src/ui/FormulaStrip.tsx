@@ -79,6 +79,8 @@ export function chipsFor(hit: Hit, card: Card): { inner: Chip[]; outer: Chip[] }
         ? { ...flatChip(hit.flat, 1, 'Damage, not a %: the factors after the bracket raise it, not the stat or Const.'), close: true }
         : flatChip(hit.flat, 1, 'Damage, not a %, added as it is.')] : []),
       ...(dot ? [factorChip('elem', 'elem', 'Element', hit.elemDmg), factorChip('mech', 'elem', 'DoT', hit.mechDmg), factorChip('def', 'enemy', 'Enemy DEF', hit.enemyDef)].filter((c): c is Chip => c !== null) : []),
+      ...(dot && hit.multFactor.sources.length ? [{ key: 'mult', op: '×', group: 'mult', label: 'Mult', value: times(hit.multFactor.value), sources: hit.multFactor.sources,
+        note: 'Only buffs marked as reaching Fixed DoT raise it (Olga\'s Shard Erosion); other damage buffs don\'t.' } satisfies Chip] : []),
     ] }
   }
   const inner: Chip[] = [{ key: 'card', op: '', group: 'card', label: card.name || 'Card', value: pct(hit.cardPct, 2),

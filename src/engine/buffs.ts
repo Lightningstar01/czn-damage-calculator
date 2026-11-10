@@ -14,6 +14,8 @@ export interface Source {
   unit: '%' | 'flat' | 'x'
   /** Only counts once the card targets the enemy (a 'Ravaged only' buff such as Ember, or an onTarget effect), so not in the in-hand card %. */
   onTarget?: boolean
+  /** A Multiplicative buff that also raises Fixed DoT hits (BuffEffect.fixedDot). */
+  fixedDot?: boolean
 }
 
 /** A typed number: a comma between digits separates thousands ('1,272' -> 1272, as the game shows it), a dot is the decimal point
@@ -70,7 +72,8 @@ export function presetBuffValue(e: BuffEffect, stats: ScreenStats | undefined): 
   const bonus = !!ab && (ab.orEqual ? atk >= ab.above : atk > ab.above)
   let extra = bonus ? parseBuffValue(ab!.value) : 0
   if (bonus && ab!.every) {
-    extra *= Math.floor((atk - ab!.above) / ab!.every)
+    // + 1e-9: a stat exactly on a step counts it (Critical Chance 50% over 40% every 5% is 2 steps, not 1.9999)
+    extra *= Math.floor((atk - ab!.above) / ab!.every + 1e-9)
     if (ab!.max) extra = Math.min(extra, parseBuffValue(ab!.max))
   }
   return { value: parseBuffValue(e.value) + extra, bonus: extra > 0 }
@@ -114,6 +117,12 @@ export interface ActiveBuff {
   onTarget?: boolean
   /** See BuffEffect.perCardCost. */
   perCardCost?: boolean
+  /** See BuffEffect.sharedCap. */
+  sharedCap?: { group: string; max: number }
+  /** See BuffEffect.fixedDot. */
+  fixedDot?: boolean
+  /** See BuffEffect.weakness. */
+  weakness?: boolean
 }
 
 /** Why a preset effect is (in)active for a build — shown greyed out in the UI. */
@@ -288,7 +297,8 @@ export function activeBuffs(presets: Presets, charName: string, cs: CharacterSav
       stacks: e.counter ? 0 : e.maxStacks ? Math.min(s.stacks, e.maxStacks) : s.stacks,
       appliesTo: e.appliesTo, hitScope: e.hitScope, condition: e.condition,
       ...(e.counter ? { counter: e.counter, maxStacks: e.maxStacks } : {}), ...(e.onTarget ? { onTarget: true } : {}),
-      ...(e.perCardCost ? { perCardCost: true } : {}) })
+      ...(e.perCardCost ? { perCardCost: true } : {}), ...(e.sharedCap ? { sharedCap: e.sharedCap } : {}), ...(e.fixedDot ? { fixedDot: true } : {}),
+      ...(e.weakness ? { weakness: true } : {}) })
   }
   for (const b of cs.buffs) {
     const st = switchStacks(b.switches[build.id])
@@ -385,23 +395,36 @@ export function cardBuffs(buffs: ActiveBuff[], card: Card): CardBuffs {
   const out: CardBuffs = { additive: { all: b(), first: b() }, multiplicative: { all: b(), first: b() }, weaknessAttack: [], weaknessDmg: { all: b(), first: b() },
     critRate: { all: b(), first: b() }, critDmg: { all: b(), first: b() }, cardPct: { all: b(), first: b() },
     cardAdd: { all: b(), first: b() }, basePct: { all: b(), first: b() }, final: { all: b(), first: b() }, flat: { all: b(), first: b() } }
+  // sharedCap: what each group has used so far on this card
+  const capUsed = new Map<string, number>()
   for (const buff of buffs) {
     if (buff.stacks <= 0 || !buffMatches(buff, card)) continue
     // perCardCost: x the played card's Cost (the play's Cost on a per-Cost card); a card without a Cost gets nothing
     const cost = buff.perCardCost ? Math.max(0, card.cost ?? 0) : 1
     if (cost <= 0) continue
-    const label = `${buff.stacks !== 1 ? `${buff.label} x${buff.stacks}` : buff.label}${buff.perCardCost ? ` x Cost ${cost}` : ''}`
+    let label = `${buff.stacks !== 1 ? `${buff.label} x${buff.stacks}` : buff.label}${buff.perCardCost ? ` x Cost ${cost}` : ''}`
     if (buff.type === 'Weakness Attack') {
       out.weaknessAttack.push({ label, value: 0, unit: 'x' })
       continue
     }
-    const v = buff.value * buff.stacks * cost
+    let v = buff.value * buff.stacks * cost
+    if (buff.sharedCap) {
+      const { group, max } = buff.sharedCap
+      const used = capUsed.get(group) ?? 0
+      const room = Math.max(0, max - used)
+      if (v > room) {
+        v = room
+        label += ` (capped: ${group} max ${Math.round(max * 100)}%)`
+      }
+      capUsed.set(group, used + v)
+      if (v <= 0) continue
+    }
     const group = { Additive: out.additive, Multiplicative: out.multiplicative, 'Crit Chance': out.critRate, 'Crit DMG': out.critDmg,
       'Weakness DMG': out.weaknessDmg, 'Card %': out.cardPct, 'Card +': out.cardAdd, 'Base %': out.basePct, Final: out.final, Flat: out.flat }[buff.type]
     const bucket = group[buff.hitScope === 'First hit only' ? 'first' : 'all']
     bucket.value += v
     bucket.sources.push({ label: buff.hitScope === 'First hit only' ? `${label} (first hit)` : label, value: v, unit: '%',
-      ...(buff.condition === 'Ravaged only' || buff.onTarget ? { onTarget: true } : {}) })
+      ...(buff.condition === 'Ravaged only' || buff.onTarget || buff.weakness ? { onTarget: true } : {}), ...(buff.fixedDot ? { fixedDot: true } : {}) })
   }
   return out
 }

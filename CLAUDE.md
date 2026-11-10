@@ -133,6 +133,7 @@ email, and check that binary files such as spreadsheets carry no author name bef
   The Cards tab and `pruneTeamPlays` use the linked teammate too (their Ego level's cards, their nodes).
   A play with `by` (slot index) is that teammate's card, computed by `teammateView` as their own build would
   (teammate deck ids = preset ids). `computeBuild(..., saves)` gets every character's save; `byCharacter` splits the totals.
+- Mark is one keyword for every character (owner, 2026-11-09; docs/FORMULA.md, Cards): `markKeyword(element, counter)` in helpers.ts gives its trigger and card (Selena, Renoa, Veronica, Lucas, Luke); don't ask about it in a review.
 - Triggers (`triggers` on a character or card; Selena's Mark, Coordinated Attacks): a play matching `on` adds the trigger
   card's hit, computed with the owner's build (`others`: only other combatants' plays; `own`: only the owner's; `repeat`: one more hit of the played card itself (Owen's Wind Charge III); `weakness`: Weakness Attacks only;
   `counter`: needs that per-play stack; `perStack`: one hit per stack (Renoa's Dirge Bullets discarded); `chance`: expected value; `onCrit`: only on a Critical Hit of the played card, expected value x its crit chance (Lucas's Flame Thrower III); `egoLevel`). Shown under the play as `triggered`; their hits take no number in the list (`globalHit` 0).
@@ -140,18 +141,22 @@ email, and check that binary files such as spreadsheets carry no author name bef
 - Attack list (per build, `build.rotation`): each play has optional hits, `cost` (only for `perCost` cards: "X% for
   each Cost of this card", damage = % x Cost), `vulnerable`, a count for `perCount` cards ("X% for each card in
   hand", kept in `stacks` under the card's `perCount` name, default 1; a `counter` of the same name reads that number: Tenebria's Rhythms; `countsHits` makes the count the card's hits, not a multiple of its %: Agony's stacks; `maxCount` caps the count: Agony's 20, Performance Buzz's 10;
-  a card's `counterHits` adds hits while a counter is above 0: Yuki's Inspiration; `ravagedHits` adds hits when the target is Ravaged (the play's or the card's Ravaged): Sereniel's Homing Laser I Destroy; a character's `playStacks` are the counters a new play starts with: Rin's Dark Mist Stance),
+  a card's `counterHits` adds hits while a counter is above 0: Yuki's Inspiration (a list for several: Fei's Heavensfall); `ravagedHits` adds hits when the target is Ravaged (the play's or the card's Ravaged): Sereniel's Homing Laser I Destroy; a character's `playStacks` are the counters a new play starts with: Rin's Dark Mist Stance),
   `weaknessDebuff` and `stacks` per counter name; buffs with `counter` read the play's stacks
   (each capped at its own max stacks, so Charged Shot IV's 1 leaves Beryl's other Times Retained cards alone). Buff type `Card %` raises a card's base % like a potential (only on cards
   with an upgrade: "Double all effects"); `Card +` (a Potential node's "+X%", owner 2026-10-30) adds to the base % before the upgrade
   (Shadow 110% = (80% + 15%) x 1.16); `Base %` ("+X% base Damage Amount") adds to the shown card %, and is the type for a bonus that's part of the card %
   on a card without an upgrade (Ego skills' Manifest Ego bonuses: docs/FORMULA.md, Ego skill bonuses); `Final` ("final Damage
-  Amount") is its own multiplier; `Weakness DMG` ("+15% Weakness Damage Amount taken", Hilde's Matrix Overlay) adds to the Weakness DMG stat on plays that hit a Weakness; `Flat` ("Damage Amount equal to 30% of Shield owned") is value x its counter's number as damage, added under the multipliers (not offered for own buffs). A buff's `perCardCost` counts its value once per Cost of the card it raises, the play's Cost on a per-Cost card (Rita's Fate Distortion: "an additional 10% for each Cost of that card").
+  Amount") is its own multiplier; `Weakness DMG` ("+15% Weakness Damage Amount taken", Hilde's Matrix Overlay) adds to the Weakness DMG stat on plays that hit a Weakness; `Flat` ("Damage Amount equal to 30% of Shield owned") is value x its counter's number as damage, added under the multipliers (not offered for own buffs). A buff's `perCardCost` counts its value once per Cost of the card it raises, the play's Cost on a per-Cost card (Rita's Fate Distortion: "an additional 10% for each Cost of that card"). Buffs with the same `sharedCap` group are capped together on a hit (Olga's Maelstrom of Oblivion: three per-activation bonuses, max 300%).
+  A buff's `fixedDot` lets a Multiplicative buff raise Fixed DoT hits (Agony), which other damage buffs don't (Olga's Shard Erosion).
   A card's `fixedOf` makes its Fixed damage % x that per-play counter, not x ATK (Maribell's Shelter Strike). Counters that hold an amount (`PlayCounter.amount`: read by a `Flat` buff or a card's `fixedOf`) get a typed number on the Cards tab, not a stepper. Effects: `egoBelow` (off from that Ego level), `thresholdMin`, `thresholdBonus.every`
   (`thresholdStat: 'Defense'` / `'Health'` / `'Critical Chance'` / `'Critical Damage'` / `'Extra Damage'` / `'Damage over Time'` makes both read that stats-screen stat: Narja's 7, Cassius's 5-1, Renoa's 7, Lucas's 5-1, Selena's 5-1, Tressa's 5-1).
   Thresholds read the effect owner's stats (`LiveTeammate.live`, filled while computing by `withLinkedTeam`; a `LiveBuild` can't be assigned into a saved `Build`).
   A play's `ravaged` overrides the card's `targetRavaged` (On Ravage cards start on), on Cards tab > a play.
-- Fights (`SaveData.fights`, `activeFight`, owner 2026-10-31): the enemy (`defMult`, `dr`) is shared by every character and build, not in the build. One target for now (`enemies[0]`). `computeBuild(..., saves, fight)`.
+- Fights (`SaveData.fights`, `activeFight`, owner 2026-10-31): the enemy (`defMult`, `dr`, `weakness`) is shared by every character and build, not in the build.
+  Weakness (owner, 2026-11-09): `Enemy.weakness` (one element or 'All', Setup > Fight) makes plays of that element hit a Weakness; a play's `weakness` (Cards tab, "Hits a Weakness")
+  overrides it either way (missing = automatic: the card applies Weakness, a Weakness Attack buff matches, or the enemy is weak to it; `BuildResult.weaknessAuto`). A buff's
+  `weakness: true` ("Weakness Attack: +50% Damage Amount" lines: Luke's Silver Shot) counts only on plays that hit a Weakness. One target for now (`enemies[0]`). `computeBuild(..., saves, fight)`.
 - `BuildResult.warnings`: what the save names but the presets lost, plays without a card, plays of a teammate slot now empty, stacks that do nothing without
   Target Ravaged, a follow-up with no matching play after it; shown on the Results tab.
   A card's `followUp` adds Fixed damage (a share of the next matching play's damage), e.g. Rossweisse's Ego skill.
@@ -242,15 +247,15 @@ wording, and read only the files you need. File names are listed in the `card-re
 - Decided for later (owner, 2026-10-31):
   - DoT damage: when a character uses it. Only Tressa's Agony and Cursed Gouge have `kind: 'DoT'` so far (a Fixed DoT, measured by the owner 2026-11-01; `countsHits` makes each stack a hit). Other characters' Agony (Lucas) has no tick yet. Ask the owner for the mechanics before reviewing another DoT character.
   - An official, reusable way to model extra and additional damage sources, to think through carefully first. Today there are `triggers`, `followUp`, `extraCards` with `notACard` and per-play counters; the question is whether one
-    "damage parts on a card" model should replace them. Not to be started without the owner. Damage waiting for it, shown as text only: Mei Lin E6 (100% Fixed), Orlea E6 (★ x 50% Fixed), Tenebria E2 (200% x Cost), Nine E6 (25% of a Hew card's damage as Fixed), Rita E6 (80% Fixed per Chronal Ascension used),
+    "damage parts on a card" model should replace them. Not to be started without the owner. Damage waiting for it, shown as text only: Mei Lin E6 (100% Fixed), Orlea E6 (★ x 50% Fixed), Tenebria E2 (200% x Cost), Nine E6 (25% of a Hew card's damage as Fixed), Rita E6 (80% Fixed per Chronal Ascension used), Fei E2 (30% of an Inferno Rhapsody's damage as Fixed),
     Rossweisse's Radiant Sword Flow / I discard damage, Lucas's "70% to another enemy". Each character's `notes` and docs/characters/<slug>.md list what else isn't counted.
   - Match "for every X above Y" thresholds to the game's math (`every` in presetBuffValue, floats on % stats: 69% gives +8%, not +9%): needs the in-game test threshold-every-rounding.
   - Fights with several targets (`Fight.enemies` is a list for this).
-- Unreviewed characters' imported damage (not fixed; they show "Not reviewed" until their review): the importer reads only the first damage line and never sets `kind`, so Diana's Cupid Shot loses its 60% Extra Attack
-  (Hilde's Homing Arrows read 0% until her review set them). A rough scan in the engine review flagged 33 cards with more than one damage phrase and 23 with damage text but 0%, some of them false positives. Check for this in each review.
+- Unreviewed characters' imported damage (not fixed; they show "Not reviewed" until their review): the importer reads only the first damage line and never sets `kind` (Diana's Cupid Shot lost its 60% Extra Attack
+  and Hilde's Homing Arrows read 0% until their reviews set them). A rough scan in the engine review flagged 33 cards with more than one damage phrase and 23 with damage text but 0%, some of them false positives. Check for this in each review.
 - Character review: only from the owner's in-game screenshots, saved to `card-screenshots/<slug>/` (git-ignored); compare them with
   the cards and confirm corrections with the owner (`card-review` skill). A character is done once `src/data/characters/<slug>.ts` exists.
-  Next: every other character the owner has, as they send them; Luke, Kayron, Olga and Fei last (the owner doesn't have them yet).
+  Next: Kayron (screenshots filed in card-screenshots/kayron/, not reviewed yet). Fei and Luke were reviewed from the Combatant Archive preview (2026-11-09; the owner doesn't have them).
 - Idea for later (owner, 2026-10-27): animated card art. cznmetadecks has the game's animated unique cards as video
   (`https://cdn.czndecksmeta.com/card/cards_animated/<artId>.mp4`, 900x770, ~1 MB each, ~200 MB in all): skipped for size.
 - `creates` links: add each character's during their review (until then their created cards can't be added).

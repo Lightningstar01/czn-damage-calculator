@@ -1,7 +1,7 @@
 // Combines a character imported from Prydwen with our additions (buffs, notes, corrections).
 import { buffMatches } from '../engine/buffs'
 import { renderCardText } from '../engine/cardText'
-import { allNodesOn, presetCard } from '../engine/deck'
+import { allNodesOn, counterHitsList, presetCard } from '../engine/deck'
 import { ELEMENTS, type Card, type CardPreset, type CharacterAdditions, type CharacterPreset, type Effect, type FragmentSetPreset, type ImportedCharacter, type PartnerPreset } from '../engine/types'
 
 /** The Manifest Ego levels whose text raises the card upgrade potentials ('...Card Upgrade]... by 3'); some have two (E3, E5). */
@@ -105,7 +105,7 @@ export function checkAdditions(imported: Record<string, ImportedCharacter>, addi
       ...effects.flatMap((e) => (e.kind === 'Buff' && e.counter ? [e.counter] : [])),
       ...[...(add.triggers ?? []), ...cards.flatMap(([, c]) => c.triggers ?? [])].flatMap((t) => t.counter ?? []),
     ]
-    const hitCounters = cards.flatMap(([, c]) => c.counterHits?.counter ?? [])
+    const hitCounters = cards.flatMap(([, c]) => counterHitsList(c).map((h) => h.counter))
     const fixedCounters = cards.flatMap(([, c]) => c.fixedOf ?? [])
     const starting = Object.keys(add.playStacks ?? {})
     for (const name of starting) {
@@ -154,6 +154,8 @@ export function checkAdditions(imported: Record<string, ImportedCharacter>, addi
       if (e.kind !== 'Buff') continue
       if (e.defaultStacks !== undefined && e.maxStacks !== undefined && e.defaultStacks > e.maxStacks) problems.push(`${what} starts at ${e.defaultStacks} stacks, over its max of ${e.maxStacks}`)
       if (e.thresholdStat && e.thresholdMin === undefined && !e.thresholdBonus) problems.push(`${what} has thresholdStat but no threshold`)
+      if (e.fixedDot && (e.type || e.value.trim().startsWith('+'))) problems.push(`${what} has fixedDot but isn't Multiplicative (a value without "+"), so it never reaches a Fixed DoT`)
+      if (e.sharedCap && !(e.sharedCap.max > 0 && e.sharedCap.max <= 50)) problems.push(`${what} has the sharedCap max ${e.sharedCap.max}: a fraction above 0, 3 for 300%`)
       // % stats are fractions (1.6 for 160%), Attack, Defense and Health whole numbers
       const pctStat = PCT_STATS.includes(e.thresholdStat ?? '')
       for (const v of [e.thresholdMin, e.thresholdBonus?.above]) {

@@ -5,7 +5,7 @@ import { findCharacter, findFragmentSet, findPartner, fragmentPiecesUsed, hasTea
 import { unlockedPotentialEgo } from '../engine/calc'
 import { pruneTeamPlays } from '../engine/deck'
 import { linkedBuild } from '../engine/team'
-import { CATEGORIES, FRAGMENT_SET_PICKS, MAX_EGO_LEVEL, MAX_POTENTIAL_LEVEL, FRAGMENT_SLOTS, NO_BUILD, STATS, TEAM_SIZE, type Fight, type ScreenStats, type StatName, type Teammate } from '../engine/types'
+import { CATEGORIES, ELEMENTS, FRAGMENT_SET_PICKS, MAX_EGO_LEVEL, MAX_POTENTIAL_LEVEL, FRAGMENT_SLOTS, NO_BUILD, STATS, TEAM_SIZE, type Fight, type ScreenStats, type StatName, type Teammate } from '../engine/types'
 import { activeFight, duplicateBuild, newBoost, newFight, newTeammate } from '../store/save'
 import { FromField } from './FromField'
 import { useCharacter, useStore } from '../store/store'
@@ -410,6 +410,10 @@ function FightSection() {
           help="1 = none. No known formula yet; back-solve it from an in-game hit (Mei Lin test: about 0.387)." />
         <NumberField label="Damage reduction" pct max={1} value={enemy.dr} onChange={(v) => upd((f) => { f.enemies[0].dr = v })} />
       </div>
+      <SelectField label="Weak to" value={enemy.weakness ?? ''}
+        options={[{ value: '', label: 'Nothing' }, ...ELEMENTS.map((e) => ({ value: e, label: e })), { value: 'All', label: 'All elements' }]}
+        onChange={(v) => upd((f) => { if (v) f.enemies[0].weakness = v; else delete f.enemies[0].weakness })}
+        help="Cards of this element hit a Weakness: Weakness DMG, and their 'Weakness Attack:' bonuses count. Each play can still be switched on the Cards tab." />
       </div>
     </Section>
   )

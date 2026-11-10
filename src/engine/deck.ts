@@ -1,7 +1,7 @@
 // A build's deck: the cards picked on the Cards tab, plus the cards that come with them: the Ego skill, and the cards
 // a picked card creates (CardPreset.creates, e.g. Rossweisse's shards), which no one adds by hand (owner, 2026-10-27).
 import { withLinkedTeam, type Saves } from './team'
-import { ELEMENTS, type Build, type Card, type CardPreset, type CardTargets, type CharacterPreset, type DeckCard, type Element, type LiveTeammate, type PotentialUpgrade } from './types'
+import { ELEMENTS, type Build, type Card, type CardPreset, type CardTargets, type CharacterPreset, type CounterHits, type DeckCard, type Element, type LiveTeammate, type PotentialUpgrade } from './types'
 
 /** Id prefix of the cards that come with others: 'auto:<preset id>', so attack list plays can point at them. */
 export const AUTO = 'auto:'
@@ -44,6 +44,10 @@ export function presetTags(p: CardPreset, nodeOn: NodeOn = allNodesOn): string {
 }
 
 /** The card a preset plays as; element: the character's (unless the preset sets its own). */
+/** A card's counterHits as a list (one rule or several). */
+export const counterHitsList = (card: { counterHits?: CounterHits | CounterHits[] } | undefined): CounterHits[] =>
+  card?.counterHits === undefined ? [] : Array.isArray(card.counterHits) ? card.counterHits : [card.counterHits]
+
 export function presetCard(p: CardPreset, element: Element, id: string, nodeOn: NodeOn = allNodesOn): Card {
   const changed = Object.entries(p.nodeCard ?? {}).filter(([node]) => nodeOn(node)).map(([, fields]) => fields)
   const targets = p.targets ?? cardTargets(p.text ?? '')

@@ -1,10 +1,10 @@
 // The damage formula (docs/FORMULA.md). Pure functions: inputs in, numbers and their sources out.
 import { wholePct } from './cardText'
-import { buildDeck, buildNodeOn, deckPresets, presetCard, teammateDeck, type DeckItem } from './deck'
-import { activeBuffs, activeCounters, activeStats, buffMatches, cardBuffs, findCharacter, findFragmentSet, findPartner, unreadableValues, type ActiveBuff, type ActiveStat, type PlayCounter, type Source } from './buffs'
+import { buildDeck, buildNodeOn, counterHitsList, deckPresets, presetCard, teammateDeck, type DeckItem } from './deck'
+import { activeBuffs, activeCounters, activeStats, buffMatches, cardBuffs, findCharacter, findFragmentSet, findPartner, unreadableValues, type ActiveBuff, type ActiveStat, type CardBuffs, type PlayCounter, type Source } from './buffs'
 import { deletedLinks, teammateView, withLinkedTeam, type Saves } from './team'
 import { NO_ENEMY } from './types'
-import type { Build, Card, CharacterPreset, CharacterSave, Enemy, Fight, LiveBuild, PotentialUpgrade, Presets, RotationPlay, Settings, StatName, Trigger } from './types'
+import type { Build, Card, CharacterPreset, CharacterSave, CounterHits, Enemy, Fight, LiveBuild, PotentialUpgrade, Presets, RotationPlay, Settings, StatName, Trigger } from './types'
 
 export interface Stat {
   value: number
@@ -85,6 +85,8 @@ export interface Play {
   weaknessDebuff: boolean
   /** The target is Ravaged on this play's hits (the play's switch, else the card's flag). */
   ravaged: boolean
+  /** This play's hits hit a Weakness (the play's switch, else automatic: RotationPlay.weakness). */
+  weakness: boolean
   /** Fixed damage an earlier card (Rossweisse's Ego skill) adds to this play: a share of its damage, included in the totals. */
   followUp?: FollowUp
   /** Teammate slot and name for a teammate's play; missing = the build's character. */
@@ -137,6 +139,9 @@ export interface BuildResult extends Totals {
   byCharacter: (Totals & { name: string })[]
   /** Per attack list play (same index): the per-play counters it can set (its player's counter buffs and the team's triggers). */
   counterOptions: PlayCounter[][]
+  /** Per attack list play (same index): whether it hits a Weakness without its own switch (the card, a Weakness Attack buff or the fight's
+   * enemy); missing for a play left out. */
+  weaknessAuto: boolean[]
   /** Things in the save the calculation had to leave out or that likely don't do what they seem to (shown on the Results tab). */
   warnings: string[]
 }
@@ -201,7 +206,7 @@ export function shownPct(base: number, card: Card, build: LiveBuild, ch: Charact
   if (fixed && !settings.potentialFixed) return base
   const potential = potentialFactor(card.upgrade, build, ch, settings)
   if (!potential) return base
-  const cb = cardBuffs(buffs.filter((b) => !b.counter), card)
+  const cb = cardBuffs(buffs.filter((b) => !b.counter && !b.weakness), card)
   const cardPct = [...cb.cardPct.all.sources, ...cb.cardPct.first.sources].reduce((a, s) => a + s.value, 0)
   const cardAdd = [...cb.cardAdd.all.sources, ...cb.cardAdd.first.sources].reduce((a, s) => a + s.value, 0)
   return (base + cardAdd) * potential.value * (1 + cardPct)
@@ -214,14 +219,29 @@ export const playCount = (card: Pick<Card, 'perCount' | 'maxCount'>, play: Rotat
 /** A Fixed DoT (Agony, measured in game, owner 2026-11-01): Fixed damage that the element and DoT DMG stats and Enemy DEF raise and that crits, but Vulnerable doesn't. */
 export const isFixedDot = (card: Pick<Card, 'scaling' | 'kind'>) => card.scaling === 'Fixed' && card.kind === 'DoT'
 
+/** The fight's enemy is weak to the card's element (Enemy.weakness: one element or all five). */
+export const enemyWeakTo = (enemy: Pick<Enemy, 'weakness'>, card: Pick<Card, 'element'>) =>
+  enemy.weakness === 'All' || (!!enemy.weakness && enemy.weakness === card.element)
+
+/** Why a play hits a Weakness beyond the card and its Weakness Attack buffs (shown in the formula strip): the play's switch or the enemy. */
+function weaknessReason(card: Card, cb: CardBuffs, enemy: Enemy, play: RotationPlay): Source[] {
+  if (play.weakness) return [{ label: 'Hits a Weakness (this play)', value: 0, unit: 'x' }]
+  if (card.weaknessApplies || cb.weaknessAttack.length || !enemyWeakTo(enemy, card)) return []
+  return [{ label: `Enemy weak to ${enemy.weakness === 'All' ? 'every element' : enemy.weakness}`, value: 0, unit: 'x' }]
+}
+
 /** Plain Fixed damage: ignores every multiplier and can't crit (Unconfirmed). */
 export const isPlainFixed = (card: Pick<Card, 'scaling' | 'kind'>) => card.scaling === 'Fixed' && card.kind !== 'DoT'
+
+/** The hits one counterHits rule adds at this many stacks: its hits while above 0, or per `per` stacks up to `max`. */
+const counterHitsAdded = (c: CounterHits, stacks: number) =>
+  c.per ? Math.min(Math.floor(stacks / c.per) * c.hits, c.max ?? Infinity) : stacks > 0 ? c.hits : 0
 
 /** The card's hits on this play before the play's own hit count: the count if it sets the hits (Card.countsHits), with the hits its
  * counter adds (Card.counterHits) and those a Ravaged target adds (Card.ravagedHits). */
 export const playBaseHits = (card: Card, play: RotationPlay) =>
   (card.countsHits && card.perCount ? playCount(card, play) : card.hits)
-  + (card.counterHits && (play.stacks?.[card.counterHits.counter] ?? 0) > 0 ? card.counterHits.hits : 0)
+  + counterHitsList(card).reduce((sum, c) => sum + counterHitsAdded(c, play.stacks?.[c.counter] ?? 0), 0)
   + (card.ravagedHits && (play.ravaged ?? card.targetRavaged) ? card.ravagedHits : 0)
 
 /** The card as played: the play's own hit count and Cost, if set, replace the card's. A per-Cost card's % is its % x the Cost;
@@ -315,18 +335,25 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
       const stacks = counters.find((c) => c.name === b.counter)?.stacks ?? 0
       return { ...b, stacks: b.maxStacks ? Math.min(stacks, b.maxStacks) : stacks }
     })
-    const cb = cardBuffs([...d.fixedBuffs, ...live], card)
+    const all = [...d.fixedBuffs, ...live]
+    let cb = cardBuffs(all, card)
+    // Hits a Weakness: the play's switch, else the card, a Weakness Attack buff or the fight's enemy (owner, 2026-11-09)
+    const weakAuto = card.weaknessApplies || cb.weaknessAttack.length > 0 || enemyWeakTo(enemy, card)
+    const weak = play.weakness ?? weakAuto
+    // "Weakness Attack: +50% Damage Amount" lines count only on a play that hits a Weakness
+    if (!weak && all.some((b) => b.weakness)) cb = cardBuffs(all.filter((b) => !b.weakness), card)
     const upgradable = !(card.scaling === 'Fixed' && !settings.potentialFixed)
     const potential = upgradable ? potentialFactor(card.upgrade, d.build, m.ch, settings) : null
     const hits: Hit[] = []
     const stats = { ...d.stats, elemDmg: cardElement(m, d, card) }
     const own = Math.max(0, Math.floor(card.hits))
-    for (let h = added ? own + 1 : 1; h <= own + added; h++) hits.push(computeHit(card, h, listed ? ++k : 0, cb, potential, stats, enemy, play, settings))
-    return { hits, counters, cb, ...totals(hits) }
+    for (let h = added ? own + 1 : 1; h <= own + added; h++) hits.push(computeHit(card, h, listed ? ++k : 0, cb, potential, stats, enemy, play, settings, weak))
+    return { hits, counters, cb, weak, weakAuto, ...totals(hits) }
   }
 
   const plays: Play[] = []
   const counterOptions: BuildResult['counterOptions'] = []
+  const weaknessAuto: boolean[] = []
   const pending = new Map<Member, { from: string; index: number; appliesTo: string; share: number }>()
   const byMember = new Map<Member, Totals>()
   const credit = (m: Member, t: Totals) => {
@@ -346,7 +373,10 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
     }
     // A per-play hit count also counts for '2+ hits' buffs, so it's buffed as its own card
     const card = playCard(base, play)
-    const own = m.dmg ? cardHits(m, card, play) : { hits: [], counters: [], cb: undefined, nonCrit: 0, crit: 0, expected: 0 }
+    const noDmgWeak = card.weaknessApplies || enemyWeakTo(enemy, card)
+    const own = m.dmg ? cardHits(m, card, play)
+      : { hits: [], counters: [], cb: undefined, weak: play.weakness ?? noDmgWeak, weakAuto: noDmgWeak, nonCrit: 0, crit: 0, expected: 0 }
+    weaknessAuto[index] = own.weakAuto
     if (m.dmg && !card.targetRavaged) warnings.push(...ravagedOnly(m.dmg.counterBuffs, card, play, index))
     const fixedOf = fixedAmountOf(card)
     if (m.dmg && fixedOf && capped(play, fixedOf, null) <= 0) warnings.push(`Play ${index + 1} (${card.name}): its damage is a share of ${fixedOf}, which is 0 on this play.`)
@@ -372,7 +402,7 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
       if (!owner.dmg || (t.others && slot === play.by) || (t.own && slot !== play.by)) continue
       if (t.counter && capped(play, t.counter, t.maxStacks) <= 0) continue
       if (!buffMatches({ appliesTo: t.on, condition: 'Always' }, card)) continue
-      if (t.weakness && !card.weaknessApplies && !own.cb?.weaknessAttack.length) continue
+      if (t.weakness && !own.weak) continue
       // One more hit of a play that hits nothing is no hit either; a play with no hits of its own can't crit
       if (t.repeat && Math.floor(card.hits) < 1) continue
       if (t.onCrit && !own.hits.length) continue
@@ -396,7 +426,7 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
     }
     const trig = totals(triggered)
     plays.push({ card, index, hits: own.hits, counters: shownCounters(card, play, own.counters),
-      vulnerable: !!play.vulnerable, weaknessDebuff: !!play.weaknessDebuff, ravaged: card.targetRavaged, followUp, triggered,
+      vulnerable: !!play.vulnerable, weaknessDebuff: !!play.weaknessDebuff, ravaged: card.targetRavaged, weakness: own.weak, followUp, triggered,
       ...(play.by !== undefined ? { slot: play.by, by: m.name, ...(m.dmg ? {} : { noBuild: true }) } : {}),
       nonCrit: own.nonCrit + (followUp?.nonCrit ?? 0) + trig.nonCrit, crit: own.crit + (followUp?.crit ?? 0) + trig.crit,
       expected: own.expected + (followUp?.expected ?? 0) + trig.expected })
@@ -413,7 +443,7 @@ export function computeBuild(presets: Presets, charName: string, cs: CharacterSa
     .filter((x) => x === main || byMember.has(x))
     .map((x) => ({ name: x.name, ...(byMember.get(x) ?? { nonCrit: 0, crit: 0, expected: 0 }) }))
   // Two dropdowns naming the same lost set give the same warning: once is enough
-  return { stats: main.dmg!.stats, plays, byCharacter, counterOptions, warnings: [...new Set(warnings)], ...totals(plays) }
+  return { stats: main.dmg!.stats, plays, byCharacter, counterOptions, weaknessAuto, warnings: [...new Set(warnings)], ...totals(plays) }
 }
 
 /** A follow-up (Rossweisse's Ego skill) with no matching play after it before the list ends or the same card is played again. */
@@ -483,16 +513,17 @@ const fixedAmountOf = (card: Card | undefined) => (card?.scaling === 'Fixed' ? c
  * A counter stops where the card's own buffs stop reading it. */
 function playCaps(d: Member['dmg'], card: Card | undefined) {
   const fixedOf = fixedAmountOf(card)
-  const hitsCounter = card?.counterHits?.counter
+  // an on/off counter caps at 1; a per-stacks one at the stacks its max hits need (none without a max)
+  const hitsCounters = counterHitsList(card).filter((h) => !d?.caps.some((c) => c.name === h.counter))
   return mergeCaps(d?.caps ?? [], [
-    ...(hitsCounter && !d?.caps.some((c) => c.name === hitsCounter) ? [{ name: hitsCounter, max: 1 }] : []),
+    ...hitsCounters.map((h) => ({ name: h.counter, max: h.per ? (h.max ? h.per * Math.ceil(h.max / h.hits) : null) : 1 })),
     ...(fixedOf ? [{ name: fixedOf, max: null, amount: true }] : []),
     ...activeCounters(card ? (d?.counterBuffs ?? []).filter((b) => buffMatches({ appliesTo: b.appliesTo, condition: 'Always' }, card)) : []),
   ])
 }
 
 function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof cardBuffs>, potential: Factor | null,
-  stats: FinalStats, enemy: Enemy, play: RotationPlay, settings: Settings): Hit {
+  stats: FinalStats, enemy: Enemy, play: RotationPlay, settings: Settings, weakApplies: boolean): Hit {
   const first = hitNo === 1
   // Card % buffs raise the base % like the card upgrade potentials, so only on cards entered at base %
   const cardPctSources = potential ? [...cb.cardPct.all.sources, ...(first ? cb.cardPct.first.sources : [])] : []
@@ -532,7 +563,9 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
   const pct = upgradedPct + (basePct?.value ?? 0)
   const finalSources = both(cb.final)
   const final: Factor | null = finalSources.length ? { value: 1 + total(finalSources), sources: finalSources } : null
+  // A Fixed DoT takes only the buffs marked fixedDot (Olga's Shard Erosion); others don't raise it (Tressa's Agony, measured)
   const multSources = [...cb.multiplicative.all.sources, ...(first ? cb.multiplicative.first.sources : [])]
+    .filter((s) => !isFixedDot(card) || s.fixedDot)
   const combine = (sources: Source[]) => settings.multMode === 'Chained'
     ? sources.reduce((a, s) => a * (1 + s.value), 1)
     : 1 + sources.reduce((a, s) => a + s.value, 0)
@@ -542,7 +575,6 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
   const inHand = pct * combine(multSources.filter((s) => !s.onTarget))
     + addSources.filter((s) => !s.onTarget).reduce((a, s) => a + s.value, 0)
 
-  const weakApplies = card.weaknessApplies || cb.weaknessAttack.length > 0
   // Weakness DMG buffs (Matrix Overlay's "+15% Weakness Damage Amount taken") add to the stat on this play
   const weakBuffs = both(cb.weaknessDmg)
   const weakness: Factor | null = weakApplies ? {
@@ -551,6 +583,7 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
       ...stats.weaknessDmg.sources,
       ...weakBuffs,
       ...(card.weaknessApplies ? [] : cb.weaknessAttack.map((s) => ({ ...s, label: `Weakness Attack: ${s.label}` }))),
+      ...weaknessReason(card, cb, enemy, play),
       ...(settings.extraWeakness ? [{ label: 'Extra weakness factor (Settings)', value: settings.extraWeakness, unit: '%' as const }] : []),
     ],
   } : null
@@ -590,7 +623,7 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
   const fixedDamage = pct * stat.value * fixedConstant + (flat?.value ?? 0)
   const scaled = (elemDmg?.value ?? 1) * (mechDmg?.value ?? 1) * (enemyDef?.value ?? 1)
   const nonCrit = isPlainFixed(card) ? fixedDamage
-    : isFixedDot(card) ? fixedDamage * scaled
+    : isFixedDot(card) ? fixedDamage * scaled * multValue
       : (cardMult * stat.value * settings.atkConstant + (flat?.value ?? 0) * multValue * onTarget) * scaled * (final?.value ?? 1)
   const crit = isPlainFixed(card) ? nonCrit : nonCrit * critDmg
   const expected = isPlainFixed(card) ? nonCrit : nonCrit * (1 + critRate * (critDmg - 1))

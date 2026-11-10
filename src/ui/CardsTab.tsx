@@ -327,6 +327,7 @@ function RotationSection() {
     : o.teammate ? teammateDeck(o.ch, o.teammate) : []).map((i) => [i.card.id, i.card]))]))
   const rotation = build.rotation ?? []
   const counterOptions = results.get(build.id)?.counterOptions ?? []
+  const weaknessAuto = results.get(build.id)?.weaknessAuto ?? []
   const teamPlays = rotation.some((p) => p.by !== undefined)
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
@@ -370,7 +371,7 @@ function RotationSection() {
               const base = decks.get(play.by)?.get(play.cardId)
               return (
                 <RotationItem key={ids[i]} id={ids[i]} index={i} play={play} card={base && playCard(base, play)} baseHits={base && playBaseHits(base, play)} baseCost={base?.cost} baseRavaged={!!base?.targetRavaged}
-                  by={teamPlays ? owners.find((o) => o.slot === play.by)?.name : undefined}
+                  weakAuto={weaknessAuto[i] ?? false} by={teamPlays ? owners.find((o) => o.slot === play.by)?.name : undefined}
                   counters={counterOptions[i] ?? []} open={open === i} onToggle={() => setOpen(open === i ? null : i)}
                   onChange={(fn) => updateBuild((b) => fn(b.rotation[i]))}
                   onRemove={() => { updateBuild((b) => { b.rotation.splice(i, 1) }); setOpen(null) }} />
@@ -385,20 +386,24 @@ function RotationSection() {
 }
 
 /** What's set on a play. settable: the stacks it can set, so a stack nothing reads (a character's starting counter on another card, a removed card's) doesn't show. */
-function playFlags(play: RotationPlay, ravaged: boolean, settable: string[]): string {
+function playFlags(play: RotationPlay, ravaged: boolean, weakness: boolean, settable: string[]): string {
   const stacks = Object.entries(play.stacks ?? {}).filter(([name, n]) => n > 0 && settable.includes(name)).map(([name, n]) => `${name} ${n}`)
-  return [...(play.vulnerable ? ['Vulnerable'] : []), ...(play.weaknessDebuff ? ['Weakness debuff'] : []), ...(ravaged ? ['Target Ravaged'] : []), ...stacks].join(' · ')
+  return [...(weakness ? ['Hits a Weakness'] : []), ...(play.vulnerable ? ['Vulnerable'] : []), ...(play.weaknessDebuff ? ['Weakness debuff'] : []),
+    ...(ravaged ? ['Target Ravaged'] : []), ...stacks].join(' · ')
 }
 
 /** baseHits: the card's own hits. counters: the per-play stacks the switched-on buffs and the team's triggers read. by: who plays it
  * (shown once the list has teammates' plays). */
-function RotationItem({ id, index, play, card, baseHits, baseCost, baseRavaged, by, counters, open, onToggle, onChange, onRemove }: {
-  id: string; index: number; play: RotationPlay; card?: Card; baseHits?: number; baseCost?: number | null; baseRavaged: boolean; by?: string
+function RotationItem({ id, index, play, card, baseHits, baseCost, baseRavaged, weakAuto, by, counters, open, onToggle, onChange, onRemove }: {
+  id: string; index: number; play: RotationPlay; card?: Card; baseHits?: number; baseCost?: number | null; baseRavaged: boolean
+  /** Whether the play hits a Weakness without its own switch (the card, its buffs or the fight's enemy). */
+  weakAuto: boolean; by?: string
   counters: PlayCounter[]
   open: boolean; onToggle: () => void; onChange: (fn: (p: RotationPlay) => void) => void; onRemove: () => void
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
-  const flags = playFlags(play, !!card?.targetRavaged, [...counters.map((c) => c.name), ...(card?.perCount ? [card.perCount] : [])])
+  const weak = play.weakness ?? weakAuto
+  const flags = playFlags(play, !!card?.targetRavaged, weak, [...counters.map((c) => c.name), ...(card?.perCount ? [card.perCount] : [])])
   return (
     <li ref={setNodeRef} className={`row col ${isDragging ? 'dragging' : ''}`}
       style={{ transform: CSS.Transform.toString(transform), transition }}>
@@ -439,6 +444,9 @@ function RotationItem({ id, index, play, card, baseHits, baseCost, baseRavaged, 
                 })} />
             </div>
           )}
+          <div className="toggle-field"><span>Hits a Weakness{play.weakness !== undefined && <span className="muted"> (set here; fight: {weakAuto ? 'yes' : 'no'})</span>}</span>
+            <Toggle label="Hits a Weakness" checked={weak} onChange={(v) => onChange((p) => { if (v === weakAuto) delete p.weakness; else p.weakness = v })} />
+          </div>
           <div className="toggle-field"><span>Vulnerable</span>
             <Toggle label="Vulnerable" checked={!!play.vulnerable} onChange={(v) => onChange((p) => { if (v) p.vulnerable = true; else delete p.vulnerable })} />
           </div>
