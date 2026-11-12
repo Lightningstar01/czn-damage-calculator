@@ -3,7 +3,7 @@ import { PRESETS } from '../data/presets'
 import { readSettings } from '../data/settings'
 import { switchStacks } from '../engine/buffs'
 import { AUTO, cardUpgrade, deckItems } from '../engine/deck'
-import { ELEMENTS, CARD_TYPES, FRAGMENT_SET_PICKS, NO_ENEMY, type Build, type Card, type CharacterPreset, type CharacterSave, type DeckCard, type Element, type Fight, type RotationPlay, type SaveData, type Switch, type UserBoost, type UserBuff } from '../engine/types'
+import { ELEMENTS, CARD_TYPES, EQUIP_RARITIES, EQUIP_SLOTS, FRAGMENT_SET_PICKS, NO_ENEMY, type Build, type Card, type CharacterPreset, type CharacterSave, type DeckCard, type Element, type Equipment, type EquipRarity, type Fight, type RotationPlay, type SaveData, type Switch, type UserBoost, type UserBuff } from '../engine/types'
 import { defaultFight, defaultSave, newBoost, newBuff, newBuild, newFight, newStats, newTeammate, SAVE_VERSION } from './save'
 
 /** Fields that older saves had (rotation: removed in v9; the shared card library: removed in v10; the stat boosts and buffs shared by
@@ -34,6 +34,22 @@ function checkSaveShape(raw: unknown): asserts raw is SaveData {
   }
 }
 
+/** A build's equipment as the site can read it: the known slots whose pick has a known rarity (it sets the flat stat), with the piece's
+ * id if it's text. Anything else in a damaged file is dropped, not refused: the slot just shows as empty. */
+function readEquipment(raw: unknown): Equipment | undefined {
+  if (!isObject(raw)) return undefined
+  const out: Equipment = {}
+  for (const slot of EQUIP_SLOTS) {
+    const pick = raw[slot]
+    if (!isObject(pick)) continue
+    // The top rarity was saved as 'Unique' (Prydwen's word) in v12; the game says Mythic (owner, 2026-11-11)
+    const rarity = pick.rarity === 'Unique' ? 'Mythic' : pick.rarity
+    if (!(EQUIP_RARITIES as readonly unknown[]).includes(rarity)) continue
+    out[slot] = { rarity: rarity as EquipRarity, ...(typeof pick.piece === 'string' && pick.piece ? { piece: pick.piece } : {}) }
+  }
+  return Object.keys(out).length ? out : undefined
+}
+
 /** Fills what a partial save left out, and refuses lists the site couldn't read (it would crash on every load). */
 function completeCharacter(name: string, cs: CharacterSave) {
   if (!cs.builds.some((b) => b.id === cs.activeBuild)) cs.activeBuild = cs.builds[0].id
@@ -48,6 +64,9 @@ function completeCharacter(name: string, cs: CharacterSave) {
     b.boosts = b.boosts.map((r) => ({ ...newBoost(), on: false, ...r }))
     b.buffs = b.buffs.map((r) => ({ ...newBuff(), on: false, ...r }))
     b.team = b.team.map((t) => ({ ...newTeammate(), ...t, cards: Array.isArray(t.cards) ? t.cards : [] }))
+    const equipment = readEquipment(b.equipment)
+    if (equipment) b.equipment = equipment
+    else delete b.equipment
   }
 }
 
@@ -264,7 +283,14 @@ export function migrate(raw: unknown): SaveData {
     }
     data.version = 12
   }
-  // Future migrations go here, in version order: if (data.version === 12) { ...; data.version = 13 }
+  if (data.version === 12) {
+    // v13: equipment has three slots (weapon, armor, trinket), and a slot's pick may name a piece (`piece`, an id of
+    // src/data/prydwen-equipment.json) besides its rarity (owner, 2026-11-11). A v12 weapon rarity is already a pick, so it stays as it
+    // is and gives the same flat Attack. Equipment typed under My stat boosts / My buffs is left alone: the owner picks the pieces, and
+    // Setup warns about a typed row that looks like one. Nothing to convert: the version says a save may hold picks older code can't read.
+    data.version = 13
+  }
+  // Future migrations go here, in version order: if (data.version === 13) { ...; data.version = 14 }
   for (const [name, cs] of Object.entries(data.characters)) completeCharacter(name, cs)
   completeFights(data)
   return {

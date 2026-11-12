@@ -1,9 +1,9 @@
 // Which stat boosts and buffs are active for a build, and which buffs match a card.
 import { buildDeck, deckPresets, teammateDeck } from './deck'
-import { CARD_TYPES } from './types'
+import { CARD_TYPES, EQUIP_SLOTS } from './types'
 import type {
-  BuffEffect, BuffType, Build, Card, CardPreset, CharacterPreset, Condition, Effect, FragmentSetPreset, HitScope, LiveBuild, PartnerPreset,
-  Presets, ScreenStats, Settings, StatEffect, StatName, Switch,
+  BuffEffect, BuffType, Build, Card, CardPreset, CharacterPreset, Condition, Effect, EquipmentPreset, EquipRarity, EquipSlot, Equipment,
+  FragmentSetPreset, HitScope, LiveBuild, PartnerPreset, Presets, ScreenStats, Settings, StatEffect, StatName, Switch,
 } from './types'
 
 /** Where a number came from, for the "tap a chip" breakdown. */
@@ -29,7 +29,7 @@ export function readNumber(text: string): number | undefined {
 /** A value's number without its leading '+' and trailing '%'. */
 const valueNumber = (text: string) => readNumber(text.trim().replace(/^\+/, '').replace(/%$/, ''))
 
-/** Stats kept as a share (0.16 = 16%): all but Flat ATK / Flat DEF. */
+/** Stats kept as a share (0.16 = 16%): all but Flat ATK / Flat DEF / Flat HP. */
 export const statIsPct = (stat: StatName) => !stat.startsWith('Flat')
 
 /** Stat value as typed, undefined if it can't be read. A % stat reads a plain number as a % too (owner, 2026-11-03): '16%' and '16'
@@ -128,7 +128,7 @@ export interface ActiveBuff {
 /** Why a preset effect is (in)active for a build — shown greyed out in the UI. */
 export interface PresetState {
   owner: string
-  ownerKind: 'Character' | 'Partner' | 'Memory Fragment' | 'Card'
+  ownerKind: 'Character' | 'Partner' | 'Memory Fragment' | 'Card' | 'Equipment'
   effect: Effect
   /** Class-limited partner effect with a class mismatch. */
   classBlocked: boolean
@@ -178,6 +178,37 @@ export function fragmentPiecesUsed(presets: Presets, build: Build): number {
   return (build.fragments ?? []).reduce((n, name) => n + (findFragmentSet(presets, name)?.pieces ?? 0), 0)
 }
 
+/** The flat stat each slot's piece gives, and what the game calls it. */
+export const EQUIP_STAT: Record<EquipSlot, { stat: StatName; label: string }> = {
+  weapon: { stat: 'Flat ATK', label: 'Attack' }, armor: { stat: 'Flat DEF', label: 'Defense' }, trinket: { stat: 'Flat HP', label: 'Health' },
+}
+
+/** A slot's pick as it counts: the named piece when the presets have it (its rarity then wins over the saved one, so a re-import
+ * that changes it is followed), else the saved rarity alone; `lost` is the id of a named piece the presets don't have any more. */
+export interface Equipped {
+  slot: EquipSlot
+  rarity: EquipRarity
+  piece?: EquipmentPreset
+  lost?: string
+  /** The slot's flat stat at that rarity (0 without values in the presets). */
+  flat: number
+}
+
+/** The picked slots of a build's equipment, in slot order. */
+export function equipped(presets: Presets, equipment: Equipment | undefined): Equipped[] {
+  return EQUIP_SLOTS.flatMap((slot) => {
+    const pick = equipment?.[slot]
+    if (!pick) return []
+    const piece = pick.piece ? presets.equipment?.find((p) => p.id === pick.piece && p.slot === slot) : undefined
+    const rarity = piece?.rarity ?? pick.rarity
+    return [{ slot, rarity, flat: presets.equipFlat?.[slot]?.[rarity] ?? 0, ...(piece ? { piece } : pick.piece ? { lost: pick.piece } : {}) }]
+  })
+}
+
+/** 'Abyssal Bug Tooth (Legendary)', or 'Weapon (Rare)' for a rarity alone. */
+export const equippedLabel = (e: Pick<Equipped, 'slot' | 'rarity' | 'piece'>) =>
+  `${e.piece?.name ?? `${e.slot[0].toUpperCase()}${e.slot.slice(1)}`} (${e.rarity})`
+
 /** Key of a preset effect in Build.presetSwitches. */
 export function presetKey(owner: string, effect: Effect): string {
   return `${owner}|${effect.id}`
@@ -203,23 +234,24 @@ export function stateLabel(s: Pick<PresetState, 'owner' | 'teammateName'>): stri
   return s.teammateName && s.teammateName !== s.owner ? `${s.teammateName} › ${s.owner}` : s.owner
 }
 
-/** Whose effects are being listed: their Manifest Ego level, stats and Potential nodes. */
+/** Whose effects are being listed: their Manifest Ego level, stats, Potential nodes and equipment. */
 interface Who {
   ego: number
   stats?: ScreenStats
   nodes?: Build['potentialNodes']
+  equipment?: Equipment
 }
 
-/** The preset effects of the build's character, partner, memory fragment sets and deck cards, with their switch state;
- * then each teammate's ally / enemy effects (character, partner, sets, deck cards). */
+/** The preset effects of the build's character, partner, memory fragment sets, equipment and deck cards, with their switch state;
+ * then each teammate's ally / enemy effects (character, partner, sets, a linked build's equipment, deck cards). */
 export function presetStates(presets: Presets, charName: string, build: LiveBuild): PresetState[] {
   const out: PresetState[] = []
   const add = (owner: string, ownerKind: PresetState['ownerKind'], effects: Effect[], blocked: (e: Effect) => boolean,
-    who: Who, cardId?: string, team?: { slot: number; name: string }) => {
+    who: Who, cardId?: string, team?: { slot: number; name: string }, keyOwner = owner) => {
     const ego = who.ego
     for (const e of effects) {
       if (team && !reachesTeam(e)) continue
-      const key = team ? teamKey(team.name, owner, e) : presetKey(owner, e)
+      const key = team ? teamKey(team.name, keyOwner, e) : presetKey(keyOwner, e)
       const sw = build.presetSwitches[key]
       const classBlocked = blocked(e)
       // On the stats screen means the build's own screen; a teammate's ally stat isn't on it
@@ -237,14 +269,17 @@ export function presetStates(presets: Presets, charName: string, build: LiveBuil
     const p = partner ? findPartner(presets, partner) : undefined
     if (p) add(p.name, 'Partner', p.effects, (e) => !!e.classLimited && p.class !== ch?.class, who, undefined, team)
     for (const f of distinctSets(presets, fragments)) add(f.name, 'Memory Fragment', f.effects, () => false, who, undefined, team)
+    // Keyed by the piece's id, not its name: a piece can share its name with a card (Flashbang), and a rename upstream keeps the switch
+    for (const e of equipped(presets, who.equipment)) if (e.piece) add(e.piece.name, 'Equipment', e.piece.effects, () => false, who, undefined, team, e.piece.id)
     for (const c of cardPresets) add(c.name, 'Card', c.effects ?? [], () => false, who, c.id, team)
   }
   const ch = findCharacter(presets, charName)
-  addAll(ch, build.partner, build.fragments ?? [], { ego: build.egoLevel ?? 0, stats: build.stats, nodes: build.potentialNodes }, deckPresets(buildDeck(ch, build)))
+  addAll(ch, build.partner, build.fragments ?? [], { ego: build.egoLevel ?? 0, stats: build.stats, nodes: build.potentialNodes, equipment: build.equipment },
+    deckPresets(buildDeck(ch, build)))
   ;(build.team ?? []).forEach((t, slot) => {
     if (!t.character || t.character === charName) return
     const tch = findCharacter(presets, t.character)
-    addAll(tch, t.partner, t.fragments ?? [], { ego: t.egoLevel ?? 0, stats: t.live?.stats, nodes: t.live?.potentialNodes },
+    addAll(tch, t.partner, t.fragments ?? [], { ego: t.egoLevel ?? 0, stats: t.live?.stats, nodes: t.live?.potentialNodes, equipment: t.live?.equipment },
       deckPresets(teammateDeck(tch, t)), { slot, name: t.character })
   })
   return out
@@ -259,14 +294,46 @@ export function activeStats(presets: Presets, charName: string, build: LiveBuild
     out.push({ label: `${stateLabel(s)}: ${e.name}`, stat: e.stat, value: parseStatValue(e.stat, e.value), stacks: s.stacks,
       unit: statIsPct(e.stat) ? '%' : 'flat' })
   }
-  const weapon = build.equipment?.weapon
-  const weaponAtk = weapon ? presets.weaponAtk?.[weapon.rarity] ?? 0 : 0
-  if (weapon && weaponAtk) out.push({ label: `Weapon (${weapon.rarity})`, stat: 'Flat ATK', value: weaponAtk, stacks: 1, unit: 'flat' })
+  for (const e of equipped(presets, build.equipment)) {
+    if (e.flat) out.push({ label: equippedLabel(e), stat: EQUIP_STAT[e.slot].stat, value: e.flat, stacks: 1, unit: 'flat' })
+  }
   for (const b of build.boosts ?? []) {
     const stacks = switchStacks(b.on)
     if (stacks <= 0) continue
     out.push({ label: b.source || b.stat, stat: b.stat, value: parseStatValue(b.stat, b.value), stacks,
       unit: statIsPct(b.stat) ? '%' : 'flat' })
+  }
+  return out
+}
+
+/** Rows typed under My stat boosts / My buffs that look like a picked piece of equipment, which would then count twice (owner,
+ * 2026-11-11: typed rows are never converted, only warned about): a switched-on row of this character's (no From) that adds the
+ * slot's flat stat, or one named like the piece. */
+export function equipmentDoubles(presets: Presets, build: Pick<Build, 'equipment' | 'boosts' | 'buffs'>): string[] {
+  const mine = (r: { on?: Switch; from?: string }) => !r.from && switchStacks(r.on) > 0
+  const boosts = (build.boosts ?? []).filter(mine)
+  const buffs = (build.buffs ?? []).filter(mine)
+  // 'Obsidian' for Obsidian Sword, or 'Obsidian Sword ATK'; a word of 3 letters or fewer is too little to go by
+  const named = (source: string, name: string) => {
+    const s = norm(source), n = norm(name)
+    return s.length > 3 && (n.includes(s) || s.includes(n))
+  }
+  const out: string[] = []
+  for (const e of equipped(presets, build.equipment)) {
+    const { stat, label } = EQUIP_STAT[e.slot]
+    const flat = e.flat ? boosts.filter((b) => b.stat === stat) : []
+    if (flat.length) {
+      out.push(`My stat boosts also add flat ${label} (${flat.map((b) => `${b.source || 'Unnamed boost'}: ${b.value || '0'}`).join(', ')}). `
+        + `If that's this ${e.slot}, switch it off or delete it, or it counts twice.`)
+    }
+    const piece = e.piece
+    if (!piece) continue
+    const same = [...boosts.filter((b) => !flat.includes(b)), ...buffs].filter((r) => named(r.source, piece.name))
+    if (!same.length) continue
+    const rows = same.map((r) => r.source).join(', ')
+    out.push(piece.effects.length
+      ? `My stat boosts / My buffs have rows named like ${piece.name} (${rows}). Its effects are in the preset lists now: switch the typed rows off or delete them, or they count twice.`
+      : `My stat boosts / My buffs have rows named like ${piece.name} (${rows}). The piece's effect isn't counted by itself yet, so keep them for now.`)
   }
   return out
 }

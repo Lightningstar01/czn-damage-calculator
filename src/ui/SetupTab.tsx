@@ -5,8 +5,9 @@ import { findCharacter, findFragmentSet, findPartner, fragmentPiecesUsed, hasTea
 import { unlockedPotentialEgo } from '../engine/calc'
 import { pruneTeamPlays } from '../engine/deck'
 import { linkedBuild } from '../engine/team'
-import { switchStacks } from '../engine/buffs'
-import { CATEGORIES, ELEMENTS, EQUIP_RARITIES, FRAGMENT_SET_PICKS, MAX_EGO_LEVEL, MAX_POTENTIAL_LEVEL, FRAGMENT_SLOTS, NO_BUILD, STATS, TEAM_SIZE, type EquipRarity, type Fight, type ScreenStats, type StatName, type Teammate } from '../engine/types'
+import { equipped, equippedLabel } from '../engine/buffs'
+import { CATEGORIES, ELEMENTS, FRAGMENT_SET_PICKS, MAX_EGO_LEVEL, MAX_POTENTIAL_LEVEL, FRAGMENT_SLOTS, NO_BUILD, STATS, TEAM_SIZE, type Fight, type ScreenStats, type StatName, type Teammate } from '../engine/types'
+import { EquipmentSection } from './EquipmentSection'
 import { activeFight, duplicateBuild, newBoost, newFight, newTeammate } from '../store/save'
 import { FromField } from './FromField'
 import { useCharacter, useStore } from '../store/store'
@@ -29,7 +30,7 @@ export function SetupTab() {
       <PotentialSection />
       <FragmentSection />
       <TeamSection />
-      <Section title="Stat boosts from presets" help="The character's, partner's and memory fragment sets' stat effects. Switch them off per build to test without them. Fragment set stats are already on the stats screen, so they are listed for reference only.">
+      <Section title="Stat boosts from presets" help="The character's, partner's, memory fragment sets' and picked equipment's stat effects. Switch them off per build to test without them. Fragment set stats are already on the stats screen, so they are listed for reference only.">
         <PresetList kind="Stat" />
       </Section>
       {hasTeam(build) && (
@@ -201,28 +202,6 @@ function PartnerSection() {
   )
 }
 
-/** The build's weapon: its rarity gives the flat Attack that equipment adds in battle, so it needn't be typed as a stat boost. */
-function EquipmentSection() {
-  const { build, updateBuild } = useCharacter()!
-  const rarity = build.equipment?.weapon?.rarity ?? ''
-  const atk = PRESETS.weaponAtk
-  // A flat Attack typed by hand before this picker existed is most likely the same weapon
-  const typed = (build.boosts ?? []).filter((b) => b.stat === 'Flat ATK' && !b.from && switchStacks(b.on) > 0)
-  return (
-    <Section title="Equipment" help="The weapon's Attack isn't on the stats screen: it only counts in battle. Pick the weapon's rarity and it's added for you (the value of a weapon at its top level). Other equipment effects still go under My stat boosts and My buffs.">
-      <SelectField<EquipRarity | ''> label="Weapon" value={rarity}
-        options={[{ value: '', label: 'None' }, ...EQUIP_RARITIES.map((r) => ({ value: r, label: `${r} (+${atk?.[r] ?? 0} Attack)` }))]}
-        onChange={(v) => updateBuild((b) => {
-          if (v) b.equipment = { ...b.equipment, weapon: { rarity: v } }
-          else delete b.equipment?.weapon
-        })} />
-      {rarity && typed.length > 0 && (
-        <p className="muted"><span className="warn">My stat boosts also add flat Attack ({typed.map((b) => `${b.source || 'Unnamed boost'}: ${b.value || '0'}`).join(', ')}).</span> If that's this weapon, switch it off or delete it, or it counts twice.</p>
-      )}
-    </Section>
-  )
-}
-
 function FragmentSection() {
   const { build, updateBuild } = useCharacter()!
   const picks = Array.from({ length: FRAGMENT_SET_PICKS }, (_, i) => build.fragments?.[i] ?? '')
@@ -268,7 +247,7 @@ function TeamSection() {
     fn(b.team[i])
   })
   return (
-    <Section title="Team" help="The build's other two characters. Pick one of their saved builds (open the character from the top menu to make one): its Manifest Ego, partner and sets are used, and their cards in the attack list deal damage with its stats and buffs. Only their effects that reach allies or the enemy count for this character (marked in the presets): character and Manifest Ego effects, partner (its Ego skill too), fragment sets and their cards picked on the Cards tab. Their equipment for this character: add it under My stat boosts / My buffs with From set to the teammate.">
+    <Section title="Team" help="The build's other two characters. Pick one of their saved builds (open the character from the top menu to make one): its Manifest Ego, partner and sets are used, and their cards in the attack list deal damage with its stats and buffs. Only their effects that reach allies or the enemy count for this character (marked in the presets): character and Manifest Ego effects, partner (its Ego skill too), fragment sets, the equipment picked in their saved build and their cards picked on the Cards tab. Equipment of a teammate without a saved build: add it under My stat boosts / My buffs with From set to the teammate.">
       {slots.map((t, i) => {
         const others = slots.filter((x, j) => j !== i && x?.character).map((x) => x!.character)
         const chars = PRESETS.characters.filter((c) => c.name !== name && !others.includes(c.name))
@@ -299,7 +278,8 @@ function TeamSection() {
             </div>
             {linked && (
               <p className="muted">
-                {[`E${linked.build.egoLevel ?? 0}`, linked.build.partner || 'no partner', ...(linked.build.fragments ?? []).filter(Boolean)].join(' · ')}
+                {[`E${linked.build.egoLevel ?? 0}`, linked.build.partner || 'no partner', ...(linked.build.fragments ?? []).filter(Boolean),
+                  ...equipped(PRESETS, linked.build.equipment).map(equippedLabel)].join(' · ')}
                 {' '}(from {t!.character}'s build; change them there)
               </p>
             )}
@@ -358,7 +338,7 @@ function BoostsSection() {
   const [open, setOpen] = useState<string | null>(null)
   const boosts = build.boosts ?? []
   return (
-    <Section title="My stat boosts" help="Equipment and other stat boosts that aren't on the stats screen. This build's own list: Duplicate copies it, and changing a row here leaves the other builds alone. ATK%/DEF% multiply the stats-screen value; flat ATK/DEF is added after. The weapon's flat Attack comes from Equipment above."
+    <Section title="My stat boosts" help="Equipment and other stat boosts that aren't on the stats screen. This build's own list: Duplicate copies it, and changing a row here leaves the other builds alone. ATK%/DEF% multiply the stats-screen value; flat ATK/DEF is added after. The equipment's flat Attack, Defense and Health come from Equipment above, and so do the effects of a piece picked by name once they're counted."
       actions={<button className="btn small" onClick={() => {
         const b = newBoost()
         updateBuild((x) => { x.boosts.push(b) })
@@ -382,7 +362,7 @@ function BoostsSection() {
                   <TextField label="Source" value={x.source} placeholder="e.g. Obsidian Sword" onChange={(s) => upd((b) => { b.source = s })} />
                   <SelectField<StatName> label="Stat" value={x.stat} options={STATS} onChange={(s) => upd((b) => { b.stat = s })} />
                   <TextField label="Value" value={x.value} placeholder="16% or 74" invalid={!statReadable(x.stat, x.value)}
-                    help="Percent stats: 16 and 16% both mean 16%. Flat ATK / DEF: a number, without % (1,272 is fine)." onChange={(s) => upd((b) => { b.value = s })} />
+                    help="Percent stats: 16 and 16% both mean 16%. Flat ATK / DEF / HP: a number, without % (1,272 is fine)." onChange={(s) => upd((b) => { b.value = s })} />
                   <SelectField label="Category" value={x.category} options={CATEGORIES} onChange={(s) => upd((b) => { b.category = s })} />
                   <FromField value={x.from} onChange={(s) => upd((b) => { b.from = s })} />
                   <TextField label="Notes" value={x.notes} onChange={(s) => upd((b) => { b.notes = s })} />

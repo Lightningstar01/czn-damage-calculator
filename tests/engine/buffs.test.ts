@@ -142,7 +142,7 @@ describe('parsing', () => {
 })
 
 describe("the weapon's flat Attack (owner, 2026-11-11)", () => {
-  const mei = (rarity?: 'Rare' | 'Legendary' | 'Unique') => {
+  const mei = (rarity?: 'Rare' | 'Legendary' | 'Mythic') => {
     const b = newBuild('A')
     b.stats.attack = 1033
     b.partner = 'Marianne'
@@ -155,7 +155,7 @@ describe("the weapon's flat Attack (owner, 2026-11-11)", () => {
     expect(atk.value).toBeCloseTo(1272.28)
     expect(atk.sources).toContainEqual({ label: 'Weapon (Rare)', value: 74, unit: 'flat' })
     expect(finalStats(PRESETS, 'Mei Lin', mei('Legendary'), settings).atk.value).toBeCloseTo(1033 * 1.16 + 82)
-    expect(finalStats(PRESETS, 'Mei Lin', mei('Unique'), settings).atk.value).toBeCloseTo(1033 * 1.16 + 90)
+    expect(finalStats(PRESETS, 'Mei Lin', mei('Mythic'), settings).atk.value).toBeCloseTo(1033 * 1.16 + 90)
     expect(finalStats(PRESETS, 'Mei Lin', mei(), settings).atk.value).toBeCloseTo(1033 * 1.16)
   })
 
@@ -165,7 +165,7 @@ describe("the weapon's flat Attack (owner, 2026-11-11)", () => {
     expect(finalStats(PRESETS, 'Mei Lin', b, settings).atk.value).toBeCloseTo(1033 * 1.16 + 148)
   })
 
-  it('adds nothing with presets that have no weapon values', () => {
-    expect(finalStats(presets, 'Testy', mei('Unique'), settings).atk.value).toBe(1033)
+  it('adds nothing with presets that have no equipment values', () => {
+    expect(finalStats(presets, 'Testy', mei('Mythic'), settings).atk.value).toBe(1033)
   })
 })

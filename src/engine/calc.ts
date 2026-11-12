@@ -1,7 +1,7 @@
 // The damage formula (docs/FORMULA.md). Pure functions: inputs in, numbers and their sources out.
 import { wholePct } from './cardText'
 import { buildDeck, buildNodeOn, counterHitsList, deckPresets, presetCard, teammateDeck, type DeckItem } from './deck'
-import { activeBuffs, activeCounters, activeStats, buffMatches, cardBuffs, findCharacter, findFragmentSet, findPartner, unreadableValues, type ActiveBuff, type ActiveStat, type CardBuffs, type PlayCounter, type Source } from './buffs'
+import { activeBuffs, activeCounters, activeStats, buffMatches, cardBuffs, EQUIP_STAT, equipped, findCharacter, findFragmentSet, findPartner, unreadableValues, type ActiveBuff, type ActiveStat, type CardBuffs, type PlayCounter, type Source } from './buffs'
 import { deletedLinks, teammateView, withLinkedTeam, type Saves } from './team'
 import { NO_ENEMY } from './types'
 import type { Build, Card, CharacterPreset, CounterHits, Enemy, Fight, LiveBuild, PotentialUpgrade, Presets, RotationPlay, Settings, StatName, Trigger } from './types'
@@ -14,6 +14,8 @@ export interface Stat {
 export interface FinalStats {
   atk: Stat
   def: Stat
+  /** Health in battle: the stats screen's plus flat Health (the trinket). Shown on Results; no damage reads it yet. */
+  hp: Stat
   critRate: Stat
   critDmg: Stat
   elemDmg: Stat
@@ -174,6 +176,7 @@ export function finalStats(presets: Presets, charName: string, build: LiveBuild,
   return {
     atk: scaled('Attack', s.attack, sumStat(st, 'ATK%'), sumStat(st, 'Flat ATK')),
     def: scaled('Defense', s.defense, sumStat(st, 'DEF%'), sumStat(st, 'Flat DEF')),
+    hp: plus(screen('Health', s.health, 'flat'), sumStat(st, 'Flat HP')),
     critRate,
     critDmg: plus(screen('Crit DMG', s.critDmg, '%'), sumStat(st, 'Crit DMG')),
     elemDmg: plus(screen(`${element ?? ''} DMG`, element ? s.elemDmg[element] || 0 : 0, '%'), sumStat(st, 'Elemental DMG%')),
@@ -457,7 +460,10 @@ function setupWarnings(presets: Presets, charName: string, ch: CharacterPreset |
   const sets = (who: string, fragments: string[] = []) => fragments.filter((f) => f && !findFragmentSet(presets, f))
     .map((f) => `${who}'s memory fragment set ${f} is not in the presets: its effects don't count.`)
   const partner = (who: string, p: string) => (p && !findPartner(presets, p) ? [`${who}'s partner ${p} is not in the presets: its effects don't count.`] : [])
-  out.push(...partner(charName, build.partner), ...sets(charName, build.fragments))
+  // A named piece a re-import dropped: its saved rarity still gives the flat stat
+  const lost = (who: string, equipment: Build['equipment']) => equipped(presets, equipment).filter((e) => e.lost)
+    .map((e) => `${who}'s ${e.slot} ${e.lost} is not in the presets any more: it counts as a ${e.rarity} ${e.slot} (its flat ${EQUIP_STAT[e.slot].label}), without effects. Pick it again on Setup › Equipment.`)
+  out.push(...partner(charName, build.partner), ...sets(charName, build.fragments), ...lost(charName, build.equipment))
   for (const d of build.deck ?? []) {
     if (!d.custom && !ch?.cards?.some((p) => p.id === d.preset)) out.push(`Deck card ${d.preset} is not in ${charName}'s cards any more, so it's left out.`)
   }
@@ -465,7 +471,7 @@ function setupWarnings(presets: Presets, charName: string, ch: CharacterPreset |
     if (!t.character) continue
     const tch = findCharacter(presets, t.character)
     if (!tch) out.push(`Teammate ${t.character} is not in the presets.`)
-    out.push(...partner(t.character, t.partner), ...sets(t.character, t.fragments))
+    out.push(...partner(t.character, t.partner), ...sets(t.character, t.fragments), ...lost(t.character, t.live?.equipment))
     for (const id of t.cards ?? []) if (tch && !tch.cards?.some((p) => p.id === id)) out.push(`${t.character}'s card ${id} is not in their cards any more, so it's left out.`)
   }
   return out

@@ -5,6 +5,33 @@ import { migrate } from '../src/store/migrate'
 import { activeFight, defaultSave, SAVE_VERSION } from '../src/store/save'
 
 describe('migrate', () => {
+  it('v13: a v12 weapon rarity stays as it is; the new slots and named pieces are kept; typed equipment rows are never converted', () => {
+    const old = { version: 12, characters: { X: { activeBuild: 'a', builds: [
+      { id: 'a', equipment: { weapon: { rarity: 'Legendary' } }, boosts: [{ id: 'sword', source: 'Sword', stat: 'Flat ATK', value: '82', on: true }] },
+      { id: 'b' },
+    ] } } }
+    const save = migrate(old)
+    const [a, b] = save.characters.X.builds
+    expect(save.version).toBe(13)
+    expect(a.equipment).toEqual({ weapon: { rarity: 'Legendary' } })
+    expect(a.boosts).toHaveLength(1)
+    expect(a.boosts[0]).toMatchObject({ source: 'Sword', value: '82', on: true })
+    expect(b).not.toHaveProperty('equipment')
+    const full = { weapon: { rarity: 'Mythic', piece: 'equip-32' }, armor: { rarity: 'Rare' }, trinket: { rarity: 'Legendary', piece: 'equip-82' } }
+    expect(migrate({ version: 13, characters: { X: { builds: [{ id: 'a', equipment: full }] } } }).characters.X.builds[0].equipment).toEqual(full)
+    // The top rarity was saved as 'Unique' before it took the game's name
+    expect(migrate({ version: 12, characters: { X: { builds: [{ id: 'a', equipment: { weapon: { rarity: 'Unique' } } }] } } }).characters.X.builds[0].equipment)
+      .toEqual({ weapon: { rarity: 'Mythic' } })
+  })
+
+  it("equipment the site can't read is dropped slot by slot, not refused: an unknown rarity or slot, a piece that isn't text", () => {
+    const equipment = { weapon: { rarity: 'Epic', piece: 'equip-1' }, armor: 'plate', trinket: { rarity: 'Rare', piece: 7 }, ring: { rarity: 'Rare' } }
+    const read = (e: unknown) => migrate({ version: SAVE_VERSION, characters: { X: { builds: [{ id: 'a', equipment: e }] } } }).characters.X.builds[0]
+    expect(read(equipment).equipment).toEqual({ trinket: { rarity: 'Rare' } })
+    expect(read({ weapon: null })).not.toHaveProperty('equipment')
+    expect(read('sword')).not.toHaveProperty('equipment')
+  })
+
   it('v12: each build gets its own stat boosts and buffs: the shared rows that were on for it; a row off everywhere stays in all, off', () => {
     const old = { version: 11, characters: { X: { activeBuild: 'a', builds: [{ id: 'a' }, { id: 'b' }],
       boosts: [

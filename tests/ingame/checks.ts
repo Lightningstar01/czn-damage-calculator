@@ -314,11 +314,27 @@ export const CHECKS: InGameCheck[] = [
 
   {
     id: 'weapon-flat-attack',
-    question: "Does a weapon at its top level give 74 (Rare), 82 (Legendary) or 90 (Unique) Attack, whatever the weapon? The numbers are Prydwen's (each rarity has five steps: Rare 25/41/56/67/74, Legendary 28/45/62/74/82, Unique 31/50/68/81/90); the calculator always uses the top one. What are the five steps in-game, and are your weapons at the top one?",
+    question: "Does a weapon at its top level give 74 (Rare), 82 (Legendary) or 90 (Mythic) Attack, whatever the weapon? The numbers are Prydwen's (each rarity has five steps: Rare 25/41/56/67/74, Legendary 28/45/62/74/82, Mythic 31/50/68/81/90); the calculator always uses the top one. What are the five steps in-game, and are your weapons at the top one?",
     closes: 'Setup: Equipment, Weapon (src/data/equipment.ts)',
     setup: 'One weapon of each rarity.',
     steps: ["Read the Attack on each weapon's own info.", 'Note whether the weapon shows a level, tier or stars.'],
     record: ['Rarity', 'Attack on the weapon', 'Its level, tier or stars'],
+  },
+  {
+    id: 'equipment-odd-weapons',
+    question: "Prydwen lists three Shop weapons with a Mythic weapon's Attack (31/50/68/81/90) at a lower rarity: Mountain of Corpses (Legendary), Torch of Wrath (Rare) and Overcurrent Shock Unit (Rare). The calculator reads that as Prydwen's mistake and gives them their rarity's Attack (82, 74, 74). What do they show in-game?",
+    closes: 'src/data/equipment.ts (EQUIP_FLAT); scripts/import_equipment.py prints them as CHECK',
+    setup: 'Any of the three weapons, in the Shop or owned.',
+    steps: ["Read the weapon's rarity and its Attack at the top level."],
+    record: ['Weapon', 'Rarity', 'Attack'],
+  },
+  {
+    id: 'threshold-with-equipment',
+    question: "Do \"If Attack / Defense / Health is X or higher\" effects (Potential nodes, Manifest Ego) count the equipment's flat Attack, Defense and Health, which only show in battle? The calculator reads the stats screen alone for now; the owner expects the in-battle stats (2026-11-11, not tested).",
+    closes: 'docs/FORMULA.md (Equipment flat stats); presetBuffValue in src/engine/buffs.ts',
+    setup: 'A character whose stats-screen stat is just under a threshold, and over it with the equipment (e.g. Health 590 with a +75 trinket, for an "If Health is 600 or higher" node).',
+    steps: ['Play a card the effect raises and note its damage.', 'Take the piece off (or swap it for one that keeps the stat under) and repeat.'],
+    record: ['The effect and its threshold', 'Stats-screen stat', 'Damage with and without the piece'],
   },
 
   // ------------------------------------------------------------------ fixed damage

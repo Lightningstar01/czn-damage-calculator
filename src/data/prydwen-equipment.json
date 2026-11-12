@@ -1,0 +1,4488 @@
+{
+ "source": "https://www.prydwen.gg/chaos-zero-nightmare/equipment",
+ "imported": "2026-11-11",
+ "pieces": [
+  {
+   "id": "equip-1",
+   "name": "Steeler's Dagger",
+   "slot": "Weapon",
+   "rarity": "Rare",
+   "stat": "ATK",
+   "values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "text": "Upon Defeat, +5-10 Credits (1 per battle).",
+   "source": "The Blue Pot",
+   "seasonal": false,
+   "image": "equipment/equip-1.webp"
+  },
+  {
+   "id": "equip-2",
+   "name": "Dull Bone Blade",
+   "slot": "Weapon",
+   "rarity": "Rare",
+   "stat": "ATK",
+   "values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "text": "10% Attack, -5% Critical Chance.",
+   "source": "The Blue Pot",
+   "seasonal": false,
+   "image": "equipment/equip-2.webp"
+  },
+  {
+   "id": "equip-3",
+   "name": "Bloodstone of the Void",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "When using an Attack Card, Recover HP equal to 6% of Damage dealt (1 per turn).",
+   "source": "The Blue Pot",
+   "seasonal": false,
+   "image": "equipment/equip-3.webp"
+  },
+  {
+   "id": "equip-4",
+   "name": "Resolute Gauntlets",
+   "slot": "Armor",
+   "rarity": "Rare",
+   "stat": "DEF",
+   "values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "text": "At the start of Chaos Order battle, +20% Damage, 1 Damage Reduction.",
+   "source": "The Blue Pot",
+   "seasonal": false,
+   "image": "equipment/equip-4.webp"
+  },
+  {
+   "id": "equip-5",
+   "name": "Proof of Initiation",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "In Chaos Order battles, +10% Defense.",
+   "source": "The Blue Pot",
+   "seasonal": false,
+   "image": "equipment/equip-5.webp"
+  },
+  {
+   "id": "equip-6",
+   "name": "Nature's Hostility",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "When an enemy is defeated, 200% Fixed Damage to all enemies.",
+   "source": "The Blue Pot, City of Mist",
+   "seasonal": false,
+   "image": "equipment/equip-6.webp"
+  },
+  {
+   "id": "equip-7",
+   "name": "Mutated Claws",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "When drawing a Status Ailment or Curse card, +15% Damage for 1 turn.",
+   "source": "The Blue Pot, City of Mist",
+   "seasonal": false,
+   "image": "equipment/equip-7.webp"
+  },
+  {
+   "id": "equip-8",
+   "name": "Wolves Bane's Spine",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "On Critical Hit, +10% Fixed Shield.",
+   "source": "The Blue Pot, City of Mist",
+   "seasonal": false,
+   "image": "equipment/equip-8.webp"
+  },
+  {
+   "id": "equip-9",
+   "name": "Shield of the Watcher",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "When taking Damage, 1 Mark on the attacker.",
+   "source": "The Blue Pot, City of Mist",
+   "seasonal": false,
+   "image": "equipment/equip-9.webp"
+  },
+  {
+   "id": "equip-10",
+   "name": "Nature's Gift",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "Heal 40% at the end of turn.",
+   "source": "The Blue Pot, City of Mist",
+   "seasonal": false,
+   "image": "equipment/equip-10.webp"
+  },
+  {
+   "id": "equip-11",
+   "name": "Eternal Stone",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "At the start of turn, +25% Fixed Shield equal to the number of enemies.",
+   "source": "The Blue Pot, City of Mist",
+   "seasonal": false,
+   "image": "equipment/equip-11.webp"
+  },
+  {
+   "id": "equip-12",
+   "name": "Madman's Masterpiece",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "At the start of an Elite Battle, +50% Damage.",
+   "source": "The Blue Pot",
+   "seasonal": false,
+   "image": "equipment/equip-12.webp"
+  },
+  {
+   "id": "equip-13",
+   "name": "Chaos Bible",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "At the start of your turn after 4 turns from battle start, 400% Fixed Damage to all enemies.",
+   "source": "The Blue Pot",
+   "seasonal": false,
+   "image": "equipment/equip-13.webp"
+  },
+  {
+   "id": "equip-14",
+   "name": "Crimson Bloodstone",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "On using an Attack card, Recover Health equal to 9% of the damage dealt (1 per turn).",
+   "source": "The Blue Pot",
+   "seasonal": false,
+   "image": "equipment/equip-14.webp"
+  },
+  {
+   "id": "equip-15",
+   "name": "Executioner's Edge",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "Against enemies with HP below 50%, Increase damage by 35% Damage.",
+   "source": "The Blue Pot",
+   "seasonal": false,
+   "image": "equipment/equip-15.webp"
+  },
+  {
+   "id": "equip-16",
+   "name": "Ritual Dagger",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "When an enemy is defeated, +25% Attack Card Damage (Max 2 times).",
+   "source": "The Blue Pot",
+   "seasonal": false,
+   "image": "equipment/equip-16.webp"
+  },
+  {
+   "id": "equip-17",
+   "name": "Order's Emblem",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "In Chaos Order battles, +15% Defense.",
+   "source": "The Blue Pot",
+   "seasonal": false,
+   "image": "equipment/equip-17.webp"
+  },
+  {
+   "id": "equip-18",
+   "name": "The Chosen Vessel",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "At the start of your turn after 3 turns from battle start, +250% Fixed Shield.",
+   "source": "The Blue Pot",
+   "seasonal": false,
+   "image": "equipment/equip-18.webp"
+  },
+  {
+   "id": "equip-19",
+   "name": "Dark Grip's Claws",
+   "slot": "Weapon",
+   "rarity": "Mythic",
+   "stat": "ATK",
+   "values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "text": "Increase the damage of attack on all enemies by 25%.",
+   "source": "The Blue Pot",
+   "seasonal": false,
+   "image": "equipment/equip-19.webp"
+  },
+  {
+   "id": "equip-20",
+   "name": "Wild Fur Cloak",
+   "slot": "Armor",
+   "rarity": "Mythic",
+   "stat": "DEF",
+   "values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "text": "At turn start, Counter 1.",
+   "source": "The Blue Pot",
+   "seasonal": false,
+   "image": "equipment/equip-20.webp"
+  },
+  {
+   "id": "equip-21",
+   "name": "Kentris Chitin Armor",
+   "slot": "Armor",
+   "rarity": "Mythic",
+   "stat": "DEF",
+   "values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "text": "Increase Ally Shield Gain by 15%.",
+   "source": "The Blue Pot",
+   "seasonal": false,
+   "image": "equipment/equip-21.webp"
+  },
+  {
+   "id": "equip-22",
+   "name": "Gloomy Prime's Eye",
+   "slot": "Trinket",
+   "rarity": "Mythic",
+   "stat": "HP",
+   "values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "text": "At the start of battle, +40% Shield.",
+   "source": "The Blue Pot",
+   "seasonal": false,
+   "image": "equipment/equip-22.webp"
+  },
+  {
+   "id": "equip-23",
+   "name": "Forbidden Bible",
+   "slot": "Trinket",
+   "rarity": "Mythic",
+   "stat": "HP",
+   "values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "text": "At the start of your turn after 4 turns from battle start, 550% Fixed Damage to all enemies.",
+   "source": "The Blue Pot",
+   "seasonal": false,
+   "image": "equipment/equip-23.webp"
+  },
+  {
+   "id": "equip-24",
+   "name": "Mutated Order",
+   "slot": "Weapon",
+   "rarity": "Mythic",
+   "stat": "ATK",
+   "values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "text": "Increase Damage Amount by 25% against targets that haven't acted.",
+   "source": "The Blue Pot",
+   "seasonal": false,
+   "image": "equipment/equip-24.webp"
+  },
+  {
+   "id": "equip-25",
+   "name": "Bug Killer",
+   "slot": "Weapon",
+   "rarity": "Rare",
+   "stat": "ATK",
+   "values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "text": "When using an Attack Card, 1 Agony (1 per turn).\nIf in Invader battle, +2 additional Agony.",
+   "source": "Twin Star's Shadow",
+   "seasonal": false,
+   "image": "equipment/equip-25.webp"
+  },
+  {
+   "id": "equip-26",
+   "name": "Crustacean Fluider",
+   "slot": "Armor",
+   "rarity": "Rare",
+   "stat": "DEF",
+   "values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "text": "When taking damage, after 1 turn, +60% Fixed Shield at start of turn.",
+   "source": "Twin Star's Shadow",
+   "seasonal": false,
+   "image": "equipment/equip-26.webp"
+  },
+  {
+   "id": "equip-27",
+   "name": "First Aid Kit",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "At the end of battle, Recover 5%.",
+   "source": "Twin Star's Shadow",
+   "seasonal": false,
+   "image": "equipment/equip-27.webp"
+  },
+  {
+   "id": "equip-28",
+   "name": "Violet Butterfly's Whip",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "Increase damage by 20% Damage for Attack Cards costing 1 or less.",
+   "source": "Twin Star's Shadow",
+   "seasonal": false,
+   "image": "equipment/equip-28.webp"
+  },
+  {
+   "id": "equip-29",
+   "name": "Formica's Broken Spear",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "Increase damage by 6% Damage per enemy.",
+   "source": "Twin Star's Shadow",
+   "seasonal": false,
+   "image": "equipment/equip-29.webp"
+  },
+  {
+   "id": "equip-30",
+   "name": "Lepidola's Wing",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "At the start of battle, 1 Evade.",
+   "source": "Twin Star's Shadow",
+   "seasonal": false,
+   "image": "equipment/equip-30.webp"
+  },
+  {
+   "id": "equip-31",
+   "name": "Kirak's Core",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "At the start of turn, if HP below 40% max HP, Recover 5%.",
+   "source": "Twin Star's Shadow",
+   "seasonal": false,
+   "image": "equipment/equip-31.webp"
+  },
+  {
+   "id": "equip-32",
+   "name": "Abyssal Bug Tooth",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "On Critical Hit, 50% chance to 1 Agony.",
+   "source": "Twin Star's Shadow",
+   "seasonal": false,
+   "image": "equipment/equip-32.webp"
+  },
+  {
+   "id": "equip-33",
+   "name": "The Destruction of Erysichthon",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "When using an Attack Card, 5% chance to +1 hit.",
+   "source": "Twin Star's Shadow",
+   "seasonal": false,
+   "image": "equipment/equip-33.webp"
+  },
+  {
+   "id": "equip-34",
+   "name": "Growing Carapace",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "At the start of the turn, gain 40% Fixed Shield.",
+   "source": "Twin Star's Shadow",
+   "seasonal": false,
+   "image": "equipment/equip-34.webp"
+  },
+  {
+   "id": "equip-35",
+   "name": "Dance of the Night Butterflies",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "On Ravage, +60% Fixed Shield.",
+   "source": "Twin Star's Shadow",
+   "seasonal": false,
+   "image": "equipment/equip-35.webp"
+  },
+  {
+   "id": "equip-36",
+   "name": "Natural Predator",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "On Ravage, +100% Damage to next 1 Attack Card used.",
+   "source": "Twin Star's Shadow",
+   "seasonal": false,
+   "image": "equipment/equip-36.webp"
+  },
+  {
+   "id": "equip-37",
+   "name": "Voracious Swarm",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "When taking Damage, 4 Agony on the attacker.",
+   "source": "Twin Star's Shadow",
+   "seasonal": false,
+   "image": "equipment/equip-37.webp"
+  },
+  {
+   "id": "equip-38",
+   "name": "Formica's Perfect Spear",
+   "slot": "Weapon",
+   "rarity": "Mythic",
+   "stat": "ATK",
+   "values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "text": "Increase damage by 7% Damage per enemy. Increase All-Attack Damage\nby 10%.",
+   "source": "Twin Star's Shadow",
+   "seasonal": false,
+   "image": "equipment/equip-38.webp"
+  },
+  {
+   "id": "equip-39",
+   "name": "Lepidola's Whip",
+   "slot": "Weapon",
+   "rarity": "Mythic",
+   "stat": "ATK",
+   "values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "text": "+25% Damage for Attack Cards costing 1 or less.",
+   "source": "Twin Star's Shadow",
+   "seasonal": false,
+   "image": "equipment/equip-39.webp"
+  },
+  {
+   "id": "equip-40",
+   "name": "Twin Swords of Greater and Lesser Evil",
+   "slot": "Weapon",
+   "rarity": "Mythic",
+   "stat": "ATK",
+   "values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "text": "Increase damage by 30% Damage against Ravaged targets.",
+   "source": "Twin Star's Shadow",
+   "seasonal": false,
+   "image": "equipment/equip-40.webp"
+  },
+  {
+   "id": "equip-41",
+   "name": "Shell Bug Horn",
+   "slot": "Weapon",
+   "rarity": "Mythic",
+   "stat": "ATK",
+   "values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "text": "+20% Critical Damage.",
+   "source": "Twin Star's Shadow",
+   "seasonal": false,
+   "image": "equipment/equip-41.webp"
+  },
+  {
+   "id": "equip-42",
+   "name": "Wings of the Swarm",
+   "slot": "Armor",
+   "rarity": "Mythic",
+   "stat": "DEF",
+   "values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "text": "At the start of battle, gain 2 Immunity.",
+   "source": "Twin Star's Shadow",
+   "seasonal": false,
+   "image": "equipment/equip-42.webp"
+  },
+  {
+   "id": "equip-43",
+   "name": "Pulsating Egg",
+   "slot": "Trinket",
+   "rarity": "Mythic",
+   "stat": "HP",
+   "values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "text": "+15% Attack, +10% Max HP.",
+   "source": "Twin Star's Shadow",
+   "seasonal": false,
+   "image": "equipment/equip-43.webp"
+  },
+  {
+   "id": "equip-44",
+   "name": "Flower of Dead Souls",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "From the second Attack Card each turn onward, by 20% Damage.",
+   "source": "City of Mist",
+   "seasonal": false,
+   "image": "equipment/equip-44.webp"
+  },
+  {
+   "id": "equip-45",
+   "name": "Soul Orb",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "When a card is Exhausted, 1 Tenacity Damage to all enemies (1 time per battle).",
+   "source": "City of Mist",
+   "seasonal": false,
+   "image": "equipment/equip-45.webp"
+  },
+  {
+   "id": "equip-46",
+   "name": "The Famished One's Belly",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "When a card is Exhausted, +25% Damage, Recover 5% (1 per battle).",
+   "source": "City of Mist",
+   "seasonal": false,
+   "image": "equipment/equip-46.webp"
+  },
+  {
+   "id": "equip-47",
+   "name": "Contaminated Helmet",
+   "slot": "Armor",
+   "rarity": "Rare",
+   "stat": "DEF",
+   "values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "text": "Max HP +6%, Defense +12%.",
+   "source": "City of Mist",
+   "seasonal": false,
+   "image": "equipment/equip-47.webp"
+  },
+  {
+   "id": "equip-48",
+   "name": "M.S.S Data Pad",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "At the start of Nihilum battle, 2 Vulnerable to all enemies.",
+   "source": "City of Mist",
+   "seasonal": false,
+   "image": "equipment/equip-48.webp"
+  },
+  {
+   "id": "equip-49",
+   "name": "M.S.S Data Pad SE",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "At the start of Nihilum battle, 3 Vulnerable to all enemies.",
+   "source": "City of Mist",
+   "seasonal": false,
+   "image": "equipment/equip-49.webp"
+  },
+  {
+   "id": "equip-50",
+   "name": "M.S.S Scope",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "If a harmful effect is inflicted for 1 turn, then +80% Fixed Shield at the end of turn.",
+   "source": "City of Mist",
+   "seasonal": false,
+   "image": "equipment/equip-50.webp"
+  },
+  {
+   "id": "equip-51",
+   "name": "Dream of the Devoured",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "When a card is Exhausted, next card used Increase damage by 25% Damage stacks up to 1 time.",
+   "source": "City of Mist",
+   "seasonal": false,
+   "image": "equipment/equip-51.webp"
+  },
+  {
+   "id": "equip-52",
+   "name": "Unexploded Plasma Bomb",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "When a card is Exhausted, 40% Fixed Damage on a random enemy.",
+   "source": "City of Mist",
+   "seasonal": false,
+   "image": "equipment/equip-52.webp"
+  },
+  {
+   "id": "equip-53",
+   "name": "Blood Giant Claw",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "On Ravage, 150% Fixed Damage to the target.",
+   "source": "City of Mist",
+   "seasonal": false,
+   "image": "equipment/equip-53.webp"
+  },
+  {
+   "id": "equip-54",
+   "name": "Regenerative Ribcage",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "Max HP +12%.",
+   "source": "City of Mist",
+   "seasonal": false,
+   "image": "equipment/equip-54.webp"
+  },
+  {
+   "id": "equip-55",
+   "name": "Gluttonous Tailcoat",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "When taking damage, after 1 turn, +80% Fixed Shield at start of turn.",
+   "source": "City of Mist",
+   "seasonal": false,
+   "image": "equipment/equip-55.webp"
+  },
+  {
+   "id": "equip-56",
+   "name": "Eye of the Eyeless",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "Increase damage of Basic attack cards by 40%.",
+   "source": "City of Mist",
+   "seasonal": false,
+   "image": "equipment/equip-56.webp"
+  },
+  {
+   "id": "equip-57",
+   "name": "Palasia's Orb",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "When Vulnerable is applied by a card, also 1 Weaken to the target.",
+   "source": "City of Mist",
+   "seasonal": false,
+   "image": "equipment/equip-57.webp"
+  },
+  {
+   "id": "equip-58",
+   "name": "Torch That Should Not Be Extinguished",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "If you have Shield at the start of turn, 80% Fixed Shield.",
+   "source": "City of Mist",
+   "seasonal": false,
+   "image": "equipment/equip-58.webp"
+  },
+  {
+   "id": "equip-59",
+   "name": "Revelation's of Futility",
+   "slot": "Trinket",
+   "rarity": "Mythic",
+   "stat": "HP",
+   "values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "text": "When using Attack Cards, +20% Fixed Shield (10 per turn).",
+   "source": "City of Mist",
+   "seasonal": false,
+   "image": "equipment/equip-59.webp"
+  },
+  {
+   "id": "equip-60",
+   "name": "Eye of Gluttony",
+   "slot": "Trinket",
+   "rarity": "Mythic",
+   "stat": "HP",
+   "values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "text": "+40% Damage. At the end of the turn, 30% chance to Exhaust 1 card in hand.",
+   "source": "City of Mist",
+   "seasonal": false,
+   "image": "equipment/equip-60.webp"
+  },
+  {
+   "id": "equip-61",
+   "name": "Void of the Devourer",
+   "slot": "Weapon",
+   "rarity": "Mythic",
+   "stat": "ATK",
+   "values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "text": "When a card is Exhausted, next card used Increase damage by 35% Damage stacks up to 1 time.",
+   "source": "City of Mist",
+   "seasonal": false,
+   "image": "equipment/equip-61.webp"
+  },
+  {
+   "id": "equip-62",
+   "name": "Foggy Crystal Ball",
+   "slot": "Weapon",
+   "rarity": "Mythic",
+   "stat": "ATK",
+   "values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "text": "40% Damage for Attack cards with Cost 0.",
+   "source": "City of Mist",
+   "seasonal": false,
+   "image": "equipment/equip-62.webp"
+  },
+  {
+   "id": "equip-63",
+   "name": "Fragment of the Empty Void",
+   "slot": "Armor",
+   "rarity": "Mythic",
+   "stat": "DEF",
+   "values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "text": "At the start of battle, Discard up to 3 cards, Draw equal to the number.",
+   "source": "City of Mist",
+   "seasonal": false,
+   "image": "equipment/equip-63.webp"
+  },
+  {
+   "id": "equip-64",
+   "name": "Crimson Sword",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "When dealing Damage with a targeting Attack Card, 3 Agony (1 per turn).",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-64.webp"
+  },
+  {
+   "id": "equip-66",
+   "name": "Moon of Destruction",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "At the start of battle, 200% Fixed Damage to all enemies.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-66.webp"
+  },
+  {
+   "id": "equip-67",
+   "name": "Sneering Dagger",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "When an enemy is defeated, 2 Vulnerable to all enemies.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-67.webp"
+  },
+  {
+   "id": "equip-68",
+   "name": "Assault Boots",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "At the start of your turn after 2 turns from battle start, +200% Fixed Shield.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-68.webp"
+  },
+  {
+   "id": "equip-69",
+   "name": "Flashbang",
+   "slot": "Weapon",
+   "rarity": "Rare",
+   "stat": "ATK",
+   "values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "text": "At the start of battle, apply 3 Weaken to a random enemy.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-69.webp"
+  },
+  {
+   "id": "equip-70",
+   "name": "Command: #108",
+   "slot": "Weapon",
+   "rarity": "Rare",
+   "stat": "ATK",
+   "values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "text": "+40% Attack Card Damage (1 per battle).",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-70.webp"
+  },
+  {
+   "id": "equip-71",
+   "name": "Gastronomicon",
+   "slot": "Weapon",
+   "rarity": "Rare",
+   "stat": "ATK",
+   "values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "text": "When using an Attack Card with cost 2 or more, 3 Agony.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-71.webp"
+  },
+  {
+   "id": "equip-72",
+   "name": "Assault Gauntlets",
+   "slot": "Armor",
+   "rarity": "Rare",
+   "stat": "DEF",
+   "values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "text": "At the start of battle, gain 3 Counterattack.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-72.webp"
+  },
+  {
+   "id": "equip-73",
+   "name": "Shell of Aberration",
+   "slot": "Armor",
+   "rarity": "Mythic",
+   "stat": "DEF",
+   "values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "text": "+12% Defense. When Stress increases, 50% chance to increase Stress by 1 less.",
+   "source": "Cthulu Run Monster",
+   "seasonal": false,
+   "image": "equipment/equip-73.webp"
+  },
+  {
+   "id": "equip-74",
+   "name": "Time Regulator",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "Activate Epiphany for the equipped combatant.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-74.webp"
+  },
+  {
+   "id": "equip-75",
+   "name": "Big Game Hunter",
+   "slot": "Weapon",
+   "rarity": "Rare",
+   "stat": "ATK",
+   "values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "text": "The first Attack Card used per battle +100% Tenacity Damage.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-75.webp"
+  },
+  {
+   "id": "equip-76",
+   "name": "Absolute Zero Tetrahedron",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "At the start of battle, +20% Shield.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-76.webp"
+  },
+  {
+   "id": "equip-77",
+   "name": "Survivor's Hood",
+   "slot": "Armor",
+   "rarity": "Rare",
+   "stat": "DEF",
+   "values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "text": "At the start of battle, gain 140% Fixed Shield.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-77.webp"
+  },
+  {
+   "id": "equip-78",
+   "name": "Reinforced Combat Suit",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "At the end of the turn, if there is no Shield, gain 60% Fixed Shield.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-78.webp"
+  },
+  {
+   "id": "equip-79",
+   "name": "Sphere of Randomness",
+   "slot": "Trinket",
+   "rarity": "Mythic",
+   "stat": "HP",
+   "values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "text": "+10% max HP. At the start of battle, +1 AP, Draw 1.",
+   "source": "Cthulu Run Monster",
+   "seasonal": false,
+   "image": "equipment/equip-79.webp"
+  },
+  {
+   "id": "equip-80",
+   "name": "Cloud-Walking Shoes",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "When an ally inflicts Ravage, +40% Fixed Shield.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-80.webp"
+  },
+  {
+   "id": "equip-81",
+   "name": "Amorphous Cube",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "At the start of battle, +25% Damage.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-81.webp"
+  },
+  {
+   "id": "equip-82",
+   "name": "Heart of the Jewel",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "X is applied as X+1.",
+   "source": "Event",
+   "seasonal": false,
+   "image": "equipment/equip-82.webp"
+  },
+  {
+   "id": "equip-83",
+   "name": "Scout's Combat Boots",
+   "slot": "Armor",
+   "rarity": "Rare",
+   "stat": "DEF",
+   "values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "text": "On enemy defeat, +60% Fixed Shield.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-83.webp"
+  },
+  {
+   "id": "equip-84",
+   "name": "Water Drops of the Goddess",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "At the start of battle, 1 Storage.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-84.webp"
+  },
+  {
+   "id": "equip-85",
+   "name": "Dice of Derangement",
+   "slot": "Trinket",
+   "rarity": "Mythic",
+   "stat": "HP",
+   "values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "text": "+8% max HP.\nAt the end of battle, if HP below 50%, recover 8% max HP.\nIf HP is 50% or higher, -5 for the combatant with the highest Stress.",
+   "source": "Cthulu Run Monster",
+   "seasonal": false,
+   "image": "equipment/equip-85.webp"
+  },
+  {
+   "id": "equip-86",
+   "name": "Multifaceted Parallel Universe Nexus",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "At the start of turn, activate 1 random Initiative card in hand.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-86.webp"
+  },
+  {
+   "id": "equip-87",
+   "name": "Second Method",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "Extra Attack damage +35%.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-87.webp"
+  },
+  {
+   "id": "equip-89",
+   "name": "Magic-Infused Sapphire",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "At the start of battle, if the Outbreak of War card is in hand, 1 Tenacity Damage to all enemies.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-89.webp"
+  },
+  {
+   "id": "equip-90",
+   "name": "Criticism of Discord",
+   "slot": "Weapon",
+   "rarity": "Mythic",
+   "stat": "ATK",
+   "values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "text": "+18% Attack. On Ravage, allies' Stress -1.",
+   "source": "Cthulu Run Monster",
+   "seasonal": false,
+   "image": "equipment/equip-90.webp"
+  },
+  {
+   "id": "equip-91",
+   "name": "M85 Military Grenade",
+   "slot": "Weapon",
+   "rarity": "Rare",
+   "stat": "ATK",
+   "values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "text": "When using a Buff card, deal 150% Fixed Damage to all enemies.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-91.webp"
+  },
+  {
+   "id": "equip-92",
+   "name": "Gladiator's Helmet",
+   "slot": "Armor",
+   "rarity": "Rare",
+   "stat": "DEF",
+   "values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "text": "At the start of battle, gain 2 Damage Reduction.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-92.webp"
+  },
+  {
+   "id": "equip-93",
+   "name": "RFS-17",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "+10% Critical Chance of Attack Cards with cost 0.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-93.webp"
+  },
+  {
+   "id": "equip-94",
+   "name": "Tentacles of Chaos",
+   "slot": "Weapon",
+   "rarity": "Mythic",
+   "stat": "ATK",
+   "values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "text": "+8% ally Attack Upon enemy Defeat, -2 Stress to the Combatant with the highest Stress.",
+   "source": "Cthulu Run Monster",
+   "seasonal": false,
+   "image": "equipment/equip-94.webp"
+  },
+  {
+   "id": "equip-95",
+   "name": "Standard Gas Mask",
+   "slot": "Armor",
+   "rarity": "Rare",
+   "stat": "DEF",
+   "values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "text": "At the start of battle, gain 1 Immunity.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-95.webp"
+  },
+  {
+   "id": "equip-96",
+   "name": "Quantum Collector",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "When an ally uses a Upgrade card, Increase damage by 20% Damage, Shield, and Healing for 1 turn.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-96.webp"
+  },
+  {
+   "id": "equip-98",
+   "name": "Obsidian Sword",
+   "slot": "Weapon",
+   "rarity": "Rare",
+   "stat": "ATK",
+   "values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "text": "Increase damage amount by 12%.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-98.webp"
+  },
+  {
+   "id": "equip-99",
+   "name": "Esophagus of Madness",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "Increase damage by 20% Damage against targets with Agony.",
+   "source": "The Blue Pot, Twin Star's Shadow, Foretold Ruin, Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-99.webp"
+  },
+  {
+   "id": "equip-100",
+   "name": "Cursed Doll",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "At the start of turn, Heal 60% for each Status Ailment and Curse card in hand.",
+   "source": "The Blue Pot, Twin Star's Shadow, Foretold Ruin, Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-100.webp"
+  },
+  {
+   "id": "equip-101",
+   "name": "Torture Toolbox",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "At the start of turn, +1 Action Count to all enemies.",
+   "source": "The Blue Pot, Twin Star's Shadow, Foretold Ruin, Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-101.webp"
+  },
+  {
+   "id": "equip-102",
+   "name": "Chains of Obsession",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "When using Attack cards, 1% HP Reduction, 60% Fixed Shield.",
+   "source": "The Blue Pot, Twin Star's Shadow, Foretold Ruin, Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-102.webp"
+  },
+  {
+   "id": "equip-103",
+   "name": "Bloody Pendant",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "When using Duplicated Cards, all enemies' Action Count increase by 3 (1 time per battle).",
+   "source": "The Blue Pot, Twin Star's Shadow, Foretold Ruin, Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-103.webp"
+  },
+  {
+   "id": "equip-104",
+   "name": "Dice of Discord",
+   "slot": "Trinket",
+   "rarity": "Mythic",
+   "stat": "HP",
+   "values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "text": "At the end of turn, 40% x 2-6 Fixed Damage to a random enemies, and trigger 200% Fixed Damage on allies with one random 1 effect.",
+   "source": "The Blue Pot, Twin Star's Shadow, Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-104.webp"
+  },
+  {
+   "id": "equip-105",
+   "name": "Clover of the Forest",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "When Recover via card, +10% ally Attack for 1 turn (Max 1 stack).",
+   "source": "Swamp of Judgment",
+   "seasonal": false,
+   "image": "equipment/equip-105.webp"
+  },
+  {
+   "id": "equip-106",
+   "name": "Poacher's Pathfinder",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "In Sekred battle, +25% Damage, 2 Vulnerable to all enemies.",
+   "source": "Swamp of Judgment",
+   "seasonal": false,
+   "image": "equipment/equip-106.webp"
+  },
+  {
+   "id": "equip-107",
+   "name": "Mask of Evil Spirits",
+   "slot": "Armor",
+   "rarity": "Rare",
+   "stat": "DEF",
+   "values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "text": "When taking damage, after 1 turn, +60% Fixed Shield at start of turn.",
+   "source": "Swamp of Judgment",
+   "seasonal": false,
+   "image": "equipment/equip-107.webp"
+  },
+  {
+   "id": "equip-108",
+   "name": "The Fading Flower of Life",
+   "slot": "Weapon",
+   "rarity": "Rare",
+   "stat": "ATK",
+   "values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "text": "If at max HP, +40% Damage.",
+   "source": "Swamp of Judgment",
+   "seasonal": false,
+   "image": "equipment/equip-108.webp"
+  },
+  {
+   "id": "equip-109",
+   "name": "Dagger That Tricked the Shadow",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "+12% Critical Damage.",
+   "source": "Swamp of Judgment",
+   "seasonal": false,
+   "image": "equipment/equip-109.webp"
+  },
+  {
+   "id": "equip-110",
+   "name": "Sword Reflected in the Lake",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "If you have 6 or more cards in hand, Increase damage by 25% Damage.",
+   "source": "Swamp of Judgment",
+   "seasonal": false,
+   "image": "equipment/equip-110.webp"
+  },
+  {
+   "id": "equip-111",
+   "name": "Sun-Setting Bow",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "Attack Cards with cost 2 or higher, Increase damage by 30% Damage (1 per turn).",
+   "source": "Swamp of Judgment",
+   "seasonal": false,
+   "image": "equipment/equip-111.webp"
+  },
+  {
+   "id": "equip-112",
+   "name": "Immortal Scale",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "When gaining Counterattack via an ability, +1 additional Counterattack.",
+   "source": "Swamp of Judgment",
+   "seasonal": false,
+   "image": "equipment/equip-112.webp"
+  },
+  {
+   "id": "equip-113",
+   "name": "Fairy King's Crown",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "+6% Critical Chance.",
+   "source": "Swamp of Judgment",
+   "seasonal": false,
+   "image": "equipment/equip-113.webp"
+  },
+  {
+   "id": "equip-114",
+   "name": "Bone Ring of Wildfire",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "When using a Upgrade card, +30% Damage for 1 turn.",
+   "source": "Swamp of Judgment",
+   "seasonal": false,
+   "image": "equipment/equip-114.webp"
+  },
+  {
+   "id": "equip-115",
+   "name": "Call of the Ancient Spirit",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "On Critical Hit, Heal 10%.",
+   "source": "Swamp of Judgment",
+   "seasonal": false,
+   "image": "equipment/equip-115.webp"
+  },
+  {
+   "id": "equip-116",
+   "name": "Branch of the Sacred Tree",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "On Heal or Recover, Fixed Damage to all enemies equal to 35% of Heal amount.",
+   "source": "Swamp of Judgment",
+   "seasonal": false,
+   "image": "equipment/equip-116.webp"
+  },
+  {
+   "id": "equip-117",
+   "name": "The Flower of Life",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "If at max HP, +50% Damage.",
+   "source": "Swamp of Judgment",
+   "seasonal": false,
+   "image": "equipment/equip-117.webp"
+  },
+  {
+   "id": "equip-118",
+   "name": "Branch of the Evil Tree",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "On Heal or Recover, Fixed Damage to a random enemy equal to 50% of Recover amount.",
+   "source": "Swamp of Judgment",
+   "seasonal": false,
+   "image": "equipment/equip-118.webp"
+  },
+  {
+   "id": "equip-119",
+   "name": "Verdant Day",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "On odd turns, +8% Attack, 12% Defense.",
+   "source": "Swamp of Judgment",
+   "seasonal": false,
+   "image": "equipment/equip-119.webp"
+  },
+  {
+   "id": "equip-120",
+   "name": "Verdant Night",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "On even turns, +12% Attack, 8% Defense.",
+   "source": "Swamp of Judgment",
+   "seasonal": false,
+   "image": "equipment/equip-120.webp"
+  },
+  {
+   "id": "equip-121",
+   "name": "Cavalry of Lightning",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "When dealing Damage to a target with Shield, +100% Damage to the next Attack Card.",
+   "source": "Swamp of Judgment, Foretold Ruin, Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-121.webp"
+  },
+  {
+   "id": "equip-122",
+   "name": "Wings of Light",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "When Ego Points are 3 or lower, 0.2 Ego Points on Critical Hit.",
+   "source": "Swamp of Judgment, Foretold Ruin, Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-122.webp"
+  },
+  {
+   "id": "equip-123",
+   "name": "Ring of the Seraphim",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "When using a Upgrade card, +30% Damage for 1 turn.",
+   "source": "Swamp of Judgment, Foretold Ruin, Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-123.webp"
+  },
+  {
+   "id": "equip-124",
+   "name": "Lead-Colored Holy Water",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "On Ravage, 2 Impair to the target.",
+   "source": "Swamp of Judgment, Foretold Ruin, Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-124.webp"
+  },
+  {
+   "id": "equip-125",
+   "name": "Vladeus's Reactor",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "When using a Upgrade card, 1 Damage Reduction.",
+   "source": "Swamp of Judgment, Foretold Ruin, Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-125.webp"
+  },
+  {
+   "id": "equip-126",
+   "name": "The Golden Rule",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "+20% Damage, +20% Shield at the start of battle.",
+   "source": "Swamp of Judgment, Foretold Ruin, Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-126.webp"
+  },
+  {
+   "id": "equip-127",
+   "name": "Star-Lit Cloak",
+   "slot": "Armor",
+   "rarity": "Mythic",
+   "stat": "DEF",
+   "values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "text": "-10% Damage (1 per turn).",
+   "source": "Swamp of Judgment",
+   "seasonal": false,
+   "image": "equipment/equip-127.webp"
+  },
+  {
+   "id": "equip-128",
+   "name": "Mask of Flames",
+   "slot": "Armor",
+   "rarity": "Mythic",
+   "stat": "DEF",
+   "values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "text": "Increase damage dealt to Vulnerable targets by 35%.",
+   "source": "Swamp of Judgment",
+   "seasonal": false,
+   "image": "equipment/equip-128.webp"
+  },
+  {
+   "id": "equip-129",
+   "name": "Dormant Seeds",
+   "slot": "Trinket",
+   "rarity": "Mythic",
+   "stat": "HP",
+   "values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "text": "On gaining Shield, +100% Fixed Shield (1 per turn).",
+   "source": "Swamp of Judgment",
+   "seasonal": false,
+   "image": "equipment/equip-129.webp"
+  },
+  {
+   "id": "equip-130",
+   "name": "Branch of Eternity",
+   "slot": "Weapon",
+   "rarity": "Mythic",
+   "stat": "ATK",
+   "values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "text": "On Heal or Recover, Fixed Damage to all enemies equal to 50% of Recover amount.",
+   "source": "Swamp of Judgment",
+   "seasonal": false,
+   "image": "equipment/equip-130.webp"
+  },
+  {
+   "id": "equip-131",
+   "name": "Verdant Shackles",
+   "slot": "Trinket",
+   "rarity": "Mythic",
+   "stat": "HP",
+   "values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "text": "+12% Attack, +12% Defense.",
+   "source": "Swamp of Judgment",
+   "seasonal": false,
+   "image": "equipment/equip-131.webp"
+  },
+  {
+   "id": "equip-132",
+   "name": "Lush Seaweed Armor",
+   "slot": "Armor",
+   "rarity": "Rare",
+   "stat": "DEF",
+   "values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "text": "When gaining Shield, gain 30% Fixed Shield.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-132.webp"
+  },
+  {
+   "id": "equip-133",
+   "name": "Bone Cutter",
+   "slot": "Weapon",
+   "rarity": "Rare",
+   "stat": "ATK",
+   "values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "text": "When hitting a target under Weakened status, +30% Damage.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-133.webp"
+  },
+  {
+   "id": "equip-134",
+   "name": "Psionic Combat Suit",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "When a card is Exhausted, 30% Fixed Shield (5 times per turn).",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-134.webp"
+  },
+  {
+   "id": "equip-135",
+   "name": "Titan Combat Suit",
+   "slot": "Armor",
+   "rarity": "Rare",
+   "stat": "DEF",
+   "values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "text": "When taking Damage, Recover 2% HP (1 per turn).",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-135.webp"
+  },
+  {
+   "id": "equip-136",
+   "name": "Mountain of Corpses",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "text": "Increase Attack Card Damage by 25% (1 per turn).",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-136.webp"
+  },
+  {
+   "id": "equip-137",
+   "name": "Dimensional Cube",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "When a card is Discarded, +15% Damage Amount for 1 turn (max 3 stacks).",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-137.webp"
+  },
+  {
+   "id": "equip-138",
+   "name": "Heart of Gold",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "At the end of battle, if HP is below 50%, Recover 8%.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-138.webp"
+  },
+  {
+   "id": "equip-139",
+   "name": "Consecrated Halo",
+   "slot": "Armor",
+   "rarity": "Mythic",
+   "stat": "DEF",
+   "values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "text": "+25% Shield Gain",
+   "source": "Fusion Mode, Foretold Ruin",
+   "seasonal": false,
+   "image": "equipment/equip-139.webp"
+  },
+  {
+   "id": "equip-140",
+   "name": "Eye of the Punisher",
+   "slot": "Trinket",
+   "rarity": "Mythic",
+   "stat": "HP",
+   "values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "text": "If the enemy is alone, increase damage by 30%.",
+   "source": "Fusion Mode, Foretold Ruin",
+   "seasonal": false,
+   "image": "equipment/equip-140.webp"
+  },
+  {
+   "id": "equip-141",
+   "name": "Rune Chord",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "If you have any Retained cards at the end of your turn, +60% Fixed Shield.",
+   "source": "Foretold Ruin",
+   "seasonal": false,
+   "image": "equipment/equip-141.webp"
+  },
+  {
+   "id": "equip-142",
+   "name": "Guardian Core",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "If an enemy with an intent to Attack is present, +60% Fixed Shield (1 per turn).",
+   "source": "Foretold Ruin",
+   "seasonal": false,
+   "image": "equipment/equip-142.webp"
+  },
+  {
+   "id": "equip-143",
+   "name": "Rune Lance",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "If use more than 5 AP, +25% Damage, Shield Gain, and Healing.",
+   "source": "Foretold Ruin",
+   "seasonal": false,
+   "image": "equipment/equip-143.webp"
+  },
+  {
+   "id": "equip-144",
+   "name": "Flame of Purification",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "When a card is Exhausted, 1 Retribution on a random enemy (2 per turn).",
+   "source": "Foretold Ruin",
+   "seasonal": false,
+   "image": "equipment/equip-144.webp"
+  },
+  {
+   "id": "equip-145",
+   "name": "Trumpet of Revelation",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "When Draw a card, +20% Damage for 1 turn (2 per turn).",
+   "source": "Foretold Ruin",
+   "seasonal": false,
+   "image": "equipment/equip-145.webp"
+  },
+  {
+   "id": "equip-146",
+   "name": "Twisted Discipline",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "When use 10 or more AP, 2 Immunity.",
+   "source": "Foretold Ruin",
+   "seasonal": false,
+   "image": "equipment/equip-146.webp"
+  },
+  {
+   "id": "equip-147",
+   "name": "Corroded Core",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "If an attack is perfectly blocked with Shield, 1 Impair on all enemies (1 per turn).",
+   "source": "Foretold Ruin",
+   "seasonal": false,
+   "image": "equipment/equip-147.webp"
+  },
+  {
+   "id": "equip-148",
+   "name": "Singing Sword",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "+15% Attack When dealing Damage to a target with Shield, 1 Punishment.",
+   "source": "Foretold Ruin",
+   "seasonal": false,
+   "image": "equipment/equip-148.webp"
+  },
+  {
+   "id": "equip-149",
+   "name": "Primordial Discipline",
+   "slot": "Armor",
+   "rarity": "Mythic",
+   "stat": "DEF",
+   "values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "text": "At the start of battle, gain 2 Immunity.",
+   "source": "Foretold Ruin",
+   "seasonal": false,
+   "image": "equipment/equip-149.webp"
+  },
+  {
+   "id": "equip-150",
+   "name": "Corrupted Core",
+   "slot": "Trinket",
+   "rarity": "Mythic",
+   "stat": "HP",
+   "values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "text": "+15% Defense, Retain +20% Shield.",
+   "source": "Foretold Ruin",
+   "seasonal": false,
+   "image": "equipment/equip-150.webp"
+  },
+  {
+   "id": "equip-151",
+   "name": "Radiant Orb",
+   "slot": "Weapon",
+   "rarity": "Mythic",
+   "stat": "ATK",
+   "values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "text": "+25% Damage to targets with Shield.",
+   "source": "Foretold Ruin",
+   "seasonal": false,
+   "image": "equipment/equip-151.webp"
+  },
+  {
+   "id": "equip-152",
+   "name": "Torch of Wrath",
+   "slot": "Weapon",
+   "rarity": "Rare",
+   "stat": "ATK",
+   "values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "text": "At the start of a turn, apply 2 Mark to a random enemy.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-152.webp"
+  },
+  {
+   "id": "equip-153",
+   "name": "Grey Orb",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "At the start of battle, gain 3 Damage Reduction.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-153.webp"
+  },
+  {
+   "id": "equip-154",
+   "name": "Chimeranite",
+   "slot": "Weapon",
+   "rarity": "Mythic",
+   "stat": "ATK",
+   "values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "text": "When you Draw by an ability, +35% Damage amount to your own Attack Card(s) for 1 turn (Max 1 time per turn).",
+   "source": "Laboratory 0",
+   "seasonal": false,
+   "image": "equipment/equip-154.webp"
+  },
+  {
+   "id": "equip-155",
+   "name": "Replica Core",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "When drawing your own Attack Card by an ability, that card +50% Damage Amount for 1 turn.",
+   "source": "Laboratory 0",
+   "seasonal": false,
+   "image": "equipment/equip-155.webp"
+  },
+  {
+   "id": "equip-156",
+   "name": "Mutagenic Wave Amplifier",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "When Drawing a Status Ailment or Curse Card, +12% Damage Amount for 1 turn.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-156.webp"
+  },
+  {
+   "id": "equip-157",
+   "name": "W-52 Dopamine Injector",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "When you Draw by an ability, Increase damage by 20% Damage amount for 1 turn (Max 2 times per turn).",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-157.webp"
+  },
+  {
+   "id": "equip-158",
+   "name": "Mutant Predator Spike",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "When there are 4 or more cards in hand, increase Damage Amount by 30%.",
+   "source": "Laboratory 0",
+   "seasonal": false,
+   "image": "equipment/equip-158.webp"
+  },
+  {
+   "id": "equip-159",
+   "name": "Rocket-Adorned Cape",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "At the start of the battle, 1 Damage Reduction and Draw 1.",
+   "source": "Laboratory 0",
+   "seasonal": false,
+   "image": "equipment/equip-159.webp"
+  },
+  {
+   "id": "equip-160",
+   "name": "Wings of Freedom",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "When hit, Increase damage by 10% Damage Amount (Max 3 stacks).",
+   "source": "Laboratory 0",
+   "seasonal": false,
+   "image": "equipment/equip-160.webp"
+  },
+  {
+   "id": "equip-161",
+   "name": "Emblem of an Exceptional Entity",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "+30% Damage Amount.\nStress received becomes 0 (1 for each battle).",
+   "source": "Laboratory 0",
+   "seasonal": false,
+   "image": "equipment/equip-161.webp"
+  },
+  {
+   "id": "equip-162",
+   "name": "Source of the Forbidden",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "When hit, inflict 1 random effects among Vulnerable, Weaken, or Impair to the attacker (3 times per turn).",
+   "source": "Laboratory 0",
+   "seasonal": false,
+   "image": "equipment/equip-162.webp"
+  },
+  {
+   "id": "equip-163",
+   "name": "Unconfirmed Recovery Ampule",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "When an ally uses a Forbidden Card, Recover 3% of Max HP.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-163.webp"
+  },
+  {
+   "id": "equip-164",
+   "name": "Superconductive Protein",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "At the start of the battle, change the cost of 1 card in your hand to 0 for 1 turn.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-164.webp"
+  },
+  {
+   "id": "equip-165",
+   "name": "Overcurrent Shock Unit",
+   "slot": "Weapon",
+   "rarity": "Rare",
+   "stat": "ATK",
+   "values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "text": "When you Draw by an ability, 50% Fixed Damage to a random enemy.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-165.webp"
+  },
+  {
+   "id": "equip-166",
+   "name": "Brainwave-Blocking Helmet",
+   "slot": "Armor",
+   "rarity": "Rare",
+   "stat": "DEF",
+   "values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "text": "When you Draw by an ability, +40% Fixed Shield (5 times per turn).",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-166.webp"
+  },
+  {
+   "id": "equip-167",
+   "name": "Incomplete Carapace",
+   "slot": "Armor",
+   "rarity": "Rare",
+   "stat": "DEF",
+   "values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "text": "At the end of the turn, if you have 5 or more Cards in hand, +140% Fixed Shield.",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-167.webp"
+  },
+  {
+   "id": "equip-168",
+   "name": "Hyperimmunity Hormone",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "When you Draw by an ability, +25% Shield gain for 1 turn (Max 2 times per turn).",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-168.webp"
+  },
+  {
+   "id": "equip-169",
+   "name": "Administrator ID Badge",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "At the start of the battle, 1 Evade.",
+   "source": "Laboratory 0",
+   "seasonal": false,
+   "image": "equipment/equip-169.webp"
+  },
+  {
+   "id": "equip-170",
+   "name": "Nerve Hacking Module",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "When an ally uses a Forbidden Card, +20% Damage amount and +20% Shield gain for 1 turn (Max 2 times per turn).",
+   "source": "Shop",
+   "seasonal": false,
+   "image": "equipment/equip-170.webp"
+  },
+  {
+   "id": "equip-171",
+   "name": "Veiled Thorn",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "If allies do not inflict Damage for 1 turn, then at the start of the next turn, increase Damage Amount by 50% for 1 turn.",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-171.webp"
+  },
+  {
+   "id": "equip-172",
+   "name": "Phytotype Synthetic",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "When Shield is gained, increase Damage Amount of the next 1 Attack Card activated by 20% for 1 turn (2 times per turn).",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-172.webp"
+  },
+  {
+   "id": "equip-173",
+   "name": "Leaf of the World Tree",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "When 3 cards of 2-cost or higher are used, Stockpile. (Stockpile = Retain AP, on activation, decrease Stockpile by 1).",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-173.webp"
+  },
+  {
+   "id": "equip-174",
+   "name": "Luminescent Shroom",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "Double the effect of Spore Propagation on the 6th Attack Card created for 1 turn.",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-174.webp"
+  },
+  {
+   "id": "equip-175",
+   "name": "Millenium Arbor",
+   "slot": "Weapon",
+   "rarity": "Rare",
+   "stat": "ATK",
+   "values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "text": "When a 3-cost or higher card is activated, 1 Vulnerable to a random enemy.",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-175.webp"
+  },
+  {
+   "id": "equip-176",
+   "name": "Vine Camouflage",
+   "slot": "Armor",
+   "rarity": "Rare",
+   "stat": "DEF",
+   "values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "text": "At the start of the turn, if Health is 30% or less, 1 Evade (2 times per battle).",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-176.webp"
+  },
+  {
+   "id": "equip-177",
+   "name": "Plant Doll",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "When 4 Skill Cards are Exhausted, decrease Stress of a random ally by 1.",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-177.webp"
+  },
+  {
+   "id": "equip-178",
+   "name": "Moss Armor",
+   "slot": "Armor",
+   "rarity": "Rare",
+   "stat": "DEF",
+   "values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "text": "When an ally Attack Card was no activated for 1 turn and the turn ended, 100% Fixed Shield.",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-178.webp"
+  },
+  {
+   "id": "equip-179",
+   "name": "Harp of Conflict",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "For 1 turn, when each of Damage, Shield, and Heal has been activated through cards by allies, increase Damage Amount of allies by 15% for 1 turn.",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-179.webp"
+  },
+  {
+   "id": "equip-180",
+   "name": "Victor's Laurel",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "Increase Damage Amount of Counterattack by 40%.",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-180.webp"
+  },
+  {
+   "id": "equip-181",
+   "name": "Combat Drum",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "When 5 Skill Cards are created, increase Damage Amount of the next ally card activated by 20% (max 1 stack).",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-181.webp"
+  },
+  {
+   "id": "equip-182",
+   "name": "Gladiator's Medallion",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "When Shield is gained 3 times through cards, 100% Fixed Damage to all enemies.",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-182.webp"
+  },
+  {
+   "id": "equip-183",
+   "name": "Rage Potion",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "When 4 Attack Cards are activated, increase Damage Amount of the next Attack Card activated by 40%.",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-183.webp"
+  },
+  {
+   "id": "equip-184",
+   "name": "Arm of Lost Valor",
+   "slot": "Weapon",
+   "rarity": "Rare",
+   "stat": "ATK",
+   "values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "text": "When an Attack Card was not activated for 1 turn and the turn ended, create 1 Rocket Punch.",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-184.webp"
+  },
+  {
+   "id": "equip-185",
+   "name": "Harpoon Case of Broken Resolve",
+   "slot": "Weapon",
+   "rarity": "Rare",
+   "stat": "ATK",
+   "values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "text": "Create 1 Pierce each odd turn.",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-185.webp"
+  },
+  {
+   "id": "equip-186",
+   "name": "Shield of Ashen Sacrifice",
+   "slot": "Armor",
+   "rarity": "Rare",
+   "stat": "DEF",
+   "values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "text": "If Damage is completely blocked, at the start of the next turn, create 1 Shield Blast.",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-186.webp"
+  },
+  {
+   "id": "equip-187",
+   "name": "Launcher of Ruined Honor",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "Create 1 Heavy Blow each even turn.",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-187.webp"
+  },
+  {
+   "id": "equip-188",
+   "name": "Charger of Weathered Glory",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "If a turn is ended while 1 or more AP remaining, at the start of the next turn, create 1 Charged Strike.",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-188.webp"
+  },
+  {
+   "id": "equip-189",
+   "name": "Brilliant Eternal Flame?",
+   "slot": "Weapon",
+   "rarity": "Mythic",
+   "stat": "ATK",
+   "values": [
+    31,
+    50,
+    68,
+    81,
+    90
+   ],
+   "text": "Increase Damage Amount of 2-cost or higher Exhaust cards by 40%.",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-189.webp"
+  },
+  {
+   "id": "equip-190",
+   "name": "Liberated Essence",
+   "slot": "Trinket",
+   "rarity": "Mythic",
+   "stat": "HP",
+   "values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "text": "At the start of the turn, decrease Cost of 1 random Exhaust card in hand by 1 for 1 turn.",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-190.webp"
+  },
+  {
+   "id": "equip-191",
+   "name": "Pale Eternal Flame",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "When a card is Exhausted, increase Damage Amount of alles by 10% for 1 turn (1 time per turn).",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-191.webp"
+  },
+  {
+   "id": "equip-192",
+   "name": "Robe of Oblivion",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "When Shield is gained through an Exhaust card, increase Damage Amount by 20% for 1 turn (1 time per turn).",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-192.webp"
+  },
+  {
+   "id": "equip-193",
+   "name": "Vine Lord's Mask",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "When Drawing an Exhaust card through an ally ability, 80% Fixed Shield (2 times per turn).",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-193.webp"
+  },
+  {
+   "id": "equip-194",
+   "name": "Shining World Tree Stem",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "Increase Heal Amount by 25%.",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-194.webp"
+  },
+  {
+   "id": "equip-195",
+   "name": "Sword of Judgment",
+   "slot": "Weapon",
+   "rarity": "Rare",
+   "stat": "ATK",
+   "values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "text": "When a card is Exhausted, increase Damage Amount by 10% for 1 turn (1 time per turn).",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-195.webp"
+  },
+  {
+   "id": "equip-196",
+   "name": "Shining Lyre",
+   "slot": "Armor",
+   "rarity": "Rare",
+   "stat": "DEF",
+   "values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "text": "At the start of the turn, if an ally Exhaust card is in hand, 60% Fixed Shield.",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-196.webp"
+  },
+  {
+   "id": "equip-197",
+   "name": "Golden Bell",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "At the start of the battle, decrease Stress of a random ally by 3.",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-197.webp"
+  },
+  {
+   "id": "equip-198",
+   "name": "Summoned Lump of Light",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "Increase Damage Amount of the third Attack Card created by 30% for 1 turn.",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-198.webp"
+  },
+  {
+   "id": "equip-199",
+   "name": "Lightless Stem",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "Increase Heal Amount by 15%.",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-199.webp"
+  },
+  {
+   "id": "equip-200",
+   "name": "Announcement of Catastrophe",
+   "slot": "Armor",
+   "rarity": "Mythic",
+   "stat": "DEF",
+   "values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "text": "+12% Defense.\nDecrease the number of Break Recovery cards required by all Combatants by 1.",
+   "source": "Cthulu Run Monster",
+   "seasonal": false,
+   "image": "equipment/equip-200.webp"
+  },
+  {
+   "id": "equip-201",
+   "name": "Bangle of Valor",
+   "slot": "Armor",
+   "rarity": "Mythic",
+   "stat": "DEF",
+   "values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "text": "Increase Damage Amount of ally Arena cards by 20%.\nAt the start of battle, create 1 Forgotten Sword",
+   "source": "Burning Life",
+   "seasonal": false,
+   "image": "equipment/equip-201.webp"
+  },
+  {
+   "id": "equip-202",
+   "name": "Corrupted Gauntlet",
+   "slot": "Weapon",
+   "rarity": "Rare",
+   "stat": "ATK",
+   "values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "text": "On Extra Attack, increase Critical Chance by 2% for 1 turn (5 times per turn).",
+   "source": "Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-202.webp"
+  },
+  {
+   "id": "equip-203",
+   "name": "Cloak of the Heart",
+   "slot": "Armor",
+   "rarity": "Rare",
+   "stat": "DEF",
+   "values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "text": "When a card is Discarded through an ally ability, 1 Damage Reduction (1 time per turn).",
+   "source": "Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-203.webp"
+  },
+  {
+   "id": "equip-204",
+   "name": "Gospel of Lament",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "When the Action Count of enemies increases, +30% Damage Amount to ally Attack Cards for 1 turn (1 time per turn).",
+   "source": "Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-204.webp"
+  },
+  {
+   "id": "equip-205",
+   "name": "Broken Golden Quill Pen",
+   "slot": "Weapon",
+   "rarity": "Rare",
+   "stat": "ATK",
+   "values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "text": "When a Linked card is Discarded through an ability, increase Damage Amount by 20% for 1 turn (1 time per turn).",
+   "source": "Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-205.webp"
+  },
+  {
+   "id": "equip-206",
+   "name": "A Lonesome Wedding Ring",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "At the start of the turn, Discard 1 random ally Quietus card in hand.",
+   "source": "Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-206.webp"
+  },
+  {
+   "id": "equip-207",
+   "name": "Someone’s Letter",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "At the end of the turn, if an ally Persona Card is in hand, 150% Fixed Damage to a random enemy.",
+   "source": "Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-207.webp"
+  },
+  {
+   "id": "equip-208",
+   "name": "Order’s Baton",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "Each time a card is created, +20% Damage Amount for 1 turn (2 times per turn).",
+   "source": "Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-208.webp"
+  },
+  {
+   "id": "equip-209",
+   "name": "Mask of Emotions",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "When attacked, 2 Resonance to the attacker (3 times per turn).",
+   "source": "Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-209.webp"
+  },
+  {
+   "id": "equip-210",
+   "name": "Stele of Heresy",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "Each time 3 cards are Discarded through an ally ability, randomly inflict 1 of either Vulnerable or Mark on a random enemy (5 times per turn).",
+   "source": "Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-210.webp"
+  },
+  {
+   "id": "equip-211",
+   "name": "Key of Sleep",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "When the target count of the Attack Card is 2 or more, -10% Damage Amount for each target (max -30%).",
+   "source": "Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-211.webp"
+  },
+  {
+   "id": "equip-212",
+   "name": "Nightmare Hairpin",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "When a single target Attack Card is used, increase Action Count of the targeted enemy by 1 (1 time per turn).",
+   "source": "Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-212.webp"
+  },
+  {
+   "id": "equip-213",
+   "name": "Incomprehensible Holy Object",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "Each time a Quietus card is Discarded through an ability, 80% Fixed Shield (2 times per turn).",
+   "source": "Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-213.webp"
+  },
+  {
+   "id": "equip-214",
+   "name": "Delicate Collarbone",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "At the start of the turn, if an ally Persona Card is in hand, decrease Stress of allies by 2.",
+   "source": "Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-214.webp"
+  },
+  {
+   "id": "equip-215",
+   "name": "Yearning Left Hand",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "Increase Damage Amount by 30% to targets in a Aftershock state.",
+   "source": "Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-215.webp"
+  },
+  {
+   "id": "equip-216",
+   "name": "Hymn-Singing Lips",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "When a card is Discarded through an ability, 1 Resonance to all enemies (3 times per turn).",
+   "source": "Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-216.webp"
+  },
+  {
+   "id": "equip-217",
+   "name": "Crushed Angel Feather",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "When ally Linked cards are used, increase Action Count of all enemies by 1 (1 time per turn).",
+   "source": "Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-217.webp"
+  },
+  {
+   "id": "equip-218",
+   "name": "An Eye Plucked from a Mural",
+   "slot": "Trinket",
+   "rarity": "Mythic",
+   "stat": "HP",
+   "values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "text": "At the start of the turn, increase Damage Amount of this unit by 20% for each ally Persona Card in hand.",
+   "source": "Theater of Illusions",
+   "seasonal": false,
+   "image": "equipment/equip-218.webp"
+  },
+  {
+   "id": "equip-219",
+   "name": "Remnants of Succession",
+   "slot": "Armor",
+   "rarity": "Mythic",
+   "stat": "DEF",
+   "values": [
+    11,
+    19,
+    25,
+    30,
+    34
+   ],
+   "text": "When 2 Attack Cards are activated, 4 Scorched to all enemies (1 time per turn).",
+   "source": "Kaleidoscope",
+   "seasonal": false,
+   "image": "equipment/equip-219.webp"
+  },
+  {
+   "id": "equip-220",
+   "name": "Gauntlets of Protection",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "When a base 3-Cost or higher Attack Card is used manually, 250% Fixed Damage to all enemies (2 times per turn).",
+   "source": "Kaleidoscope",
+   "seasonal": false,
+   "image": "equipment/equip-220.webp"
+  },
+  {
+   "id": "equip-221",
+   "name": "Chitin Shield",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "3 Counterattack.\nOn Counterattack, Aftershock to the target (1 time per turn).",
+   "source": "Kaleidoscope",
+   "seasonal": false,
+   "image": "equipment/equip-221.webp"
+  },
+  {
+   "id": "equip-222",
+   "name": "Contaminated Cocoon Cape",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "When attacked, apply 1 random effect(s) among Agony, Vulnerable, or Scorched to the attacker (3 times per turn).",
+   "source": "Kaleidoscope",
+   "seasonal": false,
+   "image": "equipment/equip-222.webp"
+  },
+  {
+   "id": "equip-223",
+   "name": "Essence-Fragmented Necklace",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "When 3 enemies are defeated by allies in 1 turn, gain 1 AP (1 time per turn).",
+   "source": "Kaleidoscope",
+   "seasonal": false,
+   "image": "equipment/equip-223.webp"
+  },
+  {
+   "id": "equip-224",
+   "name": "Kaleidoscope Fragment",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "When Weaken is applied through an ability, 1 Weaken and 3 Scorched to the target (1 time per turn).",
+   "source": "Kaleidoscope",
+   "seasonal": false,
+   "image": "equipment/equip-224.webp"
+  },
+  {
+   "id": "equip-225",
+   "name": "Eternal Wedge",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "At the start of the turn, 100% Fixed Damage to a random enemy possessing DoT effects.",
+   "source": "Kaleidoscope",
+   "seasonal": false,
+   "image": "equipment/equip-225.webp"
+  },
+  {
+   "id": "equip-226",
+   "name": "Twisted Drill Bit",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "When an ally Desire Card is activated, 100% Fixed Damage to all enemies (3 times per turn).",
+   "source": "Kaleidoscope",
+   "seasonal": false,
+   "image": "equipment/equip-226.webp"
+  },
+  {
+   "id": "equip-227",
+   "name": "Closed-Circuit Terminal",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "On an All-Target Attack through an ally ability, 1 Vulnerable to a random enemy (1 time per turn).",
+   "source": "Kaleidoscope",
+   "seasonal": false,
+   "image": "equipment/equip-227.webp"
+  },
+  {
+   "id": "equip-228",
+   "name": "Contaminated Drone Lens",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "At the start of the turn, if an ally Desire Card is in hand, decrease Stress of a random ally by 2.",
+   "source": "Kaleidoscope",
+   "seasonal": false,
+   "image": "equipment/equip-228.webp"
+  },
+  {
+   "id": "equip-229",
+   "name": "Cycle of Circulation",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "At the end of the turn, if HP is less than 50%, 70% Fixed Heal (3 times per battle).",
+   "source": "Kaleidoscope",
+   "seasonal": false,
+   "image": "equipment/equip-229.webp"
+  },
+  {
+   "id": "equip-230",
+   "name": "Invader Observation Logs",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "+20% Damage Amount to Attack Cards, and +2% Critical Chance for each enemy present.",
+   "source": "Kaleidoscope",
+   "seasonal": false,
+   "image": "equipment/equip-230.webp"
+  },
+  {
+   "id": "equip-231",
+   "name": "The Exsanguine",
+   "slot": "Weapon",
+   "rarity": "Rare",
+   "stat": "ATK",
+   "values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "text": "When an Attack Card is activated, 2 Scorched to the target (1 time per turn).",
+   "source": "Kaleidoscope",
+   "seasonal": false,
+   "image": "equipment/equip-231.webp"
+  },
+  {
+   "id": "equip-232",
+   "name": "Raider’s Harpoon Gun",
+   "slot": "Weapon",
+   "rarity": "Rare",
+   "stat": "ATK",
+   "values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "text": "On Critical Hit, 150% Fixed Damage to all enemies (3 times per turn).",
+   "source": "Kaleidoscope",
+   "seasonal": false,
+   "image": "equipment/equip-232.webp"
+  },
+  {
+   "id": "equip-233",
+   "name": "Essence-Fueled Gauntlets",
+   "slot": "Armor",
+   "rarity": "Rare",
+   "stat": "DEF",
+   "values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "text": "When Shield is gained through an ability, +30% Critical Chance to Attack Cards for 1 turn until activated (1 time per turn).",
+   "source": "Kaleidoscope",
+   "seasonal": false,
+   "image": "equipment/equip-233.webp"
+  },
+  {
+   "id": "equip-234",
+   "name": "Raider’s Scanning Gear",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "At the start of the turn, +30% Critical Damage to the first Attack Card activated.",
+   "source": "Kaleidoscope",
+   "seasonal": false,
+   "image": "equipment/equip-234.webp"
+  },
+  {
+   "id": "equip-235",
+   "name": "Pagna Mushroom",
+   "slot": "Armor",
+   "rarity": "Rare",
+   "stat": "DEF",
+   "values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "text": "When attacked, apply 1 random effect(s) among Vulnerable, Weaken, Agony, or Scorched to the attacker (2 times per turn).",
+   "source": "Kaleidoscope",
+   "seasonal": false,
+   "image": "equipment/equip-235.webp"
+  },
+  {
+   "id": "equip-236",
+   "name": "Final Entry",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "At the start of the turn, increase Stress of a random ally by 2, then 150% Damage to all enemies.",
+   "source": "Kaleidoscope",
+   "seasonal": false,
+   "image": "equipment/equip-236.webp"
+  },
+  {
+   "id": "equip-237",
+   "name": "The Final Command",
+   "slot": "Trinket",
+   "rarity": "Mythic",
+   "stat": "HP",
+   "values": [
+    24,
+    45,
+    66,
+    80,
+    91
+   ],
+   "text": "When AP is gained through a card or Ego Skill of this unit, +3% Attack to allies for 1 turn (max 6 stacks).",
+   "source": "Celestial Bulwark",
+   "seasonal": true,
+   "image": "equipment/equip-237.webp"
+  },
+  {
+   "id": "equip-238",
+   "name": "Runic Hammer",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "+20% Critical Damage to ally Unique Attack Cards (cannot stack).",
+   "source": "Celestial Bulwark",
+   "seasonal": true,
+   "image": "equipment/equip-238.webp"
+  },
+  {
+   "id": "equip-239",
+   "name": "Crown of Corruption",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "Decrease max HP by 10%.\n+10% Critical Chance to Justice Attack Cards of this unit.",
+   "source": "Celestial Bulwark",
+   "seasonal": true,
+   "image": "equipment/equip-239.webp"
+  },
+  {
+   "id": "equip-240",
+   "name": "Overloaded Power Engine",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "+3% Critical Damage to Attack Cards of this unit for each Bind card of this unit stacked this turn (max 30%).",
+   "source": "Celestial Bulwark",
+   "seasonal": true,
+   "image": "equipment/equip-240.webp"
+  },
+  {
+   "id": "equip-241",
+   "name": "Fragment of Condensed Radiance",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "+50% Critical Damage to Bind Attack Cards of this unit.",
+   "source": "Celestial Bulwark",
+   "seasonal": true,
+   "image": "equipment/equip-241.webp"
+  },
+  {
+   "id": "equip-242",
+   "name": "Needle of the Severed Overseer",
+   "slot": "Weapon",
+   "rarity": "Legendary",
+   "stat": "ATK",
+   "values": [
+    28,
+    45,
+    62,
+    74,
+    82
+   ],
+   "text": "On Weakness Attack through an Attack Card of this unit, +40% Damage Amount.",
+   "source": "Celestial Bulwark",
+   "seasonal": true,
+   "image": "equipment/equip-242.webp"
+  },
+  {
+   "id": "equip-243",
+   "name": "Imitated Hand",
+   "slot": "Armor",
+   "rarity": "Legendary",
+   "stat": "DEF",
+   "values": [
+    10,
+    17,
+    23,
+    27,
+    31
+   ],
+   "text": "At the start of battle, gain 2 Damage Reduction.\nWhen attacked, Fixed Heal 80% (1 time per turn).",
+   "source": "Celestial Bulwark",
+   "seasonal": true,
+   "image": "equipment/equip-243.webp"
+  },
+  {
+   "id": "equip-244",
+   "name": "Split Design Core",
+   "slot": "Trinket",
+   "rarity": "Legendary",
+   "stat": "HP",
+   "values": [
+    22,
+    41,
+    60,
+    73,
+    83
+   ],
+   "text": "At the start of the turn, increase Damage Amount of allies by 8% (3 times per battle).",
+   "source": "Celestial Bulwark",
+   "seasonal": true,
+   "image": "equipment/equip-244.webp"
+  },
+  {
+   "id": "equip-245",
+   "name": "Core Disassembler",
+   "slot": "Weapon",
+   "rarity": "Rare",
+   "stat": "ATK",
+   "values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "text": "When an enemy with Shield is Hit by this unit, 2 Tenacity Damage (1 time per turn).",
+   "source": "Celestial Bulwark",
+   "seasonal": true,
+   "image": "equipment/equip-245.webp"
+  },
+  {
+   "id": "equip-246",
+   "name": "Phantom Dagger",
+   "slot": "Weapon",
+   "rarity": "Rare",
+   "stat": "ATK",
+   "values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "text": "When an Attack Card of this unit is used, 60% Fixed Damage for each Cost of the card used to a random enemy (2 times per turn).",
+   "source": "Celestial Bulwark",
+   "seasonal": true,
+   "image": "equipment/equip-246.webp"
+  },
+  {
+   "id": "equip-247",
+   "name": "Shield of Repentance",
+   "slot": "Armor",
+   "rarity": "Rare",
+   "stat": "DEF",
+   "values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "text": "At the end of the turn, 2 Vulnerable to all enemies that have Shield (1 time per battle).",
+   "source": "Celestial Bulwark",
+   "seasonal": true,
+   "image": "equipment/equip-247.webp"
+  },
+  {
+   "id": "equip-248",
+   "name": "White Coat",
+   "slot": "Armor",
+   "rarity": "Rare",
+   "stat": "DEF",
+   "values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "text": "At the start of the turn, if an ally is in a harmful effect state, 50% Fixed Shield.",
+   "source": "Celestial Bulwark",
+   "seasonal": true,
+   "image": "equipment/equip-248.webp"
+  },
+  {
+   "id": "equip-249",
+   "name": "Enforcement Contract",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "At the end of the turn, Fixed Heal 20% for each card in hand (max 100%).",
+   "source": "Celestial Bulwark",
+   "seasonal": true,
+   "image": "equipment/equip-249.webp"
+  },
+  {
+   "id": "equip-250",
+   "name": "Triskelion of Judgment",
+   "slot": "Weapon",
+   "rarity": "Rare",
+   "stat": "ATK",
+   "values": [
+    25,
+    41,
+    56,
+    67,
+    74
+   ],
+   "text": "When attacked, increase Damage Amount of the next Attack Card of this unit used by 20% (1 time per turn).",
+   "source": "Celestial Bulwark",
+   "seasonal": true,
+   "image": "equipment/equip-250.webp"
+  },
+  {
+   "id": "equip-251",
+   "name": "Condensed Fuel",
+   "slot": "Armor",
+   "rarity": "Rare",
+   "stat": "DEF",
+   "values": [
+    9,
+    15,
+    21,
+    24,
+    28
+   ],
+   "text": "At the end of the turn, Fixed Heal 100% (3 times per battle).",
+   "source": "Celestial Bulwark",
+   "seasonal": true,
+   "image": "equipment/equip-251.webp"
+  },
+  {
+   "id": "equip-252",
+   "name": "Pendant of Balance",
+   "slot": "Trinket",
+   "rarity": "Rare",
+   "stat": "HP",
+   "values": [
+    20,
+    37,
+    54,
+    66,
+    75
+   ],
+   "text": "When an Attack Card is used by allies, 20% Fixed Shield (5 times per turn).",
+   "source": "Celestial Bulwark",
+   "seasonal": true,
+   "image": "equipment/equip-252.webp"
+  }
+ ]
+}

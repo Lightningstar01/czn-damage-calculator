@@ -11,11 +11,11 @@ export interface Pill {
 
 const STAT_GROUP: Record<StatName, ChipGroup> = {
   'ATK%': 'stat', 'Flat ATK': 'stat', 'DEF%': 'stat', 'Flat DEF': 'stat', 'Crit Rate': 'crit', 'Crit DMG': 'crit',
-  'Weakness DMG': 'weak', 'Elemental DMG%': 'elem', 'Extra DMG%': 'elem', 'DoT DMG%': 'elem',
+  'Weakness DMG': 'weak', 'Elemental DMG%': 'elem', 'Extra DMG%': 'elem', 'DoT DMG%': 'elem', 'Flat HP': 'stat',
 }
 const STAT_LABEL: Partial<Record<StatName, string>> = {
   'ATK%': 'ATK', 'Flat ATK': 'ATK', 'DEF%': 'DEF', 'Flat DEF': 'DEF', 'Crit Rate': 'Crit Chance', 'Elemental DMG%': 'Element DMG',
-  'Extra DMG%': 'Extra DMG', 'DoT DMG%': 'DoT DMG',
+  'Extra DMG%': 'Extra DMG', 'DoT DMG%': 'DoT DMG', 'Flat HP': 'Health',
 }
 const TARGET_PILL: Record<EffectTarget, string> = { self: '', allies: 'all allies', enemy: 'on the enemy' }
 

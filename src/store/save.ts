@@ -4,7 +4,7 @@ import { DEFAULT_SETTINGS } from '../data/settings'
 import { ELEMENTS, FRAGMENT_SET_PICKS, NO_ENEMY, type Build, type CharacterSave, type Enemy, type Fight, type SaveData, type ScreenStats, type Teammate, type UserBoost, type UserBuff } from '../engine/types'
 
 /** Bump when the save format changes, and add a step to migrate(). */
-export const SAVE_VERSION = 12
+export const SAVE_VERSION = 13
 
 export function newId(): string {
   return Math.random().toString(36).slice(2, 10)

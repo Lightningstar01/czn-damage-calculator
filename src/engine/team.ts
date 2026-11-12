@@ -28,7 +28,7 @@ export function deletedLinks(build: Pick<Build, 'team'>, saves: Saves): string[]
   })
 }
 
-/** The build with each linked teammate slot's Manifest Ego, partner and sets taken from their saved build. */
+/** The build with each linked teammate slot's Manifest Ego, partner, sets and equipment taken from their saved build. */
 export function withLinkedTeam(build: Build, saves: Saves): LiveBuild {
   if (!(build.team ?? []).some((t) => linkedBuild(saves, t))) return build
   return {
@@ -36,7 +36,7 @@ export function withLinkedTeam(build: Build, saves: Saves): LiveBuild {
     team: build.team.map((t) => {
       const l = linkedBuild(saves, t)
       return l ? { ...t, egoLevel: l.build.egoLevel ?? 0, partner: l.build.partner, fragments: l.build.fragments ?? [],
-        live: { stats: l.build.stats, potentialNodes: l.build.potentialNodes } } : t
+        live: { stats: l.build.stats, potentialNodes: l.build.potentialNodes, equipment: l.build.equipment } } : t
     }),
   }
 }
@@ -50,7 +50,7 @@ export function teammateView(charName: string, build: LiveBuild, slot: number, s
   const me: LiveTeammate = {
     character: charName, egoLevel: build.egoLevel ?? 0, partner: build.partner, fragments: build.fragments ?? [],
     cards: (build.deck ?? []).flatMap((d) => d.preset ?? []),
-    live: { stats: build.stats, potentialNodes: build.potentialNodes },
+    live: { stats: build.stats, potentialNodes: build.potentialNodes, equipment: build.equipment },
   }
   const switches: Record<string, Switch> = {}
   for (const [k, v] of Object.entries(l.build.presetSwitches ?? {})) if (!k.includes('>')) switches[k] = v

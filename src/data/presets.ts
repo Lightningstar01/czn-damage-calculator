@@ -5,9 +5,10 @@
 // Characters and their cards are imported from Prydwen (scripts/import_prydwen.py -> prydwen/<slug>.json,
 // generated: never edit by hand). Our additions (buffs, notes, corrections) go in characters/<slug>.ts, keyed by
 // the imported card ids, so a re-import never overwrites them. Partners (partners/<slug>.ts) and fragment sets
-// (fragmentSets.ts) are entered by hand.
+// (fragmentSets.ts) are entered by hand. Equipment pieces are imported too (scripts/import_equipment.py -> prydwen-equipment.json),
+// with our Effects for them in equipmentEffects.ts (equipment.ts merges the two).
 import type { CharacterAdditions, ImportedCharacter, PartnerPreset, Presets } from '../engine/types'
-import { WEAPON_ATK } from './equipment'
+import { EQUIP_FLAT, EQUIPMENT } from './equipment'
 import { FRAGMENT_SETS } from './fragmentSets'
 import { mergeCharacter } from './merge'
 
@@ -28,5 +29,6 @@ export const PRESETS: Presets = {
     .sort((a, b) => a.name.localeCompare(b.name)),
   partners: Object.values(PARTNERS),
   fragmentSets: FRAGMENT_SETS,
-  weaponAtk: WEAPON_ATK,
+  equipment: EQUIPMENT,
+  equipFlat: EQUIP_FLAT,
 }

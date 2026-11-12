@@ -8,7 +8,7 @@ export const CLASSES = ['Striker', 'Psionic', 'Hunter', 'Controller', 'Ranger', 
 export type CharClass = (typeof CLASSES)[number]
 
 export const STATS = ['ATK%', 'Flat ATK', 'DEF%', 'Flat DEF', 'Crit Rate', 'Crit DMG', 'Weakness DMG',
-  'Elemental DMG%', 'Extra DMG%', 'DoT DMG%'] as const
+  'Elemental DMG%', 'Extra DMG%', 'DoT DMG%', 'Flat HP'] as const
 export type StatName = (typeof STATS)[number]
 
 export const CATEGORIES = ['Character', 'Potential', 'Partner', 'Memory Fragment', 'Equipment', 'Engraving',
@@ -287,15 +287,46 @@ export interface FragmentSetPreset {
 }
 
 /** Equipment rarities, lowest first. */
-export const EQUIP_RARITIES = ['Rare', 'Legendary', 'Unique'] as const
+export const EQUIP_RARITIES = ['Rare', 'Legendary', 'Mythic'] as const
 export type EquipRarity = (typeof EQUIP_RARITIES)[number]
+
+/** A build's equipment slots, in the order shown. */
+export const EQUIP_SLOTS = ['weapon', 'armor', 'trinket'] as const
+export type EquipSlot = (typeof EQUIP_SLOTS)[number]
+
+/** A piece of equipment: imported from Prydwen (src/data/prydwen-equipment.json, generated), with our Effects for it
+ * (src/data/equipmentEffects.ts, keyed by id). */
+export interface EquipmentPreset {
+  /** Prydwen's id ('equip-206'): builds point at it (EquipPick.piece), and its effects' switches are keyed by it ("equip-206|effectId";
+   * not by the name, which a card can share: Flashbang). */
+  id: string
+  name: string
+  slot: EquipSlot
+  rarity: EquipRarity
+  /** Effect text as Prydwen has it. */
+  text: string
+  /** Where it drops (a Chaos, the Shop...). */
+  source?: string
+  seasonal?: boolean
+  /** Icon (40x40): 'equipment/<id>.webp', copied into public/ by the import. */
+  image?: string
+  /** The stat boosts and buffs read from its text (switch per build, default on). Empty: its effect isn't counted. */
+  effects: Effect[]
+  /** Why nothing, or not everything, in its text is counted (shown with the text): a shield, healing, draw... */
+  notCounted?: string
+}
+
+/** Our additions to one imported piece (src/data/equipmentEffects.ts): what a re-import must not overwrite. */
+export type EquipmentAdditions = Partial<Pick<EquipmentPreset, 'effects' | 'notCounted'>>
 
 export interface Presets {
   characters: CharacterPreset[]
   partners: PartnerPreset[]
   fragmentSets: FragmentSetPreset[]
-  /** Flat Attack a weapon gives in battle, per rarity (src/data/equipment.ts). Missing: weapons add nothing. */
-  weaponAtk?: Record<EquipRarity, number>
+  /** Every equipment piece (src/data/equipment.ts). */
+  equipment?: EquipmentPreset[]
+  /** The flat stat a piece gives in battle, per slot and rarity: Attack (weapon), Defense (armor), Health (trinket). Missing: nothing. */
+  equipFlat?: Record<EquipSlot, Record<EquipRarity, number>>
 }
 
 /** A character as imported from Prydwen (src/data/prydwen/<slug>.json, generated: never edit by hand). */
@@ -402,17 +433,22 @@ export interface Build {
   deck: DeckCard[]
   /** This build's attack list: the team's plays, in order (the main character's, and teammates' with RotationPlay.by). */
   rotation: RotationPlay[]
-  /** The build's equipment (Setup > Equipment). Only the weapon so far: its rarity gives its flat Attack. */
-  equipment?: { weapon?: EquipPick }
+  /** The build's equipment (Setup > Equipment): a pick per slot. Its rarity gives the slot's flat stat, its piece the effects. */
+  equipment?: Equipment
   /** The owner's own stat boosts and buffs for this build (owner, 2026-11-11: a list per build; Duplicate copies them). */
   boosts: UserBoost[]
   buffs: UserBuff[]
 }
 
-/** A piece of equipment on a build. */
+/** A slot's pick on a build: a named piece, or just a rarity. */
 export interface EquipPick {
+  /** The rarity picked, or the piece's when it was picked: the piece's own wins while the presets have it, so this one only
+   * counts for a rarity-only pick or a piece the presets lost. */
   rarity: EquipRarity
+  /** EquipmentPreset id ('equip-206'); missing = a rarity only (the flat stat, no effects). */
+  piece?: string
 }
+export type Equipment = Partial<Record<EquipSlot, EquipPick>>
 
 /** A card in a build's deck: a card preset (always its current data), or a custom card from an older save. */
 export interface DeckCard {
@@ -444,9 +480,9 @@ export interface Teammate {
   live?: never
 }
 
-/** A teammate while computing (withLinkedTeam, teammateView), never saved. live: their stats and Potential nodes. Missing: their "If
- * Attack is 500 or higher" thresholds aren't met and their nodes count as on. */
-export type LiveTeammate = Omit<Teammate, 'live'> & { live?: Pick<Build, 'stats' | 'potentialNodes'> }
+/** A teammate while computing (withLinkedTeam, teammateView), never saved. live: their stats, Potential nodes and equipment. Missing: their
+ * "If Attack is 500 or higher" thresholds aren't met, their nodes count as on and they bring no equipment effects. */
+export type LiveTeammate = Omit<Teammate, 'live'> & { live?: Pick<Build, 'stats' | 'potentialNodes' | 'equipment'> }
 
 /** A build while computing; a saved Build is one too (its teammates have no live stats). */
 export type LiveBuild = Omit<Build, 'team'> & { team: LiveTeammate[] }

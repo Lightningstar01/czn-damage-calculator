@@ -51,11 +51,17 @@ equipment, which apply only in battle (slot 1 always gives flat ATK; any piece m
 - **Stats screen only, never the battle numbers (User, 2026-11-11):** the Attack shown in battle already has the partner's ATK% and the
   equipment in it (1033 x 1.16 + 74 = 1272), so typing it would count them twice, and the "If Attack is 500 or higher" effects read the
   stats-screen number. The site has no "read in battle" switch.
-- **Weapon flat Attack (User, 2026-11-11):** the weapon's rarity sets it: Rare 74, Legendary 82, Unique 90 (Setup > Equipment,
-  `build.equipment.weapon`, values in `src/data/equipment.ts`). Source: Prydwen's equipment page, where every weapon of a rarity has the
-  same five values (Rare 25/41/56/67/74, Legendary 28/45/62/74/82, Unique 31/50/68/81/90); the owner chose the top one for each. What the
-  five steps are is **Unconfirmed** (in-game test weapon-flat-attack). Armor (Defense 28 / 31 / 34) and trinkets (Health 75 / 83 / 91)
-  work the same way and aren't used yet. Prydwen gives 3 weapons out of 83 the Unique values at a lower rarity: read as its mistakes.
+- **Equipment flat stats (User, 2026-11-11):** a piece's rarity sets the flat stat of its slot, whatever the piece: weapon Attack Rare 74,
+  Legendary 82, Mythic 90; armor Defense 28 / 31 / 34; trinket Health 75 / 83 / 91 (Setup > Equipment, `build.equipment`, values in
+  `src/data/equipment.ts`). Picking a piece by name takes its rarity. Flat Defense is added like flat Attack (after DEF%); Health is shown on
+  Results and read by no damage yet. "If Attack / Defense / Health is X or higher" thresholds still read the stats screen, without equipment
+  (**Unconfirmed**, in-game test `threshold-with-equipment`; the owner expects the in-battle stats, so this changes once tested). The top
+  rarity is Mythic in-game (Prydwen: Unique). Source: Prydwen's equipment page, where every weapon of a rarity has the
+  same five values (Rare 25/41/56/67/74, Legendary 28/45/62/74/82, Mythic 31/50/68/81/90); the owner chose the top one for each. What the
+  five steps are is **Unconfirmed** (in-game test weapon-flat-attack). Armor (Rare 9/15/21/24/28, Legendary 10/17/23/27/31, Mythic 11/19/25/30/34) and
+  trinkets (20/37/54/66/75, 22/41/60/73/83, 24/45/66/80/91) work the same way. Prydwen gives 3 weapons out of 82 the Mythic values at a lower rarity
+  (Mountain of Corpses, Legendary; Torch of Wrath and Overcurrent Shock Unit, Rare; all from the Shop): read as its mistakes, **Unconfirmed**
+  (`scripts/import_equipment.py` prints them as CHECK).
 - **Own stat boosts and buffs are per build (User, 2026-11-11):** each build has its own lists (`build.boosts`, `build.buffs`); Duplicate
   copies them, and a change in one build never reaches another.
 
