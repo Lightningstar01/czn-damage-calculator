@@ -2,26 +2,10 @@
 
 Made from `tests/ingame/checks.ts`; change it there, not here, then run `npx vitest run -u tests/ingame`.
 
-68 to run, 6 measured. Send the numbers under **Send** with the game version; they then become tests here and close the question.
+67 to run, 7 measured. Send the numbers under **Send** with the game version; they then become tests here and close the question.
 Use non-crit hits unless the test is about crits, and note anything else that was on.
 
 ## To run
-
-### plus-rule
-
-**Question:** Is "+X%" additive and "X%" without a "+" multiplicative?
-
-**Setup:** A card at a known %, one "+X%" buff and one "by X%" buff you can turn on separately (for example Morale for "+", a card that says "by X%").
-
-**Steps:**
-1. Read the card % with neither buff.
-2. Read it with only the "+" buff.
-3. Read it with only the "by X%" buff.
-4. Read it with both.
-
-**Send:** The four card %s; The buffs' wording.
-
-Closes: docs/FORMULA.md, Buff types
 
 ### card-pct-rounding
 
@@ -1000,6 +984,12 @@ Each row is checked against the calculator on every test run.
 | weakness-no-extra-factor | Strike on target, % | 290 | 290.02 | 2026-10-20 (Owner) | No: 204.24% x 1.42 = 290%. |
 | strike-in-hand-and-on-target | In hand, % | 251 | 250.64 | 2026-10-25 (Owner) | In hand yes; on target about 0.3% low: see strike-rounding-gap. |
 | strike-in-hand-and-on-target | On target, % | 357 | 355.91 | 2026-10-25 (Owner) | In hand yes; on target about 0.3% low: see strike-rounding-gap. |
+| plus-rule | Dark Blade in hand, E6 only, % | 134 | 134 | 2026-11-12, game 853 (Owner) | Yes. Rei's Dark Blade (114% in the deck, 134% in hand with E6's "+20% Damage Amount to allies' Attack Cards", which reaches Rei herself): 4 Morale (+80%) shows 214%, a "100% Damage" to Basic Attack Cards 248% (it doubles the 114%, not the +20%), both that and a "+40% Damage" 288%. The damage follows the shown % (97, 154, 179 on one enemy at 507 Attack). |
+| plus-rule | With 4 Morale, % | 214 | 214 | 2026-11-12, game 853 (Owner) | Yes. Rei's Dark Blade (114% in the deck, 134% in hand with E6's "+20% Damage Amount to allies' Attack Cards", which reaches Rei herself): 4 Morale (+80%) shows 214%, a "100% Damage" to Basic Attack Cards 248% (it doubles the 114%, not the +20%), both that and a "+40% Damage" 288%. The damage follows the shown % (97, 154, 179 on one enemy at 507 Attack). |
+| plus-rule | With the "100%" buff, % | 248 | 248 | 2026-11-12, game 853 (Owner) | Yes. Rei's Dark Blade (114% in the deck, 134% in hand with E6's "+20% Damage Amount to allies' Attack Cards", which reaches Rei herself): 4 Morale (+80%) shows 214%, a "100% Damage" to Basic Attack Cards 248% (it doubles the 114%, not the +20%), both that and a "+40% Damage" 288%. The damage follows the shown % (97, 154, 179 on one enemy at 507 Attack). |
+| plus-rule | With the "100%" and "+40%" buffs, % | 288 | 288 | 2026-11-12, game 853 (Owner) | Yes. Rei's Dark Blade (114% in the deck, 134% in hand with E6's "+20% Damage Amount to allies' Attack Cards", which reaches Rei herself): 4 Morale (+80%) shows 214%, a "100% Damage" to Basic Attack Cards 248% (it doubles the 114%, not the +20%), both that and a "+40% Damage" 288%. The damage follows the shown % (97, 154, 179 on one enemy at 507 Attack). |
+| plus-rule | Hit with 4 Morale / hit with E6 only (154 / 97) | 1.5876288659793814 | 1.6 | 2026-11-12, game 853 (Owner) | Yes. Rei's Dark Blade (114% in the deck, 134% in hand with E6's "+20% Damage Amount to allies' Attack Cards", which reaches Rei herself): 4 Morale (+80%) shows 214%, a "100% Damage" to Basic Attack Cards 248% (it doubles the 114%, not the +20%), both that and a "+40% Damage" 288%. The damage follows the shown % (97, 154, 179 on one enemy at 507 Attack). |
+| plus-rule | Hit with the "100%" buff / hit with E6 only (179 / 97) | 1.8453608247422681 | 1.85 | 2026-11-12, game 853 (Owner) | Yes. Rei's Dark Blade (114% in the deck, 134% in hand with E6's "+20% Damage Amount to allies' Attack Cards", which reaches Rei herself): 4 Morale (+80%) shows 214%, a "100% Damage" to Basic Attack Cards 248% (it doubles the 114%, not the +20%), both that and a "+40% Damage" 288%. The damage follows the shown % (97, 154, 179 on one enemy at 507 Attack). |
 | multiplicative-summed-or-chained | Shadow Dagger in hand, % | 135 | 134.8 | 2026-11-01, game 841 (Owner) | They add up: four "by X%" buffs on Tressa's Shadow Dagger show 164%; multiplied they would show 173%. These numbers use the rounded card %: see card-pct-rounding. |
 | multiplicative-summed-or-chained | Its hit | 139 | 138.66 | 2026-11-01, game 841 (Owner) | They add up: four "by X%" buffs on Tressa's Shadow Dagger show 164%; multiplied they would show 173%. These numbers use the rounded card %: see card-pct-rounding. |
 | multiplicative-summed-or-chained | After an Exhaust, in hand, % | 164 | 163.6 | 2026-11-01, game 841 (Owner) | They add up: four "by X%" buffs on Tressa's Shadow Dagger show 164%; multiplied they would show 173%. These numbers use the rounded card %: see card-pct-rounding. |

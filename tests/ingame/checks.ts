@@ -82,6 +82,22 @@ function tressaDagger(exhausted: boolean, agony: number) {
   return computeBuild(PRESETS, 'Tressa', b, settings, {}, { enemies: [{ defMult: TRESSA_TEST_ENEMY, dr: 0 }] }).plays[0].hits[0]
 }
 
+/** The owner's Rei (E6, Basic upgrade x1.14, nodes 5-1 and 7 locked) at 507 Attack, one Dark Blade, with the buffs of the plus-rule test
+ * (2026-11-12): Morale, a "100% Damage" to Basic Attack Cards (no "+") and a "+40% Damage" to cards of Cost 1 or more. E6's "+20% Damage Amount
+ * to allies' Attack Cards" is always on and reaches Rei herself. Any enemy: the damage values are ratios. */
+function reiBlade(morale: number, by100: boolean, plus40: boolean) {
+  const cs = newCharacterSave()
+  const b = cs.builds[0]
+  Object.assign(b, { egoLevel: 6, basicLevel: 1, signatureLevel: 0, morale, potentialNodes: { '5-1': false, 7: false } })
+  Object.assign(b.stats, { attack: 507, critChance: 0 })
+  const buff = (value: string, appliesTo: string) => ({ ...newBuff(), value, appliesTo, on: true })
+  if (by100) b.buffs.push(buff('100%', 'Basic Attack'))
+  if (plus40) b.buffs.push(buff('+40%', '1+ cost'))
+  b.deck = [{ id: 'd', preset: 'card-218' }]
+  b.rotation = [{ cardId: 'd' }]
+  return computeBuild(PRESETS, 'Rei', b, settings, {}, { enemies: [{ defMult: 0.4, dr: 0 }] }).plays[0].hits[0]
+}
+
 function meiBuild(attack: number) {
   const cs = newCharacterSave()
   const c = card('Test', '', 1)
@@ -175,6 +191,19 @@ export const CHECKS: InGameCheck[] = [
     setup: 'A card at a known %, one "+X%" buff and one "by X%" buff you can turn on separately (for example Morale for "+", a card that says "by X%").',
     steps: ['Read the card % with neither buff.', 'Read it with only the "+" buff.', 'Read it with only the "by X%" buff.', 'Read it with both.'],
     record: ['The four card %s', 'The buffs\' wording'],
+    measured: {
+      date: '2026-11-12', gameVersion: '853', source: 'Owner',
+      answer: 'Yes. Rei\'s Dark Blade (114% in the deck, 134% in hand with E6\'s "+20% Damage Amount to allies\' Attack Cards", which reaches Rei herself): 4 Morale (+80%) shows 214%, a "100% Damage" to Basic Attack Cards 248% (it doubles the 114%, not the +20%), both that and a "+40% Damage" 288%. The damage follows the shown % (97, 154, 179 on one enemy at 507 Attack).',
+      values: [
+        { label: 'Dark Blade in hand, E6 only, %', inGame: 134, calculator: () => reiBlade(0, false, false).inHand * 100, tolerance: 0.5 },
+        { label: 'With 4 Morale, %', inGame: 214, calculator: () => reiBlade(4, false, false).inHand * 100, tolerance: 0.5 },
+        { label: 'With the "100%" buff, %', inGame: 248, calculator: () => reiBlade(0, true, false).inHand * 100, tolerance: 0.5 },
+        { label: 'With the "100%" and "+40%" buffs, %', inGame: 288, calculator: () => reiBlade(0, true, true).inHand * 100, tolerance: 0.5 },
+        // Hits 97 / 154 / 179 as ratios (the enemy's DEF isn't known); the tolerance covers the game's whole numbers
+        { label: 'Hit with 4 Morale / hit with E6 only (154 / 97)', inGame: 154 / 97, calculator: () => reiBlade(4, false, false).nonCrit / reiBlade(0, false, false).nonCrit, tolerance: 0.015 },
+        { label: 'Hit with the "100%" buff / hit with E6 only (179 / 97)', inGame: 179 / 97, calculator: () => reiBlade(0, true, false).nonCrit / reiBlade(0, false, false).nonCrit, tolerance: 0.015 },
+      ],
+    },
   },
   {
     id: 'multiplicative-summed-or-chained',

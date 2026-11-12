@@ -98,8 +98,9 @@ How a buff's text decides where it goes:
   (Card + counts only on cards with an upgrade, and an Ego skill has none), which "by X%" buffs raise. How the game combines it is **Unconfirmed**
   (in-game test `ego-skill-bonus`). Anika, Chizuru, Khalipe, Nine, Renoa, Rin, Rossweisse and Yuki follow by the same wording (the owner's
   screenshots are below those levels).
-- **The "+" rule (User):** after a localization update, "+" means additive and no "+" means multiplicative. No public source; **Unconfirmed**
-  in a test, and also that it covers partner passives. Prydwen says English can't tell them apart without testing.
+- **The "+" rule (User; measured by the owner, 2026-11-12, game version 853; in-game test `plus-rule`):** after a localization update, "+" means additive and no "+" means multiplicative.
+  Rei's Dark Blade (114%) with E6's +20%: 134%; with 4 Morale 214%; with a "100% Damage" to Basic Attack Cards 248% (only the 114% doubles); with that and a
+  "+40% Damage" 288%; the hits follow the shown %. That it covers partner passives is still **Unconfirmed**. Prydwen says English can't tell them apart without testing.
 - **Summed vs Chained (measured by the owner, 2026-11-01; in-game test `multiplicative-summed-or-chained`):** multiplicative buffs add up. Tressa's Shadow Dagger with four "by X%" buffs shows 164%; chained it would show 173%. UltimateGacha citing Reddit tests agrees.
   Settings toggle, Summed by default. Chained treats a buff with stacks as one source (3 stacks of 10% = x1.3, not x1.331): **Unconfirmed**.
 - **Morale (Sourced, Game8 + User):** +20% per stack in the additive group, max 20 stacks. UltimateGacha calls it a late multiplier; that
