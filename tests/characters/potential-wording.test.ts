@@ -88,7 +88,7 @@ describe('Potential node wording', () => {
     a.deck.push({ id: 'ef', preset: 'card-395' })
     a.rotation = [{ cardId: 'ef' }]
     // Engagement Fire: 100% + 5% + 5%: a Normal card, so Extra Damage only opens the bonus
-    expect(computeBuild(PRESETS, 'Selena', cs, a, settings).plays[0].hits[0].cardMult).toBeCloseTo(1.1)
+    expect(computeBuild(PRESETS, 'Selena', a, settings).plays[0].hits[0].cardMult).toBeCloseTo(1.1)
   })
 
   it('Extra Damage multiplies Extra Attacks, triggered ones too, and not normal hits', () => {
@@ -100,7 +100,7 @@ describe('Potential node wording', () => {
       a.presetSwitches['Selena|p5-1-fire'] = false
       a.deck.push({ id: 'ef', preset: 'card-395' })
       a.rotation = [{ cardId: 'ef', stacks: { Mark: 1 } }]
-      return computeBuild(PRESETS, 'Selena', cs, a, settings).plays[0]
+      return computeBuild(PRESETS, 'Selena', a, settings).plays[0]
     }
     const [off, on] = [build(0), build(0.5)]
     expect(on.triggered[0].card.kind).toBe('Extra Attack')

@@ -24,14 +24,14 @@ describe('Luke', () => {
   }
   const run = (rotation: RotationPlay[], b = archiveBuild()) => {
     b.a.rotation = rotation
-    return computeBuild(PRESETS, 'Luke', b.cs, b.a, settings)
+    return computeBuild(PRESETS, 'Luke', b.a, settings)
   }
 
   it('card text matches the in-game screenshots', () => {
     const text = (id: string, { egoLevel = 0, nodeOn = false } = {}) => {
-      const { cs, a } = archiveBuild(egoLevel)
+      const { a } = archiveBuild(egoLevel)
       const p = preset(id)
-      const buffs = activeBuffs(PRESETS, 'Luke', cs, a, settings)
+      const buffs = activeBuffs(PRESETS, 'Luke', a, settings)
       return renderCardText(p.text, { egoLevel, nodeOn: () => nodeOn,
         pct: (base, fixed) => shownPct(base, cardFromPreset(p, 'Order'), a, luke, buffs, settings, fixed) })
     }
@@ -67,7 +67,7 @@ describe('Luke', () => {
     expect(r.plays[3].nonCrit).toBeCloseTo((0.5 + 0.5) * 1.25 * 35)
     // An enemy weak to Order: on by itself
     b.a.rotation = [{ cardId: 'auto:card-59' }]
-    const weak = computeBuild(PRESETS, 'Luke', b.cs, b.a, settings, {}, { enemies: [{ defMult: 1, dr: 0, weakness: 'Order' }] })
+    const weak = computeBuild(PRESETS, 'Luke', b.a, settings, {}, { enemies: [{ defMult: 1, dr: 0, weakness: 'Order' }] })
     expect(weak.plays[0].nonCrit).toBeCloseTo(0.6 * 2 * 1.25 * 35)
   })
 

@@ -29,7 +29,7 @@ describe('Amir', () => {
     const c = cardFromPreset(preset(id), 'Order')
     addCards(cs, c)
     a.rotation = [{ cardId: c.id, stacks, ...(hits ? { hits } : {}) }]
-    return computeBuild(PRESETS, 'Amir', cs, a, settings).plays[0]
+    return computeBuild(PRESETS, 'Amir', a, settings).plays[0]
   }
   /** One Metallization strike, with these cards in the deck. */
   const strike = (ids: string[], stacks: Record<string, number> = {}, setup: (a: Build) => void = () => {}) => {
@@ -37,15 +37,15 @@ describe('Amir', () => {
     setup(a)
     addCards(cs, ...ids.map((id) => cardFromPreset(preset(id), 'Order')))
     a.rotation = [{ cardId: AUTO + 'metallization', stacks }]
-    return computeBuild(PRESETS, 'Amir', cs, a, settings).plays[0]
+    return computeBuild(PRESETS, 'Amir', a, settings).plays[0]
   }
 
   it("card text matches the owner's in-game screenshots", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     const text = (id: string, nodeOn: () => boolean = () => false) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Order')
-      const buffs = activeBuffs(PRESETS, 'Amir', cs, a, settings)
+      const buffs = activeBuffs(PRESETS, 'Amir', a, settings)
       return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn, pct: (base) => shownPct(base, c, a, amir, buffs, settings) })
     }
     expect(text('card-456')).toBe('150% Shield for each Metallization\nRemove Metallization\nAt the start of the next turn, 5 Metallization')
@@ -120,10 +120,10 @@ describe('Amir', () => {
 
   it('Full Metal Hurricane III: 224% once, and an unraised 120% end-of-turn play per Metallization decreased', () => {
     expect(damage('card-480').nonCrit).toBeCloseTo(2 * up * unit)
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'h3', preset: 'card-480' })
     a.rotation = [{ cardId: AUTO + 'hurricane-iii-end', hits: 2 }]
-    expect(computeBuild(PRESETS, 'Amir', cs, a, settings).plays[0].nonCrit).toBeCloseTo(2 * 1.2 * unit)
+    expect(computeBuild(PRESETS, 'Amir', a, settings).plays[0].nonCrit).toBeCloseTo(2 * 1.2 * unit)
   })
 
   it('Full Metal Hurricane V: 3 hits, more when set on the play', () => {

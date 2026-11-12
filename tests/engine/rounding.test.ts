@@ -20,7 +20,7 @@ function hitOf(c: Card, level: number, play: { cost?: number; stacks?: Record<st
   b.stats.attack = 1000
   b.deck = [{ id: 'f', custom: c }]
   b.rotation = [{ cardId: 'f', ...play }]
-  const r = computeBuild(PRESETS, 'Tressa', cs, b, s)
+  const r = computeBuild(PRESETS, 'Tressa', b, s)
   return { hit: r.plays[0].hits[0], card: r.plays[0].card }
 }
 

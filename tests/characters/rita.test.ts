@@ -23,18 +23,18 @@ describe('Rita', () => {
   const SIG = 1.16
   /** One play of a card; `id` is a preset id added to the deck, or an auto: id of a card that joins by itself. */
   const play = (id: string, extra: Partial<RotationPlay> = {}, change: (a: Build) => void = () => {}) => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     change(a)
     if (!id.startsWith(AUTO)) a.deck.push({ id: 'c', preset: id })
     a.rotation = [{ cardId: id.startsWith(AUTO) ? id : 'c', ...extra }]
-    return computeBuild(PRESETS, 'Rita', cs, a, settings).plays[0]
+    return computeBuild(PRESETS, 'Rita', a, settings).plays[0]
   }
   const text = (id: string, change: (a: Build) => void = () => {}) => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     change(a)
     const p = preset(id)
     const c = cardFromPreset(p, 'Justice')
-    const buffs = activeBuffs(PRESETS, 'Rita', cs, a, settings)
+    const buffs = activeBuffs(PRESETS, 'Rita', a, settings)
     return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: (n) => a.potentialNodes?.[n] !== false, pct: (base, fixed) => shownPct(base, c, a, rita, buffs, settings, fixed) })
   }
 

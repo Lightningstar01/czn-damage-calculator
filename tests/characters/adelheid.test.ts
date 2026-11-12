@@ -25,11 +25,11 @@ describe('Adelheid', () => {
   const stat = 100 * 0.3 + 100 * 2.1
 
   it("card text matches the owner's in-game screenshots", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     const text = (id: string) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Void')
-      const buffs = activeBuffs(PRESETS, 'Adelheid', cs, a, settings)
+      const buffs = activeBuffs(PRESETS, 'Adelheid', a, settings)
       return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: () => true, pct: (base, fixed) => shownPct(base, c, a, adel, buffs, settings, fixed) })
     }
     expect(text('card-1126')).toBe('300% Shield\nFixed Heal equal to Shield in possession\n(cannot exceed 30% of max HP)')
@@ -58,7 +58,7 @@ describe('Adelheid', () => {
     addCards(cs, truth, truth3, pack)
     a.rotation = [{ cardId: truth.id },
       { cardId: pack.id, stacks: { 'Truth Behind A Story (on target)': 1, 'Truth Behind A Story III': 1, 'Doggies in hand': 2 } }]
-    const r = computeBuild(PRESETS, 'Adelheid', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Adelheid', a, settings)
     expect(r.plays[0].nonCrit).toBeCloseTo(2.28 * stat * 0.35)
     // 228% x (1 + 100% + 2 x 50%) + 100% taken
     expect(r.plays[1].nonCrit).toBeCloseTo((2.28 * 3 + 1) * stat * 0.35)
@@ -73,7 +73,7 @@ describe('Adelheid', () => {
       addCards(cs, protect)
       a.rotation = [{ cardId: 'g', stacks: { 'Protect Us V': 1 } }]
       expect(buildDeck(adel, a).find((i) => i.card.id === 'g')!.card.tags).toBe(on ? 'Basic, Basic Attack, Blessing' : 'Basic, Basic Attack')
-      const r = computeBuild(PRESETS, 'Adelheid', cs, a, settings)
+      const r = computeBuild(PRESETS, 'Adelheid', a, settings)
       expect(r.plays[0].nonCrit).toBeCloseTo(1.1 * (on ? 1.6 : 1) * stat * 0.35)
     }
   })
@@ -84,7 +84,7 @@ describe('Adelheid', () => {
       const gather = card('card-1127')
       addCards(cs, gather)
       a.rotation = [{ cardId: gather.id, stacks: { 'Bliss of Dreams': 12 } }]
-      const r = computeBuild(PRESETS, 'Adelheid', cs, a, settings)
+      const r = computeBuild(PRESETS, 'Adelheid', a, settings)
       // E6 includes E5's +3 Basic levels (Basic 8)
       const basic = ego >= 5 ? 1.16 : 1.1
       expect(r.plays[0].nonCrit).toBeCloseTo(basic * (1 + value) * stat * 0.35)

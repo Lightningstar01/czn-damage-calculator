@@ -21,9 +21,9 @@ export function useCardText(teammate?: Pick<Teammate, 'character' | 'build' | 'e
   const main = useCharacter()!
   const linked = useLinked(teammate)
   const { data: { settings, characters } } = useStore()
-  const { name, cs, build } = linked ? { name: teammate!.character, ...linked } : main
+  const { name, build } = linked ? { name: teammate!.character, ...linked } : main
   const ch = findCharacter(PRESETS, teammate?.character ?? name)
-  const buffs = useMemo(() => activeBuffs(PRESETS, name, cs, withLinkedTeam(build, characters), settings), [name, cs, build, settings, characters])
+  const buffs = useMemo(() => activeBuffs(PRESETS, name, withLinkedTeam(build, characters), settings), [name, build, settings, characters])
   return (p) => teammate && !linked
     ? renderCardText(p.text, { egoLevel: teammate.egoLevel ?? 0, nodeOn: () => true, pct: (base) => base })
     : renderCardText(p.text, {

@@ -19,10 +19,10 @@ describe('Mei Lin', () => {
   const unit = 100 * 0.35
   /** The plays' hits, with the deck holding these presets (ids 'd0', 'd1'...). */
   const run = (deck: string[], rotation: RotationPlay[], change?: (a: Build) => void) => {
-    const { cs, a } = ownerBuild(change)
+    const { a } = ownerBuild(change)
     a.deck = deck.map((preset, i) => ({ id: `d${i}`, preset }))
     a.rotation = rotation
-    return computeBuild(PRESETS, 'Mei Lin', cs, a, settings).plays
+    return computeBuild(PRESETS, 'Mei Lin', a, settings).plays
   }
 
   it("Jewel's and Unity's buffs are multiplicative and add up (Summed); Jewel applies Passion Weakness", () => {

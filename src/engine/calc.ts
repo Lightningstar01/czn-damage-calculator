@@ -4,7 +4,7 @@ import { buildDeck, buildNodeOn, counterHitsList, deckPresets, presetCard, teamm
 import { activeBuffs, activeCounters, activeStats, buffMatches, cardBuffs, findCharacter, findFragmentSet, findPartner, unreadableValues, type ActiveBuff, type ActiveStat, type CardBuffs, type PlayCounter, type Source } from './buffs'
 import { deletedLinks, teammateView, withLinkedTeam, type Saves } from './team'
 import { NO_ENEMY } from './types'
-import type { Build, Card, CharacterPreset, CharacterSave, CounterHits, Enemy, Fight, LiveBuild, PotentialUpgrade, Presets, RotationPlay, Settings, StatName, Trigger } from './types'
+import type { Build, Card, CharacterPreset, CounterHits, Enemy, Fight, LiveBuild, PotentialUpgrade, Presets, RotationPlay, Settings, StatName, Trigger } from './types'
 
 export interface Stat {
   value: number
@@ -154,8 +154,8 @@ function sumStat(stats: ActiveStat[], name: StatName): Stat {
 }
 
 /** Final stats: stats screen + boosts. ATK/DEF = screen x (1 + %) + flat. */
-export function finalStats(presets: Presets, charName: string, cs: CharacterSave, build: LiveBuild, settings: Settings): FinalStats {
-  const st = activeStats(presets, charName, cs, build)
+export function finalStats(presets: Presets, charName: string, build: LiveBuild, settings: Settings): FinalStats {
+  const st = activeStats(presets, charName, build)
   const s = build.stats
   const element = findCharacter(presets, charName)?.element
   const screen = (label: string, value: number, unit: Source['unit']): Source => ({ label: `Stats screen ${label}`, value, unit })
@@ -269,13 +269,13 @@ interface Member {
   }
 }
 
-function member(presets: Presets, name: string, cards: Card[], dmg?: { cs: CharacterSave; build: LiveBuild }, settings?: Settings): Member {
+function member(presets: Presets, name: string, cards: Card[], dmg?: { build: LiveBuild }, settings?: Settings): Member {
   const ch = findCharacter(presets, name)
   const m: Member = { name, ch, cards: new Map(cards.map((c) => [c.id, c])) }
   if (dmg && settings) {
-    const buffs = activeBuffs(presets, name, dmg.cs, dmg.build, settings)
+    const buffs = activeBuffs(presets, name, dmg.build, settings)
     m.dmg = {
-      build: dmg.build, stats: finalStats(presets, name, dmg.cs, dmg.build, settings),
+      build: dmg.build, stats: finalStats(presets, name, dmg.build, settings),
       fixedBuffs: buffs.filter((b) => !b.counter), counterBuffs: buffs.filter((b) => b.counter), caps: activeCounters(buffs),
     }
   }
@@ -300,16 +300,16 @@ const shownCounters = (card: Card, play: RotationPlay, read: { name: string; sta
 
 /** Damage of every hit of every play in the build's attack list: the build's character's plays and (with `saves`, for teammates
  * linked to a saved build) their teammates', plus the hits the team's triggers add. fight: the enemy everyone hits (none: no modifiers). */
-export function computeBuild(presets: Presets, charName: string, cs: CharacterSave, build: Build, settings: Settings,
+export function computeBuild(presets: Presets, charName: string, build: Build, settings: Settings,
   saves: Saves = {}, fight?: Pick<Fight, 'enemies'>): BuildResult {
   const enemy = fight?.enemies[0] ?? NO_ENEMY
   const team = withLinkedTeam(build, saves)
   const ch = findCharacter(presets, charName)
   const warnings = setupWarnings(presets, charName, ch, team)
-  warnings.push(...deletedLinks(build, saves), ...unreadableValues(cs, build))
+  warnings.push(...deletedLinks(build, saves), ...unreadableValues(build))
   if (enemy.defMult <= 0) warnings.push("The fight's enemy DEF multiplier is 0, so every hit deals 0 (Setup tab, Fight).")
   const mainDeck = buildDeck(ch, team)
-  const main = member(presets, charName, mainDeck.map((i) => i.card), { cs, build: team }, settings)
+  const main = member(presets, charName, mainDeck.map((i) => i.card), { build: team }, settings)
   const members: (Member | undefined)[] = []
   const triggers: { t: Trigger; owner: Member; slot?: number }[] =
     memberTriggers(ch, team.egoLevel ?? 0, mainDeck).map((t) => ({ t, owner: main }))

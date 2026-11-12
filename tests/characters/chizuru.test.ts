@@ -20,19 +20,19 @@ describe('Chizuru', () => {
     return { cs, a }
   }
   const play = (attack: number, picks: string[], cardId: string, stacks: Record<string, number> = {}, edit: (a: Build) => void = () => {}) => {
-    const { cs, a } = ownerBuild(attack)
+    const { a } = ownerBuild(attack)
     a.deck.push(...picks.map((id) => ({ id, preset: id })))
     edit(a)
     a.rotation = [{ cardId, stacks }]
-    return computeBuild(PRESETS, 'Chizuru', cs, a, settings).plays[0]
+    return computeBuild(PRESETS, 'Chizuru', a, settings).plays[0]
   }
 
   it("card text matches the owner's in-game screenshots", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     const text = (id: string) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Void')
-      const buffs = activeBuffs(PRESETS, 'Chizuru', cs, a, settings)
+      const buffs = activeBuffs(PRESETS, 'Chizuru', a, settings)
       return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: () => true, pct: (base, fixed) => shownPct(base, c, a, chi, buffs, settings, fixed) })
     }
     expect(text('card-793')).toBe('500% Damage\n+100% Damage Amount for each Shadow of the Moon created (max 10)')

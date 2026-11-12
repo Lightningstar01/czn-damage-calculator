@@ -61,7 +61,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const name = data.activeCharacter
     const cs = data.characters[name]
     const m = new Map<string, BuildResult>()
-    if (cs) for (const b of cs.builds) m.set(b.id, computeBuild(PRESETS, name, cs, b, data.settings, data.characters, activeFight(data)))
+    if (cs) for (const b of cs.builds) m.set(b.id, computeBuild(PRESETS, name, b, data.settings, data.characters, activeFight(data)))
     return m
   }, [data])
   const store = useMemo(() => ({ data, update, replace, unreadable, saveFailed, stale, results }),

@@ -24,18 +24,18 @@ describe('Maribell', () => {
   const UNIT = (252 * 0.3 + 129 * 2.1) * 0.35
   const COUNTER = 'auto:counterattack'
   const damage = (id: string, play: Partial<RotationPlay> = {}, change: (a: Build) => void = () => {}, pick = id) => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'c', preset: pick })
     change(a)
     a.rotation = [{ cardId: id === COUNTER ? COUNTER : 'c', ...play }]
-    return computeBuild(PRESETS, 'Maribell', cs, a, settings).plays[0].nonCrit
+    return computeBuild(PRESETS, 'Maribell', a, settings).plays[0].nonCrit
   }
   const text = (id: string, change: (a: Build) => void = () => {}) => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     change(a)
     const p = preset(id)
     const c = cardFromPreset(p, 'Passion')
-    const buffs = activeBuffs(PRESETS, 'Maribell', cs, a, settings)
+    const buffs = activeBuffs(PRESETS, 'Maribell', a, settings)
     return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: (n) => a.potentialNodes?.[n] !== false, pct: (base, fixed) => shownPct(base, c, a, maribell, buffs, settings, fixed) })
   }
 
@@ -85,10 +85,10 @@ describe('Maribell', () => {
   })
 
   it('Shelter Strike without Shield owned deals nothing, and says so', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'c', preset: 'card-336' })
     a.rotation = [{ cardId: 'c' }]
-    const r = computeBuild(PRESETS, 'Maribell', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Maribell', a, settings)
     expect(r.plays[0].nonCrit).toBe(0)
     expect(r.warnings.join()).toContain('Shield owned')
     expect(r.counterOptions[0].map((c) => c.name)).toContain('Shield owned')
@@ -96,12 +96,12 @@ describe('Maribell', () => {
 
   it('with potentialFixed on, the text and the damage agree: E1\'s +50% comes after the upgrade', () => {
     const on = { ...settings, potentialFixed: true }
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'c', preset: 'card-336' })
     a.rotation = [{ cardId: 'c', stacks: { 'Shield owned': 400 } }]
-    expect(computeBuild(PRESETS, 'Maribell', cs, a, on).plays[0].nonCrit).toBeCloseTo(1.62 * 400)
+    expect(computeBuild(PRESETS, 'Maribell', a, on).plays[0].nonCrit).toBeCloseTo(1.62 * 400)
     const p = preset('card-336')
-    const shown = renderCardText(p.text, { egoLevel: 6, nodeOn: () => false, pct: (base, fixed) => shownPct(base, cardFromPreset(p, 'Passion'), a, maribell, activeBuffs(PRESETS, 'Maribell', cs, a, on), on, fixed) })
+    const shown = renderCardText(p.text, { egoLevel: 6, nodeOn: () => false, pct: (base, fixed) => shownPct(base, cardFromPreset(p, 'Passion'), a, maribell, activeBuffs(PRESETS, 'Maribell', a, on), on, fixed) })
     expect(shown).toContain('162%')
   })
 
@@ -110,10 +110,10 @@ describe('Maribell', () => {
   })
 
   it('Shield owned counters are amounts, whatever they are called; the others are stacks', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'c', preset: 'card-336' }, { id: 'd', preset: 'card-316' }, { id: 'e', preset: 'card-312' })
     a.rotation = [{ cardId: 'c' }, { cardId: 'd' }, { cardId: COUNTER }]
-    const r = computeBuild(PRESETS, 'Maribell', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Maribell', a, settings)
     const amount = (i: number, name: string) => r.counterOptions[i].find((c) => c.name === name)?.amount
     expect(amount(0, 'Shield owned')).toBe(true)
     expect(amount(1, 'Shield owned')).toBe(true)
@@ -126,16 +126,16 @@ describe('Maribell', () => {
     const noStats = (a: Build) => { a.stats.attack = 0; a.stats.defense = 0 }
     expect(damage('card-316', { stacks }, noStats)).toBeCloseTo(120)
     expect(damage('card-316', { vulnerable: true, stacks }, noStats)).toBeCloseTo(120 * (1 + settings.vulnerable))
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'c', preset: 'card-336' })
     a.rotation = [{ cardId: 'c', stacks }]
-    cs.buffs.push({ ...newBuff(a.id), value: '5000', typeOverride: 'Flat', appliesTo: 'Shelter Strike' })
-    expect(computeBuild(PRESETS, 'Maribell', cs, a, settings).plays[0].nonCrit).toBeCloseTo(1.5 * 400 + 50)
+    a.buffs.push({ ...newBuff(), value: '5000', typeOverride: 'Flat', appliesTo: 'Shelter Strike' })
+    expect(computeBuild(PRESETS, 'Maribell', a, settings).plays[0].nonCrit).toBeCloseTo(1.5 * 400 + 50)
     // In hand and on target stay the card's %
     const blitz = ownerBuild()
     blitz.a.deck.push({ id: 'c', preset: 'card-316' })
     blitz.a.rotation = [{ cardId: 'c', stacks }]
-    const hit = computeBuild(PRESETS, 'Maribell', blitz.cs, blitz.a, settings).plays[0].hits[0]
+    const hit = computeBuild(PRESETS, 'Maribell', blitz.a, settings).plays[0].hits[0]
     expect(hit.inHand).toBeCloseTo(2.1 * 1.12)
     expect(hit.flat?.value).toBeCloseTo(120)
   })

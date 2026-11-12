@@ -22,11 +22,11 @@ describe('Diana', () => {
   const sum = (xs: { nonCrit: number }[]) => xs.reduce((s, t) => s + t.nonCrit, 0)
 
   it("card text matches the owner's in-game screenshots", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     const text = (id: string) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Passion')
-      const buffs = activeBuffs(PRESETS, 'Diana', cs, a, gameSettings)
+      const buffs = activeBuffs(PRESETS, 'Diana', a, gameSettings)
       return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: (n) => a.potentialNodes?.[n] !== false,
         pct: (base, fixed) => shownPct(base, c, a, diana, buffs, gameSettings, fixed) })
     }
@@ -46,10 +46,10 @@ describe('Diana', () => {
   })
 
   it('Resonance: one unraised 80% Extra Attack per activation set on any play', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'pp', preset: 'card-1048' })
     a.rotation = [{ cardId: 'pp' }, { cardId: 'pp', stacks: { 'Resonance activations': 3 } }]
-    const r = computeBuild(PRESETS, 'Diana', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Diana', a, settings)
     expect(r.plays[0].nonCrit).toBeCloseTo(1.2 * sig * 35)
     expect(r.plays[0].triggered).toEqual([])
     expect(r.plays[1].nonCrit).toBeCloseTo((1.2 * sig + 3 * 0.8) * 35)
@@ -58,11 +58,11 @@ describe('Diana', () => {
   })
 
   it("Heart Breaker's discard and Cupid Shot's per-Bullet Extra Attacks are raised by the Signature upgrade", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'wamh', preset: 'card-1036' })
     a.rotation = [{ cardId: 'auto:card-1062', stacks: { 'Heart Breakers Discarded': 2 } },
       { cardId: 'auto:card-1063', stacks: { 'Bullet cards in hand': 3 } }]
-    const r = computeBuild(PRESETS, 'Diana', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Diana', a, settings)
     // a play's total includes the hits it triggers
     expect(r.plays[0].nonCrit).toBeCloseTo((0.8 + 2 * 1.2) * sig * 35)
     expect(sum(r.plays[0].triggered)).toBeCloseTo(2 * 1.2 * sig * 35)
@@ -72,11 +72,11 @@ describe('Diana', () => {
   })
 
   it('Liberated Feelings x(1 + 30% per different Bullet), Pistol IV +100% base per Bullet, Blooming Love IV 80% per Bullet', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'lf', preset: 'card-1060' }, { id: 'p4', preset: 'card-1052' }, { id: 'bl4', preset: 'card-1058' })
     a.rotation = [{ cardId: 'lf', stacks: { 'Different Bullet cards in hand': 2 } }, { cardId: 'p4', stacks: { 'Bullets Discarded this turn': 2 } },
       { cardId: 'bl4', stacks: { 'Bullet cards Discarded': 4 } }]
-    const r = computeBuild(PRESETS, 'Diana', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Diana', a, settings)
     expect(r.plays[0].nonCrit).toBeCloseTo(3 * sig * 1.6 * 35)
     expect(r.plays[1].nonCrit).toBeCloseTo((1.8 * sig + 2) * 35)
     expect(r.plays[2].hits).toHaveLength(4)
@@ -84,14 +84,14 @@ describe('Diana', () => {
   })
 
   it('E2 Flutters: 200% Extra Attack, by 10% per Flutters (max 20 below E6); E4 +30% and +1% per Flutters', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.egoLevel = 2
     a.rotation = [{ cardId: 'auto:flutters', stacks: { Flutters: 25 } }]
-    let r = computeBuild(PRESETS, 'Diana', cs, a, settings)
+    let r = computeBuild(PRESETS, 'Diana', a, settings)
     expect(r.plays[0].nonCrit).toBeCloseTo(2 * (1 + 2) * 35)
     a.egoLevel = 4
     a.rotation = [{ cardId: 'auto:flutters', stacks: { Flutters: 10 } }]
-    r = computeBuild(PRESETS, 'Diana', cs, a, settings)
+    r = computeBuild(PRESETS, 'Diana', a, settings)
     expect(r.plays[0].nonCrit).toBeCloseTo((2 * 2 + 0.3 + 0.1) * 35)
   })
 })

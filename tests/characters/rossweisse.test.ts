@@ -20,11 +20,11 @@ describe('Rossweisse', () => {
   }
 
   it("card text matches the owner's in-game screenshots", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     const text = (id: string) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Justice')
-      const buffs = activeBuffs(PRESETS, 'Rossweisse', cs, a, settings)
+      const buffs = activeBuffs(PRESETS, 'Rossweisse', a, settings)
       return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: () => true, pct: (base) => shownPct(base, c, a, ross, buffs, settings) })
     }
     expect(text('card-1381')).toBe('102% Damage')
@@ -47,7 +47,7 @@ describe('Rossweisse', () => {
     const [apostle, blade, ego] = ['card-1407', 'card-1383', 'card-1380'].map((id) => cardFromPreset(preset(id), 'Justice'))
     addCards(cs, apostle, blade, ego)
     a.rotation = [{ cardId: ego.id }, { cardId: blade.id, stacks: { 'Sword Tassel': 2 } }, { cardId: blade.id }]
-    let r = computeBuild(PRESETS, 'Rossweisse', cs, a, settings)
+    let r = computeBuild(PRESETS, 'Rossweisse', a, settings)
     // Ego skill: 1200%, a Skill, so not Kyrken's Aegis (Attack cards); ATK 500 x 0.35 = 175 per 100%
     expect(r.plays[0].nonCrit).toBeCloseTo(12 * 175)
     // Flicker Blade: (400% x 1.2 + 2 x 80%) x 1.3 (Aegis E1) x 1.2 (final), then + 30% Fixed from the Ego skill
@@ -60,17 +60,17 @@ describe('Rossweisse', () => {
     expect(r.plays[2].nonCrit).toBeCloseTo(4.8 * 1.3 * 175 * 1.2)
     // Below E1: Kyrken's Aegis is 20% / final 15%
     a.egoLevel = 0
-    r = computeBuild(PRESETS, 'Rossweisse', cs, a, settings)
+    r = computeBuild(PRESETS, 'Rossweisse', a, settings)
     expect(r.plays[2].nonCrit).toBeCloseTo(4.8 * 1.2 * 175 * 1.15)
     // E3: Fixed 60%, Ego skill +400% (part of its card %)
     a.egoLevel = 3
-    r = computeBuild(PRESETS, 'Rossweisse', cs, a, settings)
+    r = computeBuild(PRESETS, 'Rossweisse', a, settings)
     expect(r.plays[0].nonCrit).toBeCloseTo(16 * 175 * 1.2)
     expect(r.plays[1].followUp?.share).toBe(0.6)
     expect(r.warnings).toEqual([])
     // With no Equilux play after it, its share is lost: Results says so
     a.rotation = [{ cardId: blade.id }, { cardId: ego.id }]
-    expect(computeBuild(PRESETS, 'Rossweisse', cs, a, settings).warnings).toEqual([
+    expect(computeBuild(PRESETS, 'Rossweisse', a, settings).warnings).toEqual([
       "Play 2 (Flickering White Night): its damage goes on the next Equilux card played, and none follows it, so that part isn't counted."])
   })
 

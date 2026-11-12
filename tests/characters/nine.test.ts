@@ -24,19 +24,19 @@ describe('Nine', () => {
   }
   const unit = (def: number) => (138 * 0.3 + def * 2.1) * 0.35
   const damage = (id: string, play: Partial<RotationPlay> = {}, change: (a: Build) => void = () => {}, def = 50, pick = id) => {
-    const { cs, a } = ownerBuild(def)
+    const { a } = ownerBuild(def)
     a.deck.push({ id: 'c', preset: pick })
     change(a)
     a.rotation = [{ cardId: id === pick ? 'c' : `auto:${id}`, ...play }]
-    return computeBuild(PRESETS, 'Nine', cs, a, settings).plays[0].nonCrit
+    return computeBuild(PRESETS, 'Nine', a, settings).plays[0].nonCrit
   }
 
   it("card text matches the owner's in-game screenshots", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     const text = (id: string) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Order')
-      const buffs = activeBuffs(PRESETS, 'Nine', cs, a, settings)
+      const buffs = activeBuffs(PRESETS, 'Nine', a, settings)
       return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: () => false, pct: (base, fixed) => shownPct(base, c, a, nine, buffs, settings, fixed) })
     }
     expect(text('card-884')).toBe('250% Defense-Based Damage to all enemies\n+50% Damage Amount for each point of the combined Cost of the 2 highest-Cost cards, then Exhaust those cards')

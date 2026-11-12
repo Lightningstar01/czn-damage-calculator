@@ -7,6 +7,7 @@
 // the imported card ids, so a re-import never overwrites them. Partners (partners/<slug>.ts) and fragment sets
 // (fragmentSets.ts) are entered by hand.
 import type { CharacterAdditions, ImportedCharacter, PartnerPreset, Presets } from '../engine/types'
+import { WEAPON_ATK } from './equipment'
 import { FRAGMENT_SETS } from './fragmentSets'
 import { mergeCharacter } from './merge'
 
@@ -27,4 +28,5 @@ export const PRESETS: Presets = {
     .sort((a, b) => a.name.localeCompare(b.name)),
   partners: Object.values(PARTNERS),
   fragmentSets: FRAGMENT_SETS,
+  weaponAtk: WEAPON_ATK,
 }

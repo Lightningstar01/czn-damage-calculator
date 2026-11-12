@@ -158,7 +158,7 @@ describe('card presets', () => {
     const strike = cardFromPreset(preset('card-338'), 'Passion')
     addCards(cs, strike)
     setPlays(cs, plays(strike.id))
-    const mult = () => computeBuild(PRESETS, 'Mei Lin', cs, a, settings).plays[0].hits[0].cardMult
+    const mult = () => computeBuild(PRESETS, 'Mei Lin', a, settings).plays[0].hits[0].cardMult
     expect(mult()).toBeCloseTo(1)
     a.egoLevel = 3
     expect(mult()).toBeCloseTo(1)
@@ -193,14 +193,14 @@ describe('card presets', () => {
     expect(cardFromPreset(preset('card-337'), 'Passion').cost).toBeNull()
     addCards(cs, strike)
     setPlays(cs, plays(strike.id))
-    const before = computeBuild(PRESETS, 'Mei Lin', cs, a, settings)
+    const before = computeBuild(PRESETS, 'Mei Lin', a, settings)
     expect(before.plays[0].hits[0].cardMult).toBeCloseTo(1)
     addCards(cs, jewel, { ...jewel, id: 'copy' })   // a second copy doesn't double the buff
-    const after = computeBuild(PRESETS, 'Mei Lin', cs, a, settings)
+    const after = computeBuild(PRESETS, 'Mei Lin', a, settings)
     // Jewel I: 30% multiplicative on Attack cards, plus Passion Weakness (Weakness DMG 125%)
     expect(after.plays[0].hits[0].cardMult).toBeCloseTo(1.3 * 1.25)
     a.presetSwitches["Flame Dragon's Jewel I|weak"] = false
-    expect(computeBuild(PRESETS, 'Mei Lin', cs, a, settings).plays[0].hits[0].cardMult).toBeCloseTo(1.3)
+    expect(computeBuild(PRESETS, 'Mei Lin', a, settings).plays[0].hits[0].cardMult).toBeCloseTo(1.3)
   })
 })
 
@@ -234,7 +234,7 @@ describe('potentials', () => {
     const own = { ...newCard('Passion'), pct: 1.5 }
     addCards(cs, strike, spire, own)
     setPlays(cs, plays(strike.id, spire.id, own.id))
-    const mults = () => computeBuild(PRESETS, 'Mei Lin', cs, a, settings).plays.map((p) => p.hits[0].cardMult)
+    const mults = () => computeBuild(PRESETS, 'Mei Lin', a, settings).plays.map((p) => p.hits[0].cardMult)
     // Strike also has potential 5-1: +5%, +5% more from 500 Attack (x1.1 on the card %)
     expect(mults()).toEqual([1.1, spire.pct, 1.5].map((x) => expect.closeTo(x)))
     a.basicLevel = 10
@@ -261,7 +261,7 @@ describe('potentials', () => {
     const text = (id: string) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Passion')
-      const buffs = activeBuffs(PRESETS, 'Mei Lin', cs, a, settings)
+      const buffs = activeBuffs(PRESETS, 'Mei Lin', a, settings)
       return renderCardText(p.text, {
         egoLevel: a.egoLevel, nodeOn: (n) => a.potentialNodes?.[n] !== false, pct: (base) => shownPct(base, c, a, mei, buffs, settings),
       })
@@ -288,9 +288,9 @@ describe('potentials', () => {
     const fixed: Card = { ...newCard('Passion'), scaling: 'Fixed', pct: 1, upgrade: 'Signature' }
     addCards(cs, fixed)
     setPlays(cs, plays(fixed.id))
-    expect(computeBuild(PRESETS, 'Mei Lin', cs, a, settings).nonCrit).toBeCloseTo(35)
-    expect(computeBuild(PRESETS, 'Mei Lin', cs, a, { ...settings, potentialFixed: true }).nonCrit).toBeCloseTo(42)
-    expect(computeBuild(PRESETS, 'Mei Lin', cs, a, { ...settings, fixedAtkCoef: 1 }).nonCrit).toBeCloseTo(100)
+    expect(computeBuild(PRESETS, 'Mei Lin', a, settings).nonCrit).toBeCloseTo(35)
+    expect(computeBuild(PRESETS, 'Mei Lin', a, { ...settings, potentialFixed: true }).nonCrit).toBeCloseTo(42)
+    expect(computeBuild(PRESETS, 'Mei Lin', a, { ...settings, fixedAtkCoef: 1 }).nonCrit).toBeCloseTo(100)
   })
 })
 

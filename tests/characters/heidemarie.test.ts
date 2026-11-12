@@ -19,11 +19,11 @@ describe('Heidemarie', () => {
   }
   const text = (id: string, b = ownerBuild()) => {
     const p = preset(id)
-    const buffs = activeBuffs(PRESETS, 'Heidemarie', b.cs, b.a, settings)
+    const buffs = activeBuffs(PRESETS, 'Heidemarie', b.a, settings)
     return renderCardText(p.text, { egoLevel: b.a.egoLevel, nodeOn: (n) => b.a.potentialNodes?.[n] !== false,
       pct: (base, fixed, of) => shownPct(base, cardFromPreset(of ? preset(of) : p, 'Passion'), b.a, heidemarie, buffs, settings, fixed) })
   }
-  const run = (b: ReturnType<typeof ownerBuild>) => computeBuild(PRESETS, 'Heidemarie', b.cs, b.a, settings)
+  const run = (b: ReturnType<typeof ownerBuild>) => computeBuild(PRESETS, 'Heidemarie', b.a, settings)
 
   it("card text matches the owner's in-game screenshots", () => {
     expect(text('card-1064')).toBe('400% Damage\n+80% Damage Amount for each card Discarded this battle (max 20 cards)')

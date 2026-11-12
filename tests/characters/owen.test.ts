@@ -21,11 +21,11 @@ describe('Owen', () => {
   const atk = 100 * 0.35
 
   it("card text matches the owner's in-game screenshots", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     const text = (id: string) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Passion')
-      const buffs = activeBuffs(PRESETS, 'Owen', cs, a, settings)
+      const buffs = activeBuffs(PRESETS, 'Owen', a, settings)
       return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: () => true, pct: (base, fixed) => shownPct(base, c, a, owen, buffs, settings, fixed) })
     }
     expect(text('card-365')).toBe('300% Damage\n300% Shield')
@@ -48,56 +48,56 @@ describe('Owen', () => {
   })
 
   it('E1 and E4 raise the shown %s: Gale Strike (300% + 50%) x 1.06, Raging Storm 250% + 50%', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'gs', preset: 'card-392' })
     a.rotation = [{ cardId: 'gs' }, { cardId: 'auto:card-365' }]
-    const r = computeBuild(PRESETS, 'Owen', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Owen', a, settings)
     expect(r.plays[0].nonCrit).toBeCloseTo(3.5 * up * atk)
     expect(r.plays[1].nonCrit).toBeCloseTo(3 * atk)
   })
 
   it('Downward Cut: 3-1 and 5-1 add before the upgrade, 5-1 doubles at Health 600', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.potentialNodes = {}
     a.stats.health = 600
     a.deck.push({ id: 'dc', preset: 'card-366' })
     a.rotation = [{ cardId: 'dc' }]
-    expect(computeBuild(PRESETS, 'Owen', cs, a, settings).plays[0].nonCrit).toBeCloseTo((1 + 0.3 + 0.1) * up * atk)
+    expect(computeBuild(PRESETS, 'Owen', a, settings).plays[0].nonCrit).toBeCloseTo((1 + 0.3 + 0.1) * up * atk)
     a.stats.health = 599
-    expect(computeBuild(PRESETS, 'Owen', cs, a, settings).plays[0].nonCrit).toBeCloseTo((1 + 0.3 + 0.05) * up * atk)
+    expect(computeBuild(PRESETS, 'Owen', a, settings).plays[0].nonCrit).toBeCloseTo((1 + 0.3 + 0.05) * up * atk)
   })
 
   it('Wind Charge II / V: the decrease is on the play switched on, with the hits set on it', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'dc', preset: 'card-366' }, { id: 'w2', preset: 'card-370' }, { id: 'w5', preset: 'card-373' })
     a.rotation = [{ cardId: 'dc', hits: 2, stacks: { 'Wind Charge II': 1 } }, { cardId: 'dc', hits: 4, stacks: { 'Wind Charge V': 1 } }, { cardId: 'dc' }]
-    const r = computeBuild(PRESETS, 'Owen', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Owen', a, settings)
     expect(r.plays[0].nonCrit).toBeCloseTo(2 * up * 0.75 * atk)
     expect(r.plays[1].nonCrit).toBeCloseTo(4 * up * 0.5 * atk)
     expect(r.plays[2].nonCrit).toBeCloseTo(up * atk)
   })
 
   it("Wind Charge II's decrease reaches a teammate's next Attack Card, V's doesn't", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     const ml = newCharacterSave()
     ml.builds[0].stats.attack = 100
     a.deck.push({ id: 'w2', preset: 'card-370' }, { id: 'w5', preset: 'card-373' })
     a.team = [{ ...newTeammate(), character: 'Mei Lin', cards: ['card-338'] }]
     a.rotation = [{ cardId: 'card-338', by: 0 }, { cardId: 'card-338', by: 0, stacks: { 'Wind Charge II': 1 } }, { cardId: 'card-338', by: 0, stacks: { 'Wind Charge V': 1 } }]
-    const r = computeBuild(PRESETS, 'Owen', cs, a, settings, { 'Mei Lin': ml })
+    const r = computeBuild(PRESETS, 'Owen', a, settings, { 'Mei Lin': ml })
     expect(r.plays[0].nonCrit).toBeCloseTo(1.05 * 100 * 0.35)   // Mei Lin's Strike: 100% + her 5-1's +5% (Attack under 500)
     expect(r.plays[1].nonCrit).toBeCloseTo(r.plays[0].nonCrit * 0.75)
     expect(r.plays[2].nonCrit).toBeCloseTo(r.plays[0].nonCrit)
   })
 
   it("Wind Charge III: 30% of one more hit on Owen's own Attack plays, without first-hit buffs", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     const ml = newCharacterSave()
     ml.builds[0].stats.attack = 100
     a.deck.push({ id: 'dc', preset: 'card-366' }, { id: 'w3', preset: 'card-371' }, { id: 'wb', preset: 'card-367' }, { id: 'wc', preset: 'card-378' })
     a.team = [{ ...newTeammate(), character: 'Mei Lin', cards: ['card-338'] }]
     a.rotation = [{ cardId: 'dc', hits: 2 }, { cardId: 'wb' }, { cardId: 'wc' }, { cardId: 'card-338', by: 0 }]
-    const r = computeBuild(PRESETS, 'Owen', cs, a, settings, { 'Mei Lin': ml })
+    const r = computeBuild(PRESETS, 'Owen', a, settings, { 'Mei Lin': ml })
     expect(r.plays[0].triggered).toHaveLength(1)
     expect(r.plays[0].triggered[0].chance).toBe(0.3)
     expect(r.plays[0].triggered[0].hits[0].hitNo).toBe(3)
@@ -109,19 +109,19 @@ describe('Owen', () => {
   })
 
   it('Wind Charge III adds nothing to a play set to 0 hits', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'dc', preset: 'card-366' }, { id: 'w3', preset: 'card-371' })
     a.rotation = [{ cardId: 'dc', hits: 0 }]
-    const r = computeBuild(PRESETS, 'Owen', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Owen', a, settings)
     expect(r.plays[0].triggered).toEqual([])
     expect(r.plays[0].expected).toBe(0)
   })
 
   it('effect hits are unraised: Wind Riding II on each Wind Charge, Wind Slash IV per turn, E2 per move to hand', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'wr', preset: 'card-388' }, { id: 'wc', preset: 'card-368' }, { id: 'w1', preset: 'card-369' }, { id: 'ws', preset: 'card-378' }, { id: 'dc', preset: 'card-366' })
     a.rotation = [{ cardId: 'wr' }, { cardId: 'wc' }, { cardId: 'w1' }, { cardId: 'dc' }, { cardId: 'ws' }, { cardId: 'auto:e2-hit' }]
-    const r = computeBuild(PRESETS, 'Owen', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Owen', a, settings)
     expect(r.plays[0].nonCrit).toBe(0)
     expect(r.plays[1].nonCrit).toBeCloseTo(1.2 * atk)
     expect(r.plays[2].nonCrit).toBeCloseTo(1.2 * atk)
@@ -131,22 +131,22 @@ describe('Owen', () => {
   })
 
   it('the E2 hit joins the deck from E2, E6 adds +20% per Wind Charge this turn', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.egoLevel = 1
     a.rotation = [{ cardId: 'auto:e2-hit' }]
-    expect(computeBuild(PRESETS, 'Owen', cs, a, settings).plays).toHaveLength(0)
+    expect(computeBuild(PRESETS, 'Owen', a, settings).plays).toHaveLength(0)
     a.egoLevel = 6
     a.deck.push({ id: 'dc', preset: 'card-366' })
     a.rotation = [{ cardId: 'dc', stacks: { 'Wind Charges this turn': 2 } }]
     // E3 and E5: +6 levels
-    expect(computeBuild(PRESETS, 'Owen', cs, a, settings).plays[0].nonCrit).toBeCloseTo((1.12 + 0.4) * atk)
+    expect(computeBuild(PRESETS, 'Owen', a, settings).plays[0].nonCrit).toBeCloseTo((1.12 + 0.4) * atk)
   })
 
   it('Break Armor: I +80% on the target (additive), III and IV x1.3 on their own plays', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'b1', preset: 'card-381' }, { id: 'b3', preset: 'card-383' }, { id: 'b4', preset: 'card-384' }, { id: 'dc', preset: 'card-366' })
     a.rotation = [{ cardId: 'dc', stacks: { 'Fortitude decreased': 1 } }, { cardId: 'b3', stacks: { 'Target in a Vulnerable state': 1 } }, { cardId: 'b4', stacks: { 'Target has Shield': 1 } }, { cardId: 'b3', vulnerable: true }]
-    const r = computeBuild(PRESETS, 'Owen', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Owen', a, settings)
     expect(r.plays[0].nonCrit).toBeCloseTo((up + 0.8) * atk)
     expect(r.plays[1].nonCrit).toBeCloseTo(2.1 * up * 1.3 * atk)
     expect(r.plays[2].nonCrit).toBeCloseTo(2.1 * up * 1.3 * atk)

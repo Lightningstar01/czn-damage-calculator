@@ -161,8 +161,15 @@ email, and check that binary files such as spreadsheets carry no author name bef
   Target Ravaged, a follow-up with no matching play after it; shown on the Results tab.
   A card's `followUp` adds Fixed damage (a share of the next matching play's damage), e.g. Rossweisse's Ego skill.
 - Saves are per character: builds (partner, Manifest Ego level, card upgrade levels, 3 fragment set
-  picks, stats, team, deck, attack list...), boosts and buffs.
-  Preset switches that are missing count as on; own boost/buff switches that are missing count as off.
+  picks, stats, team, deck, attack list, equipment, own stat boosts and buffs...).
+  Preset switches that are missing count as on; own boost/buff switches (`on`) that are missing count as off.
+- Own stat boosts and buffs are per build (owner, 2026-11-11; `build.boosts`, `build.buffs`, each row with its own `on`): Duplicate copies
+  them and a change in one build never reaches another. The engine reads them from the build, so `computeBuild(presets, name, build, settings, saves, fight)` takes no character save.
+- Equipment (owner, 2026-11-11): `build.equipment.weapon.rarity` (Setup > Equipment) adds the weapon's flat Attack, Rare 74 / Legendary 82 / Unique 90
+  (`src/data/equipment.ts`, `Presets.weaponAtk`; the top of Prydwen's five values per rarity, in-game test weapon-flat-attack). The Stats screen numbers
+  are always the character screen's, never a battle's (no switch for it). Next, staged with the owner: import Prydwen's equipment page (249 pieces: name,
+  rarity, slot, text, source; the importer's `download()` can fetch it, WebFetch gets a 403) and a searchable picker for weapon, armor and trinket per build,
+  with the damage-relevant effects as presets and the rest shown as text marked not counted.
 - Constants and rules belong in settings, never hard-coded in the engine.
 - Document every new assumption with its source or "Unconfirmed": general rules in docs/FORMULA.md, one character's in
   docs/characters/<slug>.md, and add it to `tests/ingame/checks.ts` as a test the owner can run in-game.

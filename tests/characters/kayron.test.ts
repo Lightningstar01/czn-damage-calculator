@@ -21,11 +21,11 @@ describe('Kayron', () => {
   const sum = (xs: { nonCrit: number }[]) => xs.reduce((s, t) => s + t.nonCrit, 0)
 
   it("card text matches the owner's in-game screenshots", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     const text = (id: string) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Void')
-      const buffs = activeBuffs(PRESETS, 'Kayron', cs, a, gameSettings)
+      const buffs = activeBuffs(PRESETS, 'Kayron', a, gameSettings)
       return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: (n) => a.potentialNodes?.[n] !== false,
         pct: (base, fixed) => shownPct(base, c, a, kayron, buffs, gameSettings, fixed) })
     }
@@ -48,11 +48,11 @@ describe('Kayron', () => {
   })
 
   it('Black Hole III / IV take their added hits from Futility Exhausted (per stacks, capped)', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'b3', preset: 'card-205' }, { id: 'b4', preset: 'card-206' })
     const hits = (cardId: string, n: number) => {
       a.rotation = [{ cardId, stacks: { 'Futility Exhausted': n } }]
-      return computeBuild(PRESETS, 'Kayron', cs, a, settings).plays[0].hits.length
+      return computeBuild(PRESETS, 'Kayron', a, settings).plays[0].hits.length
     }
     expect(hits('b3', 0)).toBe(1)
     expect(hits('b3', 3)).toBe(4)
@@ -63,10 +63,10 @@ describe('Kayron', () => {
   })
 
   it("Black Hole V: a 100% Fixed hit per Futility play, and per Futility the Ego skill Exhausts; the Ego skill's +80% each", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'b5', preset: 'card-207' }, { id: 'oath', preset: 'card-208' })
     a.rotation = [{ cardId: 'auto:card-216' }, { cardId: 'auto:card-187', stacks: { 'Futility Exhausted by this card': 3 } }]
-    const r = computeBuild(PRESETS, 'Kayron', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Kayron', a, settings)
     expect(r.plays[0].triggered).toHaveLength(1)
     expect(sum(r.plays[0].triggered)).toBeCloseTo(35)
     expect(r.plays[0].nonCrit).toBeCloseTo(35 + 35)
@@ -77,14 +77,14 @@ describe('Kayron', () => {
   })
 
   it('Echoes of True Abyss: +120% base (3 created), +200% from E1 (5); E4 +10% per Echo of Paradox on Attack cards', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'abyss', preset: 'card-214' }, { id: 'elim', preset: 'card-188' })
     a.rotation = [{ cardId: 'abyss' }]
-    expect(computeBuild(PRESETS, 'Kayron', cs, a, settings).plays[0].nonCrit).toBeCloseTo((2.4 + 1.2) * 35)
+    expect(computeBuild(PRESETS, 'Kayron', a, settings).plays[0].nonCrit).toBeCloseTo((2.4 + 1.2) * 35)
     a.egoLevel = 1
-    expect(computeBuild(PRESETS, 'Kayron', cs, a, settings).plays[0].nonCrit).toBeCloseTo((2.4 + 2) * 35)
+    expect(computeBuild(PRESETS, 'Kayron', a, settings).plays[0].nonCrit).toBeCloseTo((2.4 + 2) * 35)
     a.egoLevel = 4
     a.rotation = [{ cardId: 'elim', stacks: { 'Echo of Paradox': 2 } }]
-    expect(computeBuild(PRESETS, 'Kayron', cs, a, settings).plays[0].nonCrit).toBeCloseTo((1 + 0.2) * 35)
+    expect(computeBuild(PRESETS, 'Kayron', a, settings).plays[0].nonCrit).toBeCloseTo((1 + 0.2) * 35)
   })
 })

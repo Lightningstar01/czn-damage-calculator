@@ -51,21 +51,22 @@ function StacksSection() {
 }
 
 function MyBuffsSection() {
-  const { name, cs, build, updateCs } = useCharacter()!
+  const { name, build, updateBuild } = useCharacter()!
   const [open, setOpen] = useState<string | null>(null)
+  const buffs = build.buffs ?? []
   const deck = buildDeck(findCharacter(PRESETS, name), build).map((i) => i.card)
   const targets = ['ALL', ...new Set(deck.flatMap((c) => [c.name, ...c.tags.split(',').map((t) => t.trim())]))].filter(Boolean)
   return (
-    <Section title="My buffs" help="Buffs from memory fragments, equipment, other characters, etc. Type the text as shown in-game: '+30%' is additive, '30%' (no +) is multiplicative, 'Weakness Attack' makes Weakness DMG apply. For crit bonuses that only some cards get, pick Crit Chance / Crit DMG as the type. Card % raises a card's base % like a potential (only on cards with a potential upgrade, entered at base %). Card + adds to a card's base % before the potential, as Potential nodes do. Base % ('+X% base Damage Amount') is added to the card % after the potential. Final ('final Damage Amount') is its own multiplier."
+    <Section title="My buffs" help="This build's own list (Duplicate copies it): buffs from equipment, other characters, etc. Type the text as shown in-game: '+30%' is additive, '30%' (no +) is multiplicative, 'Weakness Attack' makes Weakness DMG apply. For crit bonuses that only some cards get, pick Crit Chance / Crit DMG as the type. Card % raises a card's base % like a potential (only on cards with a potential upgrade, entered at base %). Card + adds to a card's base % before the potential, as Potential nodes do. Base % ('+X% base Damage Amount') is added to the card % after the potential. Final ('final Damage Amount') is its own multiplier."
       actions={<button className="btn small" onClick={() => {
-        const b = newBuff(build.id)
-        updateCs((c) => { c.buffs.push(b) })
+        const b = newBuff()
+        updateBuild((x) => { x.buffs.push(b) })
         setOpen(b.id)
       }}>+ Add</button>}>
-      {!cs.buffs.length && <p className="muted">None yet.</p>}
+      {!buffs.length && <p className="muted">None yet.</p>}
       <ul className="rows">
-        {cs.buffs.map((x, i) => {
-          const upd = (fn: (b: typeof x) => void) => updateCs((c) => fn(c.buffs[i]))
+        {buffs.map((x, i) => {
+          const upd = (fn: (b: typeof x) => void) => updateBuild((c) => fn(c.buffs[i]))
           return (
             <li key={x.id} className="row col">
               <div className="row-line">
@@ -73,8 +74,8 @@ function MyBuffsSection() {
                   <div className="row-title">{x.source || 'Unnamed buff'}</div>
                   <Pills pills={ownBuffPills(x)} />
                 </button>
-                <SwitchControl label={x.source || 'buff'} value={x.switches[build.id]} maxStacks={x.maxStacks}
-                  onChange={(sw) => upd((b) => { b.switches[build.id] = sw })} />
+                <SwitchControl label={x.source || 'buff'} value={x.on} maxStacks={x.maxStacks}
+                  onChange={(sw) => upd((b) => { b.on = sw })} />
               </div>
               {open === x.id && (
                 <div className="editor grid2">
@@ -94,7 +95,7 @@ function MyBuffsSection() {
                   <FromField value={x.from} onChange={(s) => upd((b) => { b.from = s })} />
                   <TextField label="Notes" value={x.notes} onChange={(s) => upd((b) => { b.notes = s })} />
                   <div className="btn-row">
-                    <button className="btn danger" onClick={() => updateCs((c) => { c.buffs.splice(i, 1) })}>Delete</button>
+                    <button className="btn danger" onClick={() => updateBuild((c) => { c.buffs.splice(i, 1) })}>Delete</button>
                   </div>
                 </div>
               )}

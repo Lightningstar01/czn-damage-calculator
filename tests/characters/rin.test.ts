@@ -26,7 +26,7 @@ describe('Rin', () => {
     const c = cardFromPreset(preset(id), 'Void')
     addCards(cs, c)
     a.rotation = [{ cardId: c.id, stacks }]
-    return computeBuild(PRESETS, 'Rin', cs, a, settings).plays[0]
+    return computeBuild(PRESETS, 'Rin', a, settings).plays[0]
   }
 
   it('the stance that adds Annihilation\'s hit shows on its play, with no buff reading it', () => {
@@ -41,11 +41,11 @@ describe('Rin', () => {
   })
 
   it("card text matches the owner's in-game screenshots", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     const text = (id: string, nodeOn: () => boolean = () => false) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Void')
-      const buffs = activeBuffs(PRESETS, 'Rin', cs, a, settings)
+      const buffs = activeBuffs(PRESETS, 'Rin', a, settings)
       return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn, pct: (base) => shownPct(base, c, a, rin, buffs, settings) })
     }
     expect(preset('card-158').name).toBe('Dark Mist Secret Art: Slash')
@@ -68,7 +68,7 @@ describe('Rin', () => {
     const c = cardFromPreset(preset('card-174'), 'Void')
     addCards(cs, c)
     a.rotation = [{ cardId: c.id }]
-    expect(computeBuild(PRESETS, 'Rin', cs, a, settings).counterOptions[0]).toContainEqual({ name: 'Dark Mist Stance', max: 1 })
+    expect(computeBuild(PRESETS, 'Rin', a, settings).counterOptions[0]).toContainEqual({ name: 'Dark Mist Stance', max: 1 })
   })
 
   it('Dark Mist Stance adds Annihilation\'s hits, and Annihilation IV\'s and Inner Art V\'s multipliers only in the stance', () => {
@@ -82,7 +82,7 @@ describe('Rin', () => {
       const [strike, inner] = ['card-159', 'card-185'].map((id) => cardFromPreset(preset(id), 'Void'))
       addCards(cs, strike, inner)
       a.rotation = [{ cardId: strike.id, stacks }]
-      return computeBuild(PRESETS, 'Rin', cs, a, settings).plays[0].nonCrit
+      return computeBuild(PRESETS, 'Rin', a, settings).plays[0].nonCrit
     }
     expect(withInnerV({})).toBeCloseTo(unit)
     expect(withInnerV(STANCE)).toBeCloseTo(1.5 * unit)
@@ -104,7 +104,7 @@ describe('Rin', () => {
     const [strike, inner] = ['card-159', 'card-180'].map((id) => cardFromPreset(preset(id), 'Void'))
     addCards(cs, strike, inner)
     a.rotation = [{ cardId: strike.id }, { cardId: strike.id, stacks: { 'Dark Mist Inner Art': 1 } }]
-    const r = computeBuild(PRESETS, 'Rin', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Rin', a, settings)
     expect(r.plays[0].nonCrit).toBeCloseTo(unit)
     expect(r.plays[1].nonCrit).toBeCloseTo(1.4 * unit)
   })
@@ -120,11 +120,11 @@ describe('Rin', () => {
 
   it('Sheathe Sword: +20% base for each Attack Card activated this turn', () => {
     const sheathe = (n: number) => {
-      const { cs, a } = ownerBuild()
+      const { a } = ownerBuild()
       a.egoLevel = 2
       const id = buildDeck(rin, a).find((i) => i.card.name === 'Sheathe Sword')!.card.id
       a.rotation = [{ cardId: id, stacks: { 'Attack Cards activated this turn': n } }]
-      return computeBuild(PRESETS, 'Rin', cs, a, settings).plays[0].nonCrit
+      return computeBuild(PRESETS, 'Rin', a, settings).plays[0].nonCrit
     }
     expect(sheathe(0)).toBeCloseTo(0.6 * unit)
     expect(sheathe(3)).toBeCloseTo((0.6 + 0.6) * unit)

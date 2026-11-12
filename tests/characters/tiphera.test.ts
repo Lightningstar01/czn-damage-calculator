@@ -20,11 +20,11 @@ describe('Tiphera', () => {
   }
 
   it("card text matches the owner's in-game screenshots", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     const text = (id: string) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Order')
-      const buffs = activeBuffs(PRESETS, 'Tiphera', cs, a, settings)
+      const buffs = activeBuffs(PRESETS, 'Tiphera', a, settings)
       return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: () => true, pct: (base) => shownPct(base, c, a, tip, buffs, settings) })
     }
     expect(text('card-958')).toBe('102% Defense-Based Damage')
@@ -46,7 +46,7 @@ describe('Tiphera', () => {
     const [cd, seed] = ['card-972', 'card-960'].map((id) => cardFromPreset(preset(id), 'Order'))
     addCards(cs, cd, seed)
     a.rotation = [{ cardId: cd.id }, { cardId: cd.id, stacks: { Harmonization: 1, 'Archetype △': 2 } }]
-    const r = computeBuild(PRESETS, 'Tiphera', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Tiphera', a, settings)
     // Stat: ATK 100 x 0.3 + DEF 300 x 2.1 = 660, x 0.35
     const unit = 660 * 0.35
     expect(r.plays[0].nonCrit).toBeCloseTo(1.2 * 1.12 * unit)
@@ -60,7 +60,7 @@ describe('Tiphera', () => {
     const v = cardFromPreset(preset('card-977'), 'Order')
     addCards(cs, v)
     a.rotation = [{ cardId: v.id, cost: 3 }, { cardId: v.id }]
-    const r = computeBuild(PRESETS, 'Tiphera', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Tiphera', a, settings)
     const unit = 660 * 0.35
     expect(r.plays[0].nonCrit).toBeCloseTo(1.5 * 1.12 * 3 * unit)
     expect(r.plays[0].card.cost).toBe(3)

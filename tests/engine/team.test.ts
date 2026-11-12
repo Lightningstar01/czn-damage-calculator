@@ -64,7 +64,7 @@ describe('team', () => {
     addCards(cs, x)
     a.rotation = plays(x.id)
     a.team = [{ character: 'Helper', egoLevel: 0, partner: 'Buddy', fragments: ['', '', ''], cards: [] }]
-    const run = () => computeBuild(teamPresets, 'Testy', cs, a, settings)
+    const run = () => computeBuild(teamPresets, 'Testy', a, settings)
     return { cs, a, run }
   }
 
@@ -117,13 +117,13 @@ describe('Team damage (owner, 2026-10-28)', () => {
   }
 
   it("a linked teammate's play deals their own build's damage; Selena's Mark and High-Power Scope IV follow it", () => {
-    const { cs, a } = selenaWithMeiLin()
+    const { a } = selenaWithMeiLin()
     const ml = meiLinSave()
     a.rotation = [{ cardId: 'ef', stacks: { 'High-Power Scope IV': 1 } }, { cardId: 'card-338', by: 0, stacks: { Mark: 1, 'High-Power Scope IV': 1 } }]
-    const r = computeBuild(PRESETS, 'Selena', cs, a, settings, { 'Mei Lin': ml })
+    const r = computeBuild(PRESETS, 'Selena', a, settings, { 'Mei Lin': ml })
     // Mei Lin's Strike as Mei Lin's own build computes it
     const alone = produce(ml, (d) => { d.builds[0].deck = [{ id: 's', preset: 'card-338' }]; d.builds[0].rotation = [{ cardId: 's' }] })
-    const strike = computeBuild(PRESETS, 'Mei Lin', alone, alone.builds[0], settings).plays[0]
+    const strike = computeBuild(PRESETS, 'Mei Lin', alone.builds[0], settings).plays[0]
     expect(r.plays[1].by).toBe('Mei Lin')
     expect(r.plays[1].hits[0].nonCrit).toBeCloseTo(strike.hits[0].nonCrit)
     expect(r.plays[1].hits[0].stat.value).toBe(200)
@@ -139,10 +139,10 @@ describe('Team damage (owner, 2026-10-28)', () => {
   })
 
   it('an unlinked teammate deals no damage of their own, but their Attack Cards still set off Mark', () => {
-    const { cs, a } = selenaWithMeiLin()
+    const { a } = selenaWithMeiLin()
     a.team[0].build = NO_BUILD
     a.rotation = [{ cardId: 'card-338', by: 0, stacks: { Mark: 1 } }]
-    const r = computeBuild(PRESETS, 'Selena', cs, a, settings, { 'Mei Lin': meiLinSave() })
+    const r = computeBuild(PRESETS, 'Selena', a, settings, { 'Mei Lin': meiLinSave() })
     expect(r.plays[0].noBuild).toBe(true)
     expect(r.plays[0].hits).toEqual([])
     expect(r.plays[0].nonCrit).toBeCloseTo(1.2 * 35 + 0.3 * 35)
@@ -157,7 +157,7 @@ describe('Team damage (owner, 2026-10-28)', () => {
     const sel = newCharacterSave()
     Object.assign(sel.builds[0], { egoLevel: 1 })
     sel.builds[0].stats.attack = 300
-    const r = computeBuild(PRESETS, 'Mei Lin', ml, b, settings, { Selena: sel })
+    const r = computeBuild(PRESETS, 'Mei Lin', b, settings, { Selena: sel })
     expect(r.plays[0].triggered.map((t) => t.card.name)).toEqual(['Mark'])
     // 100% + Sniper's Domain +80% (E2 not unlocked), with Selena's 300 Attack (her 7 is on her stats screen)
     expect(r.plays[0].triggered[0].nonCrit).toBeCloseTo((1 + 0.8) * 300 * 0.35)
@@ -175,10 +175,10 @@ describe('Team damage (owner, 2026-10-28)', () => {
   })
 
   it('a play of a teammate slot emptied since says so', () => {
-    const { cs, a } = selenaWithMeiLin()
+    const { a } = selenaWithMeiLin()
     a.rotation = [{ cardId: 'card-338', by: 0 }]
     a.team[0].character = ''
-    expect(computeBuild(PRESETS, 'Selena', cs, a, settings).warnings).toContain(
+    expect(computeBuild(PRESETS, 'Selena', a, settings).warnings).toContain(
       "Play 1: it's a card of teammate 1, and that slot has no teammate now, so it's left out.")
   })
 

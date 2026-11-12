@@ -26,14 +26,14 @@ function mainScenario() {
     x.stats.critDmg = 2
     x.morale = 2
   }
-  cs.buffs.push({ ...newBuff(b.id), source: 'Mult test', value: '30%', appliesTo: 'ALL' })
-  cs.buffs.push({ ...newBuff(c.id), source: 'First hit', value: '+50%', appliesTo: 'Attack', hitScope: 'First hit only' })
+  b.buffs.push({ ...newBuff(), source: 'Mult test', value: '30%', appliesTo: 'ALL' })
+  c.buffs.push({ ...newBuff(), source: 'First hit', value: '+50%', appliesTo: 'Attack', hitScope: 'First hit only' })
   const test = card('Test', 'Attack', 3), two = card('Two', 'x', 2), weak = card('Weak', 'x', 1, true)
   two.cardType = weak.cardType = 'Skill'   // only "Test" is an Attack
   addCards(cs, test, two, weak)
   setPlays(cs, plays(test.id, two.id, two.id, weak.id))
   c.rotation[0].vulnerable = true
-  const run = (i: number) => computeBuild(presets, '', cs, cs.builds[i], settings)
+  const run = (i: number) => computeBuild(presets, '', cs.builds[i], settings)
   return { A: run(0), B: run(1), C: run(2) }
 }
 
@@ -96,7 +96,7 @@ function partnerScenario(character: string) {
   const strike = card('Strike', 'Basic Attack', 1, false, true), other = card('Other', 'x', 1)
   addCards(cs, strike, other)
   setPlays(cs, plays(strike.id, other.id))
-  return cs.builds.map((x) => computeBuild(presets, character, cs, x, settings))
+  return cs.builds.map((x) => computeBuild(presets, character, x, settings))
 }
 
 describe('partner presets', () => {
@@ -135,7 +135,7 @@ describe('card % in hand and on target', () => {
     const mei = PRESETS.characters.find((c) => c.name === 'Mei Lin')!
     Object.assign(a.deck[0].custom!, { pct: 1, upgrade: 'Basic' })
     addCards(cs, cardFromPreset(mei.cards!.find((p) => p.id === 'card-340')!, 'Passion'))
-    const hit = () => computeBuild(PRESETS, 'Mei Lin', cs, a, settings).plays[0].hits[0]
+    const hit = () => computeBuild(PRESETS, 'Mei Lin', a, settings).plays[0].hits[0]
     // 132% x (1 + 20% Scarab + 12% Sword + 20% Jewel) + 30% Emblem + 20% Morale; x 142% Weakness DMG on target
     expect(hit().inHand).toBeCloseTo(2.5064, 4)
     expect(hit().cardMult).toBeCloseTo(2.5064 * 1.42, 4)
@@ -156,7 +156,7 @@ describe('stat factors, and settings off their defaults', () => {
     edit(b)
     addCards(cs, c)
     setPlays(cs, plays(c.id))
-    return computeBuild(presets, '', cs, b, s)
+    return computeBuild(presets, '', b, s)
   }
   const kind = (k: Card['kind']) => ({ ...card('X', '', 1), kind: k })
 

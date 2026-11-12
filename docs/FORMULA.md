@@ -48,6 +48,17 @@ DEF and HP have the same structure. Equipment % adds to Partner %.
 build. That screen includes the partner's base stats and the fragments, but not partner effects (+16% Attack, +5% Weakness DMG) or
 equipment, which apply only in battle (slot 1 always gives flat ATK; any piece may give ATK%). Those are added on top, as above.
 
+- **Stats screen only, never the battle numbers (User, 2026-11-11):** the Attack shown in battle already has the partner's ATK% and the
+  equipment in it (1033 x 1.16 + 74 = 1272), so typing it would count them twice, and the "If Attack is 500 or higher" effects read the
+  stats-screen number. The site has no "read in battle" switch.
+- **Weapon flat Attack (User, 2026-11-11):** the weapon's rarity sets it: Rare 74, Legendary 82, Unique 90 (Setup > Equipment,
+  `build.equipment.weapon`, values in `src/data/equipment.ts`). Source: Prydwen's equipment page, where every weapon of a rarity has the
+  same five values (Rare 25/41/56/67/74, Legendary 28/45/62/74/82, Unique 31/50/68/81/90); the owner chose the top one for each. What the
+  five steps are is **Unconfirmed** (in-game test weapon-flat-attack). Armor (Defense 28 / 31 / 34) and trinkets (Health 75 / 83 / 91)
+  work the same way and aren't used yet. Prydwen gives 3 weapons out of 83 the Unique values at a lower rarity: read as its mistakes.
+- **Own stat boosts and buffs are per build (User, 2026-11-11):** each build has its own lists (`build.boosts`, `build.buffs`); Duplicate
+  copies them, and a change in one build never reaches another.
+
 - Stat nodes of the Potential tree are on the stats screen, so they're reference text (User).
 - Node 7's elemental damage ("+5% Void Damage when Defense is 300 or higher"...) is on the stats screen too, in that element's Damage, so it is
   never added again (User, 2026-11-08). Seen at 15.0% (5% + the full 10% more) on Adelheid (Defense 417), Rossweisse (Attack 925), Tenebria (1092)

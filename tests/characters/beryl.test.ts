@@ -21,20 +21,20 @@ describe('Beryl', () => {
   }
   const UNIT = 483 * 0.35
   const play = (id: string, stacks: RotationPlay['stacks'] = {}, change: (a: Build) => void = () => {}) => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'c', preset: id })
     change(a)
     a.rotation = [{ cardId: 'c', stacks }]
-    return computeBuild(PRESETS, 'Beryl', cs, a, settings).plays[0]
+    return computeBuild(PRESETS, 'Beryl', a, settings).plays[0]
   }
   const damage = (id: string, stacks: RotationPlay['stacks'] = {}, change: (a: Build) => void = () => {}) => play(id, stacks, change).nonCrit
 
   it("Charged Shot IV's 1 time doesn't stop the other Retain cards in the deck", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'iv', preset: 'card-526' }, { id: 'of', preset: 'card-520' }, { id: 'cs', preset: 'card-522' })
     const stacks = { 'Times Retained': 3 }
     a.rotation = [{ cardId: 'iv', stacks }, { cardId: 'of', stacks }, { cardId: 'cs', stacks }]
-    const r = computeBuild(PRESETS, 'Beryl', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Beryl', a, settings)
     expect(r.plays[0].nonCrit).toBeCloseTo((4.032 + 2.4 + 0.2) * UNIT)
     expect(r.plays[1].nonCrit).toBeCloseTo((2.016 + 2.4 + 0.2) * UNIT)
     expect(r.plays[2].nonCrit).toBeCloseTo((3.024 + 4.05 + 0.2) * UNIT)
@@ -43,11 +43,11 @@ describe('Beryl', () => {
     expect([max(0), max(1), max(2)]).toEqual([1, null, null])
   })
   const text = (id: string, change: (a: Build) => void = () => {}) => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     change(a)
     const p = preset(id)
     const c = cardFromPreset(p, 'Justice')
-    const buffs = activeBuffs(PRESETS, 'Beryl', cs, a, settings)
+    const buffs = activeBuffs(PRESETS, 'Beryl', a, settings)
     return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: (n) => a.potentialNodes?.[n] !== false, pct: (base, fixed) => shownPct(base, c, a, beryl, buffs, settings, fixed) })
   }
 
@@ -104,18 +104,18 @@ describe('Beryl', () => {
   })
 
   it('E4 raises the Ego skill by 50%, not by the upgrades', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.rotation = [{ cardId: 'auto:card-512' }]
-    expect(computeBuild(PRESETS, 'Beryl', cs, a, settings).plays[0].nonCrit).toBeCloseTo(4 * UNIT)
+    expect(computeBuild(PRESETS, 'Beryl', a, settings).plays[0].nonCrit).toBeCloseTo(4 * UNIT)
   })
 
   it('Heavy Weapons Specialist brings the created cards, at the normal numbers', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'h', preset: 'card-540' })
     const names = buildDeck(beryl, a).map((d) => d.card.name)
     expect(names).toEqual(expect.arrayContaining(['Opening Found (created)', 'Charged Shot (created)']))
     a.rotation = [{ cardId: 'auto:card-541' }, { cardId: 'auto:card-542', stacks: { 'Times Retained': 1 } }]
-    const { plays } = computeBuild(PRESETS, 'Beryl', cs, a, settings)
+    const { plays } = computeBuild(PRESETS, 'Beryl', a, settings)
     expect(plays[0].nonCrit).toBeCloseTo((1.792 + 0.2) * UNIT)
     expect(plays[1].nonCrit).toBeCloseTo((3.024 + 1.35 + 0.2) * UNIT)
   })

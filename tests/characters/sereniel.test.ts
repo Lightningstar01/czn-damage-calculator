@@ -21,18 +21,18 @@ describe('Sereniel', () => {
     return { cs, a }
   }
   const damage = (id: string, play: Partial<RotationPlay> = {}, change: (a: Build) => void = () => {}) => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'c', preset: id })
     change(a)
     a.rotation = [{ cardId: 'c', ...play }]
-    return computeBuild(PRESETS, 'Sereniel', cs, a, settings).plays[0].nonCrit
+    return computeBuild(PRESETS, 'Sereniel', a, settings).plays[0].nonCrit
   }
   const text = (id: string, change: (a: Build) => void = () => {}) => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     change(a)
     const p = preset(id)
     const c = cardFromPreset(p, 'Instinct')
-    const buffs = activeBuffs(PRESETS, 'Sereniel', cs, a, settings)
+    const buffs = activeBuffs(PRESETS, 'Sereniel', a, settings)
     return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: (n) => a.potentialNodes?.[n] !== false, pct: (base, fixed) => shownPct(base, c, a, sereniel, buffs, settings, fixed) })
   }
 
@@ -90,10 +90,10 @@ describe('Sereniel', () => {
     const without = damage('card-849', {}, (a) => { e6(a); a.presetSwitches['Sereniel|e6-weakness'] = false })
     expect(withStat / without).toBeCloseTo(1.45 / 1.25)
     const ravage = (count: number) => {
-      const { cs, a } = ownerBuild()
+      const { a } = ownerBuild()
       e6(a)
       a.rotation = [{ cardId: 'auto:e6-ravage', stacks: { 'Max Tenacity of the target': count } }]
-      return computeBuild(PRESETS, 'Sereniel', cs, a, settings).plays[0].nonCrit
+      return computeBuild(PRESETS, 'Sereniel', a, settings).plays[0].nonCrit
     }
     expect(ravage(5)).toBeGreaterThan(0)
     expect(ravage(5)).toBeCloseTo(5 * ravage(1))

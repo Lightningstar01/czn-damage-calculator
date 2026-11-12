@@ -28,14 +28,14 @@ describe('Target Ravaged per play', () => {
   })
 
   it('Ember counts once the play has it on, and the Results warn while it does nothing', () => {
-    const { cs, b } = mei()
+    const { b } = mei()
     b.rotation[0].stacks = { Ember: 5 }
-    const off = computeBuild(PRESETS, 'Mei Lin', cs, b, settings)
+    const off = computeBuild(PRESETS, 'Mei Lin', b, settings)
     expect(off.plays[0].ravaged).toBe(false)
     expect(off.plays[0].nonCrit).toBeCloseTo(350)
     expect(off.warnings.join()).toContain('Ember only counts on a Ravaged target')
     b.rotation[0].ravaged = true
-    const on = computeBuild(PRESETS, 'Mei Lin', cs, b, settings)
+    const on = computeBuild(PRESETS, 'Mei Lin', b, settings)
     expect(on.plays[0].ravaged).toBe(true)
     // 100% + 5 x 30% Ember = 250%, x 1000 x 0.35
     expect(on.plays[0].nonCrit).toBeCloseTo(875)
@@ -43,11 +43,11 @@ describe('Target Ravaged per play', () => {
   })
 
   it('switching it off on an On Ravage card turns its Ravaged-only buffs off', () => {
-    const { cs, b } = mei(true)
+    const { b } = mei(true)
     b.rotation[0].stacks = { Ember: 1 }
-    expect(computeBuild(PRESETS, 'Mei Lin', cs, b, settings).plays[0].nonCrit).toBeCloseTo(455)
+    expect(computeBuild(PRESETS, 'Mei Lin', b, settings).plays[0].nonCrit).toBeCloseTo(455)
     b.rotation[0].ravaged = false
-    expect(computeBuild(PRESETS, 'Mei Lin', cs, b, settings).plays[0].nonCrit).toBeCloseTo(350)
+    expect(computeBuild(PRESETS, 'Mei Lin', b, settings).plays[0].nonCrit).toBeCloseTo(350)
   })
 
   it('a hit the play sets off is on the same Ravaged target', () => {
@@ -60,15 +60,15 @@ describe('Target Ravaged per play', () => {
     addCards(cs, c)
     setPlays(cs, plays(c.id))
     cs.builds[0].stats.attack = 1000
-    expect(computeBuild(test, 'Owner', cs, cs.builds[0], settings).plays[0].triggered[0].nonCrit).toBeCloseTo(350)
+    expect(computeBuild(test, 'Owner', cs.builds[0], settings).plays[0].triggered[0].nonCrit).toBeCloseTo(350)
     cs.builds[0].rotation[0].ravaged = true
-    expect(computeBuild(test, 'Owner', cs, cs.builds[0], settings).plays[0].triggered[0].nonCrit).toBeCloseTo(700)
+    expect(computeBuild(test, 'Owner', cs.builds[0], settings).plays[0].triggered[0].nonCrit).toBeCloseTo(700)
     // A trigger card that's On Ravage by itself follows the play too: on by default, off when the play says off
     extra.targetRavaged = true
     delete cs.builds[0].rotation[0].ravaged
-    expect(computeBuild(test, 'Owner', cs, cs.builds[0], settings).plays[0].triggered[0].nonCrit).toBeCloseTo(700)
+    expect(computeBuild(test, 'Owner', cs.builds[0], settings).plays[0].triggered[0].nonCrit).toBeCloseTo(700)
     cs.builds[0].rotation[0].ravaged = false
-    expect(computeBuild(test, 'Owner', cs, cs.builds[0], settings).plays[0].triggered[0].nonCrit).toBeCloseTo(350)
+    expect(computeBuild(test, 'Owner', cs.builds[0], settings).plays[0].triggered[0].nonCrit).toBeCloseTo(350)
   })
 })
 
@@ -81,7 +81,7 @@ describe('Potential nodes switch their effects', () => {
     expect(state()).toMatchObject({ nodeLocked: false, stacks: 1 })
     b.potentialNodes = { '5-1': false }
     expect(state()).toMatchObject({ nodeLocked: true, stacks: 0 })
-    expect(activeBuffs(PRESETS, 'Mei Lin', newCharacterSave(), b, settings).map((x) => x.label).join()).not.toContain('Basic Card Proficiency')
+    expect(activeBuffs(PRESETS, 'Mei Lin', b, settings).map((x) => x.label).join()).not.toContain('Basic Card Proficiency')
   })
 
   it('every Potential effect names its node', () => {
@@ -111,8 +111,8 @@ describe('fights', () => {
     b.team = [{ ...newTeammate(), character: 'Selena', cards: [fire.id] }]
     b.rotation = [{ cardId: c.id }, { cardId: fire.id, by: 0 }]
     const saves: Record<string, CharacterSave> = { 'Mei Lin': cs, Selena: selena }
-    const free = computeBuild(PRESETS, 'Mei Lin', cs, b, settings, saves)
-    const hard = computeBuild(PRESETS, 'Mei Lin', cs, b, settings, saves, { enemies: [{ defMult: 0.5, dr: 0.2 }] })
+    const free = computeBuild(PRESETS, 'Mei Lin', b, settings, saves)
+    const hard = computeBuild(PRESETS, 'Mei Lin', b, settings, saves, { enemies: [{ defMult: 0.5, dr: 0.2 }] })
     expect(hard.plays[0].hits[0].enemyDef?.value).toBe(0.5)
     expect(hard.plays[1].hits[0].enemyDef?.value).toBe(0.5)
     expect(hard.plays[0].nonCrit).toBeCloseTo(free.plays[0].nonCrit * 0.4)
@@ -120,8 +120,8 @@ describe('fights', () => {
   })
 
   it('without a fight there are no enemy modifiers', () => {
-    const { cs, b } = mei()
-    const hit = computeBuild(PRESETS, 'Mei Lin', cs, b, settings).plays[0].hits[0]
+    const { b } = mei()
+    const hit = computeBuild(PRESETS, 'Mei Lin', b, settings).plays[0].hits[0]
     expect(hit.enemyDef).toBeNull()
     expect(hit.enemyDr).toBeNull()
   })
@@ -152,7 +152,7 @@ describe("thresholds read the effect owner's stats", () => {
     const givers = newCharacterSave()
     givers.builds[0].stats.attack = 100
     main.team = [{ ...newTeammate(), character: 'Giver' }]
-    const value = (saves: Record<string, CharacterSave>) => activeBuffs(test, 'Mei Lin', newCharacterSave(), withLinkedTeam(main, saves), settings)
+    const value = (saves: Record<string, CharacterSave>) => activeBuffs(test, 'Mei Lin', withLinkedTeam(main, saves), settings)
       .find((b) => b.label.includes('Gift'))!.value
     expect(value({ Giver: givers })).toBeCloseTo(0.1)
     givers.builds[0].stats.attack = 600
@@ -170,7 +170,7 @@ describe("thresholds read the effect owner's stats", () => {
     const b = giverSave.builds[0]
     b.team = [{ ...newTeammate(), character: 'Selena', cards: [c.id] }]
     b.rotation = [{ cardId: c.id, by: 0 }]
-    const r = computeBuild(test, 'Giver', giverSave, b, settings, { Giver: giverSave, Selena: mate })
+    const r = computeBuild(test, 'Giver', b, settings, { Giver: giverSave, Selena: mate })
     const gift = r.plays[0].hits[0].additive.sources.find((s) => s.label.includes('Gift'))
     expect(gift?.value).toBeCloseTo(0.5)
   })
@@ -178,13 +178,13 @@ describe("thresholds read the effect owner's stats", () => {
 
 describe('warnings', () => {
   it('a deck card, partner or set the presets lost is named instead of silently dropped', () => {
-    const { cs, b } = mei()
-    expect(computeBuild(PRESETS, 'Mei Lin', cs, b, settings).warnings).toEqual([])
+    const { b } = mei()
+    expect(computeBuild(PRESETS, 'Mei Lin', b, settings).warnings).toEqual([])
     b.deck.push({ id: 'old', preset: 'card-0' })
     b.partner = 'Nobody'
     b.fragments = ['No Such Set', '', '']
     b.rotation.push({ cardId: 'old' })
-    const w = computeBuild(PRESETS, 'Mei Lin', cs, b, settings).warnings.join(' | ')
+    const w = computeBuild(PRESETS, 'Mei Lin', b, settings).warnings.join(' | ')
     expect(w).toContain('card-0')
     expect(w).toContain('Nobody')
     expect(w).toContain('No Such Set')
@@ -192,27 +192,27 @@ describe('warnings', () => {
   })
 
   it('a linked teammate with an empty stats screen is pointed out when they play', () => {
-    const { cs, b } = mei()
+    const { b } = mei()
     const fire = PRESETS.characters.find((x) => x.name === 'Selena')!.cards!.find((p) => p.category === 'Starting Card' && p.pct > 0)!
     b.team = [{ ...newTeammate(), character: 'Selena', cards: [fire.id] }]
     b.rotation = [{ cardId: fire.id, by: 0 }]
-    const r = computeBuild(PRESETS, 'Mei Lin', cs, b, settings, { Selena: newCharacterSave() })
+    const r = computeBuild(PRESETS, 'Mei Lin', b, settings, { Selena: newCharacterSave() })
     expect(r.warnings.join()).toContain('no Attack')
   })
 
   it("the same goes when they don't play but their trigger fires; no warning while it doesn't", () => {
-    const { cs, b } = mei()
+    const { b } = mei()
     b.team = [{ ...newTeammate(), character: 'Selena' }]
-    const compute = () => computeBuild(PRESETS, 'Mei Lin', cs, b, settings, { Selena: newCharacterSave() }).warnings.join()
+    const compute = () => computeBuild(PRESETS, 'Mei Lin', b, settings, { Selena: newCharacterSave() }).warnings.join()
     expect(compute()).not.toContain('no Attack')
     b.rotation[0].stacks = { Mark: 1 }
     expect(compute()).toContain('no Attack')
   })
 
   it('a warning that comes up twice shows once', () => {
-    const { cs, b } = mei()
+    const { b } = mei()
     b.fragments = ['No Such Set', 'No Such Set', '']
-    expect(computeBuild(PRESETS, 'Mei Lin', cs, b, settings).warnings.filter((w) => w.includes('No Such Set'))).toHaveLength(1)
+    expect(computeBuild(PRESETS, 'Mei Lin', b, settings).warnings.filter((w) => w.includes('No Such Set'))).toHaveLength(1)
   })
 })
 
@@ -237,7 +237,7 @@ describe('elemental damage follows the card', () => {
     setPlays(cs, plays(b.deck[0].id, other.id))
     b.stats.elemDmg.Passion = 0.5
     b.stats.elemDmg.Order = 0.2
-    const r = computeBuild(PRESETS, 'Mei Lin', cs, b, settings)
+    const r = computeBuild(PRESETS, 'Mei Lin', b, settings)
     expect(r.plays[0].hits[0].elemDmg?.value).toBeCloseTo(1.5)
     expect(r.plays[1].hits[0].elemDmg?.value).toBeCloseTo(1.2)
     expect(r.stats.elemDmg.value).toBeCloseTo(0.5)

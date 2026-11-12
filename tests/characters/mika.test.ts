@@ -19,11 +19,11 @@ describe('Mika', () => {
   }
 
   it("card text matches the owner's in-game screenshots", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     const text = (id: string) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Justice')
-      const buffs = activeBuffs(PRESETS, 'Mika', cs, a, settings)
+      const buffs = activeBuffs(PRESETS, 'Mika', a, settings)
       return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: (n) => n !== '5-1', pct: (base, fixed) => shownPct(base, c, a, mika, buffs, settings, fixed) })
     }
     expect(text('card-543')).toBe('Create 2 Source of Water Card(s), grant Exhaust and Retain to it')
@@ -44,7 +44,7 @@ describe('Mika', () => {
     const wv = cardFromPreset(preset('card-569'), 'Justice')
     addCards(cs, wv)
     a.rotation = [{ cardId: wv.id }]
-    const r = computeBuild(PRESETS, 'Mika', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Mika', a, settings)
     expect(r.plays[0].nonCrit).toBeCloseTo(2.28 * 100 * 0.35)
   })
 })

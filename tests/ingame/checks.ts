@@ -9,7 +9,7 @@ import { computeBuild } from '../../src/engine/calc'
 import { AUTO } from '../../src/engine/deck'
 import { PRESETS } from '../../src/data/presets'
 import { migrate } from '../../src/store/migrate'
-import { newBoost, newBuff, newCharacterSave } from '../../src/store/save'
+import { newBuff, newCharacterSave } from '../../src/store/save'
 import fixture from '../fixtures/save-v1.json'
 import { addCards, card, cardFromPreset, gameSettings as settings, plays, setPlays } from '../helpers'
 
@@ -46,7 +46,7 @@ function meiStrikeHit() {
   const mei = PRESETS.characters.find((c) => c.name === 'Mei Lin')!
   Object.assign(b.deck[0].custom!, { pct: 1, upgrade: 'Basic' })
   addCards(cs, cardFromPreset(mei.cards!.find((p) => p.id === 'card-340')!, 'Passion'))
-  return computeBuild(PRESETS, 'Mei Lin', cs, b, settings).plays[0].hits[0]
+  return computeBuild(PRESETS, 'Mei Lin', b, settings).plays[0].hits[0]
 }
 
 // The enemies of the owner's Tressa tests (2026-11-01), back-solved from their hits. The test enemy is the one of Mei Lin's tests, which gave 0.3733 (docs/FORMULA.md, log)
@@ -62,7 +62,7 @@ function tressaPlay(cardId: string, attack: number, dot: number, defMult: number
   b.stats.elemDmg.Void = 0.075
   b.deck = [{ id: 'd', preset: 'card-272' }]
   b.rotation = [{ cardId, stacks: { 'Agony on target': agony }, vulnerable }]
-  return computeBuild(PRESETS, 'Tressa', cs, b, settings, {}, { enemies: [{ defMult, dr: 0 }] }).plays[0]
+  return computeBuild(PRESETS, 'Tressa', b, settings, {}, { enemies: [{ defMult, dr: 0 }] }).plays[0]
 }
 const agonyHit = (attack: number, dot: number, defMult: number, vulnerable = false) => tressaPlay(`${AUTO}agony`, attack, dot, defMult, 8, vulnerable).hits[0]
 
@@ -74,12 +74,12 @@ function tressaDagger(exhausted: boolean, agony: number) {
   Object.assign(b, { egoLevel: 6, basicLevel: 5, signatureLevel: 0, potentialNodes: { '5-1': false, 7: false } })
   Object.assign(b.stats, { attack: 731, critChance: 0 })
   b.stats.elemDmg.Void = 0.075
-  const buff = (value: string, appliesTo: string) => ({ ...newBuff(b.id), value, appliesTo })
-  cs.buffs.push(buff('12%', 'ALL'), buff('+25%', 'ALL'), buff('10%', 'Attack'))
-  if (exhausted) cs.buffs.push(buff('12%', 'Attack'), buff('20%', 'Void'))
+  const buff = (value: string, appliesTo: string) => ({ ...newBuff(), value, appliesTo })
+  b.buffs.push(buff('12%', 'ALL'), buff('+25%', 'ALL'), buff('10%', 'Attack'))
+  if (exhausted) b.buffs.push(buff('12%', 'Attack'), buff('20%', 'Void'))
   b.deck = [{ id: 'd', preset: 'card-272' }]
   b.rotation = [{ cardId: `${AUTO}card-273`, stacks: { 'Agony on target': agony } }]
-  return computeBuild(PRESETS, 'Tressa', cs, b, settings, {}, { enemies: [{ defMult: TRESSA_TEST_ENEMY, dr: 0 }] }).plays[0].hits[0]
+  return computeBuild(PRESETS, 'Tressa', b, settings, {}, { enemies: [{ defMult: TRESSA_TEST_ENEMY, dr: 0 }] }).plays[0].hits[0]
 }
 
 function meiBuild(attack: number) {
@@ -105,10 +105,10 @@ export const CHECKS: InGameCheck[] = [
       values: [{
         label: 'Attack in battle', inGame: 1272, tolerance: 0.5,
         calculator: () => {
-          const { cs, b } = meiBuild(1033)
+          const { b } = meiBuild(1033)
           b.partner = 'Marianne'
-          cs.boosts.push({ ...newBoost(b.id), stat: 'Flat ATK', value: '74' })
-          return computeBuild(PRESETS, 'Mei Lin', cs, b, settings).stats.atk.value
+          b.equipment = { weapon: { rarity: 'Rare' } }
+          return computeBuild(PRESETS, 'Mei Lin', b, settings).stats.atk.value
         },
       }],
     },
@@ -124,9 +124,9 @@ export const CHECKS: InGameCheck[] = [
       values: [{
         label: 'Crit hit for a 572 non-crit hit', inGame: 1078, tolerance: 1.5,
         calculator: () => {
-          const { cs, b } = meiBuild(572 / 0.35)
+          const { b } = meiBuild(572 / 0.35)
           b.stats.critDmg = 1.886
-          return computeBuild(PRESETS, 'Mei Lin', cs, b, settings).plays[0].crit
+          return computeBuild(PRESETS, 'Mei Lin', b, settings).plays[0].crit
         },
       }],
     },
@@ -142,12 +142,12 @@ export const CHECKS: InGameCheck[] = [
       values: [{
         label: 'Strike on target, %', inGame: 290, tolerance: 0.5,
         calculator: () => {
-          const { cs, b, c } = meiBuild(1000)
+          const { b, c } = meiBuild(1000)
           const own = b.deck.find((d) => d.id === c.id)!.custom!
           Object.assign(own, { pct: 2.0424, weaknessApplies: true })
           b.stats.weaknessDmg = 1.42
           b.presetSwitches['Mei Lin|p5-1-strike'] = false
-          return computeBuild(PRESETS, 'Mei Lin', cs, b, settings).plays[0].hits[0].cardMult * 100
+          return computeBuild(PRESETS, 'Mei Lin', b, settings).plays[0].hits[0].cardMult * 100
         },
       }],
     },
@@ -310,6 +310,15 @@ export const CHECKS: InGameCheck[] = [
     setup: "The Memory Fragment screen, on a Seth's Scarab piece.",
     steps: ['Read the 2-piece set bonus.'],
     record: ['Its wording'],
+  },
+
+  {
+    id: 'weapon-flat-attack',
+    question: "Does a weapon at its top level give 74 (Rare), 82 (Legendary) or 90 (Unique) Attack, whatever the weapon? The numbers are Prydwen's (each rarity has five steps: Rare 25/41/56/67/74, Legendary 28/45/62/74/82, Unique 31/50/68/81/90); the calculator always uses the top one. What are the five steps in-game, and are your weapons at the top one?",
+    closes: 'Setup: Equipment, Weapon (src/data/equipment.ts)',
+    setup: 'One weapon of each rarity.',
+    steps: ["Read the Attack on each weapon's own info.", 'Note whether the weapon shows a level, tier or stars.'],
+    record: ['Rarity', 'Attack on the weapon', 'Its level, tier or stars'],
   },
 
   // ------------------------------------------------------------------ fixed damage

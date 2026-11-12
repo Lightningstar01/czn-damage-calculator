@@ -43,7 +43,7 @@ export function withLinkedTeam(build: Build, saves: Saves): LiveBuild {
 
 /** How teammate slot `slot` of a (withLinkedTeam) build plays: their saved build, with the slot's picked cards as their deck and this
  * build's character and other teammate as their team. Their own effects keep their build's switches; the others' follow this build. */
-export function teammateView(charName: string, build: LiveBuild, slot: number, saves: Saves): { name: string; cs: CharacterSave; build: LiveBuild } | undefined {
+export function teammateView(charName: string, build: LiveBuild, slot: number, saves: Saves): { name: string; build: LiveBuild } | undefined {
   const t = build.team?.[slot]
   const l = linkedBuild(saves, t)
   if (!t || !l) return undefined
@@ -60,7 +60,7 @@ export function teammateView(charName: string, build: LiveBuild, slot: number, s
   }
   const deck: DeckCard[] = (t.cards ?? []).map((preset, i) => ({ id: String(i), preset }))
   return {
-    name: t.character, cs: l.cs,
+    name: t.character,
     build: { ...l.build, deck, presetSwitches: switches, rotation: [], team: [me, ...build.team.filter((x, i) => i !== slot && x.character)] },
   }
 }

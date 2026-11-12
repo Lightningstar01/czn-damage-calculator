@@ -20,11 +20,11 @@ describe('Tenebria', () => {
   const card = (id: string) => cardFromPreset(preset(id), 'Passion')
 
   it("card text matches the owner's in-game screenshots", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     const text = (id: string) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Passion')
-      const buffs = activeBuffs(PRESETS, 'Tenebria', cs, a, settings)
+      const buffs = activeBuffs(PRESETS, 'Tenebria', a, settings)
       return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: () => true, pct: (base, fixed) => shownPct(base, c, a, ten, buffs, settings, fixed) })
     }
     expect(text('card-1159')).toContain('increase Damage Amount of Rhythm cards by 7%')
@@ -56,7 +56,7 @@ describe('Tenebria', () => {
     const call = card('card-1174')
     addCards(cs, ego, rhythm, call)
     a.rotation = [{ cardId: rhythm.id, stacks: { Rhythms: 3, "Everyone's Idol": 1 } }, { cardId: call.id }]
-    const r = computeBuild(PRESETS, 'Tenebria', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Tenebria', a, settings)
     // (60% x 1.2 + 3 x 30%) x (1 + 10% + 7%)
     expect(r.plays[0].nonCrit).toBeCloseTo((0.72 + 0.9) * 1.17 * 100 * 0.35)
     expect(r.plays[1].nonCrit).toBeCloseTo(2 * 1.12 * 1.1 * 100 * 0.35)
@@ -68,7 +68,7 @@ describe('Tenebria', () => {
     const photo = card('card-1186')
     addCards(cs, arp, photo)
     a.rotation = [{ cardId: arp.id, stacks: { Rhythms: 3 } }, { cardId: photo.id, stacks: { 'Performance Buzz': 4 } }]
-    const r = computeBuild(PRESETS, 'Tenebria', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Tenebria', a, settings)
     expect(r.plays[0].nonCrit).toBeCloseTo(0.4 * 1.2 * 3 * 1.1 * 100 * 0.35)
     expect(r.plays[1].nonCrit).toBeCloseTo(4 * 1.5 * 100 * 0.35)
   })
@@ -78,6 +78,6 @@ describe('Tenebria', () => {
     const photo = card('card-1186')
     addCards(cs, photo)
     a.rotation = [{ cardId: photo.id, stacks: { 'Performance Buzz': 12 } }]
-    expect(computeBuild(PRESETS, 'Tenebria', cs, a, settings).nonCrit).toBeCloseTo(10 * 1.5 * 100 * 0.35)
+    expect(computeBuild(PRESETS, 'Tenebria', a, settings).nonCrit).toBeCloseTo(10 * 1.5 * 100 * 0.35)
   })
 })

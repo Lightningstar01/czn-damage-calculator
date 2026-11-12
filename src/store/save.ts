@@ -4,7 +4,7 @@ import { DEFAULT_SETTINGS } from '../data/settings'
 import { ELEMENTS, FRAGMENT_SET_PICKS, NO_ENEMY, type Build, type CharacterSave, type Enemy, type Fight, type SaveData, type ScreenStats, type Teammate, type UserBoost, type UserBuff } from '../engine/types'
 
 /** Bump when the save format changes, and add a step to migrate(). */
-export const SAVE_VERSION = 11
+export const SAVE_VERSION = 12
 
 export function newId(): string {
   return Math.random().toString(36).slice(2, 10)
@@ -23,6 +23,7 @@ export function newBuild(name: string): Build {
   return {
     id: newId(), name, partner: '', fragments: Array(FRAGMENT_SET_PICKS).fill(''), stats: newStats(),
     morale: 0, egoLevel: 0, basicLevel: 0, signatureLevel: 0, presetSwitches: {}, team: [], deck: [], rotation: [],
+    boosts: [], buffs: [],
   }
 }
 
@@ -46,17 +47,19 @@ export function activeFight(data: Pick<SaveData, 'fights' | 'activeFight'>): Fig
 
 export function newCharacterSave(): CharacterSave {
   const a = newBuild('Build A')
-  return { builds: [a], activeBuild: a.id, showAllPartners: false, boosts: [], buffs: [] }
+  return { builds: [a], activeBuild: a.id, showAllPartners: false }
 }
 
-export function newBoost(buildId: string): UserBoost {
-  return { id: newId(), source: '', from: '', stat: 'Flat ATK', value: '', category: 'Equipment', notes: '', switches: { [buildId]: true } }
+/** A new row for a build's own stat boosts, switched on. */
+export function newBoost(): UserBoost {
+  return { id: newId(), source: '', from: '', stat: 'Flat ATK', value: '', category: 'Equipment', notes: '', on: true }
 }
 
-export function newBuff(buildId: string): UserBuff {
+/** A new row for a build's own buffs, switched on. */
+export function newBuff(): UserBuff {
   return {
     id: newId(), source: '', from: '', category: 'Other', value: '', typeOverride: '', appliesTo: 'ALL', hitScope: 'All hits',
-    condition: 'Always', maxStacks: null, notes: '', switches: { [buildId]: true },
+    condition: 'Always', maxStacks: null, notes: '', on: true,
   }
 }
 
@@ -65,13 +68,9 @@ export function clone<T>(x: T): T {
   return structuredClone(isDraft(x) ? (current(x as Draft<T>) as T) : x)
 }
 
-/** Copy of a build with a new id; the owner's boosts/buffs get the same switch for the copy. */
-export function duplicateBuild(cs: CharacterSave, build: Build, name: string): Build {
-  const copy: Build = { ...clone(build), id: newId(), name }
-  for (const row of [...cs.boosts, ...cs.buffs]) {
-    if (build.id in row.switches) row.switches[copy.id] = row.switches[build.id]
-  }
-  return copy
+/** Copy of a build with a new id: its own copies of the deck, attack list, equipment, stat boosts and buffs. */
+export function duplicateBuild(build: Build, name: string): Build {
+  return { ...clone(build), id: newId(), name }
 }
 
 export function defaultSave(): SaveData {

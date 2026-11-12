@@ -22,11 +22,11 @@ describe('Rei', () => {
   const card = (id: string) => cardFromPreset(preset(id), 'Void')
 
   it("card text matches the owner's in-game screenshots", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     const text = (id: string) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Void')
-      const buffs = activeBuffs(PRESETS, 'Rei', cs, a, settings)
+      const buffs = activeBuffs(PRESETS, 'Rei', a, settings)
       return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: () => true, pct: (base, fixed) => shownPct(base, c, a, rei, buffs, settings, fixed) })
     }
     expect(text('card-217')).toBe('400% Damage\n15% DMG-Based Recovery\nGain 1 AP')
@@ -48,7 +48,7 @@ describe('Rei', () => {
     const predator = card('card-244')
     addCards(cs, blade, predator, card('card-220'), card('card-222'), card('card-224'))
     a.rotation = [{ cardId: blade.id, stacks: { 'Strike of Darkness': 1 } }, { cardId: predator.id, stacks: { 'Strike of Darkness II': 1 } }]
-    const r = computeBuild(PRESETS, 'Rei', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Rei', a, settings)
     // 114% x (1 + 100% + 80%) + E6 20%
     expect(r.plays[0].nonCrit).toBeCloseTo((1.14 * 2.8 + 0.2) * 100 * 0.35)
     // 285% x (1 - 20%) + E6 20%
@@ -61,12 +61,12 @@ describe('Rei', () => {
     const ego = card('card-217')
     addCards(cs, blade, ego, card('card-230'))
     a.rotation = [{ cardId: blade.id }, { cardId: ego.id }]
-    const r = computeBuild(PRESETS, 'Rei', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Rei', a, settings)
     expect(r.plays[0].nonCrit).toBeCloseTo((1.14 + 0.4 + 0.2) * 100 * 0.35)
     expect(r.plays[1].nonCrit).toBeCloseTo(4 * 100 * 0.35)
     // The E4 part is in the card's own % (docs/FORMULA.md, Ego skill bonuses), so a "by X%" buff raises all 400%
-    cs.buffs.push({ ...newBuff(a.id), value: '30%', appliesTo: 'Final Shadow' })
-    expect(computeBuild(PRESETS, 'Rei', cs, a, settings).plays[1].nonCrit).toBeCloseTo(4 * 1.3 * 100 * 0.35)
+    a.buffs.push({ ...newBuff(), value: '30%', appliesTo: 'Final Shadow' })
+    expect(computeBuild(PRESETS, 'Rei', a, settings).plays[1].nonCrit).toBeCloseTo(4 * 1.3 * 100 * 0.35)
   })
 
   it("Potential 7 raises Predator's Blade's card % from 550 Attack", () => {
@@ -76,7 +76,7 @@ describe('Rei', () => {
     const predator = card('card-244')
     addCards(cs, predator)
     a.rotation = [{ cardId: predator.id }]
-    const r = computeBuild(PRESETS, 'Rei', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Rei', a, settings)
     // (250% + 10% + 5 x 1%) x 1.14 + E6 20%
     expect(r.plays[0].nonCrit).toBeCloseTo(((2.5 + 0.15) * 1.14 + 0.2) * 600 * 0.35)
   })

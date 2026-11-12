@@ -21,7 +21,7 @@ describe('Renoa', () => {
   }
   const text = (id: string, b = ownerBuild()) => {
     const p = preset(id)
-    const buffs = activeBuffs(PRESETS, 'Renoa', b.cs, b.a, settings)
+    const buffs = activeBuffs(PRESETS, 'Renoa', b.a, settings)
     return renderCardText(p.text, { egoLevel: b.a.egoLevel, nodeOn: () => true,
       pct: (base, fixed, of) => shownPct(base, cardFromPreset(of ? preset(of) : p, 'Void'), b.a, renoa, buffs, settings, fixed) })
   }
@@ -50,7 +50,7 @@ describe('Renoa', () => {
   })
 
   it('Dirge Bullets discarded on a play add that many Extra Attacks and the discard bonus', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'ij', preset: 'card-10' }, { id: 'lda', preset: 'card-28' }, { id: 'echo', preset: 'card-4' })
     a.rotation = [
       { cardId: 'auto:card-29' },
@@ -58,7 +58,7 @@ describe('Renoa', () => {
       { cardId: 'lda', stacks: { 'Dirge Bullets discarded': 3 } },
       { cardId: 'echo', stacks: { 'Dirge Bullets discarded': 2 } },
     ]
-    const r = computeBuild(PRESETS, 'Renoa', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Renoa', a, settings)
     const extra = 1.45 * 1.16 * 35
     expect(r.plays[0].nonCrit).toBeCloseTo(2.05 * 1.16 * 35)
     expect(r.plays[0].triggered).toEqual([])
@@ -70,7 +70,7 @@ describe('Renoa', () => {
     // Ballad IV: "by 100%" doubles the Extra Attacks on that turn's plays
     a.deck.push({ id: 'b4', preset: 'card-20' })
     a.rotation = [{ cardId: 'echo', stacks: { 'Dirge Bullets discarded': 1, 'Ballad of Pitch Black IV': 1 } }]
-    expect(computeBuild(PRESETS, 'Renoa', cs, a, settings).plays[0].triggered[0].nonCrit).toBeCloseTo(2 * extra)
+    expect(computeBuild(PRESETS, 'Renoa', a, settings).plays[0].triggered[0].nonCrit).toBeCloseTo(2 * extra)
   })
 
   it("a teammate's play can discard Dirge Bullets: the Extra Attacks are Renoa's", () => {
@@ -82,21 +82,21 @@ describe('Renoa', () => {
     a.team = [{ character: 'Renoa', egoLevel: 0, partner: '', fragments: [], cards: [] }]
     a.deck.push({ id: 'ef', preset: 'card-395' })
     a.rotation = [{ cardId: 'ef', stacks: { 'Dirge Bullets discarded': 2 } }]
-    const r = computeBuild(PRESETS, 'Selena', cs, a, settings, { Renoa: renoaSave })
+    const r = computeBuild(PRESETS, 'Selena', a, settings, { Renoa: renoaSave })
     expect(r.counterOptions[0].map((c) => c.name)).toContain('Dirge Bullets discarded')
     expect(r.plays[0].triggered[0].by).toBe('Renoa')
     expect(r.plays[0].triggered[0].nonCrit).toBeCloseTo(2 * 1.45 * 1.16 * 200 * 0.35)
   })
 
   it('Finale joins the deck at E2; Ballad V, Flower III and Mark count per play', () => {
-    const { cs, a } = ownerBuild(2)
+    const { a } = ownerBuild(2)
     a.deck.push({ id: 'b5', preset: 'card-21' }, { id: 'f3', preset: 'card-25' }, { id: 'b3', preset: 'card-19' }, { id: 'shot', preset: 'card-2' })
     a.rotation = [
       { cardId: 'auto:card-666', stacks: { 'Dirge Bullets: Finale discarded': 1 } },
       { cardId: 'b5', stacks: { 'Dirge Bullets exhausted': 2 } },
       { cardId: 'shot', stacks: { 'Flower of Devoured Fate III (Cost discarded)': 2, 'Mark (Renoa)': 1 } },
     ]
-    const r = computeBuild(PRESETS, 'Renoa', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Renoa', a, settings)
     expect(r.plays[0].nonCrit).toBeCloseTo(2.05 * 1.16 * 35 + 2 * 1.65 * 1.16 * 35)
     expect(r.plays[1].nonCrit).toBeCloseTo(3 * 0.6 * 1.16 * 2 * 35)
     expect(r.plays[2].nonCrit).toBeCloseTo((1.1 + 0.8) * 35 + 35)
@@ -104,10 +104,10 @@ describe('Renoa', () => {
 
   it("Instant Judgment's bonus per Finale discarded counts from E2, where Finale exists", () => {
     const at = (egoLevel: number) => {
-      const { cs, a } = ownerBuild(egoLevel)
+      const { a } = ownerBuild(egoLevel)
       a.deck.push({ id: 'ij', preset: 'card-10' })
       a.rotation = [{ cardId: 'ij', stacks: { 'Dirge Bullets: Finale discarded': 1 } }]
-      return computeBuild(PRESETS, 'Renoa', cs, a, settings).plays[0].hits[0].cardMult
+      return computeBuild(PRESETS, 'Renoa', a, settings).plays[0].hits[0].cardMult
     }
     expect(at(0)).toBeCloseTo(at(2) - 1)
   })

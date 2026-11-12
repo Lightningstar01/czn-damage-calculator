@@ -2,7 +2,7 @@
 import { buildDeck, deckPresets, teammateDeck } from './deck'
 import { CARD_TYPES } from './types'
 import type {
-  BuffEffect, BuffType, Build, Card, CardPreset, CharacterPreset, CharacterSave, Condition, Effect, FragmentSetPreset, HitScope, LiveBuild, PartnerPreset,
+  BuffEffect, BuffType, Build, Card, CardPreset, CharacterPreset, Condition, Effect, FragmentSetPreset, HitScope, LiveBuild, PartnerPreset,
   Presets, ScreenStats, Settings, StatEffect, StatName, Switch,
 } from './types'
 
@@ -251,7 +251,7 @@ export function presetStates(presets: Presets, charName: string, build: LiveBuil
 }
 
 /** Stat boosts active for the build: preset stat effects, then the owner's own boosts. */
-export function activeStats(presets: Presets, charName: string, cs: CharacterSave, build: LiveBuild): ActiveStat[] {
+export function activeStats(presets: Presets, charName: string, build: LiveBuild): ActiveStat[] {
   const out: ActiveStat[] = []
   for (const s of presetStates(presets, charName, build)) {
     if (s.effect.kind !== 'Stat' || s.stacks <= 0) continue
@@ -259,8 +259,11 @@ export function activeStats(presets: Presets, charName: string, cs: CharacterSav
     out.push({ label: `${stateLabel(s)}: ${e.name}`, stat: e.stat, value: parseStatValue(e.stat, e.value), stacks: s.stacks,
       unit: statIsPct(e.stat) ? '%' : 'flat' })
   }
-  for (const b of cs.boosts) {
-    const stacks = switchStacks(b.switches[build.id])
+  const weapon = build.equipment?.weapon
+  const weaponAtk = weapon ? presets.weaponAtk?.[weapon.rarity] ?? 0 : 0
+  if (weapon && weaponAtk) out.push({ label: `Weapon (${weapon.rarity})`, stat: 'Flat ATK', value: weaponAtk, stacks: 1, unit: 'flat' })
+  for (const b of build.boosts ?? []) {
+    const stacks = switchStacks(b.on)
     if (stacks <= 0) continue
     out.push({ label: b.source || b.stat, stat: b.stat, value: parseStatValue(b.stat, b.value), stacks,
       unit: statIsPct(b.stat) ? '%' : 'flat' })
@@ -269,18 +272,18 @@ export function activeStats(presets: Presets, charName: string, cs: CharacterSav
 }
 
 /** The owner's switched-on boosts and buffs whose value can't be read, so they count as 0 (shown on the Results tab). */
-export function unreadableValues(cs: CharacterSave, build: Pick<Build, 'id'>): string[] {
-  const on = (switches: Record<string, Switch>) => switchStacks(switches[build.id]) > 0
+export function unreadableValues(build: Pick<Build, 'boosts' | 'buffs'>): string[] {
+  const on = (sw: Switch | undefined) => switchStacks(sw) > 0
   return [
-    ...cs.boosts.filter((b) => on(b.switches) && !statReadable(b.stat, b.value))
+    ...(build.boosts ?? []).filter((b) => on(b.on) && !statReadable(b.stat, b.value))
       .map((b) => `My stat boost ${b.source || b.stat}: its value '${b.value}' can't be read, so it counts as 0.`),
-    ...cs.buffs.filter((b) => on(b.switches) && !buffReadable(b.value, b.typeOverride))
+    ...(build.buffs ?? []).filter((b) => on(b.on) && !buffReadable(b.value, b.typeOverride))
       .map((b) => `My buff ${b.source || b.value}: its text '${b.value}' can't be read, so it counts as 0.`),
   ]
 }
 
 /** Buffs active for the build: Morale, preset buffs, then the owner's own buffs (max stacks applied). */
-export function activeBuffs(presets: Presets, charName: string, cs: CharacterSave, build: LiveBuild, settings: Settings): ActiveBuff[] {
+export function activeBuffs(presets: Presets, charName: string, build: LiveBuild, settings: Settings): ActiveBuff[] {
   const out: ActiveBuff[] = []
   const morale = Math.min(Math.max(0, build.morale || 0), settings.moraleMax)
   if (morale > 0) {
@@ -300,8 +303,8 @@ export function activeBuffs(presets: Presets, charName: string, cs: CharacterSav
       ...(e.perCardCost ? { perCardCost: true } : {}), ...(e.sharedCap ? { sharedCap: e.sharedCap } : {}), ...(e.fixedDot ? { fixedDot: true } : {}),
       ...(e.weakness ? { weakness: true } : {}) })
   }
-  for (const b of cs.buffs) {
-    const st = switchStacks(b.switches[build.id])
+  for (const b of build.buffs ?? []) {
+    const st = switchStacks(b.on)
     if (st <= 0) continue
     out.push({ label: b.source || b.value, type: buffType(b.value, b.typeOverride), value: parseBuffValue(b.value),
       stacks: b.maxStacks ? Math.min(st, b.maxStacks) : st,

@@ -146,6 +146,36 @@ test('a card added to the deck and played adds damage', async ({ page }) => {
   await expect(page.locator('.plays .play').nth(1)).toContainText(CARD)
 })
 
+test("a copied build's own buffs are its own: switching one off leaves the first build as it was", async ({ page }) => {
+  await openWithSave(page)
+  const before = await total(page)
+  await tabButton(page, 'Setup').click()
+  const builds = page.getByRole('tablist', { name: 'Builds' }).getByRole('tab')
+  const count = await builds.count()
+  const open = (await builds.evaluateAll((tabs) => tabs.findIndex((t) => t.getAttribute('aria-selected') === 'true')))
+  const build = page.locator('section', { has: page.getByRole('heading', { name: /^Build/ }) })
+  await build.getByRole('button', { name: 'Duplicate', exact: true }).click()
+  await expect(builds).toHaveCount(count + 1) // the copy is added last and opened
+  await setBuff(page, MY_BUFF, false)
+  expect(await total(page)).toBeLessThan(before)
+  await builds.nth(open).click()
+  expect(await total(page)).toBe(before)
+  await tabButton(page, 'Buffs').click()
+  await expect(page.getByRole('switch', { name: MY_BUFF, exact: true })).toHaveAttribute('aria-checked', 'true')
+})
+
+test("the weapon's rarity adds its flat Attack", async ({ page }) => {
+  await openWithSave(page)
+  const before = await total(page, 'Non-crit')
+  await tabButton(page, 'Setup').click()
+  const weapon = page.getByRole('combobox', { name: 'Weapon', exact: true })
+  await weapon.selectOption('Unique')
+  expect(await total(page, 'Non-crit')).toBeGreaterThan(before)
+  await tabButton(page, 'Setup').click()
+  await weapon.selectOption('')
+  expect(await total(page, 'Non-crit')).toBe(before)
+})
+
 test('the fight sets the enemy, and another saved fight can be picked', async ({ page }) => {
   await openWithSave(page)
   expect(await total(page, 'Non-crit')).toBe(500)

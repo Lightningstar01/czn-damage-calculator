@@ -19,7 +19,7 @@ describe('Veronica', () => {
   }
   const text = (id: string, b = ownerBuild()) => {
     const p = preset(id)
-    const buffs = activeBuffs(PRESETS, 'Veronica', b.cs, b.a, settings)
+    const buffs = activeBuffs(PRESETS, 'Veronica', b.a, settings)
     return renderCardText(p.text, { egoLevel: b.a.egoLevel, nodeOn: (n) => b.a.potentialNodes?.[n] ?? true,
       pct: (base, fixed, of) => Math.round(shownPct(base, cardFromPreset(of ? preset(of) : p, 'Passion'), b.a, veronica, buffs, settings, fixed) * 100) / 100 })
   }
@@ -52,7 +52,7 @@ describe('Veronica', () => {
   })
 
   it('Ballistas join the deck with Rapid Fire; Reload and Sir Kowalski count per Ballista play', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'rf', preset: 'card-423' }, { id: 'kw', preset: 'card-443' }, { id: 'kw5', preset: 'card-448' })
     a.rotation = [
       { cardId: 'auto:card-450' },
@@ -60,7 +60,7 @@ describe('Veronica', () => {
       { cardId: 'auto:card-450', stacks: { Reload: 2, 'Sir Kowalski': 1 } },
       { cardId: 'auto:card-454', stacks: { 'Sir Kowalski V': 1 } },
     ]
-    const r = computeBuild(PRESETS, 'Veronica', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Veronica', a, settings)
     const pct = 1.6 * 1.16
     expect(r.plays[0].card.kind).toBe('Extra Attack')
     expect(r.plays[0].nonCrit).toBeCloseTo(pct * 906 * 0.35)
@@ -73,11 +73,11 @@ describe('Veronica', () => {
   })
 
   it("Piercing Ballista is normal damage; its Shield bonus and Enhanced Ballista's crit count", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'fp2', preset: 'card-427' }, { id: 'fp3', preset: 'card-428' })
     a.stats.critChance = 0.1
     a.rotation = [{ cardId: 'auto:card-451', stacks: { 'Target has Shield': 1 } }, { cardId: 'auto:card-452' }]
-    const r = computeBuild(PRESETS, 'Veronica', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Veronica', a, settings)
     expect(r.plays[0].card.kind).not.toBe('Extra Attack')
     expect(r.plays[0].hits[0].cardMult).toBeCloseTo(2.1 * 1.16 + 0.5)
     expect(r.plays[1].hits[0].critRate).toBeCloseTo(0.4)

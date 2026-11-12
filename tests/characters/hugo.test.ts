@@ -21,11 +21,11 @@ describe('Hugo', () => {
   const own = 100 * 0.35
 
   it("card text matches the owner's in-game screenshots", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     const text = (id: string) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Order')
-      const buffs = activeBuffs(PRESETS, 'Hugo', cs, a, settings)
+      const buffs = activeBuffs(PRESETS, 'Hugo', a, settings)
       return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: (n) => n !== '5-1', pct: (base, fixed) => shownPct(base, c, a, hugo, buffs, settings, fixed) })
     }
     expect(preset('card-485').name).toBe('Knife Toss')
@@ -59,7 +59,7 @@ describe('Hugo', () => {
   })
 
   it("Commence the Hunt: a 50% Extra Attack (+30% per stack before the decrease) on single-target Attack Cards; Fixer's Approach, Last Resort", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'kt', preset: 'card-485' }, { id: 'fod', preset: 'card-493' }, { id: 'fod4', preset: 'card-497' },
       { id: 'qf2', preset: 'card-501' }, { id: 'fa', preset: 'card-511' })
     a.rotation = [
@@ -73,7 +73,7 @@ describe('Hugo', () => {
       // Last Resort hits all enemies: no Extra Attack
       { cardId: 'auto:card-484', stacks: { 'Commence the Hunt': 2 } },
     ]
-    const r = computeBuild(PRESETS, 'Hugo', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Hugo', a, settings)
     expect(r.counterOptions[4].find((c) => c.name === 'Commence the Hunt')?.max).toBe(5)
     expect(r.plays[0].triggered.map((t) => t.card.name)).toEqual(['Commence the Hunt'])
     expect(r.plays[0].triggered[0].nonCrit).toBeCloseTo((0.5 + 0.9) * 1.4 * own)
@@ -88,12 +88,12 @@ describe('Hugo', () => {
   })
 
   it("E1 raises Fixer's Approach to 50%; E2's Extra Attacks get the +30% per stack; E4 Fixer's Wrath +10% each", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.egoLevel = 4
     a.deck.push({ id: 'kt', preset: 'card-485' }, { id: 'fa', preset: 'card-511' })
     a.rotation = [{ cardId: 'kt', stacks: { 'Commence the Hunt': 1, "Fixer's Wrath": 2 } },
       { cardId: 'auto:e2-extra', stacks: { 'Commence the Hunt': 6 } }]
-    const r = computeBuild(PRESETS, 'Hugo', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Hugo', a, settings)
     expect(r.plays[0].triggered[0].nonCrit).toBeCloseTo(((0.5 + 0.3) * 1.5 + 0.2) * own)
     // E3: up to 6 stacks
     expect(r.plays[1].nonCrit).toBeCloseTo(2 * (0.4 + 1.8) * own)
@@ -107,7 +107,7 @@ describe('Hugo', () => {
     b.rotation = [{ cardId: 's', stacks: { 'Commence the Hunt': 2 } }]
     const { cs } = ownerBuild()
     cs.builds[0].stats.attack = 300
-    const r = computeBuild(PRESETS, 'Mei Lin', ml, b, settings, { Hugo: cs })
+    const r = computeBuild(PRESETS, 'Mei Lin', b, settings, { Hugo: cs })
     expect(r.plays[0].triggered.map((t) => [t.by, t.card.name])).toEqual([['Hugo', 'Commence the Hunt']])
     expect(r.plays[0].triggered[0].nonCrit).toBeCloseTo((0.5 + 0.6) * 1.4 * 300 * 0.35)
   })

@@ -25,12 +25,12 @@ describe('Cassius', () => {
   const card = (id: string) => cardFromPreset(preset(id), 'Instinct')
 
   it("card text matches the owner's in-game screenshots", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     lockedNode(a)
     const text = (id: string) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Instinct')
-      const buffs = activeBuffs(PRESETS, 'Cassius', cs, a, settings)
+      const buffs = activeBuffs(PRESETS, 'Cassius', a, settings)
       return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: () => true, pct: (base, fixed) => shownPct(base, c, a, cassius, buffs, settings, fixed) })
     }
     expect(preset('card-573').name).toBe('Cards')
@@ -67,7 +67,7 @@ describe('Cassius', () => {
     addCards(cs, d3, t0, dd5, d4)
     a.rotation = [{ cardId: d3.id, stacks: { 'Completed Quests': 7 } }, { cardId: t0.id, stacks: { 'Attack Cards activated this turn': 2 } },
       { cardId: dd5.id, stacks: { "Drawn card's Cost": 2 } }, { cardId: d4.id }]
-    const r = computeBuild(PRESETS, 'Cassius', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Cassius', a, settings)
     expect(r.plays[0].nonCrit).toBeCloseTo((0.8 * 1.24 + 5 * 0.8) * 100 * 0.35)
     expect(r.plays[1].nonCrit).toBeCloseTo((2 * 1.24 + 2 * 0.4) * 100 * 0.35)
     expect(r.plays[2].nonCrit).toBeCloseTo(0.8 * 1.24 * 2 * 100 * 0.35)
@@ -76,10 +76,10 @@ describe('Cassius', () => {
 
   it('Potential 5-1 raises Cards and Wild Card, +5% more at Health 600 or higher', () => {
     for (const [health, extra] of [[599, 0.05], [600, 0.1]]) {
-      const { cs, a } = ownerBuild(health)
+      const { a } = ownerBuild(health)
       a.deck.push({ id: 'c', preset: 'card-573' })
       a.rotation = [{ cardId: 'c' }]
-      const r = computeBuild(PRESETS, 'Cassius', cs, a, settings)
+      const r = computeBuild(PRESETS, 'Cassius', a, settings)
       expect(r.plays[0].nonCrit).toBeCloseTo((1 + extra) * 1.26 * 100 * 0.35)
     }
   })

@@ -19,11 +19,11 @@ describe('Haru', () => {
     return { cs, a }
   }
   const textAt = (egoLevel: number) => {
-    const { cs, a } = ownerBuild(egoLevel)
+    const { a } = ownerBuild(egoLevel)
     return (id: string) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Justice')
-      const buffs = activeBuffs(PRESETS, 'Haru', cs, a, settings)
+      const buffs = activeBuffs(PRESETS, 'Haru', a, settings)
       return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: () => true, pct: (base, fixed) => shownPct(base, c, a, haru, buffs, settings, fixed) })
     }
   }
@@ -56,49 +56,49 @@ describe('Haru', () => {
     const text = textAt(3)
     expect(text('card-637')).toBe('800% Damage\n+80% Damage Amount for each beneficial effect in possession (max +800%)')
     expect(text('card-665')).toContain('by 120% for 1 turn')
-    const { cs, a } = ownerBuild(3)
+    const { a } = ownerBuild(3)
     a.rotation = [{ cardId: 'auto:card-637', stacks: { 'Beneficial effects': 12 } }]
-    expect(computeBuild(PRESETS, 'Haru', cs, a, settings).plays[0].nonCrit).toBeCloseTo((6 + 2 + 10 * 0.8) * 775 * 0.35)
+    expect(computeBuild(PRESETS, 'Haru', a, settings).plays[0].nonCrit).toBeCloseTo((6 + 2 + 10 * 0.8) * 775 * 0.35)
     a.egoLevel = 0
-    expect(computeBuild(PRESETS, 'Haru', cs, a, settings).plays[0].nonCrit).toBeCloseTo((6 + 10 * 0.6) * 775 * 0.35)
+    expect(computeBuild(PRESETS, 'Haru', a, settings).plays[0].nonCrit).toBeCloseTo((6 + 10 * 0.6) * 775 * 0.35)
   })
 
   it('Potential 7 needs Attack 600 for its second +10%', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'as', preset: 'card-641' })
     a.rotation = [{ cardId: 'as' }]
-    expect(computeBuild(PRESETS, 'Haru', cs, a, settings).plays[0].nonCrit).toBeCloseTo(3.2 * 1.14 * 775 * 0.35)
+    expect(computeBuild(PRESETS, 'Haru', a, settings).plays[0].nonCrit).toBeCloseTo(3.2 * 1.14 * 775 * 0.35)
     a.stats.attack = 599
-    expect(computeBuild(PRESETS, 'Haru', cs, a, settings).plays[0].nonCrit).toBeCloseTo(3.1 * 1.14 * 599 * 0.35)
+    expect(computeBuild(PRESETS, 'Haru', a, settings).plays[0].nonCrit).toBeCloseTo(3.1 * 1.14 * 599 * 0.35)
   })
 
   it('Anchor Shot: activations, Anchors played, Pulverize and Lift Anchor; every epiphany gets them', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'as', preset: 'card-645' }, { id: 'la', preset: 'card-665' })
     a.rotation = [{ cardId: 'as', stacks: { 'Anchor Shot activations': 3, 'Anchors played': 2, 'Target holding Shield': 1, 'Lift Anchor': 1 } }]
-    const r = computeBuild(PRESETS, 'Haru', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Haru', a, settings)
     // (380% + 20%) x 1.14 x (1 + 20% + 80%) + 3 x 100% + 2 x 10%
     expect(r.plays[0].nonCrit).toBeCloseTo((4 * 1.14 * 2 + 3 + 0.2) * 775 * 0.35)
   })
 
   it('Charge Energy V is always on; single target is a switch; III and Power Supply read the play', () => {
-    const { cs, a } = ownerBuild(4)
+    const { a } = ownerBuild(4)
     a.deck.push({ id: 'pc', preset: 'card-653' }, { id: 'ce', preset: 'card-664' }, { id: 'ce3', preset: 'card-662' })
     a.rotation = [{ cardId: 'pc', stacks: { 'Cards of this unit in hand': 2, 'Power Supply': 5 } }]
     // 240% x 1.14 x (1 + 40%) + single target 100% + 2 x 70% + 3 x 30%
     const pct = 2.4 * 1.14 * 1.4 + 1 + 1.4 + 0.9
-    expect(computeBuild(PRESETS, 'Haru', cs, a, settings).plays[0].nonCrit).toBeCloseTo(pct * 775 * 0.35)
+    expect(computeBuild(PRESETS, 'Haru', a, settings).plays[0].nonCrit).toBeCloseTo(pct * 775 * 0.35)
     a.presetSwitches['Power Charge|single-target'] = false
-    expect(computeBuild(PRESETS, 'Haru', cs, a, settings).plays[0].nonCrit).toBeCloseTo((pct - 1) * 775 * 0.35)
+    expect(computeBuild(PRESETS, 'Haru', a, settings).plays[0].nonCrit).toBeCloseTo((pct - 1) * 775 * 0.35)
   })
 
   it('E2 / E6 lower Anchor Shot per AP short; E6 adds 30% on the start-of-turn card', () => {
-    const { cs, a } = ownerBuild(2)
+    const { a } = ownerBuild(2)
     a.deck.push({ id: 'as', preset: 'card-641' })
     a.rotation = [{ cardId: 'as', stacks: { 'AP short of Cost': 2, 'Start-of-turn Anchor Shot': 1 } }]
-    expect(computeBuild(PRESETS, 'Haru', cs, a, settings).plays[0].nonCrit).toBeCloseTo(3.2 * 1.14 * (1 - 0.6) * 775 * 0.35)
+    expect(computeBuild(PRESETS, 'Haru', a, settings).plays[0].nonCrit).toBeCloseTo(3.2 * 1.14 * (1 - 0.6) * 775 * 0.35)
     // E6 has E5's +3 levels on the upgrade: Unique 10
     a.egoLevel = 6
-    expect(computeBuild(PRESETS, 'Haru', cs, a, settings).plays[0].nonCrit).toBeCloseTo(3.2 * 1.2 * (1 - 0.3 + 0.3) * 775 * 0.35)
+    expect(computeBuild(PRESETS, 'Haru', a, settings).plays[0].nonCrit).toBeCloseTo(3.2 * 1.2 * (1 - 0.3 + 0.3) * 775 * 0.35)
   })
 })

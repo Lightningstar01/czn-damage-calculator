@@ -286,10 +286,16 @@ export interface FragmentSetPreset {
   effects: Effect[]
 }
 
+/** Equipment rarities, lowest first. */
+export const EQUIP_RARITIES = ['Rare', 'Legendary', 'Unique'] as const
+export type EquipRarity = (typeof EQUIP_RARITIES)[number]
+
 export interface Presets {
   characters: CharacterPreset[]
   partners: PartnerPreset[]
   fragmentSets: FragmentSetPreset[]
+  /** Flat Attack a weapon gives in battle, per rarity (src/data/equipment.ts). Missing: weapons add nothing. */
+  weaponAtk?: Record<EquipRarity, number>
 }
 
 /** A character as imported from Prydwen (src/data/prydwen/<slug>.json, generated: never edit by hand). */
@@ -396,6 +402,16 @@ export interface Build {
   deck: DeckCard[]
   /** This build's attack list: the team's plays, in order (the main character's, and teammates' with RotationPlay.by). */
   rotation: RotationPlay[]
+  /** The build's equipment (Setup > Equipment). Only the weapon so far: its rarity gives its flat Attack. */
+  equipment?: { weapon?: EquipPick }
+  /** The owner's own stat boosts and buffs for this build (owner, 2026-11-11: a list per build; Duplicate copies them). */
+  boosts: UserBoost[]
+  buffs: UserBuff[]
+}
+
+/** A piece of equipment on a build. */
+export interface EquipPick {
+  rarity: EquipRarity
 }
 
 /** A card in a build's deck: a card preset (always its current data), or a custom card from an older save. */
@@ -438,7 +454,7 @@ export type LiveBuild = Omit<Build, 'team'> & { team: LiveTeammate[] }
 /** Teammate.build: not linked to a saved build. */
 export const NO_BUILD = 'none'
 
-/** The owner's own stat boost (equipment etc.), shared by the character's builds with a switch per build. */
+/** The owner's own stat boost (equipment etc.), in one build's list (Build.boosts). */
 export interface UserBoost {
   id: string
   source: string
@@ -448,7 +464,8 @@ export interface UserBoost {
   value: string
   category: string
   notes: string
-  switches: Record<string, Switch>
+  /** Missing = off. */
+  on?: Switch
 }
 
 export interface UserBuff {
@@ -465,7 +482,8 @@ export interface UserBuff {
   condition: Condition
   maxStacks: number | null
   notes: string
-  switches: Record<string, Switch>
+  /** Missing = off; a number = stacks. */
+  on?: Switch
 }
 
 /** Hits a per-play counter adds to a card (Card.counterHits): `hits` while the counter is above 0, or, with `per`, `hits` for every
@@ -555,8 +573,6 @@ export interface CharacterSave {
   builds: Build[]
   activeBuild: string
   showAllPartners: boolean
-  boosts: UserBoost[]
-  buffs: UserBuff[]
 }
 
 /** One enemy of a fight. */

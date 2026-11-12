@@ -20,11 +20,11 @@ describe('Nia', () => {
   }
 
   it("card text matches the owner's in-game screenshots", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     const text = (id: string) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Instinct')
-      const buffs = activeBuffs(PRESETS, 'Nia', cs, a, settings)
+      const buffs = activeBuffs(PRESETS, 'Nia', a, settings)
       return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: () => true, pct: (base, fixed) => shownPct(base, c, a, nia, buffs, settings, fixed) })
     }
     expect(text('card-609')).toBe('200% Damage to all enemies\n5 Decibel\nDiscard all cards in Draw Pile')
@@ -41,12 +41,12 @@ describe('Nia', () => {
   })
 
   it('Owner Extra Attacks are unraised Extra Attack plays; Decibel comes with the Ego skill, +50% per Decibel; E2 Rhythm Boost', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'm', preset: 'card-618' })
     expect(buildDeck(nia, a).map((i) => i.card.name)).toContain('Decibel (Shuffle)')
     a.rotation = [{ cardId: 'm' }, { cardId: 'auto:decibel', stacks: { Decibel: 5 } },
       { cardId: 'm', stacks: { 'Rhythm Boost': 4 } }, { cardId: 'auto:card-609', stacks: { Decibel: 5 } }]
-    const r = computeBuild(PRESETS, 'Nia', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Nia', a, settings)
     expect(r.plays[0].nonCrit).toBeCloseTo(1.5 * 100 * 0.35)
     expect(r.plays[1].nonCrit).toBeCloseTo((0.5 + 5 * 0.5) * 100 * 0.35)
     expect(r.plays[2].nonCrit).toBeCloseTo((1.5 + 4 * 0.05) * 100 * 0.35)

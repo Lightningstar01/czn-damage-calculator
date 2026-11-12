@@ -25,11 +25,11 @@ describe('Narja', () => {
   const stat = (defense = 100) => 100 * 0.3 + defense * 2.1
 
   it("card text matches the owner's in-game screenshots", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     const text = (id: string) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Instinct')
-      const buffs = activeBuffs(PRESETS, 'Narja', cs, a, settings)
+      const buffs = activeBuffs(PRESETS, 'Narja', a, settings)
       return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: () => true, pct: (base, fixed) => shownPct(base, c, a, narja, buffs, settings, fixed) })
     }
     expect(text('card-852')).toBe('10 Voracity\n250% Defense-Based Damage\nIf Mealtime is in Graveyard, 5 Predation')
@@ -46,10 +46,10 @@ describe('Narja', () => {
 
   it('Voracity and Predation per play, raised by Potential 7 (Predation only at Defense 300 or higher) and E4', () => {
     for (const [ego, defense, bonus] of [[0, 100, 0.4 + 0.8], [0, 300, 0.4 + 1.0], [4, 300, 0.4 + 1.4]]) {
-      const { cs, a } = ownerBuild(ego, defense)
+      const { a } = ownerBuild(ego, defense)
       a.deck.push({ id: 'na', preset: 'card-853' })
       a.rotation = [{ cardId: 'na' }, { cardId: 'na', stacks: { Voracity: 1, Predation: 1 } }]
-      const r = computeBuild(PRESETS, 'Narja', cs, a, settings)
+      const r = computeBuild(PRESETS, 'Narja', a, settings)
       expect(r.plays[0].nonCrit).toBeCloseTo(1.02 * stat(defense) * 0.35)
       expect(r.plays[1].nonCrit).toBeCloseTo((1.02 + bonus) * stat(defense) * 0.35)
     }
@@ -63,7 +63,7 @@ describe('Narja', () => {
     addCards(cs, domain, hunger, mealtime)
     a.rotation = [{ cardId: domain.id },
       { cardId: mealtime.id, stacks: { 'Domain of Voracity II (on target)': 1, 'Voracity activations (Bottomless Hunger V)': 3 } }]
-    const r = computeBuild(PRESETS, 'Narja', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Narja', a, settings)
     expect(r.plays[0].nonCrit).toBeCloseTo(1.14 * stat() * 0.35)
     // 182% + 100% taken + 3 x 40%
     expect(r.plays[1].nonCrit).toBeCloseTo((1.824 + 1 + 1.2) * stat() * 0.35)
@@ -71,10 +71,10 @@ describe('Narja', () => {
 
   it('E6 Liberated Memory joins the deck from E6: 50% Defense-Based, no Attack Card buffs', () => {
     expect(buildDeck(narja, ownerBuild(5).a).some((i) => i.card.id === AUTO + 'liberated-memory')).toBe(false)
-    const { cs, a } = ownerBuild(6)
+    const { a } = ownerBuild(6)
     expect(buildDeck(narja, a).find((i) => i.card.id === AUTO + 'liberated-memory')?.createdBy).toBe('E6')
     a.rotation = [{ cardId: AUTO + 'liberated-memory', stacks: { Voracity: 1, Predation: 1 } }]
-    const r = computeBuild(PRESETS, 'Narja', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Narja', a, settings)
     expect(r.plays[0].nonCrit).toBeCloseTo(0.5 * stat() * 0.35)
   })
 })

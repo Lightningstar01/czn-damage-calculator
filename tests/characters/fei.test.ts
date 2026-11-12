@@ -19,11 +19,11 @@ describe('Fei', () => {
   }
 
   it('card text matches the in-game screenshots', () => {
-    const { cs, a } = archiveBuild()
+    const { a } = archiveBuild()
     const text = (id: string, nodeOn = false) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Void')
-      const buffs = activeBuffs(PRESETS, 'Fei', cs, a, settings)
+      const buffs = activeBuffs(PRESETS, 'Fei', a, settings)
       return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: () => nodeOn, pct: (base, fixed) => shownPct(base, c, a, fei, buffs, settings, fixed) })
     }
     expect(text('card-1199')).toBe('8 Descent\nFor 2 turn(s), at the start of the turn, 8 Descent\nIncrease Damage Amount of the next Heavensfall by 100%')
@@ -41,29 +41,29 @@ describe('Fei', () => {
   })
 
   it("Flame Arts: a 120% Extra Attack play; Soulfire Dance V adds a hit, Exorcist's Formation IV adds 100%, E6 +120%", () => {
-    const { cs, a } = archiveBuild()
+    const { a } = archiveBuild()
     a.deck.push({ id: 'ef4', preset: 'card-1206' }, { id: 'sd5', preset: 'card-1225' })
     a.rotation = [{ cardId: 'auto:flame-arts' }, { cardId: 'auto:flame-arts', stacks: { 'Soulfire Dance V': 1 } }]
-    let r = computeBuild(PRESETS, 'Fei', cs, a, settings)
+    let r = computeBuild(PRESETS, 'Fei', a, settings)
     expect(r.plays[0].hits).toHaveLength(1)
     expect(r.plays[0].triggered.map((t) => [t.card.name, t.nonCrit])).toEqual([["Exorcist's Formation IV (Extra Attack)", 35]])
     expect(r.plays[0].nonCrit).toBeCloseTo(1.2 * 35 + 35)
     expect(r.plays[1].hits).toHaveLength(2)
     expect(r.plays[1].nonCrit).toBeCloseTo(2 * 1.2 * 35 + 35)
     a.egoLevel = 6
-    r = computeBuild(PRESETS, 'Fei', cs, a, settings)
+    r = computeBuild(PRESETS, 'Fei', a, settings)
     expect(r.plays[0].nonCrit).toBeCloseTo(2.4 * 35 + 35)
   })
 
   it('Heavensfall: Heavenscleaver 100% and Soulfire Dance III 50% per hit multiply, E4 +80%, E3 +2 and Judgment +3 hits', () => {
-    const { cs, a } = archiveBuild()
+    const { a } = archiveBuild()
     a.egoLevel = 4
     a.deck.push({ id: 'ef', preset: 'card-1202' }, { id: 'sd3', preset: 'card-1223' })
     a.rotation = [
       { cardId: 'auto:card-1227' },
       { cardId: 'auto:card-1227', stacks: { Heavenscleaver: 1, 'Soulfire Dance III hits': 4, 'Heavenscleaver E3 (+2 Hits)': 1, 'Judgment Upon the Wicked': 1 } },
     ]
-    const r = computeBuild(PRESETS, 'Fei', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Fei', a, settings)
     expect(r.plays[0].hits).toHaveLength(3)
     expect(r.plays[0].nonCrit).toBeCloseTo(3 * (1 + 0.8) * 35)
     // Summed MultFactor: 1 + 100% + 4 x 50% = 4
@@ -72,11 +72,11 @@ describe('Fei', () => {
   })
 
   it("Inferno Rhapsody: Exorcist's Formation I +50%, E1 Blazing War Dance 100% when moved to hand", () => {
-    const { cs, a } = archiveBuild()
+    const { a } = archiveBuild()
     a.egoLevel = 1
     a.deck.push({ id: 'ef1', preset: 'card-1203' }, { id: 'bwd', preset: 'card-1226' })
     a.rotation = [{ cardId: 'auto:card-1228' }, { cardId: 'auto:card-1228', stacks: { 'Moved by Blazing War Dance': 1 } }]
-    const r = computeBuild(PRESETS, 'Fei', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Fei', a, settings)
     expect(r.plays[0].nonCrit).toBeCloseTo((0.7 + 0.5) * 35)
     expect(r.plays[1].nonCrit).toBeCloseTo((0.7 * 2 + 0.5) * 35)
   })

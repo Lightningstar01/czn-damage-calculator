@@ -21,26 +21,26 @@ describe('Khalipe', () => {
   }
   const UNIT = (436 * 0.3 + 215 * 2.1) * 0.35
   const damage = (id: string, play: Partial<RotationPlay> = {}, change: (a: Build) => void = () => {}) => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'c', preset: id })
     change(a)
     a.rotation = [{ cardId: 'c', ...play }]
-    return computeBuild(PRESETS, 'Khalipe', cs, a, settings).plays[0].nonCrit
+    return computeBuild(PRESETS, 'Khalipe', a, settings).plays[0].nonCrit
   }
   /** A play of the Silver Veil card, which joins the deck with a card that gives it. */
   const veil = (play: Partial<RotationPlay> = {}, change: (a: Build) => void = () => {}) => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'c', preset: 'card-67' })
     change(a)
     a.rotation = [{ cardId: 'auto:silver-veil', ...play }]
-    return computeBuild(PRESETS, 'Khalipe', cs, a, settings).plays[0].nonCrit
+    return computeBuild(PRESETS, 'Khalipe', a, settings).plays[0].nonCrit
   }
   const text = (id: string, change: (a: Build) => void = () => {}) => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     change(a)
     const p = preset(id)
     const c = cardFromPreset(p, 'Instinct')
-    const buffs = activeBuffs(PRESETS, 'Khalipe', cs, a, settings)
+    const buffs = activeBuffs(PRESETS, 'Khalipe', a, settings)
     return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: (n) => a.potentialNodes?.[n] !== false, pct: (base, fixed) => shownPct(base, c, a, khalipe, buffs, settings, fixed) })
   }
 

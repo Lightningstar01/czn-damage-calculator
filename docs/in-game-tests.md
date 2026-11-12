@@ -2,7 +2,7 @@
 
 Made from `tests/ingame/checks.ts`; change it there, not here, then run `npx vitest run -u tests/ingame`.
 
-65 to run, 6 measured. Send the numbers under **Send** with the game version; they then become tests here and close the question.
+66 to run, 6 measured. Send the numbers under **Send** with the game version; they then become tests here and close the question.
 Use non-crit hits unless the test is about crits, and note anything else that was on.
 
 ## To run
@@ -202,6 +202,20 @@ Closes: docs/FORMULA.md, Stats (Mechanic DMG%)
 **Send:** Its wording.
 
 Closes: src/data/fragmentSets.ts (Seth's Scarab)
+
+### weapon-flat-attack
+
+**Question:** Does a weapon at its top level give 74 (Rare), 82 (Legendary) or 90 (Unique) Attack, whatever the weapon? The numbers are Prydwen's (each rarity has five steps: Rare 25/41/56/67/74, Legendary 28/45/62/74/82, Unique 31/50/68/81/90); the calculator always uses the top one. What are the five steps in-game, and are your weapons at the top one?
+
+**Setup:** One weapon of each rarity.
+
+**Steps:**
+1. Read the Attack on each weapon's own info.
+2. Note whether the weapon shows a level, tier or stars.
+
+**Send:** Rarity; Attack on the weapon; Its level, tier or stars.
+
+Closes: Setup: Equipment, Weapon (src/data/equipment.ts)
 
 ### fixed-formula
 

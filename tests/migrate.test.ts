@@ -5,6 +5,31 @@ import { migrate } from '../src/store/migrate'
 import { activeFight, defaultSave, SAVE_VERSION } from '../src/store/save'
 
 describe('migrate', () => {
+  it('v12: each build gets its own stat boosts and buffs: the shared rows that were on for it; a row off everywhere stays in all, off', () => {
+    const old = { version: 11, characters: { X: { activeBuild: 'a', builds: [{ id: 'a' }, { id: 'b' }],
+      boosts: [
+        { id: 'sword', source: 'Sword', stat: 'Flat ATK', value: '74', switches: { a: true, b: true } },
+        { id: 'ring', source: 'Ring', stat: 'ATK%', value: '12%', switches: { a: true, b: false } },
+        { id: 'spare', source: 'Spare', stat: 'ATK%', value: '8%', switches: { a: false, gone: true } },
+      ],
+      buffs: [
+        { id: 'stacks', value: '+10%', maxStacks: 5, switches: { b: 3 } },
+        { id: 'bare', value: '20%' },
+      ],
+    } } }
+    const cs = migrate(old).characters.X
+    const [a, b] = cs.builds
+    expect(a.boosts.map((r) => [r.id, r.on])).toEqual([['sword', true], ['ring', true], ['spare', false]])
+    expect(b.boosts.map((r) => [r.id, r.on])).toEqual([['sword', true], ['spare', false]])
+    expect(a.buffs.map((r) => [r.id, r.on])).toEqual([['bare', false]])
+    expect(b.buffs.map((r) => [r.id, r.on])).toEqual([['stacks', 3], ['bare', false]])
+    expect(a.boosts[0]).toMatchObject({ source: 'Sword', stat: 'Flat ATK', value: '74' })
+    expect(a.boosts[0]).not.toHaveProperty('switches')
+    expect(a.boosts[0]).not.toBe(b.boosts[0])
+    expect(cs).not.toHaveProperty('boosts')
+    expect(cs).not.toHaveProperty('buffs')
+  })
+
   it('v11: the enemy moves to shared fights, one per distinct pair of values, and the open build keeps its own', () => {
     const build = (id: string, enemyDefMult: number, enemyDr: number) => ({ id, enemyDefMult, enemyDr, stats: { attack: 900, critDmg: 1.8, critChance: 0.2 } })
     const old = { version: 10, activeCharacter: 'Y', characters: {
@@ -137,9 +162,10 @@ describe('migrate', () => {
   })
 
   it('migrate fills rows and teammates missing a field the page reads', () => {
-    const cs = migrate({ version: SAVE_VERSION, characters: { X: { builds: [{ id: 'a', team: [{ character: 'Y' }] }], boosts: [{ id: 'b' }], buffs: [{ id: 'c', switches: null }] } } }).characters.X
-    expect(cs.boosts[0].switches).toEqual({})
-    expect(cs.buffs[0].switches).toEqual({})
+    const cs = migrate({ version: SAVE_VERSION, characters: { X: { builds: [{ id: 'a', team: [{ character: 'Y' }], boosts: [{ id: 'b' }], buffs: [{ id: 'c', on: 2 }] }] } } }).characters.X
+    // A row without a switch is off
+    expect(cs.builds[0].boosts[0]).toMatchObject({ id: 'b', stat: 'Flat ATK', value: '', on: false })
+    expect(cs.builds[0].buffs[0]).toMatchObject({ id: 'c', appliesTo: 'ALL', on: 2 })
     expect(cs.builds[0].team[0].cards).toEqual([])
     expect(migrate(defaultSave()).version).toBe(SAVE_VERSION)
   })
@@ -153,15 +179,16 @@ describe('migrate', () => {
       { characters: { X: { builds: [] } } },
       { characters: { X: { builds: [{}] } } },
       { characters: { X: { builds: [{ id: 'a', deck: 5 }] } } },
-      { characters: { X: { builds: [{ id: 'a' }], boosts: 'none' } } },
+      { version: 11, characters: { X: { builds: [{ id: 'a' }], boosts: 'none' } } },
+      { version: SAVE_VERSION, characters: { X: { builds: [{ id: 'a', buffs: 'none' }] } } },
     ]) expect(() => migrate(bad), JSON.stringify(bad)).toThrow(/isn't a calculator save/)
     expect(() => migrate({ version: SAVE_VERSION + 1, characters: {} })).toThrow(/newer version/)
   })
 
   it('migrate fills in what a partial save left out', () => {
     const cs = migrate({ version: SAVE_VERSION, characters: { X: { activeBuild: 'gone', builds: [{ id: 'a', name: 'Mine', deck: [], stats: { attack: 5, elemDmg: { Order: 0.1 } } }] } } }).characters.X
-    expect(cs).toMatchObject({ activeBuild: 'a', boosts: [], buffs: [] })
-    expect(cs.builds[0]).toMatchObject({ id: 'a', name: 'Mine', rotation: [], team: [], presetSwitches: {}, stats: { attack: 5, weaknessDmg: 1.25, elemDmg: { Order: 0.1, Passion: 0 } } })
+    expect(cs).toMatchObject({ activeBuild: 'a' })
+    expect(cs.builds[0]).toMatchObject({ id: 'a', name: 'Mine', rotation: [], team: [], presetSwitches: {}, boosts: [], buffs: [], stats: { attack: 5, weaknessDmg: 1.25, elemDmg: { Order: 0.1, Passion: 0 } } })
   })
 
   it('migrate v9: the shared library goes into every build; Ego skill and created cards come with the deck', () => {

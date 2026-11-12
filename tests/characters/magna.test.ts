@@ -24,18 +24,18 @@ describe('Magna', () => {
   const COUNTER = 'auto:counterattack'
   /** One play of `id` (a card picked as `pick`, or the Counterattack it creates) with `others` also in the deck. */
   const damage = (id: string, play: Partial<RotationPlay> = {}, change: (a: Build) => void = () => {}, pick = id, others: string[] = []) => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'c', preset: pick }, ...others.map((p, i) => ({ id: `o${i}`, preset: p })))
     change(a)
     a.rotation = [{ cardId: id === COUNTER ? COUNTER : 'c', ...play }]
-    return computeBuild(PRESETS, 'Magna', cs, a, settings).plays[0].nonCrit
+    return computeBuild(PRESETS, 'Magna', a, settings).plays[0].nonCrit
   }
   const text = (id: string, change: (a: Build) => void = () => {}) => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     change(a)
     const p = preset(id)
     const c = cardFromPreset(p, 'Justice')
-    const buffs = activeBuffs(PRESETS, 'Magna', cs, a, settings)
+    const buffs = activeBuffs(PRESETS, 'Magna', a, settings)
     return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: (n) => a.potentialNodes?.[n] !== false, pct: (base, fixed) => shownPct(base, c, a, magna, buffs, settings, fixed) })
   }
 

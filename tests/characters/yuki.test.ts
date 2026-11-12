@@ -21,11 +21,11 @@ describe('Yuki', () => {
   const atk = 830 * 0.35
 
   it("card text matches the owner's in-game screenshots", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     const text = (id: string) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Order')
-      const buffs = activeBuffs(PRESETS, 'Yuki', cs, a, settings)
+      const buffs = activeBuffs(PRESETS, 'Yuki', a, settings)
       return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: () => true, pct: (base, fixed) => shownPct(base, c, a, yuki, buffs, settings, fixed) })
     }
     const single = 'If there is only a single target, increase Damage Amount by 50%'
@@ -48,11 +48,11 @@ describe('Yuki', () => {
   })
 
   it('Inspiration adds the hit and sets off Freezing Blade, skipped by Attack Card buffs; a Rapid Slash gets 30%', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'ice', preset: 'card-774' }, { id: 'fb', preset: 'card-768' }, { id: 'rs', preset: 'card-747' }, { id: 'ps', preset: 'card-750' })
     a.rotation = [{ cardId: 'ice' }, { cardId: 'ice', stacks: { Inspiration: 1, 'Prepare to Subdue': 1 } }, { cardId: 'rs', stacks: { Inspiration: 1 } },
       { cardId: 'ice', hits: 5, stacks: { Inspiration: 1 } }]
-    const [off, on, rapid, set] = computeBuild(PRESETS, 'Yuki', cs, a, settings).plays
+    const [off, on, rapid, set] = computeBuild(PRESETS, 'Yuki', a, settings).plays
     const ice = 1.9 * 1.12 * atk
     expect(off.hits.length).toBe(1)
     expect(off.triggered).toEqual([])
@@ -66,10 +66,10 @@ describe('Yuki', () => {
 
   it('Potential 7: +5 at Attack 600, +1 per 20 above it, at most +10', () => {
     const flash = (attack: number) => {
-      const { cs, a } = ownerBuild(attack)
+      const { a } = ownerBuild(attack)
       a.deck.push({ id: 'fs', preset: 'card-756' })
       a.rotation = [{ cardId: 'fs' }]
-      const r = computeBuild(PRESETS, 'Yuki', cs, a, settings).plays[0].hits[0]
+      const r = computeBuild(PRESETS, 'Yuki', a, settings).plays[0].hits[0]
       return r.cardPct
     }
     expect(flash(599)).toBeCloseTo(2.2)
@@ -79,17 +79,17 @@ describe('Yuki', () => {
   })
 
   it('Flash Slash IV, Freezing Blade IV, the Ego skill per card and Sword Dance', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'iv', preset: 'card-760' }, { id: 'fs', preset: 'card-756' }, { id: 'fb', preset: 'card-772' })
     a.rotation = [{ cardId: 'iv', stacks: { 'Cards Drawn this turn': 9 } }, { cardId: 'fs' }, { cardId: 'auto:card-745', stacks: { 'Cards moved to Draw Pile': 2 } }]
-    const [iv, fs, ego] = computeBuild(PRESETS, 'Yuki', cs, a, settings).plays
+    const [iv, fs, ego] = computeBuild(PRESETS, 'Yuki', a, settings).plays
     expect(iv.hits[0].nonCrit).toBeCloseTo((4.1 * 1.12 + 1.5 * 5) * atk)
     // Summed multipliers: 50% single target + 50% All-Target
     expect(fs.hits[0].nonCrit).toBeCloseTo(2.3 * 1.12 * 2 * atk)
     expect(ego.hits[0].nonCrit).toBeCloseTo((4.5 + 2) * atk)
     a.egoLevel = 6
     a.rotation = [{ cardId: 'fs', stacks: { 'Sword Dance': 9, 'Swiftblade Flurry': 1 } }, { cardId: 'auto:card-745', stacks: { 'Cards moved to Draw Pile': 2 } }]
-    const [e6, ego6] = computeBuild(PRESETS, 'Yuki', cs, a, settings).plays
+    const [e6, ego6] = computeBuild(PRESETS, 'Yuki', a, settings).plays
     // E5 adds 3 levels: Signature x1.18. 15% x 4 Sword Dance + 20% Swiftblade Flurry + 50% + 50%
     expect(e6.hits[0].nonCrit).toBeCloseTo(2.3 * 1.18 * (1 + 0.6 + 0.2 + 1) * atk)
     expect(ego6.hits[0].nonCrit).toBeCloseTo((4.5 + 3 + 1.5) * atk)

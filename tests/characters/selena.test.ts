@@ -20,11 +20,11 @@ describe('Selena', () => {
   }
 
   it("card text matches the owner's in-game screenshots", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     const text = (id: string) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Passion')
-      const buffs = activeBuffs(PRESETS, 'Selena', cs, a, settings)
+      const buffs = activeBuffs(PRESETS, 'Selena', a, settings)
       return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: () => true, pct: (base, fixed) => shownPct(base, c, a, selena, buffs, settings, fixed) })
     }
     expect(text('card-394')).toBe('350% Damage\n4 Mark')
@@ -40,11 +40,11 @@ describe('Selena', () => {
   })
 
   it('Mark: every Attack Card play with Mark adds her 100% Extra Attack (+80% Sniper, +20% E2) and E6 30% of 100%', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'ef', preset: 'card-395' }, { id: 'sd', preset: 'card-421' }, { id: 'hps', preset: 'card-400' }, { id: 'sk', preset: 'card-397' })
     a.rotation = [{ cardId: 'ef', stacks: { Mark: 2 } }, { cardId: 'ef' }, { cardId: 'ef', stacks: { Mark: 1, 'High-Power Scope III': 1 } },
       { cardId: 'sk', stacks: { Mark: 1 } }, { cardId: 'auto:card-394', stacks: { Mark: 1 } }]
-    const r = computeBuild(PRESETS, 'Selena', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Selena', a, settings)
     const own = 1.12 * 100 * 0.35
     expect(r.plays[0].triggered.map((t) => t.card.name)).toEqual(['Mark', 'Mark (E6 Extra Attack)'])
     expect(r.plays[0].triggered[0].nonCrit).toBeCloseTo((1 + 0.8 + 0.2) * 35)
@@ -60,13 +60,13 @@ describe('Selena', () => {
   })
 
   it('Coordinated Attacks: Drone Bombing V on Passion Attack Cards, IV on Weakness Attacks; Target Spotted I Attunement play', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.egoLevel = 0
     a.deck.push({ id: 'ef', preset: 'card-395' }, { id: 'db5', preset: 'card-414' }, { id: 'db', preset: 'card-409' },
       { id: 'db4', preset: 'card-413' }, { id: 'ts1', preset: 'card-404' })
     a.rotation = [{ cardId: 'ef' }, { cardId: 'ef', stacks: { 'Drone Bombing IV': 1 } },
       { cardId: 'ef', stacks: { 'Drone Bombing IV': 1, 'Passion Weakness': 1 } }, { cardId: 'auto:ts-attunement' }]
-    const r = computeBuild(PRESETS, 'Selena', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Selena', a, settings)
     expect(r.plays[0].triggered.map((t) => [t.card.name, t.nonCrit])).toEqual([['Coordinated Attack (Drone Bombing V)', 0.5 * 35]])
     expect(r.plays[1].triggered).toHaveLength(1)
     // Passion Weakness makes Passion hits Weakness Attacks (x1.25, the Coordinated Attacks too); that sets off Drone Bombing IV

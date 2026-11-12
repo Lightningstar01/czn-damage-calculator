@@ -20,11 +20,11 @@ describe('Hilde', () => {
   }
 
   it("card text matches the owner's in-game screenshots", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     const text = (id: string) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Instinct')
-      const buffs = activeBuffs(PRESETS, 'Hilde', cs, a, gameSettings)
+      const buffs = activeBuffs(PRESETS, 'Hilde', a, gameSettings)
       return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: (n) => a.potentialNodes?.[n] !== false,
         pct: (base, fixed) => shownPct(base, c, a, hilde, buffs, gameSettings, fixed) })
     }
@@ -43,12 +43,12 @@ describe('Hilde', () => {
   })
 
   it('Homing Arrow: Extra Attack with Ionization (+8% and +4% from Hilde per stack) and Matrix Overlay (+15% Weakness DMG)', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'qr', preset: 'card-1233' })
     a.rotation = [{ cardId: 'auto:card-1258' }, { cardId: 'auto:card-1258', stacks: { Ionization: 5 } },
       { cardId: 'auto:card-1258', stacks: { 'Matrix Overlay this turn': 1 } },
       { cardId: 'auto:card-1258', stacks: { 'Matrix Overlay this turn': 1, 'Matrix Overlay drew this card': 1 } }]
-    const r = computeBuild(PRESETS, 'Hilde', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Hilde', a, settings)
     const pct = 1.2 * 1.14
     expect(r.plays[0].nonCrit).toBeCloseTo(pct * 35)
     expect(r.plays[1].nonCrit).toBeCloseTo((pct + 5 * 0.12) * 35)
@@ -58,17 +58,17 @@ describe('Hilde', () => {
   })
 
   it('Zero In: one 35% x stacks Extra Attack, unraised; Vortex Arrow +60% per Attack Card drawn; E2 Double Tap on every Homing Arrow', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'bgr', preset: 'card-1251' }, { id: 'va', preset: 'card-1257' }, { id: 'qr3', preset: 'card-1236' })
     a.rotation = [{ cardId: 'auto:zero-in', stacks: { 'Zero In': 20 } }, { cardId: 'va', stacks: { 'Attack Cards drawn by abilities this turn': 3 } },
       { cardId: 'auto:card-1260', stacks: { 'Double Tap': 1 } }]
-    let r = computeBuild(PRESETS, 'Hilde', cs, a, settings)
+    let r = computeBuild(PRESETS, 'Hilde', a, settings)
     expect(r.plays[0].hits).toHaveLength(1)
     expect(r.plays[0].nonCrit).toBeCloseTo(0.35 * 20 * 35)
     expect(r.plays[1].nonCrit).toBeCloseTo((1.2 * 1.14 + 3 * 0.6) * 35)
     expect(r.plays[2].triggered).toEqual([])
     a.egoLevel = 2
-    r = computeBuild(PRESETS, 'Hilde', cs, a, settings)
+    r = computeBuild(PRESETS, 'Hilde', a, settings)
     expect(r.plays[2].triggered.map((t) => [t.card.name, t.nonCrit])).toEqual([['Double Tap', 3 * 35]])
   })
 })

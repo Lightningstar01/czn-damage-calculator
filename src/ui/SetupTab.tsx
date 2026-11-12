@@ -5,7 +5,8 @@ import { findCharacter, findFragmentSet, findPartner, fragmentPiecesUsed, hasTea
 import { unlockedPotentialEgo } from '../engine/calc'
 import { pruneTeamPlays } from '../engine/deck'
 import { linkedBuild } from '../engine/team'
-import { CATEGORIES, ELEMENTS, FRAGMENT_SET_PICKS, MAX_EGO_LEVEL, MAX_POTENTIAL_LEVEL, FRAGMENT_SLOTS, NO_BUILD, STATS, TEAM_SIZE, type Fight, type ScreenStats, type StatName, type Teammate } from '../engine/types'
+import { switchStacks } from '../engine/buffs'
+import { CATEGORIES, ELEMENTS, EQUIP_RARITIES, FRAGMENT_SET_PICKS, MAX_EGO_LEVEL, MAX_POTENTIAL_LEVEL, FRAGMENT_SLOTS, NO_BUILD, STATS, TEAM_SIZE, type EquipRarity, type Fight, type ScreenStats, type StatName, type Teammate } from '../engine/types'
 import { activeFight, duplicateBuild, newBoost, newFight, newTeammate } from '../store/save'
 import { FromField } from './FromField'
 import { useCharacter, useStore } from '../store/store'
@@ -23,6 +24,7 @@ export function SetupTab() {
       <BuildSection />
       <StatsSection />
       <PartnerSection />
+      <EquipmentSection />
       <EgoSection />
       <PotentialSection />
       <FragmentSection />
@@ -52,12 +54,12 @@ function BuildSection() {
   const { name, cs, build, updateCs, updateBuild } = useCharacter()!
   const verified = findCharacter(PRESETS, name)?.verified
   return (
-    <Section title="Build" help="Each build has its own deck, team and attack list. Duplicate a build, then change one thing to compare.">
+    <Section title="Build" help="Each build has its own deck, team, attack list, equipment, stat boosts and buffs. Duplicate a build, then change one thing to compare: the copy's changes stay in the copy.">
       <div className="inline-row">
         <TextField label="Name" value={build.name} onChange={(v) => updateBuild((b) => { b.name = v })} />
         <button className="btn" onClick={() => updateCs((c) => {
           const src = c.builds.find((b) => b.id === c.activeBuild)!
-          const copy = duplicateBuild(c, src, copyName(c.builds.map((b) => b.name), src.name))
+          const copy = duplicateBuild(src, copyName(c.builds.map((b) => b.name), src.name))
           c.builds.push(copy)
           c.activeBuild = copy.id
         })}>Duplicate</button>
@@ -66,7 +68,6 @@ function BuildSection() {
             if (!confirm(`Delete ${build.name}?`)) return
             updateCs((c) => {
               c.builds = c.builds.filter((b) => b.id !== build.id)
-              for (const row of [...c.boosts, ...c.buffs]) delete row.switches[build.id]
               c.activeBuild = c.builds[0].id
             })
           }}>Delete</button>
@@ -200,6 +201,28 @@ function PartnerSection() {
   )
 }
 
+/** The build's weapon: its rarity gives the flat Attack that equipment adds in battle, so it needn't be typed as a stat boost. */
+function EquipmentSection() {
+  const { build, updateBuild } = useCharacter()!
+  const rarity = build.equipment?.weapon?.rarity ?? ''
+  const atk = PRESETS.weaponAtk
+  // A flat Attack typed by hand before this picker existed is most likely the same weapon
+  const typed = (build.boosts ?? []).filter((b) => b.stat === 'Flat ATK' && !b.from && switchStacks(b.on) > 0)
+  return (
+    <Section title="Equipment" help="The weapon's Attack isn't on the stats screen: it only counts in battle. Pick the weapon's rarity and it's added for you (the value of a weapon at its top level). Other equipment effects still go under My stat boosts and My buffs.">
+      <SelectField<EquipRarity | ''> label="Weapon" value={rarity}
+        options={[{ value: '', label: 'None' }, ...EQUIP_RARITIES.map((r) => ({ value: r, label: `${r} (+${atk?.[r] ?? 0} Attack)` }))]}
+        onChange={(v) => updateBuild((b) => {
+          if (v) b.equipment = { ...b.equipment, weapon: { rarity: v } }
+          else delete b.equipment?.weapon
+        })} />
+      {rarity && typed.length > 0 && (
+        <p className="muted"><span className="warn">My stat boosts also add flat Attack ({typed.map((b) => `${b.source || 'Unnamed boost'}: ${b.value || '0'}`).join(', ')}).</span> If that's this weapon, switch it off or delete it, or it counts twice.</p>
+      )}
+    </Section>
+  )
+}
+
 function FragmentSection() {
   const { build, updateBuild } = useCharacter()!
   const picks = Array.from({ length: FRAGMENT_SET_PICKS }, (_, i) => build.fragments?.[i] ?? '')
@@ -313,7 +336,8 @@ function StatsSection() {
   const set = (k: Exclude<keyof ScreenStats, 'elemDmg'>) => (v: number) => updateBuild((b) => { b.stats[k] = v })
   const s = build.stats
   return (
-    <Section title="Stats screen" help="Copy these from the character's detailed stats screen in-game, with this build's partner and memory fragments equipped. They include partner base stats and fragments, but not partner effects or equipment.">
+    <Section title="Stats screen" help="Copy these from the character's detailed stats screen, outside battle, with this build's partner and memory fragments equipped. They include partner base stats and fragments, but not partner effects or equipment. Don't use the numbers shown in battle: those already have the partner's and equipment's bonuses in them, so they would count twice.">
+      <p className="muted">From the character's detailed stats screen, not from a battle.</p>
       <div className="grid2">
         <NumberField label="Attack" value={s.attack} onChange={set('attack')} />
         <NumberField label="Defense" value={s.defense} onChange={set('defense')} />
@@ -330,19 +354,20 @@ function StatsSection() {
 }
 
 function BoostsSection() {
-  const { cs, build, updateCs } = useCharacter()!
+  const { build, updateBuild } = useCharacter()!
   const [open, setOpen] = useState<string | null>(null)
+  const boosts = build.boosts ?? []
   return (
-    <Section title="My stat boosts" help="Equipment and other stat boosts that aren't on the stats screen. Each one is shared by all builds, with an on/off switch per build. ATK%/DEF% multiply the stats-screen value; flat ATK/DEF is added after."
+    <Section title="My stat boosts" help="Equipment and other stat boosts that aren't on the stats screen. This build's own list: Duplicate copies it, and changing a row here leaves the other builds alone. ATK%/DEF% multiply the stats-screen value; flat ATK/DEF is added after. The weapon's flat Attack comes from Equipment above."
       actions={<button className="btn small" onClick={() => {
-        const b = newBoost(build.id)
-        updateCs((c) => { c.boosts.push(b) })
+        const b = newBoost()
+        updateBuild((x) => { x.boosts.push(b) })
         setOpen(b.id)
       }}>+ Add</button>}>
-      {!cs.boosts.length && <p className="muted">None yet. Equipment slot 1 always gives flat ATK.</p>}
+      {!boosts.length && <p className="muted">None yet. Add an equipment's ATK% here.</p>}
       <ul className="rows">
-        {cs.boosts.map((x, i) => {
-          const upd = (fn: (b: typeof x) => void) => updateCs((c) => fn(c.boosts[i]))
+        {boosts.map((x, i) => {
+          const upd = (fn: (b: typeof x) => void) => updateBuild((c) => fn(c.boosts[i]))
           return (
             <li key={x.id} className="row col">
               <div className="row-line">
@@ -350,7 +375,7 @@ function BoostsSection() {
                   <div className="row-title">{x.source || 'Unnamed boost'}</div>
                   <Pills pills={[statPill(x.stat, x.value || '0'), ...(x.from ? [{ text: `from ${x.from}`, group: 'const' as const }] : [])]} />
                 </button>
-                <SwitchControl label={x.source || 'boost'} value={x.switches[build.id]} onChange={(sw) => upd((b) => { b.switches[build.id] = sw })} />
+                <SwitchControl label={x.source || 'boost'} value={x.on} onChange={(sw) => upd((b) => { b.on = sw })} />
               </div>
               {open === x.id && (
                 <div className="editor grid2">
@@ -362,7 +387,7 @@ function BoostsSection() {
                   <FromField value={x.from} onChange={(s) => upd((b) => { b.from = s })} />
                   <TextField label="Notes" value={x.notes} onChange={(s) => upd((b) => { b.notes = s })} />
                   <div className="btn-row">
-                    <button className="btn danger" onClick={() => updateCs((c) => { c.boosts.splice(i, 1) })}>Delete</button>
+                    <button className="btn danger" onClick={() => updateBuild((c) => { c.boosts.splice(i, 1) })}>Delete</button>
                   </div>
                 </div>
               )}

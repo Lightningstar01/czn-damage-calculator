@@ -20,11 +20,11 @@ describe('Orlea', () => {
   }
 
   it("card text matches the owner's in-game screenshots", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     const text = (id: string) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Instinct')
-      const buffs = activeBuffs(PRESETS, 'Orlea', cs, a, settings)
+      const buffs = activeBuffs(PRESETS, 'Orlea', a, settings)
       return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: (n) => n !== '5-1', pct: (base, fixed) => shownPct(base, c, a, orl, buffs, settings, fixed) })
     }
     expect(text('card-122')).toBe('102% Damage')
@@ -50,7 +50,7 @@ describe('Orlea', () => {
     const ann = cardFromPreset(preset('card-136'), 'Instinct')
     addCards(cs, ann)
     a.rotation = [{ cardId: ann.id, stacks: { 'Cards in hand': 5 } }, { cardId: ann.id }]
-    const r = computeBuild(PRESETS, 'Orlea', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Orlea', a, settings)
     expect(r.plays[0].nonCrit).toBeCloseTo(5 * r.plays[1].nonCrit)
     expect(r.plays[1].nonCrit).toBeCloseTo(0.4 * 100 * 0.35)   // Fixed: % x Final ATK x 0.35, not raised by the upgrade
   })
@@ -60,7 +60,7 @@ describe('Orlea', () => {
     const censer = cardFromPreset(preset('card-128'), 'Instinct')
     addCards(cs, censer)
     a.rotation = [{ cardId: AUTO + 'card-150', stacks: { 'Swiftie retains': 2, 'Softie ★ retains': 3, 'Sacred Censer IV': 1 } }]
-    const r = computeBuild(PRESETS, 'Orlea', cs, a, settings)
+    const r = computeBuild(PRESETS, 'Orlea', a, settings)
     // (114% x (1 + 30% + 40%) + 80%) x ATK 100 x 0.35
     expect(r.plays[0].nonCrit).toBeCloseTo((1.14 * 1.7 + 0.8) * 100 * 0.35)
   })

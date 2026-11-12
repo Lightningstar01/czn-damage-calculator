@@ -21,20 +21,20 @@ describe('Olga', () => {
   }
   /** One play; deck: extra cards in the deck (their buffs count). */
   const play = (cardId: string, stacks: Record<string, number>, egoLevel = 0, deck: string[] = []) => {
-    const { cs, a } = build(egoLevel)
+    const { a } = build(egoLevel)
     a.deck = [...deck, ...(cardId.startsWith(AUTO) ? [] : [cardId])].map((preset, i) => ({ id: `d${i}`, preset }))
     const id = cardId.startsWith(AUTO) ? cardId : `d${a.deck.length - 1}`
     a.rotation = [{ cardId: id, stacks }]
-    return computeBuild(PRESETS, 'Olga', cs, a, settings, {}, { enemies: [{ defMult: 1, dr: 0 }] })
+    return computeBuild(PRESETS, 'Olga', a, settings, {}, { enemies: [{ defMult: 1, dr: 0 }] })
   }
   const ATK = 500 * 0.35 * 1.1
 
   it("card text matches the in-game screenshots", () => {
-    const { cs, a } = build()
+    const { a } = build()
     const text = (id: string) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Instinct')
-      const buffs = activeBuffs(PRESETS, 'Olga', cs, a, settings)
+      const buffs = activeBuffs(PRESETS, 'Olga', a, settings)
       return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: () => false, pct: (base, fixed) => shownPct(base, c, a, olga, buffs, settings, fixed) })
     }
     expect(text('card-1323')).toBe('400% Damage to all enemies\nFor each Fracture, Agony, and Scorched activated this turn, +50%, +20%, and +30% base Damage Amount, respectively (max 300%)')

@@ -20,21 +20,21 @@ describe('Anika', () => {
   }
   const UNIT = 817 * 0.35
   const play = (id: string, stacks: RotationPlay['stacks'] = {}, change: (a: Build) => void = () => {}, ravaged?: boolean) => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck.push({ id: 'c', preset: id })
     change(a)
     a.rotation = [{ cardId: 'c', stacks, ravaged }]
-    return computeBuild(PRESETS, 'Anika', cs, a, settings).plays[0]
+    return computeBuild(PRESETS, 'Anika', a, settings).plays[0]
   }
   const damage = (id: string, stacks: RotationPlay['stacks'] = {}, change: (a: Build) => void = () => {}, ravaged?: boolean) =>
     play(id, stacks, change, ravaged).nonCrit
   const pick = (id: string) => (a: Build) => a.deck.push({ id: 'p', preset: id })
   const text = (id: string, change: (a: Build) => void = () => {}) => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     change(a)
     const p = preset(id)
     const c = cardFromPreset(p, 'Order')
-    const buffs = activeBuffs(PRESETS, 'Anika', cs, a, settings)
+    const buffs = activeBuffs(PRESETS, 'Anika', a, settings)
     return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: (n) => a.potentialNodes?.[n] !== false, pct: (base, fixed) => shownPct(base, c, a, anika, buffs, settings, fixed) })
   }
 
@@ -98,16 +98,16 @@ describe('Anika', () => {
     expect(damage('card-1353', { Stampede: 1 })).toBeCloseTo((1.02 + 0.1) * UNIT)
     expect(damage('card-1353', { Stampede: 9 })).toBeCloseTo((1.02 + 0.5) * UNIT)
     expect(damage('card-1353', { Stampede: 5 }, (a) => { a.egoLevel = 1 })).toBeCloseTo(1.02 * UNIT)
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.rotation = [{ cardId: 'auto:card-1352', stacks: { Stampede: 5 } }]
-    expect(computeBuild(PRESETS, 'Anika', cs, a, settings).plays[0].nonCrit).toBeCloseTo(2.5 * UNIT)
+    expect(computeBuild(PRESETS, 'Anika', a, settings).plays[0].nonCrit).toBeCloseTo(2.5 * UNIT)
   })
 
   it('E4 adds 50% to the Ego skill', () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.egoLevel = 4
     a.rotation = [{ cardId: 'auto:card-1352' }]
-    expect(computeBuild(PRESETS, 'Anika', cs, a, settings).plays[0].nonCrit).toBeCloseTo(3 * UNIT)
+    expect(computeBuild(PRESETS, 'Anika', a, settings).plays[0].nonCrit).toBeCloseTo(3 * UNIT)
   })
 
   // A teammate's Basic Attack in Anika's team, with Ignition Slash V in her deck
@@ -121,7 +121,7 @@ describe('Anika', () => {
     a.team = [{ ...newTeammate(), character: 'Selena', cards: [basic.id] }]
     a.rotation = [{ cardId: basic.id, by: 0, stacks, ravaged }]
     const saves: Record<string, CharacterSave> = { Anika: cs, Selena: mate }
-    return { result: computeBuild(PRESETS, 'Anika', cs, a, settings, saves).plays[0], basic }
+    return { result: computeBuild(PRESETS, 'Anika', a, settings, saves).plays[0], basic }
   }
 
   it("Ignition Slash V's Coordinated Attack goes off on anyone's Basic Attack, unraised, as an Extra Attack", () => {

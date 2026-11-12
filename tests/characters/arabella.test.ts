@@ -23,11 +23,11 @@ describe('Arabella', () => {
   type B = ReturnType<typeof ownerBuild>['a']
   /** One play's damage; the deck holds the card, and the Ego skill brings Fracture. */
   const play = (cardId: string, stacks: Record<string, number> = {}, tweak: (a: B) => void = () => {}, extra: Record<string, unknown> = {}) => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck = [{ id: 'd', preset: cardId.startsWith(AUTO) ? 'card-1296' : cardId }]
     a.rotation = [{ cardId: cardId.startsWith(AUTO) ? cardId : 'd', stacks, ...extra }]
     tweak(a)
-    return computeBuild(PRESETS, 'Arabella', cs, a, settings)
+    return computeBuild(PRESETS, 'Arabella', a, settings)
   }
   const ATK = 870 * 0.35 * 1.31
   const FRACTURE = `${AUTO}fracture`
@@ -35,11 +35,11 @@ describe('Arabella', () => {
     play(FRACTURE, { 'Fracture on target': count, ...more }, tweak, extra)
 
   it("card text matches the owner's in-game screenshots", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     const text = (id: string) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Instinct')
-      const buffs = activeBuffs(PRESETS, 'Arabella', cs, a, gameSettings)
+      const buffs = activeBuffs(PRESETS, 'Arabella', a, gameSettings)
       return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: (n) => n !== '5-1', pct: (base, fixed) => shownPct(base, c, a, arabella, buffs, gameSettings, fixed) })
     }
     expect(text('card-1295')).toBe("600% Damage\nFor 2 turn(s), inflict Fixed Damage to the target equal to 30% of Damage Amount taken by all enemies\n(cannot exceed 1000% of Arabella's Attack per turn)")

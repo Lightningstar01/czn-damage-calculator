@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { computeBuild } from '../../src/engine/calc'
+import { computeBuild, finalStats } from '../../src/engine/calc'
 import { buffMatches, buffReadable, buffType, fragmentPiecesUsed, parseBuffValue, parseStatValue, readBuffValue, readNumber, readStatValue, statReadable, unreadableValues } from '../../src/engine/buffs'
 import { PRESETS } from '../../src/data/presets'
 import { newBoost, newBuff, newBuild, newCharacterSave } from '../../src/store/save'
@@ -19,7 +19,7 @@ describe('memory fragment sets', () => {
   const x = card('X', '', 1)
   addCards(cs, x)
   setPlays(cs, plays(x.id))
-  const [A, B, C] = cs.builds.map((bd) => computeBuild(presets, 'Mei Lin', cs, bd, settings))
+  const [A, B, C] = cs.builds.map((bd) => computeBuild(presets, 'Mei Lin', bd, settings))
 
   it('set buffs apply; set stats are already on the stats screen', () => {
     expect(A.stats.atk.value).toBe(1000)
@@ -70,12 +70,12 @@ describe('per-card crit buffs', () => {
     a.stats.attack = 1000
     a.stats.critChance = 0.9
     a.stats.critDmg = 1.5
-    cs.buffs.push({ ...newBuff(a.id), value: '+35%', typeOverride: 'Crit DMG', appliesTo: '1-cost' })
-    cs.buffs.push({ ...newBuff(a.id), value: '+20%', typeOverride: 'Crit Chance', appliesTo: '1-cost' })
+    a.buffs.push({ ...newBuff(), value: '+35%', typeOverride: 'Crit DMG', appliesTo: '1-cost' })
+    a.buffs.push({ ...newBuff(), value: '+20%', typeOverride: 'Crit Chance', appliesTo: '1-cost' })
     const one = { ...card('One', '', 1), cost: 1 }, two = { ...card('Two', '', 1), cost: 2 }
     addCards(cs, one, two)
     setPlays(cs, plays(one.id, two.id))
-    const r = computeBuild(presets, '', cs, a, settings)
+    const r = computeBuild(presets, '', a, settings)
     expect(r.plays[0].hits[0].critDmg).toBeCloseTo(1.85)
     expect(r.plays[0].hits[0].critRate).toBeCloseTo(1)
     expect(r.plays[0].crit).toBeCloseTo(350 * 1.85)
@@ -109,9 +109,10 @@ describe('parsing', () => {
     expect(buffType('weakness  attack')).toBe('Weakness Attack')
     expect(buffReadable('Weakness Attack')).toBe(true)
     expect(statReadable('ATK%', '')).toBe(true)
-    const cs = { ...newCharacterSave(), boosts: [{ ...newBoost('b'), stat: 'ATK%' as const, value: '1 6' }], buffs: [{ ...newBuff('b'), value: '+x%' }] }
-    expect(unreadableValues(cs, { id: 'b' })).toHaveLength(2)
-    expect(unreadableValues(cs, { id: 'other' })).toEqual([])
+    const rows = { boosts: [{ ...newBoost(), stat: 'ATK%' as const, value: '1 6' }], buffs: [{ ...newBuff(), value: '+x%' }] }
+    expect(unreadableValues(rows)).toHaveLength(2)
+    // Switched off, they count for nothing anyway
+    expect(unreadableValues({ boosts: rows.boosts.map((b) => ({ ...b, on: false })), buffs: [{ ...rows.buffs[0], on: 0 }] })).toEqual([])
   })
 
   it('values and buff types', () => {
@@ -129,13 +130,42 @@ describe('parsing', () => {
     const cs = newCharacterSave()
     const [a] = cs.builds
     a.stats.attack = 1000
-    cs.buffs.push({ ...newBuff(a.id), value: '30%' }, { ...newBuff(a.id), value: '20%' })
+    a.buffs.push({ ...newBuff(), value: '30%' }, { ...newBuff(), value: '20%' })
     const x = card('X', '', 1)
     addCards(cs, x)
     setPlays(cs, plays(x.id))
-    const summed = computeBuild(presets, '', cs, a, settings)
-    const chained = computeBuild(presets, '', cs, a, { ...settings, multMode: 'Chained' })
+    const summed = computeBuild(presets, '', a, settings)
+    const chained = computeBuild(presets, '', a, { ...settings, multMode: 'Chained' })
     expect(summed.plays[0].hits[0].cardMult).toBeCloseTo(1.5)
     expect(chained.plays[0].hits[0].cardMult).toBeCloseTo(1.56)
+  })
+})
+
+describe("the weapon's flat Attack (owner, 2026-11-11)", () => {
+  const mei = (rarity?: 'Rare' | 'Legendary' | 'Unique') => {
+    const b = newBuild('A')
+    b.stats.attack = 1033
+    b.partner = 'Marianne'
+    if (rarity) b.equipment = { weapon: { rarity } }
+    return b
+  }
+
+  it('comes from its rarity, added after the ATK%: 1033 x 1.16 + 74 = 1272, as measured in battle', () => {
+    const atk = finalStats(PRESETS, 'Mei Lin', mei('Rare'), settings).atk
+    expect(atk.value).toBeCloseTo(1272.28)
+    expect(atk.sources).toContainEqual({ label: 'Weapon (Rare)', value: 74, unit: 'flat' })
+    expect(finalStats(PRESETS, 'Mei Lin', mei('Legendary'), settings).atk.value).toBeCloseTo(1033 * 1.16 + 82)
+    expect(finalStats(PRESETS, 'Mei Lin', mei('Unique'), settings).atk.value).toBeCloseTo(1033 * 1.16 + 90)
+    expect(finalStats(PRESETS, 'Mei Lin', mei(), settings).atk.value).toBeCloseTo(1033 * 1.16)
+  })
+
+  it('adds to a flat Attack typed under My stat boosts (the Setup tab warns about the pair)', () => {
+    const b = mei('Rare')
+    b.boosts.push({ ...newBoost(), stat: 'Flat ATK', value: '74' })
+    expect(finalStats(PRESETS, 'Mei Lin', b, settings).atk.value).toBeCloseTo(1033 * 1.16 + 148)
+  })
+
+  it('adds nothing with presets that have no weapon values', () => {
+    expect(finalStats(presets, 'Testy', mei('Unique'), settings).atk.value).toBe(1033)
   })
 })

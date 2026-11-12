@@ -25,20 +25,20 @@ describe('Tressa', () => {
   }
   /** Damage of one play of a card; tweak: the build's changes. */
   const play = (id: string, stacks: Record<string, number> = {}, tweak: (a: ReturnType<typeof ownerBuild>['a']) => void = () => {}, hits?: number) => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     tweak(a)
     a.deck = [{ id: 'd', preset: id }]
     a.rotation = [{ cardId: 'd', stacks, ...(hits ? { hits } : {}) }]
-    return computeBuild(PRESETS, 'Tressa', cs, a, settings)
+    return computeBuild(PRESETS, 'Tressa', a, settings)
   }
   const ATK = 608 * 0.35 * 1.075
 
   it("card text matches the owner's in-game screenshots", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     const text = (id: string) => {
       const p = preset(id)
       const c = cardFromPreset(p, 'Void')
-      const buffs = activeBuffs(PRESETS, 'Tressa', cs, a, settings)
+      const buffs = activeBuffs(PRESETS, 'Tressa', a, settings)
       return renderCardText(p.text, { egoLevel: a.egoLevel, nodeOn: () => true, pct: (base, fixed) => shownPct(base, c, a, tressa, buffs, settings, fixed) })
     }
     expect(text('card-245')).toBe('Create 2 Shadow Dagger\n4 Agony × 2')
@@ -62,13 +62,13 @@ describe('Tressa', () => {
   describe('an Agony tick', () => {
     const HIT = 0.5 * ATK * 1.032
     const tick = (count: number, tweak: (play: Record<string, unknown>) => void = () => {}, critChance = 0, defMult = 1) => {
-      const { cs, a } = ownerBuild()
+      const { a } = ownerBuild()
       a.stats.critChance = critChance
       a.stats.critDmg = 1.25
       const p = { cardId: `${AUTO}agony`, stacks: { 'Agony on target': count } }
       tweak(p)
       a.rotation = [p]
-      return computeBuild(PRESETS, 'Tressa', cs, a, settings, {}, { enemies: [{ defMult, dr: 0 }] })
+      return computeBuild(PRESETS, 'Tressa', a, settings, {}, { enemies: [{ defMult, dr: 0 }] })
     }
 
     it('is one hit per stack, unraised by the card upgrade', () => {
@@ -84,10 +84,10 @@ describe('Tressa', () => {
     })
 
     it('shows its count below E2 too, with no buff reading it', () => {
-      const { cs, a } = ownerBuild()
+      const { a } = ownerBuild()
       a.egoLevel = 0
       a.rotation = [{ cardId: `${AUTO}agony`, stacks: { 'Agony on target': 8 } }]
-      expect(computeBuild(PRESETS, 'Tressa', cs, a, settings).plays[0].counters).toEqual([{ name: 'Agony on target', stacks: 8 }])
+      expect(computeBuild(PRESETS, 'Tressa', a, settings).plays[0].counters).toEqual([{ name: 'Agony on target', stacks: 8 }])
     })
 
     it('stops at 20 stacks', () => {
@@ -99,20 +99,20 @@ describe('Tressa', () => {
     })
 
     it('a buff reading the count reads what the stepper shows: 1 with nothing typed', () => {
-      const { cs, a } = ownerBuild()
+      const { a } = ownerBuild()
       a.rotation = [{ cardId: `${AUTO}agony` }]
       const reader = cardBuff('reader', 'Reader', '+10%', 'Agony', { counter: 'Agony on target', maxStacks: 20 })
       const presets = { ...PRESETS, characters: PRESETS.characters.map((c) => (c === tressa ? { ...c, effects: [...c.effects, reader] } : c)) }
-      const r = computeBuild(presets, 'Tressa', cs, a, settings)
+      const r = computeBuild(presets, 'Tressa', a, settings)
       expect(r.plays[0].hits).toHaveLength(1)
       expect(r.plays[0].hits[0].additive.value).toBeCloseTo(0.1)
     })
 
     it('a Flat buff goes under its factors, as the strip shows', () => {
-      const { cs, a } = ownerBuild()
+      const { a } = ownerBuild()
       a.rotation = [{ cardId: `${AUTO}agony` }]
-      cs.buffs.push({ ...newBuff(a.id), value: '10000', typeOverride: 'Flat', appliesTo: 'Agony' })
-      const r = computeBuild(PRESETS, 'Tressa', cs, a, settings, {}, { enemies: [{ defMult: 0.5, dr: 0 }] })
+      a.buffs.push({ ...newBuff(), value: '10000', typeOverride: 'Flat', appliesTo: 'Agony' })
+      const r = computeBuild(PRESETS, 'Tressa', a, settings, {}, { enemies: [{ defMult: 0.5, dr: 0 }] })
       const hit = r.plays[0].hits[0]
       expect(hit.nonCrit).toBeCloseTo((0.5 * 608 * 0.35 + 100) * 1.075 * 1.032 * 0.5)
       const html = renderToStaticMarkup(createElement(FormulaStrip, { hit, card: r.plays[0].card })).replace(/<[^>]+>/g, ' ')
@@ -143,10 +143,10 @@ describe('Tressa', () => {
   })
 
   it("other Fixed damage still gets neither the element nor the DoT stat", () => {
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck = [{ id: 'f', custom: { id: 'f', name: 'F', cardType: 'Attack', element: 'Void', cost: 1, tags: '', scaling: 'Fixed', kind: 'Normal', pct: 1, hits: 1, weaknessApplies: false, targetRavaged: false } }]
     a.rotation = [{ cardId: 'f' }]
-    expect(computeBuild(PRESETS, 'Tressa', cs, a, settings).nonCrit).toBeCloseTo(608 * 0.35)
+    expect(computeBuild(PRESETS, 'Tressa', a, settings).nonCrit).toBeCloseTo(608 * 0.35)
   })
 
   it('Vital Attack: +50% from 1 Agony, not more with more stacks', () => {
@@ -174,36 +174,36 @@ describe('Tressa', () => {
   it('Vital Attack V and Advanced Shadow Dagger: +10% per Agony, up to 20', () => {
     expect(play('card-271', { 'Agony on target': 5 }).nonCrit).toBeCloseTo(3 * (1.5 * 1.12 + 0.5) * ATK)
     expect(play('card-271', { 'Agony on target': 25 }).nonCrit).toBeCloseTo(3 * (1.5 * 1.12 + 2) * ATK)
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.rotation = [{ cardId: `${AUTO}card-274`, stacks: { 'Agony on target': 4 } }]
     a.deck = [{ id: 'd', preset: 'card-260' }]
-    expect(computeBuild(PRESETS, 'Tressa', cs, a, settings).nonCrit).toBeCloseTo((0.5 * 1.12 + 0.4) * ATK)
+    expect(computeBuild(PRESETS, 'Tressa', a, settings).nonCrit).toBeCloseTo((0.5 * 1.12 + 0.4) * ATK)
   })
 
   it('E2: +20% to Shadow Dagger in Agony, from E2 only, and not to Advanced Shadow Dagger', () => {
     const dagger = (ego: number, agony: number) => {
-      const { cs, a } = ownerBuild()
+      const { a } = ownerBuild()
       a.egoLevel = ego
       a.rotation = [{ cardId: `${AUTO}card-273`, stacks: { 'Agony on target': agony } }]
-      return computeBuild(PRESETS, 'Tressa', cs, a, settings).nonCrit
+      return computeBuild(PRESETS, 'Tressa', a, settings).nonCrit
     }
     const factor = (ego: number) => 1 + 0.02 * (ego >= 5 ? 6 : ego >= 3 ? 3 : 0)
     expect(dagger(6, 0)).toBeCloseTo(0.8 * factor(6) * ATK)
     expect(dagger(6, 3)).toBeCloseTo((0.8 * factor(6) + 0.2) * ATK)
     expect(dagger(1, 3)).toBeCloseTo(0.8 * factor(1) * ATK)
-    const { cs, a } = ownerBuild()
+    const { a } = ownerBuild()
     a.deck = [{ id: 'd', preset: 'card-260' }]
     a.rotation = [{ cardId: `${AUTO}card-274` }]
-    expect(computeBuild(PRESETS, 'Tressa', cs, a, settings).nonCrit).toBeCloseTo(0.5 * 1.12 * ATK)
+    expect(computeBuild(PRESETS, 'Tressa', a, settings).nonCrit).toBeCloseTo(0.5 * 1.12 * ATK)
   })
 
   describe('an upgraded card % is rounded before buffs (Settings)', () => {
     const hit = (cardId: string, s = gameSettings, tweak: (a: ReturnType<typeof ownerBuild>['a']) => void = () => {}) => {
-      const { cs, a } = ownerBuild()
+      const { a } = ownerBuild()
       a.deck = [{ id: 'f', custom: { id: 'f', name: 'F', cardType: 'Attack', element: 'Void', cost: 1, tags: '', scaling: 'ATK', kind: 'Normal', pct: 0.896, hits: 1, weaknessApplies: false, targetRavaged: false } }]
       a.rotation = [{ cardId }]
       tweak(a)
-      return computeBuild(PRESETS, 'Tressa', cs, a, s).plays[0].hits[0]
+      return computeBuild(PRESETS, 'Tressa', a, s).plays[0].hits[0]
     }
     it('Shadow Dagger counts as 90%, not 89.6%, and the upgrade stays visible', () => {
       const h = hit(`${AUTO}card-273`)
@@ -212,10 +212,10 @@ describe('Tressa', () => {
       expect(h.nonCrit).toBeCloseTo(0.9 * ATK)
     })
     it('rounds down too: Vital Attack II counts as 134%, not 134.4%', () => {
-      const { cs, a } = ownerBuild()
+      const { a } = ownerBuild()
       a.deck = [{ id: 'd', preset: 'card-268' }]
       a.rotation = [{ cardId: 'd', hits: 1 }]
-      expect(computeBuild(PRESETS, 'Tressa', cs, a, gameSettings).plays[0].hits[0].inHand).toBeCloseTo(1.34)
+      expect(computeBuild(PRESETS, 'Tressa', a, gameSettings).plays[0].hits[0].inHand).toBeCloseTo(1.34)
     })
     it('with the setting off, the exact %', () => {
       expect(hit(`${AUTO}card-273`, settings).inHand).toBeCloseTo(0.896)
@@ -234,11 +234,11 @@ describe('Tressa', () => {
     expect(throwAt(0.149)).toBeCloseTo(1.05 * 1.22 * ATK)
     expect(throwAt(0.15)).toBeCloseTo(1.1 * 1.22 * ATK)
     const seven = (dot: number) => {
-      const { cs, a } = ownerBuild()
+      const { a } = ownerBuild()
       Object.assign(a, { potentialNodes: { '5-1': false } })
       a.stats.dotDmg = dot
       a.rotation = [{ cardId: `${AUTO}card-273` }]
-      return computeBuild(PRESETS, 'Tressa', cs, a, settings).nonCrit
+      return computeBuild(PRESETS, 'Tressa', a, settings).nonCrit
     }
     expect(seven(0.3)).toBeCloseTo(0.8 * 1.12 * ATK)
   })

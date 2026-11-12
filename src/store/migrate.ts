@@ -1,12 +1,14 @@
 // Brings older saves up to the current format. If the save format changes: bump SAVE_VERSION (save.ts) and add a step here.
 import { PRESETS } from '../data/presets'
 import { readSettings } from '../data/settings'
+import { switchStacks } from '../engine/buffs'
 import { AUTO, cardUpgrade, deckItems } from '../engine/deck'
-import { ELEMENTS, CARD_TYPES, FRAGMENT_SET_PICKS, NO_ENEMY, type Build, type Card, type CharacterPreset, type CharacterSave, type DeckCard, type Element, type Fight, type RotationPlay, type SaveData, type Switch } from '../engine/types'
+import { ELEMENTS, CARD_TYPES, FRAGMENT_SET_PICKS, NO_ENEMY, type Build, type Card, type CharacterPreset, type CharacterSave, type DeckCard, type Element, type Fight, type RotationPlay, type SaveData, type Switch, type UserBoost, type UserBuff } from '../engine/types'
 import { defaultFight, defaultSave, newBoost, newBuff, newBuild, newFight, newStats, newTeammate, SAVE_VERSION } from './save'
 
-/** Fields that older saves had (rotation: removed in v9; the shared card library: removed in v10). */
-type LegacyCharacter = CharacterSave & { rotation?: unknown[]; cards?: Card[] }
+/** Fields that older saves had (rotation: removed in v9; the shared card library: removed in v10; the stat boosts and buffs shared by
+ * the character's builds, with a switch per build id: moved into the builds in v12). */
+type LegacyCharacter = CharacterSave & { rotation?: unknown[]; cards?: Card[]; boosts?: unknown; buffs?: unknown }
 type LegacyBuild = Build & { vulnerable?: number; weaknessDebuff?: number; enemyDefMult?: number; enemyDr?: number }
 
 /** Mei Lin's card preset ids before v6 -> Prydwen card ids. */
@@ -34,20 +36,19 @@ function checkSaveShape(raw: unknown): asserts raw is SaveData {
 
 /** Fills what a partial save left out, and refuses lists the site couldn't read (it would crash on every load). */
 function completeCharacter(name: string, cs: CharacterSave) {
-  cs.boosts ??= []
-  cs.buffs ??= []
   if (!cs.builds.some((b) => b.id === cs.activeBuild)) cs.activeBuild = cs.builds[0].id
   cs.builds = cs.builds.map((b) => {
     const stats = newStats()
     return { ...newBuild('Build'), ...b, stats: { ...stats, ...b.stats, elemDmg: { ...stats.elemDmg, ...b.stats?.elemDmg } } }
   })
-  const lists = [cs.boosts, cs.buffs, ...cs.builds.flatMap((b) => [b.team, b.deck, b.rotation])]
+  const lists = cs.builds.flatMap((b) => [b.team, b.deck, b.rotation, b.boosts, b.buffs])
   if (!lists.every(isObjectList) || !cs.builds.every((b) => isObject(b.presetSwitches))) throw new Error(`${NOT_A_SAVE} ${name} has unreadable builds.`)
-  // Rows and teammates missing a field the page reads (switches, cards) blanked the page
-  const switches = (x: unknown) => (isObject(x) ? x as Record<string, Switch> : {})
-  cs.boosts = cs.boosts.map((r) => ({ ...newBoost(''), ...r, switches: switches(r.switches) }))
-  cs.buffs = cs.buffs.map((r) => ({ ...newBuff(''), ...r, switches: switches(r.switches) }))
-  for (const b of cs.builds) b.team = b.team.map((t) => ({ ...newTeammate(), ...t, cards: Array.isArray(t.cards) ? t.cards : [] }))
+  // Rows and teammates missing a field the page reads (a stat, cards) blanked the page; a row without a switch is off
+  for (const b of cs.builds) {
+    b.boosts = b.boosts.map((r) => ({ ...newBoost(), on: false, ...r }))
+    b.buffs = b.buffs.map((r) => ({ ...newBuff(), on: false, ...r }))
+    b.team = b.team.map((t) => ({ ...newTeammate(), ...t, cards: Array.isArray(t.cards) ? t.cards : [] }))
+  }
 }
 
 /** A fight the site could read: a string id if any, enemies whose numbers are numbers (a null DEF multiplier would turn all damage into 0).
@@ -239,7 +240,31 @@ export function migrate(raw: unknown): SaveData {
     data.fights = fights
     data.version = 11
   }
-  // Future migrations go here, in version order: if (data.version === 11) { ...; data.version = 12 }
+  if (data.version === 11) {
+    // v12: each build has its own stat boosts and buffs (owner, 2026-11-11), so editing one build's row leaves the others alone. A build
+    // keeps the shared rows that were on for it; a row that was off in every build stays in all of them, off, so none is lost.
+    for (const [name, cs] of Object.entries(data.characters) as [string, LegacyCharacter][]) {
+      // The rows a build keeps, with its own switch (completeCharacter fills in what a row lacks)
+      const rowsOf = (shared: unknown, b: Build): Record<string, unknown>[] => {
+        if (shared !== undefined && !isObjectList(shared)) throw new Error(`${NOT_A_SAVE} ${name} has unreadable builds.`)
+        const sw = (r: Record<string, unknown>, x: Build) => (isObject(r.switches) ? r.switches[x.id] as Switch | undefined : undefined)
+        const on = (r: Record<string, unknown>, x: Build) => switchStacks(sw(r, x)) > 0
+        return (shared ?? []).filter((r) => on(r, b) || !cs.builds.some((x) => on(r, x))).map((r) => {
+          const row: Record<string, unknown> = { ...r, on: on(r, b) ? sw(r, b) : false }
+          delete row.switches
+          return row
+        })
+      }
+      for (const b of cs.builds) {
+        b.boosts = rowsOf(cs.boosts, b) as unknown as UserBoost[]
+        b.buffs = rowsOf(cs.buffs, b) as unknown as UserBuff[]
+      }
+      delete cs.boosts
+      delete cs.buffs
+    }
+    data.version = 12
+  }
+  // Future migrations go here, in version order: if (data.version === 12) { ...; data.version = 13 }
   for (const [name, cs] of Object.entries(data.characters)) completeCharacter(name, cs)
   completeFights(data)
   return {
