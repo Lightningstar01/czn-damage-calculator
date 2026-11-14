@@ -72,6 +72,7 @@ function PresetRow({ s, sw, mainName, partnerName, onChange }: {
         {s.classBlocked && (
           <div className="row-warn">Class-limited: {partner?.name} is {partner?.class}, {ch?.name} is {ch?.class}</div>
         )}
+        {s.doubled && <div className="row-warn">Cannot stack: another combatant's {s.owner} already gives it</div>}
       </div>
       {!s.onStatsScreen && <SwitchControl label={e.name} value={sw === undefined ? true : counted ? sw !== false && sw !== 0 : sw}
         disabled={s.classBlocked} defaultStacks={e.defaultStacks}

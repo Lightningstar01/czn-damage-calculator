@@ -182,8 +182,18 @@ email, and check that binary files such as spreadsheets carry no author name bef
   to a saved build brings that build's equipment (`LiveTeammate.live.equipment`): only its allies / enemy effects. Typed rows are never converted:
   `equipmentDoubles()` warns on Setup about a row that adds the slot's flat stat or is named like the picked piece.
   The Stats screen numbers are always the character screen's, never a battle's (no switch for it).
-  Next, staged with the owner: read each damage-relevant piece's text into Effects, batch by batch, weapons first (never assumed: show the reading, and the
-  list of pieces to skip).
+  Reading each piece's text into Effects, batch by batch with the owner (weapons, then trinkets, then armor; never assumed: show a table with each piece's
+  source and reading, and the list of pieces to skip). Prydwen's "+" is not reliable on equipment (owner, 2026-11-13): ask the owner to confirm every
+  piece's type; one they can't check keeps Prydwen's wording, marked Unconfirmed (in-game test equipment-plus-wording). The rules agreed so far are at the
+  top of equipmentEffects.ts and in docs/FORMULA.md, Equipment effects. A piece's `triggers` (only `repeat` + `own`, `card` = the piece id; no switch) add
+  hits to its wearer's plays (The Destruction of Erysichthon), shown on Results with `Triggered.from`. An effect's `noStack` ("cannot stack": Runic Hammer) counts once
+  per team (`PresetState.doubled` for the other copies). A buff's `afterFirst` skips its owner's first matching play of the
+  attack list, which counts as one turn (Flower of Dead Souls: "the second Attack Card onward each turn"). `firstOnly` is the opposite (Raider's Scanning Gear);
+  `everyNth: 5` is Rage Potion's every 5th Attack Card. A stat that depends on the play is a buff (owner, 2026-11-13): types Crit Chance, Crit DMG, Weakness DMG and
+  `ATK %` (joins the Attack % of Final ATK on matching plays; with a `counter`, stacks set per play: The Final Command). `vsVulnerable` counts a buff only on plays
+  with Vulnerable on (Mask of Flames). Done: every piece (82 weapons, 96 trinkets, 71 armor); a new piece from a re-import goes through the same table with the owner. On armor,
+  Immunity, Damage Reduction, damage taken and Counterattack (for the engine later) are not counted either. On trinkets, healing, Shield, Evade and Max HP are not counted; Defense % is. Prydwen's text can be incomplete (Key of Sleep lacked its first half): ask about a text that reads oddly. From equip-94 on the owner takes Prydwen's wording as correct (the Whip is its one known mistake): still list each type in the table,
+  but don't ask for an in-game check of each.
 - Constants and rules belong in settings, never hard-coded in the engine.
 - Document every new assumption with its source or "Unconfirmed": general rules in docs/FORMULA.md, one character's in
   docs/characters/<slug>.md, and add it to `tests/ingame/checks.ts` as a test the owner can run in-game.

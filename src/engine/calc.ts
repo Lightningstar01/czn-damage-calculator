@@ -9,6 +9,8 @@ import type { Build, Card, CharacterPreset, CounterHits, Enemy, Fight, LiveBuild
 export interface Stat {
   value: number
   sources: Source[]
+  /** Attack / Defense: the stats screen number that the % boosts multiply (an ATK % buff on one play adds base x its %). */
+  base?: number
 }
 
 export interface FinalStats {
@@ -112,6 +114,8 @@ export interface Triggered {
   chance: number
   /** It happens only on a Critical Hit of the played card. */
   onCrit?: boolean
+  /** The piece of equipment that adds it (one more hit of the played card). */
+  from?: string
   /** Its hits at full value. The totals below are x chance; with onCrit: nonCrit 0, crit in full (what it adds when the card crits), expected x chance. */
   hits: Hit[]
   nonCrit: number
@@ -165,7 +169,7 @@ export function finalStats(presets: Presets, charName: string, build: LiveBuild,
     value: base.value + extra.value, sources: [base, ...extra.sources],
   })
   const scaled = (label: string, screenVal: number, pct: Stat, flat: Stat): Stat => ({
-    value: screenVal * (1 + pct.value) + flat.value,
+    value: screenVal * (1 + pct.value) + flat.value, base: screenVal,
     sources: [screen(label, screenVal, 'flat'), ...pct.sources, ...flat.sources],
   })
   const critRate = plus(screen('Crit Chance', s.critChance, '%'), sumStat(st, 'Crit Rate'))
@@ -290,6 +294,11 @@ function memberTriggers(ch: CharacterPreset | undefined, ego: number, deck: Deck
   return [...(ch?.triggers ?? []), ...deckPresets(deck).flatMap((p) => p.triggers ?? [])].filter((t) => (t.egoLevel ?? 0) <= ego)
 }
 
+/** The hits a member's picked equipment adds to their plays, with the piece's name for the Results row. */
+function equipmentTriggers(presets: Presets, equipment: Build['equipment']): { t: Trigger; from: string }[] {
+  return equipped(presets, equipment).flatMap((e) => (e.piece?.triggers ?? []).map((t) => ({ t, from: e.piece!.name })))
+}
+
 const capped = (play: RotationPlay, name: string, max: number | null | undefined) =>
   Math.min(Math.max(0, play.stacks?.[name] ?? 0), max ?? Infinity)
 
@@ -314,8 +323,9 @@ export function computeBuild(presets: Presets, charName: string, build: Build, s
   const mainDeck = buildDeck(ch, team)
   const main = member(presets, charName, mainDeck.map((i) => i.card), { build: team }, settings)
   const members: (Member | undefined)[] = []
-  const triggers: { t: Trigger; owner: Member; slot?: number }[] =
+  const triggers: { t: Trigger; owner: Member; slot?: number; from?: string }[] =
     memberTriggers(ch, team.egoLevel ?? 0, mainDeck).map((t) => ({ t, owner: main }))
+  for (const x of equipmentTriggers(presets, team.equipment)) triggers.push({ ...x, owner: main })
   ;(team.team ?? []).forEach((t, slot) => {
     if (!t.character || t.character === charName) return
     const tch = findCharacter(presets, t.character)
@@ -323,6 +333,8 @@ export function computeBuild(presets: Presets, charName: string, build: Build, s
     const deck = teammateDeck(tch, t, view ? buildNodeOn(view.build) : undefined)
     members[slot] = member(presets, t.character, deck.map((i) => i.card), view, settings)
     for (const tr of memberTriggers(tch, t.egoLevel ?? 0, deck)) triggers.push({ t: tr, owner: members[slot]!, slot })
+    // A teammate linked to a saved build wears that build's equipment
+    for (const x of equipmentTriggers(presets, view?.build.equipment)) triggers.push({ ...x, owner: members[slot]!, slot })
   })
   // A play can set the triggers' counters, and those of their owners' buffs (which reach the hits they add)
   const triggerCaps = mergeCaps(triggers.filter((x) => x.t.counter).map((x) => ({ name: x.t.counter!, max: x.t.maxStacks ?? null })),
@@ -331,14 +343,16 @@ export function computeBuild(presets: Presets, charName: string, build: Build, s
   let k = 0
   // The hits of one card played by m, with the play's debuffs and counter stacks; added: only that many hits after the card's own (no first-hit buffs);
   // listed: they're numbered across the attack list (a trigger's hits aren't)
-  const cardHits = (m: Member, card: Card, play: RotationPlay, added = 0, listed = true) => {
+  // without: buffs left out of this play (afterFirst buffs on their owner's first matching play)
+  const cardHits = (m: Member, card: Card, play: RotationPlay, added = 0, listed = true, without?: Set<ActiveBuff>) => {
     const d = m.dmg!
     const counters = playCaps(d, card).map(({ name, max }) => ({ name, stacks: counterOn(card, play, name, max) }))
     const live: ActiveBuff[] = d.counterBuffs.map((b) => {
       const stacks = counters.find((c) => c.name === b.counter)?.stacks ?? 0
       return { ...b, stacks: b.maxStacks ? Math.min(stacks, b.maxStacks) : stacks }
     })
-    const all = [...d.fixedBuffs, ...live]
+    // "Damage dealt to Vulnerable targets" buffs (vsVulnerable) count only while the play has Vulnerable on
+    const all = [...d.fixedBuffs, ...live].filter((b) => !without?.has(b) && (play.vulnerable || !b.vsVulnerable))
     let cb = cardBuffs(all, card)
     // Hits a Weakness: the play's switch, else the card, a Weakness Attack buff or the fight's enemy (owner, 2026-11-09)
     const weakAuto = card.weaknessApplies || cb.weaknessAttack.length > 0 || enemyWeakTo(enemy, card)
@@ -355,6 +369,8 @@ export function computeBuild(presets: Presets, charName: string, build: Build, s
   }
 
   const plays: Play[] = []
+  // How many plays of its owner each afterFirst / everyNth buff has matched so far
+  const matched = new Map<ActiveBuff, number>()
   const counterOptions: BuildResult['counterOptions'] = []
   const weaknessAuto: boolean[] = []
   const pending = new Map<Member, { from: string; index: number; appliesTo: string; share: number }>()
@@ -377,7 +393,17 @@ export function computeBuild(presets: Presets, charName: string, build: Build, s
     // A per-play hit count also counts for '2+ hits' buffs, so it's buffed as its own card
     const card = playCard(base, play)
     const noDmgWeak = card.weaknessApplies || enemyWeakTo(enemy, card)
-    const own = m.dmg ? cardHits(m, card, play)
+    // "The second Attack Card onward each turn": such a buff skips its owner's first matching play (the attack list is one turn)
+    // "The first Attack Card activated" (firstOnly): only on that play
+    // "Every 5th Attack Card" (everyNth): only on its owner's 5th, 10th... matching play
+    const firsts = new Set<ActiveBuff>()
+    for (const b of m.dmg?.fixedBuffs ?? []) {
+      if (!(b.afterFirst || b.everyNth || b.firstOnly) || !buffMatches({ ...b, condition: 'Always' }, card)) continue
+      const n = (matched.get(b) ?? 0) + 1
+      matched.set(b, n)
+      if (b.everyNth ? n % b.everyNth !== 0 : b.firstOnly ? n !== 1 : n === 1) firsts.add(b)
+    }
+    const own = m.dmg ? cardHits(m, card, play, 0, true, firsts)
       : { hits: [], counters: [], cb: undefined, weak: play.weakness ?? noDmgWeak, weakAuto: noDmgWeak, nonCrit: 0, crit: 0, expected: 0 }
     weaknessAuto[index] = own.weakAuto
     if (m.dmg && !card.targetRavaged) warnings.push(...ravagedOnly(m.dmg.counterBuffs, card, play, index))
@@ -401,7 +427,7 @@ export function computeBuild(presets: Presets, charName: string, build: Build, s
 
     // Hits the team's triggers add (Selena's Mark): the trigger owner's, with this play's counters and Vulnerable
     const triggered: Triggered[] = []
-    for (const { t, owner, slot } of triggers) {
+    for (const { t, owner, slot, from } of triggers) {
       if (!owner.dmg || (t.others && slot === play.by) || (t.own && slot !== play.by)) continue
       if (t.counter && capped(play, t.counter, t.maxStacks) <= 0) continue
       if (!buffMatches({ appliesTo: t.on, condition: 'Always' }, card)) continue
@@ -409,14 +435,15 @@ export function computeBuild(presets: Presets, charName: string, build: Build, s
       // One more hit of a play that hits nothing is no hit either; a play with no hits of its own can't crit
       if (t.repeat && Math.floor(card.hits) < 1) continue
       if (t.onCrit && !own.hits.length) continue
+      // A piece of equipment has no card to look up: its triggers repeat the played card (from = the piece)
       const tp = owner.ch?.cards?.find((x) => x.id === t.card)
-      if (!tp) continue
-      const tcard = t.repeat ? { ...card, id: `trigger:${card.id}` } : presetCard(tp, owner.ch!.element, `trigger:${tp.id}`, buildNodeOn(owner.dmg.build))
+      if (!tp && !(from && t.repeat)) continue
+      const tcard = t.repeat ? { ...card, id: `trigger:${card.id}` } : presetCard(tp!, owner.ch!.element, `trigger:${tp!.id}`, buildNodeOn(owner.dmg.build))
       if (t.perStack) tcard.hits *= capped(play, t.counter!, t.maxStacks)
       // Same target, same moment (Unconfirmed; in-game test ravaged-triggered-hits): Ravaged on the play is Ravaged on the hit it sets off,
       // and a play switched off is off for that hit too
       tcard.targetRavaged = play.ravaged ?? (tcard.targetRavaged || card.targetRavaged)
-      const r = t.repeat ? cardHits(owner, tcard, play, 1, false)
+      const r = t.repeat ? cardHits(owner, tcard, play, 1, false, owner === m ? firsts : undefined)
         : cardHits(owner, tcard, { cardId: tcard.id, vulnerable: play.vulnerable, stacks: play.stacks }, 0, false)
       // onCrit: one roll per play, on its first hit (Flame Thrower III has one hit, and on all enemies it crits or doesn't: owner, 2026-11-01;
       // more hits set on the play: in-game test lucas-readings)
@@ -424,7 +451,7 @@ export function computeBuild(presets: Presets, charName: string, build: Build, s
       const hit = t.onCrit
         ? { nonCrit: 0, crit: r.crit, expected: r.expected * chance }
         : { nonCrit: r.nonCrit * chance, crit: r.crit * chance, expected: r.expected * chance }
-      triggered.push({ card: tcard, by: owner.name, chance, ...(t.onCrit ? { onCrit: true } : {}), hits: r.hits, ...hit })
+      triggered.push({ card: tcard, by: owner.name, chance, ...(t.onCrit ? { onCrit: true } : {}), ...(from ? { from } : {}), hits: r.hits, ...hit })
       credit(owner, hit)
     }
     const trig = totals(triggered)
@@ -545,17 +572,22 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
   const cardPct = card.pct + total(cardAdd)
   const fixedOf = fixedAmountOf(card)
   const amount = fixedOf ? capped(play, fixedOf, null) : 0
+  // ATK % buffs on this play (The Final Command's stacks) join the Attack % of the Final ATK formula: screen x (1 + % + theirs) + flat
+  const atkBuffs = both(cb.atkPct)
+  const atk: Stat = atkBuffs.length
+    ? { ...stats.atk, value: stats.atk.value + (stats.atk.base ?? 0) * total(atkBuffs), sources: [...stats.atk.sources, ...atkBuffs] }
+    : stats.atk
   const stat: Factor = card.scaling === 'DEF'
     ? {
-      value: stats.atk.value * settings.defCardAtkCoef + stats.def.value * settings.defCardDefCoef,
+      value: atk.value * settings.defCardAtkCoef + stats.def.value * settings.defCardDefCoef,
       sources: [
-        { label: `Final ATK ${round(stats.atk.value)} x ${settings.defCardAtkCoef}`, value: stats.atk.value * settings.defCardAtkCoef, unit: 'flat' },
+        { label: `Final ATK ${round(atk.value)} x ${settings.defCardAtkCoef}`, value: atk.value * settings.defCardAtkCoef, unit: 'flat' },
         { label: `Final DEF ${round(stats.def.value)} x ${settings.defCardDefCoef}`, value: stats.def.value * settings.defCardDefCoef, unit: 'flat' },
       ],
     }
     : fixedOf
       ? { value: amount, sources: [{ label: `${fixedOf} (this play)`, value: amount, unit: 'flat' }] }
-      : stats.atk
+      : atk
   // Flat damage is a number of its own, whatever the stat and its constant are; the multipliers raise it (owner, 2026-11-01; Unconfirmed)
   const flatSources = both(cb.flat).map((s) => ({ ...s, unit: 'flat' as const }))
   const flat: Factor | null = flatSources.length ? { value: total(flatSources), sources: flatSources } : null
@@ -623,6 +655,8 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
     if (!critRateSources.some((s) => s.label === 'Capped (Settings)')) critRateSources.push({ label: 'Capped (Settings)', value: settings.critCap, unit: '%' })
     critRate = settings.critCap
   }
+  // A piece can lower it (Dull Bone Blade: -5% Critical Chance); a chance below 0 is no chance
+  critRate = Math.max(0, critRate)
 
   const fixedConstant = fixedOf ? 1 : settings.fixedAtkCoef
   // Fixed damage: % x Final ATK x its constant (owner thinks ATK-based, 2026-10-28; Unconfirmed), or % x the amount the card names (fixedOf)

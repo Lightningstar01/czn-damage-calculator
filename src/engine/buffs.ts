@@ -123,6 +123,14 @@ export interface ActiveBuff {
   fixedDot?: boolean
   /** See BuffEffect.weakness. */
   weakness?: boolean
+  /** See BuffEffect.afterFirst. */
+  afterFirst?: boolean
+  /** See BuffEffect.vsVulnerable. */
+  vsVulnerable?: boolean
+  /** See BuffEffect.firstOnly. */
+  firstOnly?: boolean
+  /** See BuffEffect.everyNth. */
+  everyNth?: number
 }
 
 /** Why a preset effect is (in)active for a build — shown greyed out in the UI. */
@@ -138,6 +146,8 @@ export interface PresetState {
   egoLocked: boolean
   /** Comes from a Potential node that's switched off (Setup > Potentials). */
   nodeLocked: boolean
+  /** A "(cannot stack)" effect that another combatant's copy already gives: switched on, but not counted again. */
+  doubled?: boolean
   /** The stats of whoever owns the effect, read by its thresholds; missing for a teammate without a linked build. */
   ownerStats?: ScreenStats
   stacks: number
@@ -246,6 +256,7 @@ interface Who {
  * then each teammate's ally / enemy effects (character, partner, sets, a linked build's equipment, deck cards). */
 export function presetStates(presets: Presets, charName: string, build: LiveBuild): PresetState[] {
   const out: PresetState[] = []
+  const counted = new Set<string>()
   const add = (owner: string, ownerKind: PresetState['ownerKind'], effects: Effect[], blocked: (e: Effect) => boolean,
     who: Who, cardId?: string, team?: { slot: number; name: string }, keyOwner = owner) => {
     const ego = who.ego
@@ -258,9 +269,14 @@ export function presetStates(presets: Presets, charName: string, build: LiveBuil
       const onStatsScreen = !team && e.kind === 'Stat' && !!e.onStatsScreen
       const egoLocked = (e.egoLevel ?? 0) > ego || (e.egoBelow !== undefined && ego >= e.egoBelow)
       const nodeLocked = e.node !== undefined && who.nodes?.[e.node] === false
-      const stacks = classBlocked || onStatsScreen || egoLocked || nodeLocked ? 0 : switchStacks(sw === undefined ? true : sw, e.defaultStacks)
+      let stacks = classBlocked || onStatsScreen || egoLocked || nodeLocked ? 0 : switchStacks(sw === undefined ? true : sw, e.defaultStacks)
+      // "(cannot stack)": the same effect worn by two combatants counts once, the first one that's on (the build's own before a teammate's)
+      const same = `${keyOwner}|${e.id}`
+      const doubled = !!e.noStack && stacks > 0 && counted.has(same)
+      if (doubled) stacks = 0
+      else if (e.noStack && stacks > 0) counted.add(same)
       out.push({ owner, ownerKind, effect: e, classBlocked, onStatsScreen, egoLocked, nodeLocked, ownerStats: who.stats, stacks, cardId, key,
-        ...(team ? { teammate: team.slot, teammateName: team.name } : {}) })
+        ...(doubled ? { doubled } : {}), ...(team ? { teammate: team.slot, teammateName: team.name } : {}) })
     }
   }
   const addAll = (ch: CharacterPreset | undefined, partner: string, fragments: string[], who: Who, cardPresets: CardPreset[],
@@ -331,7 +347,7 @@ export function equipmentDoubles(presets: Presets, build: Pick<Build, 'equipment
     const same = [...boosts.filter((b) => !flat.includes(b)), ...buffs].filter((r) => named(r.source, piece.name))
     if (!same.length) continue
     const rows = same.map((r) => r.source).join(', ')
-    out.push(piece.effects.length
+    out.push(piece.effects.length || piece.triggers?.length
       ? `My stat boosts / My buffs have rows named like ${piece.name} (${rows}). Its effects are in the preset lists now: switch the typed rows off or delete them, or they count twice.`
       : `My stat boosts / My buffs have rows named like ${piece.name} (${rows}). The piece's effect isn't counted by itself yet, so keep them for now.`)
   }
@@ -368,7 +384,9 @@ export function activeBuffs(presets: Presets, charName: string, build: LiveBuild
       appliesTo: e.appliesTo, hitScope: e.hitScope, condition: e.condition,
       ...(e.counter ? { counter: e.counter, maxStacks: e.maxStacks } : {}), ...(e.onTarget ? { onTarget: true } : {}),
       ...(e.perCardCost ? { perCardCost: true } : {}), ...(e.sharedCap ? { sharedCap: e.sharedCap } : {}), ...(e.fixedDot ? { fixedDot: true } : {}),
-      ...(e.weakness ? { weakness: true } : {}) })
+      ...(e.weakness ? { weakness: true } : {}), ...(e.afterFirst ? { afterFirst: true } : {}),
+      ...(e.firstOnly ? { firstOnly: true } : {}), ...(e.vsVulnerable ? { vsVulnerable: true } : {}),
+      ...(e.everyNth ? { everyNth: e.everyNth } : {}) })
   }
   for (const b of build.buffs ?? []) {
     const st = switchStacks(b.on)
@@ -447,6 +465,8 @@ export interface CardBuffs {
   /** Crit Chance / Crit DMG buffs on this card only (fractions added to the final stat). */
   critRate: { all: Bucket; first: Bucket }
   critDmg: { all: Bucket; first: Bucket }
+  /** ATK % buffs: Attack % on this play only (added to the % of the Final ATK formula). */
+  atkPct: { all: Bucket; first: Bucket }
   /** Card % buffs (raise the card's base %, like potentials). */
   cardPct: { all: Bucket; first: Bucket }
   /** Card + buffs (added to the card's base %, before potentials). */
@@ -463,7 +483,7 @@ export interface CardBuffs {
 export function cardBuffs(buffs: ActiveBuff[], card: Card): CardBuffs {
   const b = (): Bucket => ({ value: 0, sources: [] })
   const out: CardBuffs = { additive: { all: b(), first: b() }, multiplicative: { all: b(), first: b() }, weaknessAttack: [], weaknessDmg: { all: b(), first: b() },
-    critRate: { all: b(), first: b() }, critDmg: { all: b(), first: b() }, cardPct: { all: b(), first: b() },
+    critRate: { all: b(), first: b() }, critDmg: { all: b(), first: b() }, atkPct: { all: b(), first: b() }, cardPct: { all: b(), first: b() },
     cardAdd: { all: b(), first: b() }, basePct: { all: b(), first: b() }, final: { all: b(), first: b() }, flat: { all: b(), first: b() } }
   // sharedCap: what each group has used so far on this card
   const capUsed = new Map<string, number>()
@@ -489,12 +509,12 @@ export function cardBuffs(buffs: ActiveBuff[], card: Card): CardBuffs {
       capUsed.set(group, used + v)
       if (v <= 0) continue
     }
-    const group = { Additive: out.additive, Multiplicative: out.multiplicative, 'Crit Chance': out.critRate, 'Crit DMG': out.critDmg,
+    const group = { Additive: out.additive, Multiplicative: out.multiplicative, 'Crit Chance': out.critRate, 'Crit DMG': out.critDmg, 'ATK %': out.atkPct,
       'Weakness DMG': out.weaknessDmg, 'Card %': out.cardPct, 'Card +': out.cardAdd, 'Base %': out.basePct, Final: out.final, Flat: out.flat }[buff.type]
     const bucket = group[buff.hitScope === 'First hit only' ? 'first' : 'all']
     bucket.value += v
     bucket.sources.push({ label: buff.hitScope === 'First hit only' ? `${label} (first hit)` : label, value: v, unit: '%',
-      ...(buff.condition === 'Ravaged only' || buff.onTarget || buff.weakness ? { onTarget: true } : {}), ...(buff.fixedDot ? { fixedDot: true } : {}) })
+      ...(buff.condition === 'Ravaged only' || buff.onTarget || buff.weakness || buff.vsVulnerable ? { onTarget: true } : {}), ...(buff.fixedDot ? { fixedDot: true } : {}) })
   }
   return out
 }

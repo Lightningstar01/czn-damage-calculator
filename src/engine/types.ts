@@ -28,8 +28,8 @@ export type Condition = 'Always' | 'Ravaged only'
  * Final ("final Damage Amount") is its own multiplier: x (1 + the sum of the final buffs), after everything else.
  * Flat ("Damage Amount equal to 30% of Shield owned") is damage, not a %: value x its counter's number, added under the multipliers (Maribell's Resolute Blitz IV).
  * It reads a counter, so it isn't among the types the owner's own buffs can pick. */
-export type BuffType = 'Additive' | 'Multiplicative' | 'Weakness Attack' | 'Weakness DMG' | 'Crit Chance' | 'Crit DMG' | 'Card %' | 'Card +' | 'Base %' | 'Final' | 'Flat'
-export const BUFF_TYPES: BuffType[] = ['Additive', 'Multiplicative', 'Weakness Attack', 'Weakness DMG', 'Crit Chance', 'Crit DMG', 'Card %', 'Card +', 'Base %', 'Final']
+export type BuffType = 'Additive' | 'Multiplicative' | 'Weakness Attack' | 'Weakness DMG' | 'Crit Chance' | 'Crit DMG' | 'ATK %' | 'Card %' | 'Card +' | 'Base %' | 'Final' | 'Flat'
+export const BUFF_TYPES: BuffType[] = ['Additive', 'Multiplicative', 'Weakness Attack', 'Weakness DMG', 'Crit Chance', 'Crit DMG', 'ATK %', 'Card %', 'Card +', 'Base %', 'Final']
 export type MultMode = 'Summed' | 'Chained'
 
 /** On/off switch, or a number of stacks. true = on with the effect's default stacks. */
@@ -64,6 +64,8 @@ export interface StatEffect {
   node?: string
   /** A few words shown as a grey chip when the switch depends on something in the fight, e.g. 'ATK > 500'. No notes on effects. */
   hint?: string
+  /** "(cannot stack)" (Runic Hammer; owner, 2026-11-13): when several combatants bring the same effect (the same piece), it counts once. */
+  noStack?: boolean
 }
 
 export interface BuffEffect {
@@ -75,6 +77,8 @@ export interface BuffEffect {
   /** Buff text as shown in-game: '+30%' = Additive, '30%' = Multiplicative, or 'Weakness Attack'. */
   value: string
   /** Set for every type but Additive and Multiplicative, which come from the value text ('+30%' / '30%'): Crit Chance, Crit DMG, Card %, Card +, Base %, Final, Flat.
+   * 'ATK %' adds to the Attack % of the Final ATK formula on matching plays only: a stat that depends on the play (with a `counter`: The Final
+   * Command's "+3% Attack to allies for 1 turn (max 6 stacks)"); an Attack % that is always on is a Stat effect.
    * 'Weakness DMG' adds to the Weakness DMG stat on matching plays that hit a Weakness (Hilde's Matrix Overlay: "+15% Weakness Damage Amount taken"). */
   type?: BuffType
   /** ALL, a card name, or tags: 'A & B' = all of them, 'A/B' = any of them; also '2+ hits', '2+ cost', DoT, Extra Attack. */
@@ -116,6 +120,22 @@ export interface BuffEffect {
   fixedDot?: boolean
   /** Only on plays that hit a Weakness (Silver Shot's "Weakness Attack: Increase Damage Amount by 100%"; owner, 2026-11-09). */
   weakness?: boolean
+  /** See StatEffect.noStack. */
+  noStack?: boolean
+  /** Not on its owner's first matching play of the attack list, on every later one (Flower of Dead Souls: "Increase Damage Amount of the
+   * second Attack Card onward each turn by 20%"). The attack list counts as one turn (owner, 2026-11-13): it has no turn breaks.
+   * Not for buffs with a `counter`. */
+  afterFirst?: boolean
+  /** Counts only on plays with Vulnerable switched on (Cards tab > a play): "Increase damage dealt to Vulnerable targets by 35%"
+   * (Mask of Flames; owner, 2026-11-13: automatic, no switch of its own to keep in step). */
+  vsVulnerable?: boolean
+  /** Only on its owner's first matching play of the attack list, which counts as one turn (Raider's Scanning Gear: "At the start of the
+   * turn, +30% Critical Damage to the first Attack Card activated"). Not for buffs with a `counter`. */
+  firstOnly?: boolean
+  /** Only on its owner's every Nth matching play of the attack list: 5 = the 5th, 10th... (Rage Potion: "When 4 Attack Cards are activated,
+   * increase Damage Amount of the next Attack Card activated by 40%"; owner, 2026-11-13: "I think it's every 5th card"; Unconfirmed).
+   * Not for buffs with a `counter`. */
+  everyNth?: number
   /** See StatEffect.hint. */
   hint?: string
 }
@@ -312,12 +332,16 @@ export interface EquipmentPreset {
   image?: string
   /** The stat boosts and buffs read from its text (switch per build, default on). Empty: its effect isn't counted. */
   effects: Effect[]
+  /** Hits the piece adds to its wearer's plays (The Destruction of Erysichthon: "When using an Attack Card, 5% chance to +1 hit").
+   * Only `repeat` triggers, one more hit of the played card: a piece has no cards of its own, so `card` is the piece's id. They have
+   * no switch: they count while the piece is picked. */
+  triggers?: Trigger[]
   /** Why nothing, or not everything, in its text is counted (shown with the text): a shield, healing, draw... */
   notCounted?: string
 }
 
 /** Our additions to one imported piece (src/data/equipmentEffects.ts): what a re-import must not overwrite. */
-export type EquipmentAdditions = Partial<Pick<EquipmentPreset, 'effects' | 'notCounted'>>
+export type EquipmentAdditions = Partial<Pick<EquipmentPreset, 'effects' | 'triggers' | 'notCounted'>>
 
 export interface Presets {
   characters: CharacterPreset[]

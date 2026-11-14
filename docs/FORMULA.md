@@ -62,6 +62,108 @@ equipment, which apply only in battle (slot 1 always gives flat ATK; any piece m
   trinkets (20/37/54/66/75, 22/41/60/73/83, 24/45/66/80/91) work the same way. Prydwen gives 3 weapons out of 82 the Mythic values at a lower rarity
   (Mountain of Corpses, Legendary; Torch of Wrath and Overcurrent Shock Unit, Rare; all from the Shop): read as its mistakes, **Unconfirmed**
   (`scripts/import_equipment.py` prints them as CHECK).
+- **Equipment effects (User, 2026-11-13; read batch by batch into `src/data/equipmentEffects.ts`):**
+  - Prydwen's "+" is not reliable on equipment: Lepidola's Whip reads "+25% Damage" there and is multiplicative in-game, like Violet Butterfly's
+    Whip (User). So each piece's type is confirmed with the owner. Confirmed: both Whips, Formica's spears and Twin Swords multiplicative; Mutated Claws
+    and Ritual Dagger additive. Kept as Prydwen words them, **Unconfirmed** (in-game test `equipment-plus-wording`): Executioner's Edge, Mutated Order,
+    Dark Grip's Claws (all multiplicative), Command: #108 (additive). Confirmed in batch 2 (User): Dream of the Devoured, Void of the Devourer
+    and Foggy Crystal Ball ("40% Damage", no verb) multiplicative.
+  - A bonus for one card is a per-play counter, 0 or 1, set on that play on the Cards tab (User): "next card used" after an Exhaust (Dream of
+    the Devoured, Void of the Devourer: counter "Follows an Exhaust") and "(1 per battle)" (Command: #108: one Attack Card, once per battle).
+  - "Extra Attack damage +35%" (Second Method) is an additive buff on Extra Attack hits, not the Extra Damage stat (User).
+  - "+X% Critical Chance of Attack Cards with cost 0" (RFS-17) adds to the Critical Chance of those cards only.
+  - No damage for us (User): Weaken on the enemy (Flashbang: it lowers the damage the enemy deals), Tenacity Damage (Big Game Hunter), Stress.
+    Vulnerable a piece applies (Sneering Dagger) isn't added: Vulnerable is the play's own switch.
+  - From the third batch on (User, 2026-11-13: "maybe we can just assume everything else is correct"), Prydwen's "+" wording is taken as it
+    stands, the Whip being its one known mistake; the owner looked over batch 3's types ("I think these are correct"). **Unconfirmed** piece by
+    piece.
+  - "(1 per turn)" on a damage bonus (Sun-Setting Bow, Mountain of Corpses) is one card per turn (User): a per-play counter, 0 or 1, like the
+    "next Attack Card" of Cavalry of Lightning.
+  - "+8% ally Attack" (Tentacles of Chaos) reaches all three combatants, the wearer included (User); a teammate's copy needs their linked build.
+  - "If you have 6 or more cards in hand" (Sword Reflected in the Lake) and "If at max HP" (the Flowers of Life) are switches (User).
+  - "(2 per turn)" / "(Max 2 times per turn)" on a "for 1 turn" bonus (Trumpet of Revelation, W-52 Dopamine Injector) is up to 2 stacks,
+    starting at 0 (User): a per-play counter named after the piece, like Ritual Dagger's (a switch's stacks start at 1).
+  - "That card +50% Damage Amount" (Replica Core) is for the one Attack Card drawn by an ability: a per-play counter, 0 or 1.
+  - Veiled Thorn's 50% is the wearer's damage only (User); Harp of Conflict's 15% says "of allies", so it reaches the team.
+  - Punishment, formerly Retribution (User): "When Shield is gained, take Fixed Damage equal to 200% of Attack and reduce by 1 stack". Fixed
+    damage, so not counted (Flame of Purification, Singing Sword's second half). Mark a piece applies (Torch of Wrath) isn't added: Mark is the
+    play's own number. A card a piece creates (Arm of Lost Valor's Rocket Punch) isn't counted: neutral cards aren't in yet.
+  - "Exhaust cards" (Brilliant Eternal Flame?) are cards with the Exhaust keyword, of any type. An "Exhaust 2" card Exhausts on its second
+    play only (User), so it gets the bonus on the play whose "Second play (it Exhausts)" counter is set, not on its first.
+  - Corrupted Gauntlet's Critical Chance is the combatant's, for everything (User): 2% per stack, a per-play counter from 0 to 5. Order's Baton
+    follows the Trumpet rule (0 to 2).
+  - Key of Sleep: Prydwen has only its second half. In-game (User, 2026-11-13) it starts "+40% Damage Amount to Attack Cards" and ends "When the
+    target count of the Attack Card is 2 or more, -10% Damage Amount for each target (max -30%)". The owner's reading, **Unconfirmed** (in-game
+    test `key-of-sleep-targets`): +40% on one target, +20% on 2, +10% on 3 or more. The play's counter holds the targets hit when there are 2 or
+    more (0 for a single target; 1 would wrongly take 10% off).
+  - "(cannot stack)" (Runic Hammer: "+20% Critical Damage to ally Unique Attack Cards"): the wearer and the allies get it, and it is +20% at
+    most however many combatants wear one (User, 2026-11-13). The engine counts an effect with `noStack` once per team: the first copy that is
+    switched on (the build's own, then the teammates' in slot order); the others show "Cannot stack" on the Buffs tab.
+  - "Bind Attack Cards" (Fragment of Condensed Radiance) are Attack Cards with the Bind keyword; only Chizuru has one (User). "On Weakness Attack
+    through an Attack Card" (Needle of the Severed Overseer) counts on Attack Card plays that hit a Weakness. Scorched a piece applies (The
+    Exsanguine) is not counted, like Agony.
+  - Trinkets (User, 2026-11-13): healing, Shield, Evade and Max HP % are not counted (no damage reads Health yet). "+X% Defense" is counted
+    (DEF%, which Defense-based cards read), as a switch with its battle as the hint (Proof of Initiation, Order's Emblem: Chaos Order battles).
+  - A bonus given at the start of a battle, or once something has happened, with no duration lasts the whole battle (User): a switch (Madman's
+    Masterpiece in an Elite Battle; The Famished One's Belly once a card is Exhausted, "(1 per battle)").
+  - Flower of Dead Souls: in-game "Increase Damage Amount of the second Attack Card onward each turn by 20%" (User; Prydwen's text is garbled).
+    Automatic (`afterFirst`): the wearer's first Attack Card play of the attack list gets nothing, every later one the 20%. The attack list has no
+    turn breaks, so it counts as one turn (User, 2026-11-13); a list spanning several turns over-counts it by one play per extra turn.
+  - Amorphous Cube ("At the start of battle, +25% Damage") is on for the whole battle (User: strong for a Rare, used over Legendaries).
+    Quantum Collector's 20% is the wearer's damage, set off by any ally's Upgrade card (User). Not counted (User): Time Regulator (nothing in
+    battle), Water Drops of the Goddess (Storage), and Heart of the Jewel ("X is applied as X+1": cards with an X Cost, such as Rossweisse's
+    Unbound Flicker Blade; the play's Cost is typed, so add the 1 there).
+  - "On odd turns" / "On even turns" (Verdant Day, Verdant Night) are switches turned on and off by hand (User): the attack list has no turn
+    numbers. Impair limits the Shield the enemy gains, so it is no damage for us (User); Damage Reduction a piece gives its wearer isn't either.
+  - Rage Potion ("When 4 Attack Cards are activated, increase Damage Amount of the next Attack Card activated by 40%") is automatic
+    (`everyNth: 5`): the wearer's 5th, 10th... Attack Card play of the attack list gets the 40%. That the count restarts after each bonus is the
+    owner's guess ("I think it's every 5th card"), and whether it carries over between turns is unknown: **Unconfirmed**, in-game test
+    `rage-potion-count`.
+  - Combat Drum's "next ally card activated" is the next card any of the three combatants plays (User): a per-play counter, 0 or 1, that a
+    linked teammate's copy brings too. Summoned Lump of Light's "third Attack Card created" is the third Attack Card created each turn, that
+    card alone (User): turned on by hand on its play, since the calculator can't know which card was created third. Luminescent Shroom (Spore
+    Propagation, a buff from one seasonal card) isn't modeled (User). Cost changes, AP and cards a piece creates aren't counted.
+  - A stat that depends on the play is a buff, not a Stat effect (User, 2026-11-13: "the engine needs to be able to support buffs like this
+    that add stats conditionally"): buff types `Crit Chance`, `Crit DMG`, `Weakness DMG` and `ATK %` add to that stat on the plays they match,
+    with stacks set per play if they have a `counter`. `ATK %` joins the Attack % of Final ATK: screen x (1 + other % + its %) + flat (that it
+    adds with the other Attack % rather than multiplying is **Unconfirmed**, in-game test `final-command-attack`). The Final Command: +3%
+    Attack per stack to allies, 0 to 6, set per play (User).
+  - Raider's Scanning Gear ("+30% Critical Damage to the first Attack Card activated") is automatic (`firstOnly`): only the wearer's first
+    Attack Card play of the attack list, which is one turn (User). An Eye Plucked from a Mural: 20% per ally Persona Card in hand, one per
+    combatant, so 0 to 3, set per play (User). Invader Observation Logs' Critical Chance is the wearer's for everything, Extra Attacks
+    included, per enemy present, 1 to 5 (User). Overloaded Power Engine: "Bind card stacked" is two of the same Bind card in hand combining
+    (User); the number is set per play, 0 to 10, until the engine knows it. Split Design Core's 8% lasts the whole battle each time, so 1 to
+    3 stacks by the turn simulated (User). Final Entry's damage is Fixed Damage in the game's text (User; Prydwen says "150% Damage"): not
+    counted. Hymn-Singing Lips' Resonance ("On card Discard, 80% Extra Attack, then decrease Resonance by 1", User) is damage of its own
+    and isn't counted until extra damage sources have a model.
+  - Armor (User, 2026-11-13): Shield, healing, Max HP, Immunity, Damage Reduction and damage taken (Star-Lit Cloak: "Decrease Damage Taken by
+    10%" in the game's text) aren't counted; Defense % and Critical Chance are. Counterattack (damage when the wearer is hit; Wild Fur Cloak,
+    Assault Gauntlets, Immortal Scale) isn't counted: for the engine later. Resolute Gauntlets' +20% lasts the whole battle: a switch per
+    battle. Mask of Flames ("Increase damage dealt to Vulnerable targets by 35%") is automatic (`vsVulnerable`): it counts on the plays
+    with Vulnerable switched on, and has no stacks of its own to keep in step.
+  - Armor, the rest (User, 2026-11-13): Essence-Fueled Gauntlets' +30% Critical Chance "until activated" is the next Attack Card alone, set
+    on its play. Bangle of Valor's Arena cards are seasonal cards the site doesn't have: not counted for now. **Unconfirmed** (the owner
+    couldn't check; in-game test `armor-stack-readings`): Wings of Freedom's stacks ("When hit ... Max 3 stacks") are taken to last the whole
+    battle, as a stack count on the Buffs tab (1 to 3, off for 0); Phytotype Synthetic's "next 1 Attack Card ... (2 times per turn)" is taken
+    as two separate Attack Cards with 20% each (0 or 1 on a play), not 40% on one.
+  - "If use more than 5 AP" (Rune Lance) is a switch; the owner thinks it then lasts the rest of the battle (**Unconfirmed**, in-game test
+    `equipment-batch-1-readings`).
+  - Conditional and "for 1 turn" buffs ("Against enemies with HP below 50%", "When drawing a Status Ailment or Curse card ... for 1 turn") are one
+    switch with a hint, on while the piece is picked and counted on every hit (snapshot; User). Mutated Claws counts once however many such cards
+    are drawn (User: "I believe"; **Unconfirmed**, in-game test `equipment-batch-1-readings`).
+  - Plain "Damage" / "Damage Amount" on a piece applies to ALL: Skill cards that deal damage, Extra Attacks and triggered hits too; Fixed damage
+    and Agony get nothing, as with other damage buffs (User).
+  - "Attack on all enemies" / "All-Attack Damage" (Dark Grip's Claws, Formica's Perfect Spear) is any card that targets all enemies, of any card
+    type (`AoE`; User).
+  - "Per enemy" (Formica's spears) counts the enemies alive in the fight: stacks on the switch, 1 to start, 5 at most (User).
+  - "When an enemy is defeated ... (Max 2 times)" (Ritual Dagger) starts at 0 (User): a per-play counter, "Enemies defeated", as the enemies
+    fall during the attack list.
+  - "5% chance to +1 hit" (The Destruction of Erysichthon) is an expected value (User): 5% of one more hit of each Attack Card its wearer plays,
+    shown under the play. That the hit is one more of the card's own hits, once per card whatever its hits, is **Unconfirmed** (in-game test
+    `equipment-batch-1-readings`). A piece's added hits have no switch: they count while it's picked.
+  - A stat a piece lowers (Dull Bone Blade: -5% Critical Chance) is subtracted; a hit's Critical Chance stops at 0.
+  - Not counted for now (User): Fixed Damage a piece deals (Nature's Hostility; they wait for the extra-damage model) and Agony a piece applies
+    (Bug Killer, Abyssal Bug Tooth; until the DoT engine is redone). Their text shows the reason.
 - **Own stat boosts and buffs are per build (User, 2026-11-11):** each build has its own lists (`build.boosts`, `build.buffs`); Duplicate
   copies them, and a change in one build never reaches another.
 

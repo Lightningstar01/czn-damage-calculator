@@ -22,8 +22,9 @@ function Icon({ piece }: { piece?: EquipmentPreset }) {
 
 /** What a piece's text does for the numbers: counted (its effects are preset switches), partly, or not at all. */
 function Counted({ piece }: { piece: EquipmentPreset }) {
-  if (piece.effects.length && !piece.notCounted) return <span className="tag counted">counted</span>
-  return <span className="tag">{piece.effects.length ? `partly counted: ${piece.notCounted}` : `not counted${piece.notCounted ? `: ${piece.notCounted}` : ''}`}</span>
+  const counted = piece.effects.length > 0 || !!piece.triggers?.length
+  if (counted && !piece.notCounted) return <span className="tag counted">counted</span>
+  return <span className="tag">{counted ? `partly counted: ${piece.notCounted}` : `not counted${piece.notCounted ? `: ${piece.notCounted}` : ''}`}</span>
 }
 
 export function EquipmentSection() {

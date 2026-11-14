@@ -2,7 +2,7 @@
 
 Made from `tests/ingame/checks.ts`; change it there, not here, then run `npx vitest run -u tests/ingame`.
 
-68 to run, 6 measured. Send the numbers under **Send** with the game version; they then become tests here and close the question.
+74 to run, 6 measured. Send the numbers under **Send** with the game version; they then become tests here and close the question.
 Use non-crit hits unless the test is about crits, and note anything else that was on.
 
 ## To run
@@ -243,6 +243,88 @@ Closes: src/data/equipment.ts (EQUIP_FLAT); scripts/import_equipment.py prints t
 **Send:** The effect and its threshold; Stats-screen stat; Damage with and without the piece.
 
 Closes: docs/FORMULA.md (Equipment flat stats); presetBuffValue in src/engine/buffs.ts
+
+### equipment-plus-wording
+
+**Question:** Prydwen's "+" is wrong on some equipment (Lepidola's Whip). Do these weapons read "Increase ... by X%" (multiplicative, as the calculator has them) or "+X%" (additive) in-game: Executioner's Edge (35%, enemies below 50% HP), Mutated Order (25%, targets that haven't acted), Dark Grip's Claws (25%, attacks on all enemies)? All three drop in The Blue Pot. And is Command: #108 (Shop; "+40% Attack Card Damage (1 per battle)") additive, as the calculator has it?
+
+**Setup:** Any of these weapons, or their entry in the equipment list.
+
+**Steps:**
+1. Read the piece's effect text.
+2. If you own it: play a card with a base % other than 100% with and without it, to see whether the bonus multiplies the card % or adds to it.
+
+**Send:** Each piece's exact wording; Damage with and without, if tested.
+
+Closes: docs/FORMULA.md (Equipment effects); src/data/equipmentEffects.ts (equip-15, equip-24, equip-19, equip-70)
+
+### equipment-batch-1-readings
+
+**Question:** Two readings of weapon texts. The Destruction of Erysichthon ("When using an Attack Card, 5% chance to +1 hit"): is the extra hit one more of the card's own hits (same %), rolled once per card whatever its hits? Mutated Claws ("When drawing a Status Ailment or Curse card, +15% Damage for 1 turn"): does drawing two such cards in a turn give +15% once (as the calculator has it) or +30%? Rune Lance ("If use more than 5 AP, +25% Damage, Shield Gain, and Healing"): once more than 5 AP are used, does the bonus last the rest of the battle (as the owner thinks) or only that turn?
+
+**Setup:** A character with The Destruction of Erysichthon, then with Mutated Claws and a deck that draws Status Ailment or Curse cards.
+
+**Steps:**
+1. Erysichthon: play Attack Cards with one hit and with several until an extra hit shows; note its damage next to the other hits.
+2. Mutated Claws: play the same card after drawing one such card in a turn, then after drawing two.
+
+**Send:** Erysichthon: the card, its hits and the extra hit's damage; Mutated Claws: damage with none, one and two drawn.
+
+Closes: docs/FORMULA.md (Equipment effects); src/data/equipmentEffects.ts (equip-33, equip-7, equip-143)
+
+### key-of-sleep-targets
+
+**Question:** Key of Sleep (Theater of Illusions): "+40% Damage Amount to Attack Cards ... When the target count of the Attack Card is 2 or more, -10% Damage Amount for each target (max -30%)". Is the bonus +40% on one target, +20% on 2 and +10% on 3 or more, as the calculator has it?
+
+**Setup:** A character with Key of Sleep and an Attack Card that hits all enemies, in fights with 1, 2 and 3 enemies.
+
+**Steps:**
+1. Play the card in each fight, with and without the piece.
+
+**Send:** The piece's full wording; Damage with and without it, per number of enemies.
+
+Closes: docs/FORMULA.md (Equipment effects); src/data/equipmentEffects.ts (equip-211)
+
+### rage-potion-count
+
+**Question:** Rage Potion (Burning Life): "When 4 Attack Cards are activated, increase Damage Amount of the next Attack Card activated by 40%". Is it every 5th Attack Card (the count restarts after the bonus is used), as the calculator has it? Does the count carry over from one turn to the next?
+
+**Setup:** A character with Rage Potion and a deck of cheap Attack Cards with the same %.
+
+**Steps:**
+1. Play the same Attack Card ten times over two or three turns and note each damage.
+
+**Send:** Which plays were 40% higher (count them across the turns).
+
+Closes: docs/FORMULA.md (Equipment effects); src/data/equipmentEffects.ts (equip-183); BuffEffect.everyNth
+
+### final-command-attack
+
+**Question:** The Final Command (Celestial Bulwark): "+3% Attack to allies for 1 turn (max 6 stacks)". Does each stack add 3% of the stats-screen Attack, next to the other Attack % (partner, weapon), as the calculator has it, or does it multiply the Attack already raised by them?
+
+**Setup:** A character with The Final Command, a partner or weapon that gives Attack %, and a card that gains AP.
+
+**Steps:**
+1. Note the damage of an Attack Card with 0 stacks.
+2. Gain AP through a card once or more, then play the same Attack Card again in that turn.
+
+**Send:** Stats-screen Attack, the other Attack % in play, the stacks, and both damage numbers.
+
+Closes: docs/FORMULA.md (Equipment effects); buff type 'ATK %'; src/data/equipmentEffects.ts (equip-237)
+
+### armor-stack-readings
+
+**Question:** Two armor pieces. Wings of Freedom (Laboratory 0): "When hit, Increase damage by 10% Damage Amount (Max 3 stacks)": do the stacks last the whole battle (the calculator: a stack count on the Buffs tab), or fade at the end of the turn? Phytotype Synthetic (Burning Life): "increase Damage Amount of the next 1 Attack Card activated by 20% for 1 turn (2 times per turn)": gaining Shield twice before an Attack Card, is that card 20% higher (the calculator: 0 or 1 per play) or 40%?
+
+**Setup:** A character with one of the two pieces, a Shield card and a cheap Attack Card.
+
+**Steps:**
+1. Wings of Freedom: note an Attack Card's damage, get hit once, and play the same card on each of the next two turns without being hit again.
+2. Phytotype Synthetic: note an Attack Card's damage; gain Shield once and play it; then gain Shield twice and play it.
+
+**Send:** Wings of Freedom: the three damage numbers; Phytotype Synthetic: the three damage numbers.
+
+Closes: docs/FORMULA.md (Equipment effects); src/data/equipmentEffects.ts (equip-160, equip-172)
 
 ### fixed-formula
 

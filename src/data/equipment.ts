@@ -36,6 +36,7 @@ export function mergeEquipment(pieces: ImportedPiece[], additions: Record<string
     id: p.id, name: p.name, slot: p.slot.toLowerCase() as EquipSlot, rarity: p.rarity as EquipRarity, text: p.text, source: p.source,
     ...(p.seasonal ? { seasonal: true } : {}), ...(p.image ? { image: p.image } : {}),
     effects: additions[p.id]?.effects ?? [],
+    ...(additions[p.id]?.triggers ? { triggers: additions[p.id].triggers } : {}),
     ...(additions[p.id]?.notCounted ? { notCounted: additions[p.id].notCounted } : {}),
   })).sort((a, b) => a.name.localeCompare(b.name))
 }
@@ -44,7 +45,7 @@ export const EQUIPMENT: EquipmentPreset[] = mergeEquipment(IMPORTED_EQUIPMENT, E
 
 /** What's wrong with the import or our additions (run by the tests): a slot or rarity the site doesn't know, an id or a name used
  * twice (the picker and the Results labels tell pieces apart by name), additions for a piece the import doesn't have, an effect id
- * used twice on a piece, and a category other than Equipment. */
+ * used twice on a piece, a category other than Equipment, and a trigger that isn't one more hit of the wearer's played card. */
 export function checkEquipment(pieces: ImportedPiece[], additions: Record<string, EquipmentAdditions>): string[] {
   const problems: string[] = []
   const taken = new Set<string>()
@@ -67,6 +68,11 @@ export function checkEquipment(pieces: ImportedPiece[], additions: Record<string
       if (ids.has(e.id)) problems.push(`equipmentEffects.ts: effect id '${e.id}' used twice on ${id} (${piece.name})`)
       ids.add(e.id)
       if (e.category !== 'Equipment') problems.push(`equipmentEffects.ts: effect '${e.id}' on ${id} (${piece.name}) has the category '${e.category}', not Equipment`)
+    }
+    // A piece has no cards, so its triggers can only repeat the played card; own: the wearer's plays (no piece's text reaches further yet)
+    for (const t of a.triggers ?? []) {
+      if (!t.repeat || !t.own || t.card !== id) problems.push(`equipmentEffects.ts: a trigger on ${id} (${piece.name}) must have repeat, own and card '${id}'`)
+      if (t.chance !== undefined && (t.chance <= 0 || t.chance > 1)) problems.push(`equipmentEffects.ts: a trigger on ${id} (${piece.name}) has the chance ${t.chance}, not a share of 1`)
     }
   }
   return problems

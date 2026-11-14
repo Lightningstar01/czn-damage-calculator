@@ -70,7 +70,7 @@ function TriggeredRow({ t }: { t: Triggered }) {
   return (
     <div className="triggered">
       <button className="link small" onClick={() => setOpen(!open)} aria-expanded={open}>
-        + {t.by}'s {t.card.name}{t.chance !== 1 ? ` (${pct(t.chance, 0)} ${t.onCrit ? 'crit ' : ''}chance)` : ''}: <b>{num(t.expected)}</b> expected
+        + {t.by}'s {t.from ? `${t.from}: +1 hit of ${t.card.name}` : t.card.name}{t.chance !== 1 ? ` (${pct(t.chance, 0)} ${t.onCrit ? 'crit ' : ''}chance)` : ''}: <b>{num(t.expected)}</b> expected
       </button>
       {open && t.hits[0] && <FormulaStrip hit={t.hits[0]} card={t.card} />}
     </div>
