@@ -95,7 +95,7 @@ equipment, which apply only in battle (slot 1 always gives flat ATK; any piece m
   - Key of Sleep: Prydwen has only its second half. In-game (User, 2026-11-13) it starts "+40% Damage Amount to Attack Cards" and ends "When the
     target count of the Attack Card is 2 or more, -10% Damage Amount for each target (max -30%)". The owner's reading, **Unconfirmed** (in-game
     test `key-of-sleep-targets`): +40% on one target, +20% on 2, +10% on 3 or more. The play's counter holds the targets hit when there are 2 or
-    more (0 for a single target; 1 would wrongly take 10% off).
+    more; 0 or 1 is a single target and takes nothing off (`minStacks: 2`).
   - "(cannot stack)" (Runic Hammer: "+20% Critical Damage to ally Unique Attack Cards"): the wearer and the allies get it, and it is +20% at
     most however many combatants wear one (User, 2026-11-13). The engine counts an effect with `noStack` once per team: the first copy that is
     switched on (the build's own, then the teammates' in slot order); the others show "Cannot stack" on the Buffs tab.
@@ -119,6 +119,11 @@ equipment, which apply only in battle (slot 1 always gives flat ATK; any piece m
     (`everyNth: 5`): the wearer's 5th, 10th... Attack Card play of the attack list gets the 40%. That the count restarts after each bonus is the
     owner's guess ("I think it's every 5th card"), and whether it carries over between turns is unknown: **Unconfirmed**, in-game test
     `rage-potion-count`.
+  - Buffs that count by a play's place in the attack list (`afterFirst`, `firstOnly`, `everyNth`: Flower of Dead Souls, Raider's Scanning
+    Gear, Rage Potion) and the hits a play sets off (triggers: Lucas's Flame Thrower III Critical Hit damage, a piece's extra hit): such a hit
+    is no card played, so it has no place of its own. It gets the buff only when its owner played the card and that play got it; on other
+    plays, and on hits another combatant's play sets off, it doesn't. **Unconfirmed** (Claude's reading, 2026-11-15; before, such hits got
+    the buff on every play), in-game test `triggered-hits-by-place`.
   - Combat Drum's "next ally card activated" is the next card any of the three combatants plays (User): a per-play counter, 0 or 1, that a
     linked teammate's copy brings too. Summoned Lump of Light's "third Attack Card created" is the third Attack Card created each turn, that
     card alone (User): turned on by hand on its play, since the calculator can't know which card was created third. Luminescent Shroom (Spore

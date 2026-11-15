@@ -189,7 +189,9 @@ email, and check that binary files such as spreadsheets carry no author name bef
   hits to its wearer's plays (The Destruction of Erysichthon), shown on Results with `Triggered.from`. An effect's `noStack` ("cannot stack": Runic Hammer) counts once
   per team (`PresetState.doubled` for the other copies). A buff's `afterFirst` skips its owner's first matching play of the
   attack list, which counts as one turn (Flower of Dead Souls: "the second Attack Card onward each turn"). `firstOnly` is the opposite (Raider's Scanning Gear);
-  `everyNth: 5` is Rage Potion's every 5th Attack Card. A stat that depends on the play is a buff (owner, 2026-11-13): types Crit Chance, Crit DMG, Weakness DMG and
+  `everyNth: 5` is Rage Potion's every 5th Attack Card. A hit a play sets off (a trigger) gets these three only when its owner played the card and the play got it
+  (Unconfirmed; in-game test triggered-hits-by-place). A counter buff's `minStacks` makes a smaller number count as 0 (Key of Sleep: 2). `checkEffects()` (equipment
+  included) refuses options the engine doesn't read together (these three with a `counter` or for allies, `noStack` with a `counter`). A stat that depends on the play is a buff (owner, 2026-11-13): types Crit Chance, Crit DMG, Weakness DMG and
   `ATK %` (joins the Attack % of Final ATK on matching plays; with a `counter`, stacks set per play: The Final Command). `vsVulnerable` counts a buff only on plays
   with Vulnerable on (Mask of Flames). Done: every piece (82 weapons, 96 trinkets, 71 armor); a new piece from a re-import goes through the same table with the owner. On armor,
   Immunity, Damage Reduction, damage taken and Counterattack (for the engine later) are not counted either. On trinkets, healing, Shield, Evade and Max HP are not counted; Defense % is. Prydwen's text can be incomplete (Key of Sleep lacked its first half): ask about a text that reads oddly. From equip-94 on the owner takes Prydwen's wording as correct (the Whip is its one known mistake): still list each type in the table,

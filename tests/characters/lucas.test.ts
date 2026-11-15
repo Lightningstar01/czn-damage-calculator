@@ -104,6 +104,17 @@ describe('Lucas', () => {
     expect(run(a).plays[0].triggered[0].expected).toBeCloseTo(0.4 * atk)
   })
 
+  it("Flame Thrower III with Rage Potion: the Critical Hit's damage gets the every-5th-Attack-Card 40% only on the play that gets it", () => {
+    const { a } = ownerBuild()
+    a.deck.push({ id: 'ft', preset: 'card-293' })
+    a.rotation = Array.from({ length: 5 }, () => ({ cardId: 'ft' }))
+    a.equipment = { trinket: { rarity: 'Legendary', piece: 'equip-183' } }
+    const potion = (h: { multFactor: { sources: { label: string }[] } }) => h.multFactor.sources.some((s) => s.label.includes('Rage Potion'))
+    const plays = run(a).plays
+    expect(plays.map((p) => potion(p.hits[0]))).toEqual([false, false, false, false, true])
+    expect(plays.map((p) => potion(p.triggered[0].hits[0]))).toEqual([false, false, false, false, true])
+  })
+
   it('Flame Thrower III: the Critical Hit counts x the crit chance in expected damage, in full on a crit, not without', () => {
     const { a } = ownerBuild()
     a.deck.push({ id: 'ft', preset: 'card-293' })

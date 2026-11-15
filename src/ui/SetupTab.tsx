@@ -1,11 +1,10 @@
 // Setup: build management, partner, Manifest Ego level, memory fragment sets, team, stats-screen values, stat boosts, fight.
 import { useState } from 'react'
 import { PRESETS } from '../data/presets'
-import { findCharacter, findFragmentSet, findPartner, fragmentPiecesUsed, hasTeam, statReadable } from '../engine/buffs'
+import { equipped, equippedLabel, findCharacter, findFragmentSet, findPartner, fragmentPiecesUsed, hasTeam, statReadable } from '../engine/buffs'
 import { unlockedPotentialEgo } from '../engine/calc'
 import { pruneTeamPlays } from '../engine/deck'
 import { linkedBuild } from '../engine/team'
-import { equipped, equippedLabel } from '../engine/buffs'
 import { CATEGORIES, ELEMENTS, FRAGMENT_SET_PICKS, MAX_EGO_LEVEL, MAX_POTENTIAL_LEVEL, FRAGMENT_SLOTS, NO_BUILD, STATS, TEAM_SIZE, type Fight, type ScreenStats, type StatName, type Teammate } from '../engine/types'
 import { EquipmentSection } from './EquipmentSection'
 import { activeFight, duplicateBuild, newBoost, newFight, newTeammate } from '../store/save'
@@ -38,7 +37,8 @@ export function SetupTab() {
           <PresetList kind="Stat" team />
         </Section>
       )}
-      <BoostsSection />
+      {/* A new one per build: rows keep their ids across builds (Duplicate, the v12 step), and an editor open in one must not show open in another */}
+      <BoostsSection key={build.id} />
       <FightSection />
     </>
   )

@@ -86,7 +86,8 @@ describe('card presets', () => {
   })
 
   it('no effect silently does nothing: every "Applies to", trigger and value reads', () => {
-    const others = [...PRESETS.partners, ...PRESETS.fragmentSets]
+    const others = [...PRESETS.partners, ...PRESETS.fragmentSets, ...PRESETS.equipment ?? []]
+    expect(PRESETS.equipment?.length).toBeGreaterThan(200)
     expect(checkEffects(PRESETS.characters, others)).toEqual([])
     const buff = { kind: 'Buff', id: 'x', name: 'X', category: 'Other', value: '+5%', appliesTo: 'ALL', hitScope: 'All hits', condition: 'Always' } as const
     const mei2 = (effects: Effect[]) => [{ ...mei, effects }]
@@ -97,6 +98,13 @@ describe('card presets', () => {
     expect(checkEffects([{ ...mei, effects: [], triggers: [{ card: 'c', on: 'Nothing' }] }], [])).toHaveLength(1)
     expect(checkEffects(mei2([]), [{ name: 'P', effects: [{ ...buff, appliesTo: 'Nothing' }] }])).toHaveLength(1)
     expect(checkEffects(mei2([{ ...buff, appliesTo: 'DoT' }]), [])).toHaveLength(1)
+    expect(checkEffects(mei2([]), [{ name: 'Piece', effects: [], triggers: [{ card: 'equip-1', on: 'Atack' }] }])).toHaveLength(1)
+    // options the engine doesn't read together
+    expect(checkEffects(mei2([{ ...buff, everyNth: 5 }, { ...buff, noStack: true }, { ...buff, counter: 'N', minStacks: 2 }]), [])).toEqual([])
+    expect(checkEffects(mei2([{ ...buff, everyNth: 5, counter: 'N' }]), [])).toHaveLength(1)
+    expect(checkEffects(mei2([{ ...buff, firstOnly: true, target: 'allies' }]), [])).toHaveLength(1)
+    expect(checkEffects(mei2([{ ...buff, noStack: true, counter: 'N' }]), [])).toHaveLength(1)
+    expect(checkEffects(mei2([{ ...buff, minStacks: 2 }]), [])).toHaveLength(1)
   })
 
   it('card ids keep pointing at the same cards (a re-import that moves them must be looked at: saves and additions use them)', async () => {

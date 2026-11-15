@@ -369,6 +369,14 @@ export const CHECKS: InGameCheck[] = [
     record: ['Which plays were 40% higher (count them across the turns)'],
   },
   {
+    id: 'triggered-hits-by-place',
+    question: "A buff for one Attack Card by its place in the turn (Rage Potion's next Attack Card after 4, Raider's Scanning Gear's first Attack Card, Flower of Dead Souls' second onward): does it also raise the damage that card sets off (Lucas's Flame Thrower III Critical Hit damage, an extra hit from a piece of equipment)? The calculator: yes, on the play that gets the buff, and never on other plays or on hits a teammate's play sets off.",
+    closes: 'docs/FORMULA.md (Equipment effects); calc.ts (byPlace)',
+    setup: 'Lucas with Flame Thrower III and Rage Potion (or another character whose card sets off extra damage), and a high Critical Chance.',
+    steps: ['Play four Attack Cards, then Flame Thrower III as the fifth, until it crits.', 'Play Flame Thrower III as the first Attack Card of another turn, until it crits.'],
+    record: ["The Critical Hit's extra damage as the fifth Attack Card and as the first"],
+  },
+  {
     id: 'final-command-attack',
     question: 'The Final Command (Celestial Bulwark): "+3% Attack to allies for 1 turn (max 6 stacks)". Does each stack add 3% of the stats-screen Attack, next to the other Attack % (partner, weapon), as the calculator has it, or does it multiply the Attack already raised by them?',
     closes: "docs/FORMULA.md (Equipment effects); buff type 'ATK %'; src/data/equipmentEffects.ts (equip-237)",

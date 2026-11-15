@@ -136,6 +136,9 @@ export interface BuffEffect {
    * increase Damage Amount of the next Attack Card activated by 40%"; owner, 2026-11-13: "I think it's every 5th card"; Unconfirmed).
    * Not for buffs with a `counter`. */
   everyNth?: number
+  /** With a `counter`: a play's number below this counts as 0 (Key of Sleep: "When the target count is 2 or more, -10% for each target",
+   * so one target takes nothing off). */
+  minStacks?: number
   /** See StatEffect.hint. */
   hint?: string
 }

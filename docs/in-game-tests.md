@@ -2,7 +2,7 @@
 
 Made from `tests/ingame/checks.ts`; change it there, not here, then run `npx vitest run -u tests/ingame`.
 
-74 to run, 6 measured. Send the numbers under **Send** with the game version; they then become tests here and close the question.
+75 to run, 6 measured. Send the numbers under **Send** with the game version; they then become tests here and close the question.
 Use non-crit hits unless the test is about crits, and note anything else that was on.
 
 ## To run
@@ -297,6 +297,20 @@ Closes: docs/FORMULA.md (Equipment effects); src/data/equipmentEffects.ts (equip
 **Send:** Which plays were 40% higher (count them across the turns).
 
 Closes: docs/FORMULA.md (Equipment effects); src/data/equipmentEffects.ts (equip-183); BuffEffect.everyNth
+
+### triggered-hits-by-place
+
+**Question:** A buff for one Attack Card by its place in the turn (Rage Potion's next Attack Card after 4, Raider's Scanning Gear's first Attack Card, Flower of Dead Souls' second onward): does it also raise the damage that card sets off (Lucas's Flame Thrower III Critical Hit damage, an extra hit from a piece of equipment)? The calculator: yes, on the play that gets the buff, and never on other plays or on hits a teammate's play sets off.
+
+**Setup:** Lucas with Flame Thrower III and Rage Potion (or another character whose card sets off extra damage), and a high Critical Chance.
+
+**Steps:**
+1. Play four Attack Cards, then Flame Thrower III as the fifth, until it crits.
+2. Play Flame Thrower III as the first Attack Card of another turn, until it crits.
+
+**Send:** The Critical Hit's extra damage as the fifth Attack Card and as the first.
+
+Closes: docs/FORMULA.md (Equipment effects); calc.ts (byPlace)
 
 ### final-command-attack
 

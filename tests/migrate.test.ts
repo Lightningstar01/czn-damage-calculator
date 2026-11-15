@@ -55,6 +55,9 @@ describe('migrate', () => {
     expect(a.boosts[0]).not.toBe(b.boosts[0])
     expect(cs).not.toHaveProperty('boosts')
     expect(cs).not.toHaveProperty('buffs')
+    // A null list (a partial backup) is an empty one, not a refused file
+    const partial = migrate({ version: 11, characters: { X: { builds: [{ id: 'a' }], boosts: null, buffs: null } } }).characters.X
+    expect([partial.builds[0].boosts, partial.builds[0].buffs]).toEqual([[], []])
   })
 
   it('v11: the enemy moves to shared fights, one per distinct pair of values, and the open build keeps its own', () => {

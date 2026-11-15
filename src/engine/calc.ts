@@ -213,7 +213,8 @@ export function shownPct(base: number, card: Card, build: LiveBuild, ch: Charact
   if (fixed && !settings.potentialFixed) return base
   const potential = potentialFactor(card.upgrade, build, ch, settings)
   if (!potential) return base
-  const cb = cardBuffs(buffs.filter((b) => !b.counter && !b.weakness), card)
+  // In hand there's no play: nothing that needs its stacks, a Weakness hit, a Vulnerable target or its place in the attack list
+  const cb = cardBuffs(buffs.filter((b) => !b.counter && !b.weakness && !b.vsVulnerable && !byPlace(b)), card)
   const cardPct = [...cb.cardPct.all.sources, ...cb.cardPct.first.sources].reduce((a, s) => a + s.value, 0)
   const cardAdd = [...cb.cardAdd.all.sources, ...cb.cardAdd.first.sources].reduce((a, s) => a + s.value, 0)
   return (base + cardAdd) * potential.value * (1 + cardPct)
@@ -299,6 +300,13 @@ function equipmentTriggers(presets: Presets, equipment: Build['equipment']): { t
   return equipped(presets, equipment).flatMap((e) => (e.piece?.triggers ?? []).map((t) => ({ t, from: e.piece!.name })))
 }
 
+/** A buff that counts by a play's place among its owner's matching plays of the attack list, which is one turn. */
+const byPlace = (b: ActiveBuff) => !!(b.afterFirst || b.firstOnly || b.everyNth)
+
+/** Whether such a buff counts on its owner's nth matching play (1 = the first): "every 5th Attack Card" (everyNth) on the 5th, 10th...;
+ * "the first Attack Card activated" (firstOnly) on the 1st; "the second Attack Card onward each turn" (afterFirst) on all but the 1st. */
+const countsOnPlay = (b: ActiveBuff, n: number) => (b.everyNth ? n % b.everyNth === 0 : b.firstOnly ? n === 1 : n > 1)
+
 const capped = (play: RotationPlay, name: string, max: number | null | undefined) =>
   Math.min(Math.max(0, play.stacks?.[name] ?? 0), max ?? Infinity)
 
@@ -343,12 +351,14 @@ export function computeBuild(presets: Presets, charName: string, build: Build, s
   let k = 0
   // The hits of one card played by m, with the play's debuffs and counter stacks; added: only that many hits after the card's own (no first-hit buffs);
   // listed: they're numbered across the attack list (a trigger's hits aren't)
-  // without: buffs left out of this play (afterFirst buffs on their owner's first matching play)
+  // without: buffs left out of this play (those that count by its place in the attack list: afterFirst on the first matching play...)
   const cardHits = (m: Member, card: Card, play: RotationPlay, added = 0, listed = true, without?: Set<ActiveBuff>) => {
     const d = m.dmg!
     const counters = playCaps(d, card).map(({ name, max }) => ({ name, stacks: counterOn(card, play, name, max) }))
     const live: ActiveBuff[] = d.counterBuffs.map((b) => {
-      const stacks = counters.find((c) => c.name === b.counter)?.stacks ?? 0
+      const set = counters.find((c) => c.name === b.counter)?.stacks ?? 0
+      // minStacks: fewer than that is none (Key of Sleep's "target count is 2 or more")
+      const stacks = set < (b.minStacks ?? 0) ? 0 : set
       return { ...b, stacks: b.maxStacks ? Math.min(stacks, b.maxStacks) : stacks }
     })
     // "Damage dealt to Vulnerable targets" buffs (vsVulnerable) count only while the play has Vulnerable on
@@ -369,7 +379,7 @@ export function computeBuild(presets: Presets, charName: string, build: Build, s
   }
 
   const plays: Play[] = []
-  // How many plays of its owner each afterFirst / everyNth buff has matched so far
+  // How many plays of its owner each by-place buff (afterFirst / firstOnly / everyNth) has matched so far
   const matched = new Map<ActiveBuff, number>()
   const counterOptions: BuildResult['counterOptions'] = []
   const weaknessAuto: boolean[] = []
@@ -393,17 +403,16 @@ export function computeBuild(presets: Presets, charName: string, build: Build, s
     // A per-play hit count also counts for '2+ hits' buffs, so it's buffed as its own card
     const card = playCard(base, play)
     const noDmgWeak = card.weaknessApplies || enemyWeakTo(enemy, card)
-    // "The second Attack Card onward each turn": such a buff skips its owner's first matching play (the attack list is one turn)
-    // "The first Attack Card activated" (firstOnly): only on that play
-    // "Every 5th Attack Card" (everyNth): only on its owner's 5th, 10th... matching play
-    const firsts = new Set<ActiveBuff>()
+    // Buffs that count by the play's place among their owner's matching plays (byPlace): the ones this play gets, and the ones it doesn't
+    const counted = new Set<ActiveBuff>()
+    const skipped = new Set<ActiveBuff>()
     for (const b of m.dmg?.fixedBuffs ?? []) {
-      if (!(b.afterFirst || b.everyNth || b.firstOnly) || !buffMatches({ ...b, condition: 'Always' }, card)) continue
+      if (!byPlace(b) || !buffMatches({ ...b, condition: 'Always' }, card)) continue
       const n = (matched.get(b) ?? 0) + 1
       matched.set(b, n)
-      if (b.everyNth ? n % b.everyNth !== 0 : b.firstOnly ? n !== 1 : n === 1) firsts.add(b)
+      ;(countsOnPlay(b, n) ? counted : skipped).add(b)
     }
-    const own = m.dmg ? cardHits(m, card, play, 0, true, firsts)
+    const own = m.dmg ? cardHits(m, card, play, 0, true, skipped)
       : { hits: [], counters: [], cb: undefined, weak: play.weakness ?? noDmgWeak, weakAuto: noDmgWeak, nonCrit: 0, crit: 0, expected: 0 }
     weaknessAuto[index] = own.weakAuto
     if (m.dmg && !card.targetRavaged) warnings.push(...ravagedOnly(m.dmg.counterBuffs, card, play, index))
@@ -443,8 +452,11 @@ export function computeBuild(presets: Presets, charName: string, build: Build, s
       // Same target, same moment (Unconfirmed; in-game test ravaged-triggered-hits): Ravaged on the play is Ravaged on the hit it sets off,
       // and a play switched off is off for that hit too
       tcard.targetRavaged = play.ravaged ?? (tcard.targetRavaged || card.targetRavaged)
-      const r = t.repeat ? cardHits(owner, tcard, play, 1, false, owner === m ? firsts : undefined)
-        : cardHits(owner, tcard, { cardId: tcard.id, vulnerable: play.vulnerable, stacks: play.stacks }, 0, false)
+      // A hit a play sets off is no card played, so it has no place of its own in the attack list: it gets a by-place buff (Rage Potion's
+      // every 5th Attack Card) only when its owner played this card and the play itself got it (Unconfirmed; in-game test triggered-hits-by-place)
+      const off = new Set(owner.dmg.fixedBuffs.filter((b) => byPlace(b) && !counted.has(b)))
+      const r = t.repeat ? cardHits(owner, tcard, play, 1, false, off)
+        : cardHits(owner, tcard, { cardId: tcard.id, vulnerable: play.vulnerable, stacks: play.stacks }, 0, false, off)
       // onCrit: one roll per play, on its first hit (Flame Thrower III has one hit, and on all enemies it crits or doesn't: owner, 2026-11-01;
       // more hits set on the play: in-game test lucas-readings)
       const chance = t.onCrit ? own.hits[0]?.critRate ?? 0 : t.chance ?? 1
@@ -583,6 +595,8 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
       sources: [
         { label: `Final ATK ${round(atk.value)} x ${settings.defCardAtkCoef}`, value: atk.value * settings.defCardAtkCoef, unit: 'flat' },
         { label: `Final DEF ${round(stats.def.value)} x ${settings.defCardDefCoef}`, value: stats.def.value * settings.defCardDefCoef, unit: 'flat' },
+        // What raised the Final ATK above on this play only, so the number can be traced
+        ...atkBuffs.map((s) => ({ ...s, label: `In Final ATK: ${s.label}` })),
       ],
     }
     : fixedOf
@@ -656,7 +670,10 @@ function computeHit(card: Card, hitNo: number, k: number, cb: ReturnType<typeof 
     critRate = settings.critCap
   }
   // A piece can lower it (Dull Bone Blade: -5% Critical Chance); a chance below 0 is no chance
-  critRate = Math.max(0, critRate)
+  if (critRate < 0) {
+    critRateSources.push({ label: 'No chance below 0%', value: 0, unit: '%' })
+    critRate = 0
+  }
 
   const fixedConstant = fixedOf ? 1 : settings.fixedAtkCoef
   // Fixed damage: % x Final ATK x its constant (owner thinks ATK-based, 2026-10-28; Unconfirmed), or % x the amount the card names (fixedOf)

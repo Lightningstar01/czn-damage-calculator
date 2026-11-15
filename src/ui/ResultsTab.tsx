@@ -38,7 +38,7 @@ export function ResultsTab() {
           <span>ATK <b>{num(s.atk.value, 1)}</b></span>
           <span>DEF <b>{num(s.def.value, 1)}</b></span>
           {s.hp.value !== 0 && <span>HP <b>{num(s.hp.value, 1)}</b></span>}
-          <span>Crit <b>{pct(s.critRate.value)}</b> / <b>{pct(s.critDmg.value)}</b></span>
+          <span>Crit <b>{pct(Math.max(0, s.critRate.value))}</b> / <b>{pct(s.critDmg.value)}</b></span>
           <span>Weakness <b>{pct(s.weaknessDmg.value)}</b></span>
           <span>Element <b>+{pct(s.elemDmg.value)}</b></span>
           {s.extraDmg.value !== 0 && <span>Extra <b>+{pct(s.extraDmg.value)}</b></span>}

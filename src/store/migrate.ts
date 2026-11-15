@@ -265,7 +265,8 @@ export function migrate(raw: unknown): SaveData {
     for (const [name, cs] of Object.entries(data.characters) as [string, LegacyCharacter][]) {
       // The rows a build keeps, with its own switch (completeCharacter fills in what a row lacks)
       const rowsOf = (shared: unknown, b: Build): Record<string, unknown>[] => {
-        if (shared !== undefined && !isObjectList(shared)) throw new Error(`${NOT_A_SAVE} ${name} has unreadable builds.`)
+        // A missing or null list is an empty one (a partial backup), as before v12
+        if (shared != null && !isObjectList(shared)) throw new Error(`${NOT_A_SAVE} ${name} has unreadable builds.`)
         const sw = (r: Record<string, unknown>, x: Build) => (isObject(r.switches) ? r.switches[x.id] as Switch | undefined : undefined)
         const on = (r: Record<string, unknown>, x: Build) => switchStacks(sw(r, x)) > 0
         return (shared ?? []).filter((r) => on(r, b) || !cs.builds.some((x) => on(r, x))).map((r) => {

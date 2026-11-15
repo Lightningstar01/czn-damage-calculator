@@ -131,6 +131,8 @@ export interface ActiveBuff {
   firstOnly?: boolean
   /** See BuffEffect.everyNth. */
   everyNth?: number
+  /** See BuffEffect.minStacks. */
+  minStacks?: number
 }
 
 /** Why a preset effect is (in)active for a build — shown greyed out in the UI. */
@@ -386,7 +388,7 @@ export function activeBuffs(presets: Presets, charName: string, build: LiveBuild
       ...(e.perCardCost ? { perCardCost: true } : {}), ...(e.sharedCap ? { sharedCap: e.sharedCap } : {}), ...(e.fixedDot ? { fixedDot: true } : {}),
       ...(e.weakness ? { weakness: true } : {}), ...(e.afterFirst ? { afterFirst: true } : {}),
       ...(e.firstOnly ? { firstOnly: true } : {}), ...(e.vsVulnerable ? { vsVulnerable: true } : {}),
-      ...(e.everyNth ? { everyNth: e.everyNth } : {}) })
+      ...(e.everyNth ? { everyNth: e.everyNth } : {}), ...(e.minStacks ? { minStacks: e.minStacks } : {}) })
   }
   for (const b of build.buffs ?? []) {
     const st = switchStacks(b.on)

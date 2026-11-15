@@ -204,8 +204,11 @@ function tokens(text: string): { nodes: string[]; egos: number[]; refs: string[]
 const VALUE = /^[+-]?\d+(\.\d+)?%?$/
 
 /** Problems that make an effect silently do nothing: an "Applies to" (or trigger, or follow-up) no card matches, a value that doesn't parse.
- * A character's own effects must match one of their cards; what reaches allies or the enemy, and partners and sets, any card. */
-export function checkEffects(characters: CharacterPreset[], others: { name: string; effects: Effect[] }[]): string[] {
+ * A character's own effects must match one of their cards; what reaches allies or the enemy, and partners, sets and equipment, any card.
+ * Also options the engine doesn't read together, so one of them would be ignored: a buff that counts by the play's place in the attack
+ * list (afterFirst / firstOnly / everyNth) with a `counter` or for allies / the enemy (it counts its owner's plays), `noStack` with a
+ * `counter` or a threshold bonus (the copies could differ, and the first one wins), `minStacks` without a `counter`. */
+export function checkEffects(characters: CharacterPreset[], others: { name: string; effects: Effect[]; triggers?: { card: string; on: string }[] }[]): string[] {
   const cardsOf = (ch: CharacterPreset): Card[] => (ch.cards ?? []).map((p) => presetCard(p, ch.element ?? ELEMENTS[0], p.id, allNodesOn))
   const everyCard = characters.flatMap(cardsOf)
   const problems: string[] = []
@@ -217,6 +220,11 @@ export function checkEffects(characters: CharacterPreset[], others: { name: stri
     if (e.thresholdBonus) value(e.thresholdBonus.value)
     if (e.thresholdBonus?.max !== undefined) value(e.thresholdBonus.max)
     if (!matches(e.appliesTo, e.target === 'allies' || e.target === 'enemy' ? everyCard : own)) problems.push(`${owner}: effect '${e.id}' applies to '${e.appliesTo}', which no card matches`)
+    const place = e.afterFirst ? 'afterFirst' : e.firstOnly ? 'firstOnly' : e.everyNth ? 'everyNth' : ''
+    if (place && e.counter) problems.push(`${owner}: effect '${e.id}' has ${place} and a counter: the engine reads only the counter`)
+    if (place && (e.target === 'allies' || e.target === 'enemy')) problems.push(`${owner}: effect '${e.id}' has ${place} and reaches the team: it would count each receiver's plays, not its owner's`)
+    if (e.noStack && (e.counter || e.thresholdBonus)) problems.push(`${owner}: effect '${e.id}' has noStack with a counter or a threshold bonus: the first copy would count, whatever the others are worth`)
+    if (e.minStacks && !e.counter) problems.push(`${owner}: effect '${e.id}' has minStacks without a counter`)
   }
   for (const ch of characters) {
     const own = cardsOf(ch)
@@ -229,7 +237,10 @@ export function checkEffects(characters: CharacterPreset[], others: { name: stri
       if (!matches(t.on, everyCard)) problems.push(`${ch.name}: a trigger of '${t.card}' is set off by '${t.on}', which no card matches`)
     }
   }
-  for (const o of others) for (const e of o.effects) check(o.name, e, everyCard)
+  for (const o of others) {
+    for (const e of o.effects) check(o.name, e, everyCard)
+    for (const t of o.triggers ?? []) if (!matches(t.on, everyCard)) problems.push(`${o.name}: a trigger is set off by '${t.on}', which no card matches`)
+  }
   return problems
 }
 

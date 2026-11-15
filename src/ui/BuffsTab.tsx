@@ -25,7 +25,8 @@ export function BuffsTab() {
           <PresetList kind="Buff" team />
         </Section>
       )}
-      <MyBuffsSection />
+      {/* A new one per build: rows keep their ids across builds (Duplicate, the v12 step), and an editor open in one must not show open in another */}
+      <MyBuffsSection key={build.id} />
     </>
   )
 }

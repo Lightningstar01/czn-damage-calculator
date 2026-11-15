@@ -192,6 +192,7 @@ describe("weapons read with the owner, batch 1: The Blue Pot and Twin Star's Sha
     // With less than 5% to lose, a hit's chance stops at 0: the expected damage is the non-crit damage
     const low = withWeapon('Dull Bone Blade', attack(), {}, (b) => { b.stats.critChance = 0.03 }).r
     expect(low.plays[0].hits[0].critRate).toBe(0)
+    expect(low.plays[0].hits[0].critRateSources.at(-1)).toMatchObject({ label: 'No chance below 0%' })
     expect(low.expected).toBeCloseTo(low.nonCrit)
   })
 
@@ -441,6 +442,8 @@ describe("weapons read with the owner, batch 1: The Blue Pot and Twin Star's Sha
   it('Key of Sleep: +40% on one target, +20% on 2, +10% on 3 or more (owner\'s reading)', () => {
     const targets = (n: number, c = attack({ pct: 2 })) => withWeapon('Key of Sleep', c, { stacks: { 'Key of Sleep: targets hit, if 2 or more': n } }).ratio
     expect(targets(0)).toBeCloseTo(2.4 / 2)
+    // 1 is one target too: "2 or more" isn't met, so nothing is taken off
+    expect(targets(1)).toBeCloseTo(2.4 / 2)
     expect(targets(2)).toBeCloseTo(2.2 / 2)
     expect(targets(3)).toBeCloseTo(2.1 / 2)
     expect(targets(5)).toBeCloseTo(2.1 / 2)
@@ -622,6 +625,10 @@ describe("weapons read with the owner, batch 1: The Blue Pot and Twin Star's Sha
     // Stats screen 1000: 1000 x (1 + 6%) and x (1 + 18%)
     expect(r.plays.map((p) => Math.round(p.hits[0].stat.value - plain.plays[0].hits[0].stat.value))).toEqual([0, 60, 180])
     expect(r.plays[1].hits[0].stat.sources.at(-1)).toMatchObject({ value: 0.06 })
+    // A Defense-based card reads the raised Attack too, and says what raised it
+    const def = withTrinket('equip-237', [attack({ scaling: 'DEF' })], [{ [command]: 2 }])
+    expect(def.r.plays[0].hits[0].stat.value - def.plain.plays[0].hits[0].stat.value).toBeCloseTo(60 * settings.defCardAtkCoef)
+    expect(def.r.plays[0].hits[0].stat.sources.at(-1)).toMatchObject({ value: 0.06, label: expect.stringContaining('In Final ATK') })
     expect(EQUIPMENT_EFFECTS['equip-237'].effects![0]).toMatchObject({ type: 'ATK %', target: 'allies' })
   })
 

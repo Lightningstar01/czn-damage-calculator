@@ -213,10 +213,10 @@ export const EQUIPMENT_EFFECTS: Record<string, EquipmentAdditions> = {
   // Key of Sleep. Prydwen has only the second half; in-game (owner, 2026-11-13): "+40% Damage Amount to Attack Cards ... When the
   // target count of the Attack Card is 2 or more, -10% Damage Amount for each target (max -30%)". Read by the owner (Unconfirmed,
   // in-game test key-of-sleep-targets): +40% on one target, +20% on 2, +10% on 3 or more. The counter is the targets hit when
-  // there are 2 or more (0 for one target)
+  // there are 2 or more (0 or 1 for one target: minStacks)
   'equip-211': { effects: [
     buff('dmg', '+40% Damage Amount to Attack Cards', '+40%', 'Attack'),
-    buff('targets', '-10% Damage Amount for each target, with 2 or more (max -30%)', '-10%', 'Attack', { type: 'Additive', counter: 'Key of Sleep: targets hit, if 2 or more', maxStacks: 3 }),
+    buff('targets', '-10% Damage Amount for each target, with 2 or more (max -30%)', '-10%', 'Attack', { type: 'Additive', counter: 'Key of Sleep: targets hit, if 2 or more', minStacks: 2, maxStacks: 3 }),
   ] },
   // Yearning Left Hand: "Increase Damage Amount by 30% to targets in a Aftershock state."
   'equip-215': { effects: [buff('dmg', 'Increase Damage Amount by 30% to targets in an Aftershock state', '30%', 'ALL', { hint: 'Target in Aftershock', onTarget: true })] },
